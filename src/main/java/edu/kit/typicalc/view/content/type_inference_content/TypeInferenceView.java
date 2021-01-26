@@ -11,14 +11,14 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 
 @Route(value = "visualize", layout = MainViewImpl.class)
 @PageTitle("TypeInferenceView")
-@CssImport("./styles/views/typeinferenceview/type-inference-view-view.css")
-public class TypeInferenceViewView extends HorizontalLayout {
+@CssImport("./styles/views/typeinferenceview/type-inference-view.css")
+public class TypeInferenceView extends HorizontalLayout {
 
     private TextField name;
     private Button sayHello;
 
-    public TypeInferenceViewView() {
-        setId("type-inference-view-view");
+    public TypeInferenceView() {
+        setId("type-inference-view");
         name = new TextField("Your name");
         sayHello = new Button("Say hello");
         add(name, sayHello);

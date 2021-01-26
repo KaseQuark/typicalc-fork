@@ -17,7 +17,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
-import edu.kit.typicalc.view.content.type_inference_content.TypeInferenceViewView;
+import edu.kit.typicalc.view.content.type_inference_content.TypeInferenceView;
 
 import java.util.Optional;
 
@@ -78,7 +78,7 @@ public class MainViewImpl extends AppLayout {
     }
 
     private Component[] createMenuItems() {
-        return new Tab[]{createTab("TypeInferenceView", TypeInferenceViewView.class)};
+        return new Tab[]{createTab("TypeInferenceView", TypeInferenceView.class)};
     }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
