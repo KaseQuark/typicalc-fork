@@ -1,4 +1,4 @@
-package edu.kit.typicalc.view.info_content;
+package edu.kit.typicalc.view.content.info_content;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
