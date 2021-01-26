@@ -1,6 +1,4 @@
-package edu.kit.typicalc.views.main;
-
-import java.util.Optional;
+package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
@@ -9,8 +7,8 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,23 +17,22 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
-import com.vaadin.flow.server.PWA;
-import com.vaadin.flow.theme.Theme;
-import edu.kit.typicalc.views.main.MainView;
-import edu.kit.typicalc.views.typeinferenceview.TypeInferenceViewView;
+import edu.kit.typicalc.view.content.type_inference_content.TypeInferenceViewView;
+
+import java.util.Optional;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 @CssImport("./styles/views/main/main-view.css")
 @JsModule("./styles/shared-styles.js")
-public class MainView extends AppLayout {
+public class MainViewImpl extends AppLayout {
 
     private final Tabs menu;
     private H1 viewTitle;
 
-    public MainView() {
-        setPrimarySection(Section.DRAWER);
+    public MainViewImpl() {
+        setDrawerOpened(false);
         addToNavbar(true, createHeaderContent());
         menu = createMenu();
         addToDrawer(createDrawerContent(menu));
