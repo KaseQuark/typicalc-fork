@@ -1,11 +1,8 @@
 package edu.kit.typicalc.model.step;
 
 import edu.kit.typicalc.model.Conclusion;
-<<<<<<< HEAD
 import edu.kit.typicalc.model.Constraint;
-=======
 
->>>>>>> 0f6c701 (Checkstyle für Maven konfiguriert)
 /**
  * Models one step of the inference tree.
  * Depending on the inference rule that is applied in a step,
@@ -21,6 +18,7 @@ public abstract class InferenceStep {
 
     /**
      * Initializes a new InferenceStep with the given values.
+     *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
      */
@@ -31,6 +29,7 @@ public abstract class InferenceStep {
 
     /**
      * Getter for the Conclusion of this step.
+     *
      * @return conclusion the conclusion of this step
      */
     public Conclusion getConclusion() {
@@ -39,6 +38,7 @@ public abstract class InferenceStep {
 
     /**
      * Getter for the Constraint added in this step.
+     *
      * @return conclusion the constraint added in this step
      */
     public Constraint getConstraint() {
@@ -47,16 +47,8 @@ public abstract class InferenceStep {
 
     /**
      * Accepts a visitor.
+     *
      * @param stepVisitor the visitor that wants to visit this object
      */
     public abstract void accept(StepVisitor stepVisitor);
-<<<<<<< HEAD
 }
-=======
-
-    public Conclusion getConclusion() {
-        return null; // TODO
-    }
-
-}
->>>>>>> 0f6c701 (Checkstyle für Maven konfiguriert)
