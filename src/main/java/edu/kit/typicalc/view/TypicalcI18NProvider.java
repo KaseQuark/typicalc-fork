@@ -10,11 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import com.vaadin.flow.i18n.I18NProvider;
 
-@Component
 /**
  * Provides a simple implementation of the I18NProvider.
  * Allows for multiple languages and retrieving static Strings from .property-files.
  */
+@Component
 public class TypicalcI18NProvider implements I18NProvider {
 
     private static final long serialVersionUID = 8261479587838699070L;

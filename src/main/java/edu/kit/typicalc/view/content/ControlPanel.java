@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.content;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
@@ -9,16 +10,17 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 /**
  * Provides a GUI in form of buttons for the user to navigate through steps.
  */
-public class ControlPanel  {
+public class ControlPanel extends Component {
 
-    private Button firstStep;
-    private Button lastStep;
-    private Button nextStep;
-    private Button previousStep;
-    private Button share;
+    private final Button firstStep;
+    private final Button lastStep;
+    private final Button nextStep;
+    private final Button previousStep;
+    private final Button share;
 
     /**
      * Sets up buttons with click-listeners that call the corresponding method in the view.
+     *
      * @param view the view that reacts to the button clicks
      */
     public ControlPanel(ControlPanelView view) {
@@ -37,6 +39,7 @@ public class ControlPanel  {
 
     /**
      * Enables the firstStep-button if the parameter is true, disables it if hte parameter is false.
+     *
      * @param setEnabled true to enable the button,false to disable it
      */
     public void setEnabledFirstStep(boolean setEnabled) {
@@ -45,6 +48,7 @@ public class ControlPanel  {
 
     /**
      * Enables the lastStep-button if the parameter is true, disables it if hte parameter is false.
+     *
      * @param setEnabled true to enable the button,false to disable it
      */
     public void setEnabledLastStep(boolean setEnabled) {
@@ -53,6 +57,7 @@ public class ControlPanel  {
 
     /**
      * Enables the nextStep-button if the parameter is true, disables it if hte parameter is false.
+     *
      * @param setEnabled true to enable the button,false to disable it
      */
     public void setEnabledNextStep(boolean setEnabled) {
@@ -61,6 +66,7 @@ public class ControlPanel  {
 
     /**
      * Enables the previousStep-button if the parameter is true, disables it if hte parameter is false.
+     *
      * @param setEnabled true to enable the button,false to disable it
      */
     public void setEnabledPreviousStep(boolean setEnabled) {
@@ -69,6 +75,7 @@ public class ControlPanel  {
 
     /**
      * Enables the share-button if the parameter is true, disables it if hte parameter is false.
+     *
      * @param setEnabled true to enable the button,false to disable it
      */
     public void setEnabledShareButton(boolean setEnabled) {
