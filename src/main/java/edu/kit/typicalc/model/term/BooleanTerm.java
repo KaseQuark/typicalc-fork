@@ -4,4 +4,9 @@ public class BooleanTerm extends ConstTerm {
 	public BooleanTerm(boolean value) {
 		// TODO
 	}
+
+	@Override
+	public boolean hasLet() {
+		return false;
+	}
 }

@@ -1,10 +1,18 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
 
+import com.fasterxml.jackson.databind.jsontype.NamedType;
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.step.*;
+import edu.kit.typicalc.model.term.AbsTerm;
+import edu.kit.typicalc.model.term.AppTerm;
+import edu.kit.typicalc.model.term.ConstTerm;
+import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.TermVisitor;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.FunctionType;
+import edu.kit.typicalc.model.type.TypeVariable;
 import edu.kit.typicalc.model.type.TypeVisitor;
 
 /**
@@ -90,45 +98,85 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     }
 
     @Override
-    public void visitAbsStepDefault(AbsStepDefault absD) {
+    public void visit(AbsStepDefault absD) {
         generateConclusion(absD, LABEL_ABS, UIC);
 
 
     }
 
     @Override
-    public void visitAbsStepWithLet(AbsStepWithLet absL) {
+    public void visit(AbsStepWithLet absL) {
         generateConclusion(absL, LABEL_ABS, UIC);
 
     }
 
     @Override
-    public void visitAppStepDefault(AppStepDefault appD) {
+    public void visit(AppStepDefault appD) {
         generateConclusion(appD, LABEL_APP, UIC);
 
     }
 
     @Override
-    public void visitConstStepDefault(ConstStepDefault constD) {
+    public void visit(ConstStepDefault constD) {
         generateConclusion(constD, LABEL_CONST, UIC);
 
     }
 
     @Override
-    public void visitVarStepDefault(VarStepDefault varD) {
+    public void visit(VarStepDefault varD) {
         generateConclusion(varD, LABEL_VAR, UIC);
 
     }
 
     @Override
-    public void visitVarStepWithLet(VarStepWithLet varL) {
+    public void visit(VarStepWithLet varL) {
         generateConclusion(varL, LABEL_VAR, UIC);
 
     }
 
     @Override
-    public void visitLetStepDefault(LetStepDefault letD) {
+    public void visit(LetStepDefault letD) {
         generateConclusion(letD, LABEL_LET, UIC);
+
+    }
+
+    @Override
+    public void visit(AppTerm appTerm) {
+
+    }
+
+    @Override
+    public void visit(AbsTerm absTerm) {
+
+    }
+
+    @Override
+    public void visit(LetTerm letTerm) {
+
+    }
+
+    @Override
+    public void visit(VarTerm varTerm) {
+
+    }
+
+    @Override
+    public void visit(ConstTerm constTerm) {
+
+    }
+
+    @Override
+    public void visit(NamedType named) {
+
+    }
+
+    @Override
+    public void visit(TypeVariable variable) {
+
+    }
+
+    @Override
+    public void visit(FunctionType function) {
 
     }
 }

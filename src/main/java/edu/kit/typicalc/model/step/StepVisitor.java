@@ -9,43 +9,43 @@ public interface StepVisitor {
      * Visits an AbsStepDefault.
      * @param absD the AbsStepDefault to visit
      */
-    void visitAbsStepDefault(AbsStepDefault absD);
+    void visit(AbsStepDefault absD);
 
     /**
      * Visits an AbsStepWithLet.
      * @param absL the AbsStepWithLet to visit
      */
-    void visitAbsStepWithLet(AbsStepWithLet absL);
+    void visit(AbsStepWithLet absL);
 
     /**
      * Visits an AppStepDefault.
      * @param appD the AppStepDefault to visit
      */
-    void visitAppStepDefault(AppStepDefault appD);
+    void visit(AppStepDefault appD);
 
     /**
      * ConstStepDefault.
      * @param constD the ConstStepDefault to visit
      */
-    void visitConstStepDefault(ConstStepDefault constD);
+    void visit(ConstStepDefault constD);
 
     /**
      * Visits a VarStepDefault.
      * @param varD the VarStepDefault to visit
      */
-    void visitVarStepDefault(VarStepDefault varD);
+    void visit(VarStepDefault varD);
 
     /**
      * Visits a VarStepWithLet.
      * @param varL the VarStepWithLet to visit
      */
-    void visitVarStepWithLet(VarStepWithLet varL);
+    void visit(VarStepWithLet varL);
 
     /**
      * Visits a LetStepDefault.
      * @param letD the LetStepDefault to visit
      */
-    void visitLetStepDefault(LetStepDefault letD);
+    void visit(LetStepDefault letD);
 
 
 

@@ -1,10 +1,16 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.step.InferenceStep;
+import edu.kit.typicalc.model.term.AbsTerm;
+import edu.kit.typicalc.model.term.AppTerm;
+import edu.kit.typicalc.model.term.ConstTerm;
 import edu.kit.typicalc.model.term.LambdaTerm;
-import edu.kit.typicalc.model.term.TermVisitor;
+import edu.kit.typicalc.model.term.LetTerm;
+import edu.kit.typicalc.model.term.TermVisitorTree;
 import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
+import edu.kit.typicalc.model.type.TypeAssumption;
 
 import java.util.List;
 import java.util.Map;
@@ -15,7 +21,7 @@ import java.util.Map;
  * are part of these steps. It is guaranteed that these members can be accessed right after
  * instantiation (no additional initialization is required).
  */
-public class Tree implements TermVisitor {
+public class Tree implements TermVisitorTree {
 
     /**
      * Initializes a new Tree representing the proof tree for the type inference of the given
@@ -66,5 +72,30 @@ public class Tree implements TermVisitor {
     protected List<Constraint> getConstraints() {
         return null;
         // TODO
+    }
+
+    @Override
+    public InferenceStep visit(AppTerm appTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+        return null; // TODO
+    }
+
+    @Override
+    public InferenceStep visit(AbsTerm absTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+        return null; // TODO
+    }
+
+    @Override
+    public InferenceStep visit(LetTerm letTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+        return null; // TODO
+    }
+
+    @Override
+    public InferenceStep visit(ConstTerm constTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+        return null; // TODO
+    }
+
+    @Override
+    public InferenceStep visit(VarTerm varTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+        return null; // TODO
     }
 }

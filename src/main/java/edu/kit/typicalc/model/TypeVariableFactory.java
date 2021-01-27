@@ -7,11 +7,15 @@ import edu.kit.typicalc.model.type.TypeVariable;
  */
 public class TypeVariableFactory {
 
+    private static final int FIRST_VARIABLE_INDEX = 1;
+
+    private int nextVariableIndex;
+
     /**
      * Initializes a new type variable factory.
      */
     protected TypeVariableFactory() {
-        // TODO
+        nextVariableIndex = FIRST_VARIABLE_INDEX;
     }
 
     /**
@@ -20,7 +24,8 @@ public class TypeVariableFactory {
      * @return a new unique type variable
      */
     public TypeVariable nextTypeVariable() {
-        return null;
-        // TODO
+        TypeVariable nextTypeVariable = new TypeVariable(nextVariableIndex);
+        nextVariableIndex++;
+        return nextTypeVariable;
     }
 }
