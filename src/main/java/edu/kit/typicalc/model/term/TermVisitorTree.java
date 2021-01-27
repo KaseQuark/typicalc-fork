@@ -2,9 +2,9 @@ package edu.kit.typicalc.model.term;
 
 import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.type.Type;
-import edu.kit.typicalc.model.type.TypeAssumption;
+import edu.kit.typicalc.model.type.TypeAbstraction;
 
-import java.util.List;
+import java.util.Map;
 
 public interface TermVisitorTree {
 	/**
@@ -19,7 +19,7 @@ public interface TermVisitorTree {
 	 * 					of the returned inference step will be assigned
 	 * @return an {@link edu.kit.typicalc.model.step.AppStep}
 	 */
-	InferenceStep visit(AppTerm appTerm, List<TypeAssumption> typeAssumptions, Type conclusionType);
+	InferenceStep visit(AppTerm appTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
 
 	/**
 	 * Returns an {@link edu.kit.typicalc.model.step.AbsStep} suiting the given abstraction (lambda term)
@@ -33,7 +33,7 @@ public interface TermVisitorTree {
 	 * 					of the returned inference step will be assigned
 	 * @return an {@link edu.kit.typicalc.model.step.AbsStep}
 	 */
-	InferenceStep visit(AbsTerm absTerm, List<TypeAssumption> typeAssumptions, Type conclusionType);
+	InferenceStep visit(AbsTerm absTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
 
 	/**
 	 * Returns an {@link edu.kit.typicalc.model.step.LetStep} suiting the given let expression (lambda term)
@@ -47,7 +47,7 @@ public interface TermVisitorTree {
 	 * 					of the returned inference step will be assigned
 	 * @return an {@link edu.kit.typicalc.model.step.LetStep}
 	 */
-	InferenceStep visit(LetTerm letTerm, List<TypeAssumption> typeAssumptions, Type conclusionType);
+	InferenceStep visit(LetTerm letTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
 
 	/**
 	 * Returns an {@link edu.kit.typicalc.model.step.ConstStep} suiting the given constant
@@ -61,7 +61,7 @@ public interface TermVisitorTree {
 	 * 					of the returned inference step will be assigned
 	 * @return an {@link edu.kit.typicalc.model.step.ConstStep}
 	 */
-	InferenceStep visit(ConstTerm constTerm, List<TypeAssumption> typeAssumptions, Type conclusionType);
+	InferenceStep visit(ConstTerm constTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
 
 	/**
 	 * Returns an {@link edu.kit.typicalc.model.step.VarStep} suiting the given variable (lambda term)
@@ -75,5 +75,5 @@ public interface TermVisitorTree {
 	 * 					of the returned inference step will be assigned
 	 * @return an {@link edu.kit.typicalc.model.step.VarStep}
 	 */
-	InferenceStep visit(VarTerm varTerm, List<TypeAssumption> typeAssumptions, Type conclusionType);
+	InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
 }

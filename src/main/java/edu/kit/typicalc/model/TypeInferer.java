@@ -32,6 +32,7 @@ public class TypeInferer implements TypeInfererInterface {
      * @param typeAssumptions the type assumptions to consider when generating the tree
      */
     protected TypeInferer(LambdaTerm lambdaTerm, Map<VarTerm, TypeAbstraction> typeAssumptions) {
+        // TODO: null checks
         tree = new Tree(typeAssumptions, lambdaTerm);
         // TODO: Abbrechen bei fehlgeschlagener let-Teilinferenz, evtl. getUnificationSteps() anpassen
 

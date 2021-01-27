@@ -1,6 +1,9 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.step.InferenceStep;
+import edu.kit.typicalc.model.step.StepFactory;
+import edu.kit.typicalc.model.step.StepFactoryDefault;
+import edu.kit.typicalc.model.step.StepFactoryWithLet;
 import edu.kit.typicalc.model.term.AbsTerm;
 import edu.kit.typicalc.model.term.AppTerm;
 import edu.kit.typicalc.model.term.ConstTerm;
@@ -10,9 +13,9 @@ import edu.kit.typicalc.model.term.TermVisitorTree;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
-import edu.kit.typicalc.model.type.TypeAssumption;
 import edu.kit.typicalc.model.type.TypeVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +27,13 @@ import java.util.Map;
  */
 public class Tree implements TermVisitorTree {
 
+    private final TypeVariableFactory typeVarFactory;
+    private final StepFactory stepFactory;
+
+    private final TypeVariable firstTypeVariable;
+    private final InferenceStep firstInferenceStep;
+    private final List<Constraint> constraints;
+
     /**
      * Initializes a new Tree representing the proof tree for the type inference of the given
      * lambda term considering the given type assumptions. The inference step structure
@@ -33,7 +43,7 @@ public class Tree implements TermVisitorTree {
      * @param lambdaTerm the lambda term to generate the tree for
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm) {
-        // TODO
+        this(typeAssumptions, lambdaTerm, new TypeVariableFactory());
     }
 
     /**
@@ -49,7 +59,14 @@ public class Tree implements TermVisitorTree {
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm,
                    TypeVariableFactory typeVariableFactory) {
-        // TODO
+        // TODO: null checks
+        this.typeVarFactory = typeVariableFactory;
+        this.constraints = new ArrayList<>();
+
+        this.stepFactory = lambdaTerm.hasLet() ? new StepFactoryWithLet() : new StepFactoryDefault();
+
+        this.firstTypeVariable = typeVarFactory.nextTypeVariable();
+        this.firstInferenceStep = lambdaTerm.accept(this, typeAssumptions, firstTypeVariable);
     }
 
     /**
@@ -60,8 +77,7 @@ public class Tree implements TermVisitorTree {
      * @return the first inference step of the tree
      */
     protected InferenceStep getFirstInferenceStep() {
-        return null;
-        // TODO;
+        return firstInferenceStep;
     }
 
     /**
@@ -70,8 +86,7 @@ public class Tree implements TermVisitorTree {
      * @return the first type variable
      */
     protected TypeVariable getFirstTypeVariable() {
-        return null;
-        // TODO;
+        return firstTypeVariable;
     }
 
     /**
@@ -81,32 +96,31 @@ public class Tree implements TermVisitorTree {
      * @return the constraint list of the tree
      */
     protected List<Constraint> getConstraints() {
-        return null;
-        // TODO
+        return constraints;
     }
 
     @Override
-    public InferenceStep visit(AppTerm appTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+    public InferenceStep visit(AppTerm appTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         return null; // TODO
     }
 
     @Override
-    public InferenceStep visit(AbsTerm absTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+    public InferenceStep visit(AbsTerm absTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         return null; // TODO
     }
 
     @Override
-    public InferenceStep visit(LetTerm letTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+    public InferenceStep visit(LetTerm letTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         return null; // TODO
     }
 
     @Override
-    public InferenceStep visit(ConstTerm constTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+    public InferenceStep visit(ConstTerm constTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         return null; // TODO
     }
 
     @Override
-    public InferenceStep visit(VarTerm varTerm, List<TypeAssumption> typeAssumptions, Type conclusionType) {
+    public InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         return null; // TODO
     }
 }
