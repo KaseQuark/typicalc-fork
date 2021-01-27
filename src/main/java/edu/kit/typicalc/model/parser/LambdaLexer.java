@@ -66,7 +66,7 @@ public class LambdaLexer {
                 return new Result<>(t);
             case '\\':
             case 'λ':
-                t = new Token(TokenType.LAMBDA, c+"", pos);
+                t = new Token(TokenType.LAMBDA, c + "", pos);
                 advance();
                 return new Result<>(t);
             default:

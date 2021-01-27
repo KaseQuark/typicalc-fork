@@ -12,13 +12,13 @@ import com.vaadin.flow.i18n.I18NProvider;
 
 @Component
 /**
- * Provides a simple implementation of the I18NProvider. 
+ * Provides a simple implementation of the I18NProvider.
  * Allows for multiple languages and retrieving static Strings from .property-files.
  */
 public class TypicalcI18NProvider implements I18NProvider {
-    
+
     private static final long serialVersionUID = 8261479587838699070L;
-    
+
     /**
      * Prefix of all .property-files
      */
@@ -31,12 +31,12 @@ public class TypicalcI18NProvider implements I18NProvider {
 
     @Override
     public String getTranslation(String key, Locale locale, Object... params) {
-        if(key == null) {
+        if (key == null) {
             return StringUtils.EMPTY;
         }
-        
+
         String translation;
-        
+
         try {
             final ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PREFIX, locale);
             translation = bundle.getString(key);
@@ -44,7 +44,7 @@ public class TypicalcI18NProvider implements I18NProvider {
             throw new IllegalStateException("this should never happen:"
                     + " either an invalid locale is set or an invalid key is provided.");
         }
-        
+
         return translation;
     }
 

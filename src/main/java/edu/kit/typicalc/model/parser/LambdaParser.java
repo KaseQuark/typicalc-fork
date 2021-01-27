@@ -27,7 +27,7 @@ public class LambdaParser {
      */
     private Token token;
 
-    private static final Set<TokenType> atomStartTokens
+    private static final Set<TokenType> ATOM_START_TOKENS
             = EnumSet.of(TokenType.VARIABLE, TokenType.NUMBER, TokenType.TRUE,
             TokenType.FALSE, TokenType.LP);
 
@@ -97,11 +97,11 @@ public class LambdaParser {
         nextToken();
         Result<VarTerm, ParseError> var = parseVar();
         if (!expect(TokenType.DOT)) {
-            // TODO
+            return new Result<>(null, ParseError.UNEXPECTED_TOKEN);
         }
         Result<LambdaTerm, ParseError> body = parseTerm();
         // TODO: Fehlerbehandlung
-        return new Result(new AbsTerm(var.unwrap(), body.unwrap()));
+        return new Result<>(new AbsTerm(var.unwrap(), body.unwrap()));
     }
 
     /**
@@ -110,7 +110,7 @@ public class LambdaParser {
      */
     private Result<LambdaTerm, ParseError> parseApplication() {
         LambdaTerm left = parseAtom().unwrap(); // TODO: Fehlerbehandlung
-        while (atomStartTokens.contains(token.getType())) {
+        while (ATOM_START_TOKENS.contains(token.getType())) {
             LambdaTerm atom = parseAtom().unwrap(); // TODO: Fehlerbehandlung
             left = new AppTerm(left, atom);
         }

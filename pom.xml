@@ -163,7 +163,6 @@
                     <configLocation>${project.build.directory}/../src/test/resources/checkstyle.xml</configLocation>
                     <failOnViolation>true</failOnViolation>
                     <violationSeverity>warning</violationSeverity>
-                    <sourceDirectories>${project.build.directory}/../src/main/java</sourceDirectories>
                 </configuration>
             </plugin>
         </plugins>
