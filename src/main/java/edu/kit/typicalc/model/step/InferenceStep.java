@@ -16,6 +16,3 @@ public abstract class InferenceStep {
     public abstract void accept(StepVisitor stepVisitor);
 
 }
-
-
-

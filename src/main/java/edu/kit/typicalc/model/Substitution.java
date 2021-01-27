@@ -1,5 +1,8 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.type.Type;
+import edu.kit.typicalc.model.type.TypeVariable;
+
 /**
  * A substitution specifies that some type should be replaced by a different type.
  */

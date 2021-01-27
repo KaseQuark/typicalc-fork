@@ -1,5 +1,7 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.type.TypeVariable;
+
 /**
  * Provides unique type variables on demand.
  */

@@ -1,6 +1,11 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.term.LambdaTerm;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.TypeAbstraction;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Instances of this subclass of TypeInferer are used to execute the sub-inference starting in let steps.
