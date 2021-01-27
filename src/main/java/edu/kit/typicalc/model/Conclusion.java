@@ -13,6 +13,10 @@ import java.util.Map;
  */
 public class Conclusion {
 
+    private final Map<VarTerm, TypeAbstraction> typeAssumptions;
+    private final LambdaTerm lambdaTerm;
+    private final Type type;
+
     /**
      * Initializes a new Conclusion with the given type assumptions, lambda term and type.
      *
@@ -21,30 +25,30 @@ public class Conclusion {
      * @param type the type assigned to the lambda term in the conclusion
      */
     protected Conclusion(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm, Type type) {
-        // TODO
+        // TODO: null checks?
+        this.typeAssumptions = typeAssumptions;
+        this.lambdaTerm = lambdaTerm;
+        this.type = type;
     }
 
     /**
      * @return the type assumptions used in the conclusion
      */
     public Map<VarTerm, TypeAbstraction> getTypeAssumptions() {
-        return null;
-        // TODO
+        return typeAssumptions;
     }
 
     /**
      * @return the lambda term in the conclusion
      */
     public LambdaTerm getLambdaTerm() {
-        return null;
-        // TODO
+        return lambdaTerm;
     }
 
     /**
      * @return the type assigned to the lambda term in the conclusion
      */
     public Type getType() {
-        return null;
-        // TODO
+        return type;
     }
 }
