@@ -17,6 +17,8 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
+import edu.kit.typicalc.model.TypeInfererInterface;
+import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 
 import java.util.Optional;
@@ -26,7 +28,7 @@ import java.util.Optional;
  */
 @CssImport("./styles/views/main/main-view.css")
 @JsModule("./styles/shared-styles.js")
-public class MainViewImpl extends AppLayout {
+public class MainViewImpl extends AppLayout implements MainView {
 
     private final Tabs menu;
     private H1 viewTitle;
@@ -102,5 +104,15 @@ public class MainViewImpl extends AppLayout {
 
     private String getCurrentPageTitle() {
         return getContent().getClass().getAnnotation(PageTitle.class).value();
+    }
+
+    @Override
+    public void setTypeInferenceView(TypeInfererInterface typeInferer) {
+        // TODO Auto-generated method stub
+    }
+
+    @Override
+    public void displayError(ParseError error) {
+        // TODO Auto-generated method stub
     }
 }
