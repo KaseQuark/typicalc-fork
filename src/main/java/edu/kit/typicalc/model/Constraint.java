@@ -6,6 +6,10 @@ import edu.kit.typicalc.model.type.Type;
  * Constrains two types to be equal.
  */
 public class Constraint {
+
+    private final Type a;
+    private final Type b;
+
     /**
      * Creates a new constraint using the two types.
      *
@@ -13,23 +17,23 @@ public class Constraint {
      * @param b second type
      */
     public Constraint(Type a, Type b) {
-        // TODO
+        // TODO: null checks?
+        this.a = a;
+        this.b = b;
     }
 
     /**
      * @return the first type
      */
     public Type getFirstType() {
-        return null;
-        // TODO
+        return a;
     }
 
     /**
      * @return the second type
      */
     public Type getSecondType() {
-        return null;
-        // TODO
+        return b;
     }
 
 }
