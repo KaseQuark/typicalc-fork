@@ -1,5 +1,7 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.step.InferenceStep;
+
 import java.util.List;
 
 /**

@@ -17,7 +17,7 @@ import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
-import edu.kit.typicalc.view.content.type_inference_content.TypeInferenceView;
+import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 
 import java.util.Optional;
 

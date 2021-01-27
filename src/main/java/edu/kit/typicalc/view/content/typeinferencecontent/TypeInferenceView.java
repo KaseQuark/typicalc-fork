@@ -1,7 +1,6 @@
-package edu.kit.typicalc.view.content.type_inference_content;
+package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -11,7 +10,6 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 
 @Route(value = "visualize", layout = MainViewImpl.class)
 @PageTitle("TypeInferenceView")
-@CssImport("./styles/views/typeinferenceview/type-inference-view.css")
 public class TypeInferenceView extends HorizontalLayout {
 
     private TextField name;
