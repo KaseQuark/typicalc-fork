@@ -1,6 +1,13 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.step.InferenceStep;
+import edu.kit.typicalc.model.term.LambdaTerm;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.Type;
+import edu.kit.typicalc.model.type.TypeAbstraction;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * The type inferer is responsible for the whole type inference of a given lambda term, taking

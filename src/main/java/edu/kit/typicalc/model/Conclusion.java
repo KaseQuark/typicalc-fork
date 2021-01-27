@@ -1,5 +1,12 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.term.LambdaTerm;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.Type;
+import edu.kit.typicalc.model.type.TypeAbstraction;
+
+import java.util.Map;
+
 /**
  * Models the conclusion of an inference rule and consists of a list of type assumptions, a lambda term and a type.
  * This class is used in inference steps to represent the conclusion of that specific application of the inference rule.

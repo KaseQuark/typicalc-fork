@@ -1,6 +1,13 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.step.InferenceStep;
+import edu.kit.typicalc.model.term.LambdaTerm;
+import edu.kit.typicalc.model.term.TermVisitor;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.TypeAbstraction;
+
 import java.util.List;
+import java.util.Map;
 
 /**
  * Models the proof tree formed when the type of a lambda term is inferred.

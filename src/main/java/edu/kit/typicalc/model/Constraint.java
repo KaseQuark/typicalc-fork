@@ -1,5 +1,7 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.type.Type;
+
 /**
  * Constrains two types to be equal.
  */

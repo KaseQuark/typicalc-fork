@@ -1,5 +1,8 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.type.Type;
+import edu.kit.typicalc.model.type.TypeVariable;
+
 import java.util.List;
 
 /**
