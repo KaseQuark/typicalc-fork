@@ -50,7 +50,7 @@
             <snapshots>
                 <enabled>false</enabled>
             </snapshots>
-        </pluginRepository> 
+        </pluginRepository>
     </pluginRepositories>
 
     <dependencyManagement>
