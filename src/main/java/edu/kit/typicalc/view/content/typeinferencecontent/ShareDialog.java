@@ -14,7 +14,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      * to the String that is passed as corresponding parameter.
      * @param url a permalink to share with other users
      * @param latexPackages the needed LaTeX-packages to use the displayed mathmatics
-     * in other LaTeX documents. Should be in the form „\usepackage<package>“
+     * in other LaTeX documents. Should be in the form „\\usepackage<package>“
      * @param latexCode LaTeX code for users to copy into their own LaTeX document(s)
      */
     protected ShareDialog(String url, String latexPackages, String latexCode) {
