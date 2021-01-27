@@ -2,19 +2,27 @@ package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.Notification.Position;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
+import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.RouterLink;
 import edu.kit.typicalc.model.TypeInfererInterface;
@@ -32,7 +40,7 @@ public class MainViewImpl extends AppLayout implements MainView {
 
     private final Tabs menu;
     private H1 viewTitle;
-
+    
     public MainViewImpl() {
         setDrawerOpened(false);
         addToNavbar(true, createHeaderContent());
@@ -107,12 +115,19 @@ public class MainViewImpl extends AppLayout implements MainView {
     }
 
     @Override
-    public void setTypeInferenceView(TypeInfererInterface typeInferer) {
-        // TODO Auto-generated method stub
+    public void setTypeInferenceView(final TypeInfererInterface typeInferer) {
+        this.getUI().get().navigate(TypeInferenceView.class, typeInferer);
     }
 
     @Override
-    public void displayError(ParseError error) {
-        // TODO Auto-generated method stub
+    public void displayError(final ParseError error) {
+        final Span errorText = new Span(getTranslation("root." + error.toString()));
+        final Notification errorNotification = new Notification();
+        final Button closeButton = new Button(getTranslation("root.close"), event -> errorNotification.close());
+        
+        errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+        errorNotification.add(errorText, closeButton);
+        errorNotification.setPosition(Position.MIDDLE);
+        errorNotification.open();
     }
 }
