@@ -90,44 +90,44 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     }
 
     @Override
-    public void visitAbsStepDefault(AbsStepDefault absD) {
+    public void visit(AbsStepDefault absD) {
         generateConclusion(absD, LABEL_ABS, UIC);
 
 
     }
 
     @Override
-    public void visitAbsStepWithLet(AbsStepWithLet absL) {
+    public void visit(AbsStepWithLet absL) {
         generateConclusion(absL, LABEL_ABS, UIC);
 
     }
 
     @Override
-    public void visitAppStepDefault(AppStepDefault appD) {
+    public void visit(AppStepDefault appD) {
         generateConclusion(appD, LABEL_APP, UIC);
 
     }
 
     @Override
-    public void visitConstStepDefault(ConstStepDefault constD) {
+    public void visit(ConstStepDefault constD) {
         generateConclusion(constD, LABEL_CONST, UIC);
 
     }
 
     @Override
-    public void visitVarStepDefault(VarStepDefault varD) {
+    public void visit(VarStepDefault varD) {
         generateConclusion(varD, LABEL_VAR, UIC);
 
     }
 
     @Override
-    public void visitVarStepWithLet(VarStepWithLet varL) {
+    public void visit(VarStepWithLet varL) {
         generateConclusion(varL, LABEL_VAR, UIC);
 
     }
 
     @Override
-    public void visitLetStepDefault(LetStepDefault letD) {
+    public void visit(LetStepDefault letD) {
         generateConclusion(letD, LABEL_LET, UIC);
 
     }
