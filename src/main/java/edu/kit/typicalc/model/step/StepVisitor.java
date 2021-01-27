@@ -37,7 +37,7 @@ public interface StepVisitor {
 
     /**
      * Visits a VarStepWithLet.
-     * @param varD the VarStepWithLet to visit
+     * @param varL the VarStepWithLet to visit
      */
     void visitVarStepWithLet(VarStepWithLet varL);
 

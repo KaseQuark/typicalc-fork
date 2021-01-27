@@ -3,9 +3,9 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
-import edu.kit.typicalc.model.step.InferenceStep;
-import edu.kit.typicalc.model.step.StepVisitor;
+import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.TermVisitor;
+import edu.kit.typicalc.model.type.TypeVisitor;
 
 /**
  * Generates LaTeX-code from a TypeInfererInterface object. Two mostly independent pie-
@@ -122,13 +122,13 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
     @Override
     public void visitVarStepWithLet(VarStepWithLet varL) {
-        generateConclusion(varL, LABEL_ABS, UIC);
+        generateConclusion(varL, LABEL_VAR, UIC);
 
     }
 
     @Override
     public void visitLetStepDefault(LetStepDefault letD) {
-        generateConclusion(letD, LABEL_ABS, UIC);
+        generateConclusion(letD, LABEL_LET, UIC);
 
     }
 }
