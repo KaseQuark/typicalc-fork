@@ -2,7 +2,15 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 
 import edu.kit.typicalc.model.TypeInfererInterface;
+import edu.kit.typicalc.model.step.AbsStepDefault;
+import edu.kit.typicalc.model.step.AbsStepWithLet;
+import edu.kit.typicalc.model.step.AppStepDefault;
+import edu.kit.typicalc.model.step.ConstStepDefault;
+import edu.kit.typicalc.model.step.LetStepDefault;
 import edu.kit.typicalc.model.step.StepVisitor;
+import edu.kit.typicalc.model.step.VarStepDefault;
+import edu.kit.typicalc.model.term.TermVisitor;
+import edu.kit.typicalc.model.type.TypeVisitor;
 
 /**
  * Generates LaTeX-code from a TypeInfererInterface object. Two mostly independent pie-
