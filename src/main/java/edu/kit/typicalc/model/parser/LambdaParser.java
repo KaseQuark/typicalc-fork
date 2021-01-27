@@ -84,10 +84,10 @@ public class LambdaParser {
         switch (token.getType()) {
             case LAMBDA:
                 Result<AbsTerm, ParseError> abs = parseAbstraction();
-                return new Result<>(abs.unwrap(), abs.unwrapError());
+                return new Result<>(abs.unwrap(), abs.getError());
             case LET:
                 Result<LetTerm, ParseError> let = parseLet();
-                return new Result<>(let.unwrap(), let.unwrapError());
+                return new Result<>(let.unwrap(), let.getError());
             default:
                 return parseApplication();
         }
@@ -136,7 +136,7 @@ public class LambdaParser {
         switch (token.getType()) {
             case VARIABLE:
                 Result<VarTerm, ParseError> var = parseVar();
-                return new Result<>(var.unwrap(), var.unwrapError());
+                return new Result<>(var.unwrap(), var.getError());
             case NUMBER:
                 String number = token.getText();
                 int n;

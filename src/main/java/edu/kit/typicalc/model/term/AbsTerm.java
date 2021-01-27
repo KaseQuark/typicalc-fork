@@ -2,21 +2,46 @@ package edu.kit.typicalc.model.term;
 
 import java.util.Objects;
 
+/**
+ * Representation of an abstraction term with its two sub-lambda terms.
+ */
 public class AbsTerm extends LambdaTerm {
 	private final VarTerm var;
 	private final LambdaTerm body;
 
+	/**
+	 * Initializes a new abstraction term with the variable bound
+	 * by the abstraction and the lambda term of the abstraction.
+	 * @param var the variable bound by the abstraction
+	 * @param body the lambda term of the abstraction
+	 */
 	public AbsTerm(VarTerm var, LambdaTerm body) {
 		this.var = var;
 		this.body = body;
 	}
 
+	/**
+	 * @return the variable of this abstraction
+	 */
 	public VarTerm getVariable() {
 		return var;
 	}
 
+	/**
+	 * @return the function body of this abstraction
+	 */
 	public LambdaTerm getInner() {
 		return body;
+	}
+
+	@Override
+	public boolean hasLet() {
+		return body.hasLet();
+	}
+
+	@Override
+	public void accept(TermVisitor termVisitor) {
+		termVisitor.visit(this);
 	}
 
 	@Override

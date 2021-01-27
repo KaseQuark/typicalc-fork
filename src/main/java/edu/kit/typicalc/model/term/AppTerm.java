@@ -20,6 +20,16 @@ public class AppTerm extends LambdaTerm {
 	}
 
 	@Override
+	public boolean hasLet() {
+		return left.hasLet() || right.hasLet();
+	}
+
+	@Override
+	public void accept(TermVisitor termVisitor) {
+		termVisitor.visit(this);
+	}
+
+	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
 			return true;
