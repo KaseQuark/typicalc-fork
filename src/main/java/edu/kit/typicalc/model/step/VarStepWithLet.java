@@ -11,8 +11,8 @@ public class VarStepWithLet extends VarStep {
      * @param constraint the constraint added in this step
      * @param typeAbstractionInPremise the type abstraction in the premise of this step
      */
-    public VarStepWithLet(Conclusion conclusion, Constraint constraint, TypeAbstraction typeAbstractionInPremise) {
-        super(conclusion, constraint, typeAbstractionInPremise);
+    public VarStepWithLet(TypeAbstraction typeAbstractionInPremise, Conclusion conclusion, Constraint constraint) {
+        super(typeAbstractionInPremise, conclusion, constraint);
     }
 
     /**

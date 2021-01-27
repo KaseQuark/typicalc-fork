@@ -11,8 +11,8 @@ public class VarStepDefault extends VarStep {
      * @param constraint the constraint added in this step
      * @param typeAbstractionInPremise the type abstraction in the premise of this step
      */
-    public VarStepDefault(Conclusion conclusion, Constraint constraint, TypeAbstraction typeAbstractionInPremise) {
-        super(conclusion, constraint, typeAbstractionInPremise);
+    public VarStepDefault(TypeAbstraction typeAbstractionInPremise, Conclusion conclusion, Constraint constraint) {
+        super(typeAbstractionInPremise, conclusion, constraint);
     }
 
     /**

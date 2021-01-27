@@ -17,7 +17,7 @@ public abstract class VarStep extends InferenceStep {
      * @param constraint the constraint added in this step
      * @param typeAbstractionInPremise the type abstraction in the premise of this step
      */
-    protected VarStep(Conclusion conclusion, Constraint constraint, TypeAbstraction typeAbstractionInPremise) {
+    protected VarStep(TypeAbstraction typeAbstractionInPremise, Conclusion conclusion, Constraint constraint) {
         super(conclusion, constraint);
         this.typeAbstractionInPremise = typeAbstractionInPremise;
     }
