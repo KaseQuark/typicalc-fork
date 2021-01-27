@@ -1,3 +1,4 @@
 build:
   script:
+    - mvn -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp checkstyle:check
     - mvn -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp test

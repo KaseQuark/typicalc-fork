@@ -10,14 +10,15 @@
         <property name="tabWidth" value="4"/>
         <module name="JavadocType">
             <property name="scope" value="package"/>
-            <!-->property name="allowUndeclaredRTE" value="true"/-->
-            <!-->property name="suppressLoadErrors" value="true"/-->
+            <property name="severity" value="info"/>
         </module>
         <module name="JavadocMethod">
             <property name="scope" value="package"/>
+            <property name="severity" value="info"/>
         </module>
         <module name="JavadocVariable">
             <property name="scope" value="public"/>
+            <property name="severity" value="info"/>
         </module>
         <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
@@ -27,7 +28,6 @@
         <module name="ParameterName"/>
         <module name="StaticVariableName"/>
         <module name="TypeName"/>
-        <module name="AvoidStarImport"/>
         <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
