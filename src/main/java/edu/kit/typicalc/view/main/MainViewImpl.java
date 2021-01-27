@@ -34,7 +34,7 @@ import java.util.Optional;
 /**
  * The main view is a top-level placeholder for other views.
  */
-@CssImport("./styles/views/main/main-view.css")
+@CssImport("./styles/view/main/main-view.css")
 @JsModule("./styles/shared-styles.js")
 public class MainViewImpl extends AppLayout implements MainView {
 
@@ -83,13 +83,9 @@ public class MainViewImpl extends AppLayout implements MainView {
         tabs.setOrientation(Tabs.Orientation.VERTICAL);
         tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL);
         tabs.setId("tabs");
-        tabs.add(createMenuItems());
         return tabs;
     }
 
-    private Component[] createMenuItems() {
-        return new Tab[]{createTab("TypeInferenceView", TypeInferenceView.class)};
-    }
 
     private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
         final Tab tab = new Tab();
@@ -116,7 +112,7 @@ public class MainViewImpl extends AppLayout implements MainView {
 
     @Override
     public void setTypeInferenceView(final TypeInfererInterface typeInferer) {
-        this.getUI().get().navigate(TypeInferenceView.class, typeInferer);
+        this.getUI().ifPresent(ui -> ui.navigate(TypeInferenceView.class, typeInferer));
     }
 
     @Override
@@ -124,7 +120,7 @@ public class MainViewImpl extends AppLayout implements MainView {
         final Span errorText = new Span(getTranslation("root." + error.toString()));
         final Notification errorNotification = new Notification();
         final Button closeButton = new Button(getTranslation("root.close"), event -> errorNotification.close());
-        
+
         errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
         errorNotification.add(errorText, closeButton);
         errorNotification.setPosition(Position.MIDDLE);
