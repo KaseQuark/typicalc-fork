@@ -1,8 +1,11 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
 
+import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
+import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.step.StepVisitor;
+import edu.kit.typicalc.model.term.TermVisitor;
 
 /**
  * Generates LaTeX-code from a TypeInfererInterface object. Two mostly independent pie-
@@ -13,12 +16,38 @@ import edu.kit.typicalc.model.step.StepVisitor;
  */
 public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
+    private static final String LABEL_ABS = "\\LeftLabel{ABS}";
+    private static final String LABEL_APP = "\\LeftLabel{APP}";
+    private static final String LABEL_CONST = "\\LeftLabel{CONST}";
+    private static final String LABEL_VAR = "\\LeftLabel{VAR}";
+    private static final String LABEL_LET = "\\LeftLabel{LET}";
+
+    private static final String UIC = "\\UnaryInfC";
+    private static final String BIC = "\\BinaryInfC";
+    private static final String AXC = "\\AxiomC";
+
+    private static final String TREE_BEGIN = "\\begin{prooftree}";
+    private static final String TREE_END = "\\end{prooftree}";
+
+
+
+
+    private final StringBuilder tree;
+    private final boolean stepLabels;
+
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
      *
      * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
      */
     protected LatexCreator(TypeInfererInterface typeInferer) {
+        this(typeInferer, true);
+    }
+
+    protected LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
+        this.tree = new StringBuilder();
+        this.stepLabels = stepLabels;
+
         typeInferer.getFirstInferenceStep().accept(this);
     }
 
@@ -43,39 +72,63 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         return null;
     }
 
+    private String conclusionToLatex(Conclusion conclusion) {
+        // todo implement
+        return "";
+    }
+
+    private void generateConclusion(InferenceStep step, String label, String command) {
+        StringBuilder conclusion = new StringBuilder();
+        if (stepLabels) {
+            conclusion.append(label);
+            conclusion.append(System.lineSeparator());
+        }
+        conclusion.append(command);
+        conclusion.append(conclusionToLatex(step.getConclusion()));
+        conclusion.append(System.lineSeparator());
+        tree.insert(0, conclusion);
+    }
 
     @Override
     public void visitAbsStepDefault(AbsStepDefault absD) {
+        generateConclusion(absD, LABEL_ABS, UIC);
+
 
     }
 
     @Override
     public void visitAbsStepWithLet(AbsStepWithLet absL) {
+        generateConclusion(absL, LABEL_ABS, UIC);
 
     }
 
     @Override
     public void visitAppStepDefault(AppStepDefault appD) {
+        generateConclusion(appD, LABEL_APP, UIC);
 
     }
 
     @Override
     public void visitConstStepDefault(ConstStepDefault constD) {
+        generateConclusion(constD, LABEL_CONST, UIC);
 
     }
 
     @Override
     public void visitVarStepDefault(VarStepDefault varD) {
+        generateConclusion(varD, LABEL_VAR, UIC);
 
     }
 
     @Override
-    public void visitVarStepWithLet(AbsStepDefault varD) {
+    public void visitVarStepWithLet(VarStepWithLet varL) {
+        generateConclusion(varL, LABEL_ABS, UIC);
 
     }
 
     @Override
     public void visitLetStepDefault(LetStepDefault letD) {
+        generateConclusion(letD, LABEL_ABS, UIC);
 
     }
 }
