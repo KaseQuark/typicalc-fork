@@ -11,6 +11,7 @@ import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.model.type.TypeAssumption;
+import edu.kit.typicalc.model.type.TypeVariable;
 
 import java.util.List;
 import java.util.Map;
@@ -59,6 +60,16 @@ public class Tree implements TermVisitorTree {
      * @return the first inference step of the tree
      */
     protected InferenceStep getFirstInferenceStep() {
+        return null;
+        // TODO;
+    }
+
+    /**
+     * Returns the first type variable the original lambda term was assigned in the first inference step.
+     *
+     * @return the first type variable
+     */
+    protected TypeVariable getFirstTypeVariable() {
         return null;
         // TODO;
     }
