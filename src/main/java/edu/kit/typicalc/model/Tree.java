@@ -11,6 +11,7 @@ import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.TermVisitorTree;
 import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.FunctionType;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.model.type.TypeVariable;
@@ -101,7 +102,18 @@ public class Tree implements TermVisitorTree {
 
     @Override
     public InferenceStep visit(AppTerm appTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
-        return null; // TODO
+        Type leftType = typeVarFactory.nextTypeVariable();
+        InferenceStep leftPremise = appTerm.getFunction().accept(this, typeAssumptions, leftType);
+
+        Type rightType = typeVarFactory.nextTypeVariable();
+        InferenceStep rightPremise = appTerm.getParameter().accept(this, typeAssumptions, rightType);
+
+        FunctionType function = new FunctionType(rightType, conclusionType);
+        Constraint newConstraint = new Constraint(leftType, function);
+        constraints.add(newConstraint);
+
+        Conclusion conclusion = new Conclusion(typeAssumptions, appTerm, conclusionType);
+        return stepFactory.createAppStep(leftPremise, rightPremise, conclusion, newConstraint);
     }
 
     @Override
@@ -115,8 +127,7 @@ public class Tree implements TermVisitorTree {
     }
 
     @Override
-    public InferenceStep visit(ConstTerm constTerm, Map<VarTerm,
-            TypeAbstraction> typeAssumptions, Type conclusionType) {
+    public InferenceStep visit(ConstTerm constant, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         return null; // TODO
     }
 

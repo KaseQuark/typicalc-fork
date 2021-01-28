@@ -3,9 +3,13 @@ package edu.kit.typicalc.model.parser;
 import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.util.Result;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 /**
  * This class lexes a term given as String into tokens.
- * Tokens are lexed one by one as requested by the parser.
+ * Tokens are lexed all at once (to catch errors early),
+ * and passed to the parser on demand.
  */
 public class LambdaLexer {
     /**
@@ -16,6 +20,7 @@ public class LambdaLexer {
      * current position in the term
      */
     private int pos = 0;
+    private Result<Deque<Token>, ParseError> result;
 
     /**
      * Constructs a lexer that lexes the given term
@@ -23,6 +28,24 @@ public class LambdaLexer {
      */
     public LambdaLexer(String term) {
         this.term = term;
+        tokenize();
+    }
+
+    private void tokenize() {
+        Deque<Token> tokens = new ArrayDeque<>();
+        while (true) {
+            Result<Token, ParseError> token = parseNextToken();
+            if (token.isError()) {
+                result = new Result<>(null, token.unwrapError());
+                return;
+            }
+            Token value = token.unwrap();
+            tokens.add(value);
+            if (value.getType() == TokenType.EOF) {
+                break;
+            }
+        }
+        result = new Result<>(tokens);
     }
 
     /**
@@ -33,10 +56,24 @@ public class LambdaLexer {
     }
 
     /**
-     * Lexes and returns the next token.
+     * Returns the next token and advances the lexer position.
      * @return the next token
      */
     public Result<Token, ParseError> nextToken() {
+        if (result.isError()) {
+            return new Result<>(null, result.unwrapError());
+        }
+        Deque<Token> tokens = result.unwrap();
+        if (!tokens.isEmpty()) {
+            Token token = tokens.removeFirst();
+            return new Result<>(token);
+        } else {
+            return new Result<>(new Token(TokenType.EOF, "", 0));
+        }
+
+    }
+
+    public Result<Token, ParseError> parseNextToken() {
         while (pos < term.length() && Character.isWhitespace(term.charAt(pos))) {
             advance();
         }
