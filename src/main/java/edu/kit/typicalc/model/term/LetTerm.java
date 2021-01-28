@@ -5,6 +5,7 @@ import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Representation of a let term with its variable, the lambda term assigned
@@ -61,5 +62,24 @@ public class LetTerm extends LambdaTerm {
 	 */
 	public LambdaTerm getInner() {
 		return body;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		LetTerm letTerm = (LetTerm) o;
+		return Objects.equals(variable, letTerm.variable)
+				&& Objects.equals(definition, letTerm.definition)
+				&& Objects.equals(body, letTerm.body);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(variable, definition, body);
 	}
 }

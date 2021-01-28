@@ -4,8 +4,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.kit.typicalc.model.term.AbsTerm;
 import edu.kit.typicalc.model.term.AppTerm;
+import edu.kit.typicalc.model.term.ConstTerm;
+import edu.kit.typicalc.model.term.IntegerTerm;
 import edu.kit.typicalc.model.term.LambdaTerm;
+import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.NamedType;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
@@ -28,5 +32,21 @@ class LambdaParserTest {
 		assertEquals(parser.parse().unwrap(),
 				new AppTerm(new AbsTerm(new VarTerm("x"), new VarTerm("x")),
 						new AbsTerm(new VarTerm("x"), new VarTerm("x"))));
+	}
+	@Test
+	void letTerm() {
+		LambdaParser parser = new LambdaParser("let id = λx.x in id 1");
+		assertEquals(parser.parse().unwrap(),
+				new LetTerm(
+						new VarTerm("id"),
+						new AbsTerm(
+								new VarTerm("x"),
+								new VarTerm("x")
+						),
+						new AppTerm(
+								new VarTerm("id"),
+								new IntegerTerm(1)
+						)
+				));
 	}
 }
