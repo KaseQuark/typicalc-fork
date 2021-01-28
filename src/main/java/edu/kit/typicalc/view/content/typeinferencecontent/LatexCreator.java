@@ -24,6 +24,8 @@ import edu.kit.typicalc.model.type.TypeVisitor;
  */
 public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
+    private static final String EQUAL_SIGN = "=";
+
     private static final String LABEL_ABS = "\\LeftLabel{ABS}";
     private static final String LABEL_APP = "\\LeftLabel{APP}";
     private static final String LABEL_CONST = "\\LeftLabel{CONST}";
@@ -42,6 +44,11 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
     private final StringBuilder tree;
     private final boolean stepLabels;
+
+    /**
+     * Needed for typeVisitor methods
+     */
+    private String typeBuffer;
 
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
@@ -85,7 +92,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         return "";
     }
 
-    private void generateConclusion(InferenceStep step, String label, String command) {
+    private StringBuilder generateConclusion(InferenceStep step, String label, String command) {
         StringBuilder conclusion = new StringBuilder();
         if (stepLabels) {
             conclusion.append(label);
@@ -94,51 +101,68 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         conclusion.append(command);
         conclusion.append(conclusionToLatex(step.getConclusion()));
         conclusion.append(System.lineSeparator());
-        tree.insert(0, conclusion);
+        return conclusion;
+    }
+
+    private StringBuilder generateConstraint(InferenceStep step) {
+        // todo implement
+        StringBuilder constraint = new StringBuilder();
+        step.getConstraint().getFirstType().accept(this);
+        String firstType = typeBuffer;
+        step.getConstraint().getSecondType().accept(this);
+        String secondType = typeBuffer;
+        constraint.append(firstType)
+                .append(EQUAL_SIGN)
+                .append(secondType)
+                .append(System.lineSeparator());
+        return constraint;
     }
 
     @Override
     public void visit(AbsStepDefault absD) {
-        generateConclusion(absD, LABEL_ABS, UIC);
-
-
+        tree.insert(0, generateConclusion(absD, LABEL_ABS, UIC));
+        absD.getPremise().accept(this);
     }
 
     @Override
     public void visit(AbsStepWithLet absL) {
-        generateConclusion(absL, LABEL_ABS, UIC);
-
+        tree.insert(0, generateConclusion(absL, LABEL_ABS, UIC));
+        absL.getPremise().accept(this);
     }
 
     @Override
     public void visit(AppStepDefault appD) {
-        generateConclusion(appD, LABEL_APP, UIC);
-
+        tree.insert(0, generateConclusion(appD, LABEL_APP, BIC));
+        appD.getPremise2().accept(this);
+        appD.getPremise1().accept(this);
     }
 
     @Override
     public void visit(ConstStepDefault constD) {
-        generateConclusion(constD, LABEL_CONST, UIC);
-
+        tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
+        // todo implement
     }
 
     @Override
     public void visit(VarStepDefault varD) {
-        generateConclusion(varD, LABEL_VAR, UIC);
-
+        tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
+        // todo implement
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
-        generateConclusion(varL, LABEL_VAR, UIC);
-
+        tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
+        // todo implement
     }
 
     @Override
     public void visit(LetStepDefault letD) {
-        generateConclusion(letD, LABEL_LET, UIC);
-
+        tree.insert(0, generateConclusion(letD, LABEL_LET, BIC));
+        letD.getPremise().accept(this);
+        // todo implement
     }
+
+
 
     @Override
     public void visit(AppTerm appTerm) {
@@ -164,6 +188,8 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     public void visit(ConstTerm constTerm) {
 
     }
+
+
 
     @Override
     public void visit(NamedType named) {
