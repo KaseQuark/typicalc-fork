@@ -71,25 +71,25 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
      */
     protected String getTree() {
         return null;
-    }
+    } // todo implement
 
     /**
      * @return the LaTeX-code for constraints nad unification
      */
     protected String getUnification() {
         return null;
-    }
+    } // todo implement
 
     /**
      * @return the packages needed for the LaTeX-code from getTree() and getUnification()to work
      */
     protected String getLatexPackages() {
         return null;
-    }
+    } // todo implement
 
     private String conclusionToLatex(Conclusion conclusion) {
         // todo implement
-        return "";
+        return "{some text}";
     }
 
     private StringBuilder generateConclusion(InferenceStep step, String label, String command) {
@@ -105,7 +105,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     }
 
     private StringBuilder generateConstraint(InferenceStep step) {
-        // todo implement
+        // todo implement maybe rename to addConstraint
         StringBuilder constraint = new StringBuilder();
         step.getConstraint().getFirstType().accept(this);
         String firstType = typeBuffer;
@@ -118,6 +118,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         return constraint;
     }
 
+    // todo use generateConstraint
     @Override
     public void visit(AbsStepDefault absD) {
         tree.insert(0, generateConclusion(absD, LABEL_ABS, UIC));
@@ -141,18 +142,27 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     public void visit(ConstStepDefault constD) {
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
         // todo implement
+        StringBuilder temp = new StringBuilder();
+        temp.append(AXC).append("{const default}");
+        tree.insert(0, temp);
     }
 
     @Override
     public void visit(VarStepDefault varD) {
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
         // todo implement
+        StringBuilder temp = new StringBuilder();
+        temp.append(AXC).append("{var default}");
+        tree.insert(0, temp);
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
         tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
         // todo implement
+        StringBuilder temp = new StringBuilder();
+        temp.append(AXC).append("{var with let}");
+        tree.insert(0, temp);
     }
 
     @Override
