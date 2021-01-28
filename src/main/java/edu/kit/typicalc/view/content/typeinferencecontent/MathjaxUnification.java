@@ -8,40 +8,39 @@ import com.vaadin.flow.component.template.Id;
 import edu.kit.typicalc.view.MathjaxAdapter;
 
 /**
- * Renders a tree from LaTeX using MathJax and allows for step-by-step-revealing for
- * proof trees that use the bussproofs package. Relies on MathjaxProofTreeJS to interact
- * with MathJax.
+ * Renders the constraints and unification from LaTeX using MathJax and allows step-by-
+ * step-revealing capabilities. Relies on MathjaxUnificationJS to interact with MathJax.
  */
-@Tag("tc-proof-tree")
-@JsModule("./src/mathjax-proof-tree.ts")
-public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
+@Tag("tc-unification")
+@JsModule("./src/mathjax-unification.ts")
+public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
     @Id("tc-content")
     private Div content;
 
     /**
-     * Creates a new HTML element that renders the proof tree and cuts it into steps.
-     * The latex String must consist of exactly one proof tree environment in order for
-     * this element to work. In other cases the expected behaviour is undefined.
+     * Creates a new HTML element that renders the constraints and unification and
+     * calculates the steps.
      * @param latex the LaTeX-String to render with MathJax
      */
-    public MathjaxProofTree(String latex) {
+    public MathjaxUnification(String latex) {
         content.add(latex);
     }
 
     @Override
     public int getStepCount() {
+        // todo implement
         return 0;
     }
 
     @Override
     public void showStep(int n) {
-
+        // todo implement
     }
 
     @Override
     public void scale(double newScaling) {
-
+        // todo implement
     }
 }
 

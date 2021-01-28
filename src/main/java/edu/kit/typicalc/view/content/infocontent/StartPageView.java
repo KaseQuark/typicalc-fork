@@ -7,6 +7,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxProofTree;
+import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxUnification;
 import edu.kit.typicalc.view.main.MainViewImpl;
 import edu.kit.typicalc.view.main.MathjaxDisplay;
 
@@ -21,8 +22,9 @@ public class StartPageView extends VerticalLayout {
     public StartPageView() {
         // todo implement correctly
         setId("start-page");
-        add(new MathjaxDisplay());
-        add(new MathjaxProofTree());
+        add(new MathjaxDisplay(getTranslation("abs-rule")));
+        add(new MathjaxUnification("\\(constraint test \\vdash \\)"));
+        add(new MathjaxProofTree(getTranslation("demo-tree")));
         sayHello = new Button("Say hello");
         add(sayHello);
     }
