@@ -6,6 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
+import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxProofTree;
 import edu.kit.typicalc.view.main.MainViewImpl;
 import edu.kit.typicalc.view.main.MathjaxDisplay;
 
@@ -21,6 +22,7 @@ public class StartPageView extends VerticalLayout {
         // todo implement correctly
         setId("start-page");
         add(new MathjaxDisplay());
+        add(new MathjaxProofTree());
         sayHello = new Button("Say hello");
         add(sayHello);
     }
