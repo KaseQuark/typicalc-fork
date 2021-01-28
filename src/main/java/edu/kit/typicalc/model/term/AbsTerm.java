@@ -4,8 +4,10 @@ import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Representation of an abstraction term with its two sub-lambda terms.
@@ -42,6 +44,13 @@ public class AbsTerm extends LambdaTerm {
     @Override
     public boolean hasLet() {
         return body.hasLet();
+    }
+
+    @Override
+    public Set<VarTerm> getFreeVariables() {
+        Set<VarTerm> set = new HashSet<>(this.body.getFreeVariables());
+        set.remove(this.var);
+        return set;
     }
 
     @Override

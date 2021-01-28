@@ -4,8 +4,7 @@ import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Representation of an application term consisting of a function and the parameter passed to it.
@@ -41,6 +40,13 @@ public class AppTerm extends LambdaTerm {
     @Override
     public boolean hasLet() {
         return left.hasLet() || right.hasLet();
+    }
+
+    @Override
+    public Set<VarTerm> getFreeVariables() {
+        Set<VarTerm> set = new HashSet<>(this.left.getFreeVariables());
+        set.addAll(this.right.getFreeVariables());
+        return set;
     }
 
     @Override

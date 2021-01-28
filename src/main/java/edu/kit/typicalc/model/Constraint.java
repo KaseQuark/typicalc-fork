@@ -17,7 +17,6 @@ public class Constraint {
      * @param b second type
      */
     public Constraint(Type a, Type b) {
-        // TODO: null checks?
         this.a = a;
         this.b = b;
     }

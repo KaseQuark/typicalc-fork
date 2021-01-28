@@ -4,8 +4,10 @@ import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Representation of a let term with its variable, the lambda term assigned
@@ -31,6 +33,14 @@ public class LetTerm extends LambdaTerm {
     @Override
     public boolean hasLet() {
         return true;
+    }
+
+    @Override
+    public Set<VarTerm> getFreeVariables() {
+        Set<VarTerm> set = new HashSet<>(this.body.getFreeVariables());
+        set.remove(this.variable);
+        set.addAll(this.definition.getFreeVariables());
+        return set;
     }
 
     @Override

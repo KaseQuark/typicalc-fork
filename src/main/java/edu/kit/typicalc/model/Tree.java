@@ -11,10 +11,7 @@ import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.TermVisitorTree;
 import edu.kit.typicalc.model.term.VarTerm;
-import edu.kit.typicalc.model.type.FunctionType;
-import edu.kit.typicalc.model.type.Type;
-import edu.kit.typicalc.model.type.TypeAbstraction;
-import edu.kit.typicalc.model.type.TypeVariable;
+import edu.kit.typicalc.model.type.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -45,7 +42,7 @@ public class Tree implements TermVisitorTree {
      * @param lambdaTerm the lambda term to generate the tree for
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm) {
-        this(typeAssumptions, lambdaTerm, new TypeVariableFactory());
+        this(typeAssumptions, lambdaTerm, new TypeVariableFactory(TypeVaribaleKind.TREE));
     }
 
     /**
@@ -61,7 +58,6 @@ public class Tree implements TermVisitorTree {
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm,
                    TypeVariableFactory typeVariableFactory) {
-        // TODO: null checks
         this.typeVarFactory = typeVariableFactory;
         this.constraints = new ArrayList<>();
 

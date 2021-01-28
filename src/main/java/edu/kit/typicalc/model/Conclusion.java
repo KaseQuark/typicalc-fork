@@ -25,7 +25,6 @@ public class Conclusion {
      * @param type the type assigned to the lambda term in the conclusion
      */
     protected Conclusion(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm, Type type) {
-        // TODO: null checks?
         this.typeAssumptions = typeAssumptions;
         this.lambdaTerm = lambdaTerm;
         this.type = type;

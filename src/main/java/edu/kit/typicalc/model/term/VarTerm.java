@@ -4,8 +4,7 @@ import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Representation of a variable term with its name.
@@ -32,6 +31,11 @@ public class VarTerm extends LambdaTerm {
     @Override
     public boolean hasLet() {
         return false;
+    }
+
+    @Override
+    public Set<VarTerm> getFreeVariables() {
+        return new HashSet<>(Collections.singletonList(this));
     }
 
     @Override

@@ -5,9 +5,12 @@ import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
+import edu.kit.typicalc.model.type.TypeVaribaleKind;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * The type inferer is responsible for the whole type inference of a given lambda term, taking
@@ -32,8 +35,10 @@ public class TypeInferer implements TypeInfererInterface {
      * @param typeAssumptions the type assumptions to consider when generating the tree
      */
     protected TypeInferer(LambdaTerm lambdaTerm, Map<VarTerm, TypeAbstraction> typeAssumptions) {
-        // TODO: null checks
-        tree = new Tree(typeAssumptions, lambdaTerm);
+        Map<VarTerm, TypeAbstraction> completeTypeAss = createAssForFreeVariables(lambdaTerm);
+        completeTypeAss.putAll(typeAssumptions);
+        tree = new Tree(completeTypeAss, lambdaTerm);
+
         // TODO: Abbrechen bei fehlgeschlagener let-Teilinferenz, evtl. getUnificationSteps() anpassen
 
         unification = new Unification(tree.getConstraints());
@@ -48,6 +53,18 @@ public class TypeInferer implements TypeInfererInterface {
 
         List<Substitution> substitutions = unification.getSubstitutions().getValue();
         typeInfResult = new TypeInferenceResult(substitutions, tree.getFirstTypeVariable());
+    }
+
+    private Map<VarTerm, TypeAbstraction> createAssForFreeVariables(LambdaTerm lambdaTerm) {
+        TypeVariableFactory typeVarFactory = new TypeVariableFactory(TypeVaribaleKind.GENERATED_TYPE_ASSUMPTION);
+        Set<VarTerm> freeVariables = lambdaTerm.getFreeVariables();
+
+        Map<VarTerm, TypeAbstraction> generatedTypeAss = new HashMap<>();
+        for (VarTerm varTerm : freeVariables) {
+            generatedTypeAss.put(varTerm, new TypeAbstraction(typeVarFactory.nextTypeVariable()));
+        }
+
+        return generatedTypeAss;
     }
 
 
