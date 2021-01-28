@@ -33,7 +33,9 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         scroller.setSizeFull();
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         content.add(new MathjaxDisplay(getTranslation("abs-rule")));
-        content.add(new MathjaxUnification("\\(conswwwwwwWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWtraint test \\vdash \\)"));
+        content.add(new MathjaxUnification("\\(conswwwwwwWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+                + "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+                + "WWWWWWWWWWWWWWWWWWWWWtraint test \\vdash \\)"));
         MathjaxProofTree mjxPT = new MathjaxProofTree(getTranslation("demo-tree"));
         mjxPT.showStep(10);
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
