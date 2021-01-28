@@ -9,7 +9,7 @@ import edu.kit.typicalc.model.Constraint;
  */
 public class AbsStepWithLet extends AbsStep {
     /**
-     *Initializes a new AbsStepWithLet with the given values.
+     * Initializes a new AbsStepWithLet with the given values.
      * @param premise the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint constraint that can be derived from this step

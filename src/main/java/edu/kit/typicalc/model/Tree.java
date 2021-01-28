@@ -17,6 +17,7 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.model.type.TypeVariable;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -108,7 +109,7 @@ public class Tree implements TermVisitorTree {
         Type rightType = typeVarFactory.nextTypeVariable();
         InferenceStep rightPremise = appTerm.getParameter().accept(this, typeAssumptions, rightType);
 
-        FunctionType function = new FunctionType(rightType, conclusionType);
+        Type function = new FunctionType(rightType, conclusionType);
         Constraint newConstraint = new Constraint(leftType, function);
         constraints.add(newConstraint);
 
@@ -118,7 +119,20 @@ public class Tree implements TermVisitorTree {
 
     @Override
     public InferenceStep visit(AbsTerm absTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
-        return null; // TODO
+        Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new HashMap<>(typeAssumptions);
+        Type assType = typeVarFactory.nextTypeVariable();
+        TypeAbstraction assAbs = new TypeAbstraction(assType);
+        extendedTypeAssumptions.put(absTerm.getVariable(), assAbs);
+
+        Type premiseType = typeVarFactory.nextTypeVariable();
+        InferenceStep premise = absTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
+
+        Type function = new FunctionType(assType, premiseType);
+        Constraint newConstraint = new Constraint(conclusionType, function);
+        constraints.add(newConstraint);
+
+        Conclusion conclusion = new Conclusion(typeAssumptions, absTerm, conclusionType);
+        return stepFactory.createAbsStep(premise, conclusion, newConstraint);
     }
 
     @Override
@@ -128,7 +142,11 @@ public class Tree implements TermVisitorTree {
 
     @Override
     public InferenceStep visit(ConstTerm constant, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
-        return null; // TODO
+        Constraint newConstraint = new Constraint(conclusionType, constant.getType());
+        constraints.add(newConstraint);
+
+        Conclusion conclusion = new Conclusion(typeAssumptions, constant, conclusionType);
+        return stepFactory.createConstStep(conclusion, newConstraint);
     }
 
     @Override

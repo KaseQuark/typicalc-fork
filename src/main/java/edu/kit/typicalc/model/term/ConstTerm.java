@@ -11,23 +11,23 @@ import java.util.Map;
  * Abstract representation of a constant lambda term that has a predetermined type and a value of that type.
  */
 public abstract class ConstTerm extends LambdaTerm {
-	/**
-	 * @return the named type of the constant
-	 */
-	public abstract NamedType getType();
+    /**
+     * @return the named type of the constant
+     */
+    public abstract NamedType getType();
 
-	@Override
-	public boolean hasLet() {
-		return false;
-	}
+    @Override
+    public boolean hasLet() {
+        return false;
+    }
 
-	@Override
-	public void accept(TermVisitor termVisitor) {
-		termVisitor.visit(this);
-	}
+    @Override
+    public void accept(TermVisitor termVisitor) {
+        termVisitor.visit(this);
+    }
 
-	@Override
-	public InferenceStep accept(TermVisitorTree visitor, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
-		return visitor.visit(this, assumptions, type);
-	}
+    @Override
+    public InferenceStep accept(TermVisitorTree visitor, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
+        return visitor.visit(this, assumptions, type);
+    }
 }
