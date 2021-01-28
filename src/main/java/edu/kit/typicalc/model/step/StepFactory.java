@@ -2,6 +2,7 @@ package edu.kit.typicalc.model.step;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
+import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
 /**
@@ -34,14 +35,16 @@ public interface StepFactory {
      * @return the created ConstStep
      */
     ConstStep createConstStep(Conclusion conclusion, Constraint constraint);
+
     /**
      * Creates a VarStep.
      * @param typeAbstraction the type abstraction of this step
+     * @param instantiatedTypeAbs an instantiation of the type abstraction used in this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created AbsStep
      */
-    VarStep createVarStep(TypeAbstraction typeAbstraction, Conclusion conclusion,
-                                          Constraint constraint);
+    VarStep createVarStep(TypeAbstraction typeAbstraction, Type instantiatedTypeAbs,
+                          Conclusion conclusion, Constraint constraint);
     //TODO LetStep
 }
