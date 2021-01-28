@@ -5,7 +5,7 @@ build:
     - mvn -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp jacoco:prepare-agent test jacoco:report
     - python3 /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml
     - python3 /opt/source2filename.py target/site/cobertura.xml
-    - "head -n 1 target/site/cobertura.xml | rg --only-matching -r '\\$1' 'line-rate=\"([0-9.]+)\"' | awk '{ print \"Test Coverage: \" (\$1 * 100) \"%\" }'"
+    - /opt/calcCoverage.sh < target/site/cobertura.xml
   artifacts:
     reports:
       cobertura: target/site/cobertura.xml
