@@ -6,27 +6,89 @@ window.MathJax = {
     },
     startup: {
         ready: () => {
+            const mathjax = MathJax._.mathjax.mathjax;
+            const HTMLAdaptor = MathJax._.adaptors.HTMLAdaptor.HTMLAdaptor;
+            const HTMLHandler = MathJax._.handlers.html.HTMLHandler.HTMLHandler;
+            const AbstractHandler = MathJax._.core.Handler.AbstractHandler.prototype;
+            const startup = MathJax.startup;
+
+            //
+            //  Extend HTMLAdaptor to handle shadowDOM as the document
+            //
+            class ShadowAdaptor extends HTMLAdaptor {
+                create(kind, ns) {
+                    const document = (this.document.createElement ? this.document : this.window.document);
+                    return (ns ?
+                        document.createElementNS(ns, kind) :
+                        document.createElement(kind));
+                }
+
+                text(text) {
+                    const document = (this.document.createTextNode ? this.document : this.window.document);
+                    return document.createTextNode(text);
+                }
+
+                head(doc) {
+                    return doc.head || (doc.getElementById("mjx-document") || {}).firstChild || doc;
+                }
+
+                body(doc) {
+                    return doc.body || (doc.getElementById("mjx-document") || {}).lastChild || doc;
+                }
+
+                root(doc) {
+                    return doc.documentElement || doc.getElementById("mjx-document") || doc;
+                }
+            }
+
+            //
+            //  Extend HTMLHandler to handle shadowDOM as document
+            //
+            class ShadowHandler extends HTMLHandler {
+                create(document, options) {
+                    const adaptor = this.adaptor;
+                    if (typeof (document) === 'string') {
+                        document = adaptor.parse(document, 'text/html');
+                    } else if ((document instanceof adaptor.window.HTMLElement ||
+                        document instanceof adaptor.window.DocumentFragment) &&
+                        !(document instanceof window.ShadowRoot)) {
+                        let child = document;
+                        document = adaptor.parse('', 'text/html');
+                        adaptor.append(adaptor.body(document), child);
+                    }
+                    //
+                    //  We can't use super.create() here, since that doesn't
+                    //    handle shadowDOM correctly, so call HTMLHandler's parent class
+                    //    directly instead.
+                    //
+                    return AbstractHandler.create.call(this, document, options);
+                }
+            }
+
+            //
+            //  Register the new handler and adaptor
+            //
+            startup.registerConstructor('HTMLHandler', ShadowHandler);
+            startup.registerConstructor('browserAdaptor', () => new ShadowAdaptor(window));
+
+            //
+            //  A service function that creates a new MathDocument from the
+            //  shadow root with the configured input and output jax, and then
+            //  renders the document.  The MathDocument is returned in case
+            //  you need to rerender the shadowRoot later.
+            //
             MathJax.typesetShadow = function (root, callback) {
-                setTimeout(() => {
-                let tex = root.getElementById("tc-content").innerText;
-                root.getElementById("tc-content").innerText = "";
-                MathJax.tex2svgPromise(tex, options).then(function (node) {
-                    console.log(node);
-                    //
-                    //	The promise returns the typeset node, which we add to the output
-                    //	Then update the document to include the adjusted CSS for the
-                    //		content of the new equation.
-                    //
-                    root.appendChild(node);
-                    MathJax.startup.document.clear();
-                    MathJax.startup.document.updateDocument();
-                    // TODO: findSteps(node);
-                }).catch(function (err) {
-                    //
-                    //	If there was an error, put the message into the output instead
-                    //
-                    root.appendChild(document.createElement('pre')).appendChild(document.createTextNode(err.message));
-                });}, 1); // TODO: remove the delay?
+                if (root.getElementById("tc-content") == null) {
+                    return;
+                }
+                const InputJax = startup.getInputJax();
+                const OutputJax = startup.getOutputJax();
+                const html = mathjax.document(root, {InputJax, OutputJax});
+                html.render();
+                if (callback != null) {
+                    callback(html);
+                }
+                return html;
             }
 
             //
@@ -46,3 +108,10 @@ window.MathJax = {
         }
     }
 };
+
+(function () {
+    let script = document.createElement('script');
+    script.src = 'http://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/tex-svg.js';
+    // script.async = true;
+    document.head.appendChild(script);
+})();
