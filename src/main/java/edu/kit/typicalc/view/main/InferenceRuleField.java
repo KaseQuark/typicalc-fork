@@ -7,7 +7,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
-@JsModule(".src/copy-to-clipboard.js")
+@JsModule("./src/copy-to-clipboard.js")
 public class InferenceRuleField extends Div implements LocaleChangeObserver {
     
     private final String latex;
