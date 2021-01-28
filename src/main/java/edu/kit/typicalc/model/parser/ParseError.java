@@ -6,11 +6,14 @@ public enum ParseError {
      *  the lambda term didn't meet the specified syntax
      */
     UNEXPECTED_TOKEN,
-    
+
+    /**
+     * some tokens were remaining after parsing a full lambda term
+     */
     TOO_MANY_TOKENS,
 
     /**
-     * the String contained a character not allowed in that place
+     * the string contained a character not allowed in that context
      */
     UNEXPECTED_CHARACTER
 }

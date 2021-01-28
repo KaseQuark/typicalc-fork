@@ -8,6 +8,7 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import edu.kit.typicalc.view.main.MainViewImpl;
+import edu.kit.typicalc.view.main.MathjaxDisplay;
 
 @Route(value = "home", layout = MainViewImpl.class)
 @PageTitle("Typicalc")
@@ -18,10 +19,12 @@ public class StartPageView extends VerticalLayout {
     private Button sayHello;
 
     public StartPageView() {
+        // todo implement correctly
         setId("start-page");
         name = new TextArea("translation test");
         name.setValue(getTranslation("abs-rule"));
         name.setWidthFull();
+        add(new MathjaxDisplay());
         sayHello = new Button("Say hello");
         add(name, sayHello);
         sayHello.addClickListener(e -> {
