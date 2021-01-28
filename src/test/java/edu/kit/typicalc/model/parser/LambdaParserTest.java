@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import edu.kit.typicalc.model.term.AbsTerm;
 import edu.kit.typicalc.model.term.AppTerm;
+import edu.kit.typicalc.model.term.BooleanTerm;
 import edu.kit.typicalc.model.term.ConstTerm;
 import edu.kit.typicalc.model.term.IntegerTerm;
 import edu.kit.typicalc.model.term.LambdaTerm;
@@ -47,6 +48,33 @@ class LambdaParserTest {
 								new VarTerm("id"),
 								new IntegerTerm(1)
 						)
+				));
+	}
+	@Test
+	void complicatedTerm() {
+		LambdaParser parser = new LambdaParser("(λx.λy.x y 5)(λz.z)(true)");
+		assertEquals(parser.parse().unwrap(),
+				new AppTerm(
+						new AppTerm(
+								new AbsTerm(
+										new VarTerm("x"),
+										new AbsTerm(
+												new VarTerm("y"),
+												new AppTerm(
+														new AppTerm(
+																new VarTerm("x"),
+																new VarTerm("y")
+														),
+														new IntegerTerm(5)
+												)
+										)
+								),
+								new AbsTerm(
+										new VarTerm("z"),
+										new VarTerm("z")
+								)
+						),
+						new BooleanTerm(true)
 				));
 	}
 }
