@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.main;
 
+import java.util.Map;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
 
@@ -23,4 +24,9 @@ public interface MainView {
      * @param error the error which is displayed to indicate invalid input
      */
     void displayError(ParseError error);
+    
+    public interface MainViewListener {
+        
+        public void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions);
+    }
 }

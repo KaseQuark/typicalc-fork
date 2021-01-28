@@ -17,9 +17,11 @@ import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tabs;
+import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
+import edu.kit.typicalc.presenter.Presenter;
 
 /**
  * The main view is a top-level placeholder for other views.
@@ -32,7 +34,8 @@ public class MainViewImpl extends AppLayout implements MainView {
 
     public MainViewImpl() {
         setDrawerOpened(false);
-        addToNavbar(true, new UpperBar());
+        MainViewListener presenter = new Presenter(new ModelImpl(), this);
+        addToNavbar(true, new UpperBar(presenter));
         addToDrawer(new DrawerContent());
     }
 

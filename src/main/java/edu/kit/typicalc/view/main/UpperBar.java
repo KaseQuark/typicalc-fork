@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
+import edu.kit.typicalc.view.main.MainView.MainViewListener;
 
 @CssImport("./styles/view/main/upper-bar.css")
 public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
@@ -19,21 +20,30 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private final InputBar inputBar;
     private final Icon helpDialogIcon;
     
-    public UpperBar() {
+    private final MainViewListener presenter;
+    
+    protected UpperBar(final MainViewListener presenter) {
+        this.presenter = presenter;
+        
+        add(new DrawerToggle());
+        this.viewTitle = new H1(getTranslation("root.typicalc"));
+        viewTitle.setId("viewTitle");
+        this.inputBar = new InputBar(null); //TODO init correctly
+        this.helpDialogIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
+        helpDialogIcon.setId("icon");
+        
+        viewTitle.addClickListener(event -> this.getUI().get().navigate(StartPageView.class));
+        
+        add(viewTitle, inputBar, helpDialogIcon);
         setId("header");
         getThemeList().set("dark", true);
         setWidthFull();
         setSpacing(false);
         setAlignItems(FlexComponent.Alignment.CENTER);
-        add(new DrawerToggle());
-        this.viewTitle = new H1(getTranslation("root.typicalc"));
-        viewTitle.setId("viewTitle");
-        this.inputBar = new InputBar();
-        this.helpDialogIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
-        helpDialogIcon.setId("icon");
-        
-        viewTitle.addClickListener(event -> this.getUI().get().navigate(StartPageView.class));
-        add(viewTitle, inputBar, helpDialogIcon);
+    }
+    
+    protected void typeInfer() {
+        //TODO implement
     }
     
     private void createHelpDialog() {
