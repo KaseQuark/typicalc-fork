@@ -1,8 +1,6 @@
 package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
@@ -18,18 +16,10 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.tabs.TabsVariant;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
-import com.vaadin.flow.i18n.LocaleChangeObserver;
-import com.vaadin.flow.router.PageTitle;
-import com.vaadin.flow.router.RouterLink;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
-
-import java.util.Optional;
 
 /**
  * The main view is a top-level placeholder for other views.
