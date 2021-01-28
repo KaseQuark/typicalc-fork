@@ -1,0 +1,26 @@
+#header {
+  height: var(--lumo-size-xl);
+}
+
+#header img {
+  border-radius: 50%;
+  height: var(--lumo-size-s);
+  margin-left: auto;
+  margin-right: var(--lumo-space-m);
+  overflow: hidden;
+  background-color: var(--lumo-contrast);
+}
+
+#viewTitle {
+  font-size: var(--lumo-font-size-l);
+  margin-right: auto;
+  cursor: pointer;
+}
+
+#icon {
+	margin-left: auto;
+	margin-right: 20px;
+}
+
+
+
