@@ -25,8 +25,8 @@ public interface MainView {
      */
     void displayError(ParseError error);
     
-    public interface MainViewListener {
+     interface MainViewListener {
         
-        public void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions);
+        void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions);
     }
 }

@@ -5,12 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import edu.kit.typicalc.model.term.AbsTerm;
 import edu.kit.typicalc.model.term.AppTerm;
 import edu.kit.typicalc.model.term.BooleanTerm;
-import edu.kit.typicalc.model.term.ConstTerm;
+//import edu.kit.typicalc.model.term.ConstTerm;
 import edu.kit.typicalc.model.term.IntegerTerm;
 import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.VarTerm;
-import edu.kit.typicalc.model.type.NamedType;
+//import edu.kit.typicalc.model.type.NamedType;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
