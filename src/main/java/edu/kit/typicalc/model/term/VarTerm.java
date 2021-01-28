@@ -7,12 +7,26 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Representation of a variable term with its name.
+ */
 public class VarTerm extends LambdaTerm {
 	private final String name;
 
+	/**
+	 * Initializes a new variable term with its name.
+	 * @param name the name of the variable
+	 */
 	public VarTerm(String name) {
 		super();
 		this.name = name;
+	}
+
+	/**
+	 * @return the name of this variable
+	 */
+	public String getName() {
+		return name;
 	}
 
 	@Override
@@ -26,9 +40,8 @@ public class VarTerm extends LambdaTerm {
 	}
 
 	@Override
-	public InferenceStep accept(TermVisitorTree termVisitorTree, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
-		//todo implement
-		return null;
+	public InferenceStep accept(TermVisitorTree visitor, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
+		return visitor.visit(this, assumptions, type);
 	}
 
 	@Override

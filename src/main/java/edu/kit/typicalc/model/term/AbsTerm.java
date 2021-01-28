@@ -51,8 +51,7 @@ public class AbsTerm extends LambdaTerm {
 
 	@Override
 	public InferenceStep accept(TermVisitorTree termVisitorTree, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
-		//todo implement
-		return null;
+		return termVisitorTree.visit(this, assumptions, type);
 	}
 
 	@Override
