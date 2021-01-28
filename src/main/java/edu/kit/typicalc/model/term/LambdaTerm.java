@@ -6,6 +6,11 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 
 import java.util.Map;
 
+/**
+ * Abstract representation of a lambda term.
+ * Depending on the subclass used, a lambda term may contain several other lambda terms
+ * and thus form a tree-like structure of lambda terms.
+ */
 public abstract class LambdaTerm {
 	/**
 	 * @return whether the lambda term contains a let expression
@@ -18,6 +23,13 @@ public abstract class LambdaTerm {
 	 */
 	public abstract void accept(TermVisitor termVisitor);
 
+	/**
+	 * Uses exactly one method of the visitor and provides the arguments passed.
+	 * @param termVisitorTree the visitor
+	 * @param assumptions type assumptions
+	 * @param type a type
+	 * @return the result returned by the visitor
+	 */
     public abstract InferenceStep accept(TermVisitorTree termVisitorTree,
                                          Map<VarTerm, TypeAbstraction> assumptions, Type type);
 

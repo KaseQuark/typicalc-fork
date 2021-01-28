@@ -7,20 +7,34 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 import java.util.Map;
 import java.util.Objects;
 
+/**
+ * Representation of an application term consisting of a function and the parameter passed to it.
+ */
 public class AppTerm extends LambdaTerm {
 	private final LambdaTerm left;
 	private final LambdaTerm right;
 
+	/**
+	 * Initializes a new application term with one lambda term for the function and one lambda term for the parameter.
+	 * @param left the function
+	 * @param right the parameter
+	 */
 	public AppTerm(LambdaTerm left, LambdaTerm right) {
 		this.left = left;
 		this.right = right;
 	}
 
-	public LambdaTerm getLeft() {
+	/**
+	 * @return the function used in this application
+	 */
+	public LambdaTerm getFunction() {
 		return left;
 	}
 
-	public LambdaTerm getRight() {
+	/**
+	 * @return the parameter used in this application
+	 */
+	public LambdaTerm getParameter() {
 		return right;
 	}
 
@@ -36,8 +50,7 @@ public class AppTerm extends LambdaTerm {
 
 	@Override
 	public InferenceStep accept(TermVisitorTree termVisitorTree, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
-		// todo implement
-		return null;
+		return termVisitorTree.visit(this, assumptions, type);
 	}
 
 	@Override

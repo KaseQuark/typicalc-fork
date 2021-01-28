@@ -115,8 +115,7 @@ public class Tree implements TermVisitorTree {
     }
 
     @Override
-    public InferenceStep visit(ConstTerm constTerm, Map<VarTerm,
-            TypeAbstraction> typeAssumptions, Type conclusionType) {
+    public InferenceStep visit(ConstTerm constant, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         return null; // TODO
     }
 
