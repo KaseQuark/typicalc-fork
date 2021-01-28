@@ -7,18 +7,32 @@ import edu.kit.typicalc.util.Result;
  * Models a type variable
  */
 public class TypeVariable extends Type {
-    private int index;
+
+    private final TypeVaribaleKind kind;
+    private final int index;
+
     /**
      * Initializes a new TypeVariable with the given index.
+     *
+     * @param kind the kind of type variable
      * @param index the index of this variable
      */
-    public TypeVariable(int index) {
+    public TypeVariable(TypeVaribaleKind kind, int index) {
+        this.kind = kind;
         this.index = index;
     }
 
     /**
-     * the index of the type variable as an integer
-     * @return index
+     * Returns the kind of the type variable.
+     * @return the variable's kind
+     */
+    public TypeVaribaleKind getKind() {
+        return kind;
+    }
+
+    /**
+     * Returns the index of the type variable as an integer
+     * @return the variable's index
      */
     public int getIndex() {
         return index;
@@ -53,11 +67,11 @@ public class TypeVariable extends Type {
     }
 
     /**
-     * Computes the neccessary constraints (and substitution) to unify this type with
+     * Computes the necessary constraints (and substitution) to unify this type with
      * another. This method uses the constrainEqualToVariable method on the other
      * type.
      * @param type  the other type
-     * @return unification steps neccessary, or an error if that is impossible
+     * @return unification steps necessary, or an error if that is impossible
      */
     public Result<UnificationActions, UnificationError> constrainEqualTo(Type type) {
         //TODO
@@ -65,10 +79,10 @@ public class TypeVariable extends Type {
     }
 
     /**
-     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * Computes the necessary constraints (and substitution) to unify this type with a
      * function type.
      * @param type the function type
-     * @return unification steps neccessary, or an error if that is impossible
+     * @return unification steps necessary, or an error if that is impossible
      */
     public Result<UnificationActions, UnificationError> constrainEqualToFunction(Type type) {
         //TODO
@@ -76,10 +90,10 @@ public class TypeVariable extends Type {
     }
 
     /**
-     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * Computes the necessary constraints (and substitution) to unify this type with a
      * named type.
      * @param type the named type
-     * @return unification steps neccessary, or an error if that is impossible
+     * @return unification steps necessary, or an error if that is impossible
      */
     public Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type) {
         //TODO
@@ -87,10 +101,10 @@ public class TypeVariable extends Type {
     }
 
     /**
-     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * Computes the necessary constraints (and substitution) to unify this type with a
      * type variable.
      * @param type the type variable
-     * @return the unification steps neccessary, or an error if that is impossible
+     * @return the unification steps necessary, or an error if that is impossible
      */
     public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
         //TODO

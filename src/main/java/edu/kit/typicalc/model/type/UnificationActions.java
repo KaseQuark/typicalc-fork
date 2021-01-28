@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 /**
- * Models the neccessary actions to process a constraint.
+ * Models the necessary actions to process a constraint.
  */
 public class UnificationActions {
     private Collection<Constraint> constraints;
@@ -16,7 +16,7 @@ public class UnificationActions {
     /**
      * Initializes this object using the provided constraints and substitution.
      * @param constraints added constraints, if any
-     * @param substitution neccessary substitution, if any
+     * @param substitution necessary substitution, if any
      */
     protected UnificationActions(Collection<Constraint> constraints, Optional<Substitution> substitution) {
         this.constraints = constraints;

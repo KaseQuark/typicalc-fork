@@ -19,7 +19,6 @@ public class Substitution {
      * @param b type to insert
      */
     public Substitution(TypeVariable a, Type b) {
-        // TODO: null checks?
         this.a = a;
         this.b = b;
     }
