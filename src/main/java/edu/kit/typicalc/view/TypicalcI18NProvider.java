@@ -20,9 +20,16 @@ public class TypicalcI18NProvider implements I18NProvider {
     private static final long serialVersionUID = 8261479587838699070L;
 
     /**
-     * Prefix of all .property-files
+     * Prefix of all language related .property-files
      */
-    public static final String BUNDLE_PREFIX = "language.translation";
+    public static final String LANGUAGE_BUNDLE_PREFIX = "language.translation";
+    
+    /**
+     * Prefix of general, language independent .property file
+     */
+    public static final String GENERAL_BUNDLE_PREFIX = "language.general";
+    
+    private final ResourceBundle generalBundle = ResourceBundle.getBundle(GENERAL_BUNDLE_PREFIX);
 
     @Override
     public List<Locale> getProvidedLocales() {
@@ -34,15 +41,20 @@ public class TypicalcI18NProvider implements I18NProvider {
         if (key == null) {
             return StringUtils.EMPTY;
         }
-
+        
+        final ResourceBundle bundle = ResourceBundle.getBundle(LANGUAGE_BUNDLE_PREFIX, locale);
         String translation;
 
-        try {
-            final ResourceBundle bundle = ResourceBundle.getBundle(BUNDLE_PREFIX, locale);
+
+        if (bundle.containsKey(key)) {
             translation = bundle.getString(key);
-        } catch (final MissingResourceException exception) {
-            throw new IllegalStateException("this should never happen:"
-                    + " either an invalid locale is set or an invalid key is provided.");
+        } else {
+            try {
+                translation = this.generalBundle.getString(key);
+            } catch (final MissingResourceException exception) {
+                // this should never be the case 
+                return key;
+            }
         }
 
         return translation;

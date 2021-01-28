@@ -1,16 +1,16 @@
 package edu.kit.typicalc.view.content;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 
 /**
  * Provides a GUI in form of buttons for the user to navigate through steps.
  */
-public class ControlPanel extends Component {
+public class ControlPanel extends HorizontalLayout {
 
     private final Button firstStep;
     private final Button lastStep;
@@ -26,15 +26,17 @@ public class ControlPanel extends Component {
     public ControlPanel(ControlPanelView view) {
         firstStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT), evt -> view.firstStepButton());
         lastStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT), evt -> view.lastStepButton());
-        nextStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT), evt -> view.nextStepButton());
-        previousStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT), evt -> view.previousStepButton());
+        nextStep = new Button(new Icon(VaadinIcon.ANGLE_RIGHT), evt -> view.nextStepButton());
+        previousStep = new Button(new Icon(VaadinIcon.ANGLE_LEFT), evt -> view.previousStepButton());
         share = new Button(new Icon(VaadinIcon.CONNECT), evt -> view.shareButton());
 
         // todo change shortcut scope
         firstStep.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL);
         lastStep.addClickShortcut(Key.ARROW_RIGHT, KeyModifier.CONTROL);
-        nextStep.addClickShortcut(Key.ARROW_LEFT);
+        nextStep.addClickShortcut(Key.ARROW_RIGHT);
         previousStep.addClickShortcut(Key.ARROW_LEFT);
+
+        add(share, firstStep, previousStep, nextStep, lastStep);
     }
 
     /**
