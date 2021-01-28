@@ -16,7 +16,7 @@ public class MathjaxDisplay extends LitTemplate {
      * Creates the hello world template.
      */
     public MathjaxDisplay() {
-        content.add("testtestetstest");
+        content.add(getTranslation("abs-rule"));
     }
 }
 
