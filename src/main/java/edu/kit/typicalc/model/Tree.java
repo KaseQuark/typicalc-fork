@@ -142,7 +142,11 @@ public class Tree implements TermVisitorTree {
 
     @Override
     public InferenceStep visit(ConstTerm constant, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
-        return null; // TODO
+        Constraint newConstraint = new Constraint(conclusionType, constant.getType());
+        constraints.add(newConstraint);
+
+        Conclusion conclusion = new Conclusion(typeAssumptions, constant, conclusionType);
+        return stepFactory.createConstStep(conclusion, newConstraint);
     }
 
     @Override
