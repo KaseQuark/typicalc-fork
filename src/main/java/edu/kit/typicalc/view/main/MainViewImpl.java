@@ -6,6 +6,7 @@ import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Image;
@@ -20,14 +21,15 @@ import com.vaadin.flow.component.tabs.Tabs;
 import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
-import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 import edu.kit.typicalc.presenter.Presenter;
+import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 
 /**
  * The main view is a top-level placeholder for other views.
  */
 @CssImport("./styles/view/main/main-view.css")
 @JsModule("./styles/shared-styles.js")
+@JavaScript("./src/tex-svg-full.js")
 public class MainViewImpl extends AppLayout implements MainView {
 
     private H1 viewTitle;
