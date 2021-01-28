@@ -9,15 +9,6 @@ declare let window: {
 };
 
 export abstract class MathjaxAdapter extends LitElement {
-    constructor() {
-        super();
-        if (window.MathJax === undefined || !window.MathJax.isInitialized) {
-            window.addEventListener('mathjax-initialized', () => this.execTypeset());
-        } else {
-            this.execTypeset();
-        }
-    }
-
     protected execTypeset() {
         if (window.MathJax !== undefined) {
             window.MathJax.typesetShadow(this.shadowRoot, () => this.calculateSteps());
@@ -35,5 +26,14 @@ export abstract class MathjaxAdapter extends LitElement {
     protected abstract showStep(n: number): void;
 
     protected abstract calculateSteps(): void;
+
+    connectedCallback() {
+        super.connectedCallback();
+        if (window.MathJax === undefined || !window.MathJax.isInitialized) {
+            window.addEventListener('mathjax-initialized', () => this.execTypeset());
+        } else {
+            this.execTypeset();
+        }
+    }
 }
 
