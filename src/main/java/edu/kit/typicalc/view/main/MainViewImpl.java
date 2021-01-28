@@ -38,14 +38,12 @@ import java.util.Optional;
 @JsModule("./styles/shared-styles.js")
 public class MainViewImpl extends AppLayout implements MainView {
 
-    private final Tabs menu;
     private H1 viewTitle;
-    
+
     public MainViewImpl() {
         setDrawerOpened(false);
-        addToNavbar(true, createHeaderContent());
-        menu = createMenu();
-        addToDrawer(createDrawerContent(menu));
+        addToNavbar(true, new UpperBar());
+        addToDrawer(new DrawerContent());
     }
 
     private Component createHeaderContent() {
@@ -76,38 +74,6 @@ public class MainViewImpl extends AppLayout implements MainView {
         logoLayout.add(new H1("Typicalc"));
         layout.add(logoLayout, menu);
         return layout;
-    }
-
-    private Tabs createMenu() {
-        final Tabs tabs = new Tabs();
-        tabs.setOrientation(Tabs.Orientation.VERTICAL);
-        tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL);
-        tabs.setId("tabs");
-        return tabs;
-    }
-
-
-    private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
-        final Tab tab = new Tab();
-        tab.add(new RouterLink(text, navigationTarget));
-        ComponentUtil.setData(tab, Class.class, navigationTarget);
-        return tab;
-    }
-
-    @Override
-    protected void afterNavigation() {
-        super.afterNavigation();
-        getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
-        viewTitle.setText(getCurrentPageTitle());
-    }
-
-    private Optional<Tab> getTabForComponent(Component component) {
-        return menu.getChildren().filter(tab -> ComponentUtil.getData(tab, Class.class).equals(component.getClass()))
-                .findFirst().map(Tab.class::cast);
-    }
-
-    private String getCurrentPageTitle() {
-        return getContent().getClass().getAnnotation(PageTitle.class).value();
     }
 
     @Override
