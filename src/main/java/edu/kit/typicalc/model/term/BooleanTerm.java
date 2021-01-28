@@ -1,7 +1,6 @@
 package edu.kit.typicalc.model.term;
 
 import edu.kit.typicalc.model.type.NamedType;
-import edu.kit.typicalc.model.type.Type;
 
 /**
  * Representation of a constant boolean lambda term: either false or true.
