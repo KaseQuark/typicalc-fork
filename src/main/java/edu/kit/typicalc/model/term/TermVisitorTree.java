@@ -75,5 +75,6 @@ public interface TermVisitorTree {
      * 					of the returned inference step will be assigned
      * @return an {@link edu.kit.typicalc.model.step.VarStep}
      */
-    InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
+    InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType)
+            throws IllegalStateException;
 }

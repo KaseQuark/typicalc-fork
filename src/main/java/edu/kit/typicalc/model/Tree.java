@@ -150,7 +150,19 @@ public class Tree implements TermVisitorTree {
     }
 
     @Override
-    public InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
-        return null; // TODO
+    public InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType)
+            throws IllegalStateException {
+        TypeAbstraction premiseAbs = typeAssumptions.get(varTerm);
+        if (premiseAbs == null) {
+            throw new IllegalStateException("Cannot create VarStep for VarTerm '"
+                    + varTerm.getName() + "' without appropriate type assumption");
+        }
+        Type instantiation = premiseAbs.instantiate(typeVarFactory);
+
+        Constraint newConstraint = new Constraint(conclusionType, instantiation);
+        constraints.add(newConstraint);
+
+        Conclusion conclusion = new Conclusion(typeAssumptions, varTerm, conclusionType);
+        return stepFactory.createVarStep(premiseAbs, instantiation, conclusion, newConstraint);
     }
 }
