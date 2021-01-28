@@ -1,7 +1,99 @@
 package edu.kit.typicalc.model.type;
 
-public class TypeVariable extends Type {
-    public TypeVariable(int index) {
+import edu.kit.typicalc.model.UnificationError;
+import edu.kit.typicalc.util.Result;
 
+/**
+ * Models a type variable
+ */
+public class TypeVariable extends Type {
+    private int index;
+    /**
+     * Initializes a new TypeVariable with the given index.
+     * @param index the index of this variable
+     */
+    public TypeVariable(int index) {
+        this.index = index;
+    }
+
+    /**
+     * the index of the type variable as an integer
+     * @return index
+     */
+    public int getIndex() {
+        return index;
+    }
+
+    /**
+     * Checks whether some type occurs in this type.
+     * @param x the type to look for
+     * @return whether the specified type is equal to this type
+     */
+    @Override
+    public boolean contains(Type x) {
+        return this.equals(x);
+    }
+
+    /**
+     * Substitutes a type variable for a different type.
+     * @param a the type to replace
+     * @param b the type to insert
+     * @return itself, or b if a is equal to this object
+     */
+    public Type substitute(TypeVariable a, Type b) {
+        if (this.equals(a)) {
+        return b;
+        } else {
+            return this;
+        }
+    }
+
+    public void accept(TypeVisitor typeVisitor) {
+        typeVisitor.visit(this);
+    }
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with
+     * another. This method uses the constrainEqualToVariable method on the other
+     * type.
+     * @param type  the other type
+     * @return unification steps neccessary, or an error if that is impossible
+     */
+    public Result<UnificationActions, UnificationError> constrainEqualTo(Type type) {
+        //TODO
+        return null;
+    }
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * function type.
+     * @param type the function type
+     * @return unification steps neccessary, or an error if that is impossible
+     */
+    public Result<UnificationActions, UnificationError> constrainEqualToFunction(Type type) {
+        //TODO
+        return null;
+    }
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * named type.
+     * @param type the named type
+     * @return unification steps neccessary, or an error if that is impossible
+     */
+    public Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type) {
+        //TODO
+        return null;
+    }
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * type variable.
+     * @param type the type variable
+     * @return the unification steps neccessary, or an error if that is impossible
+     */
+    public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
+        //TODO
+        return null;
     }
 }

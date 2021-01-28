@@ -1,7 +1,7 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
 
-import com.fasterxml.jackson.databind.jsontype.NamedType;
+import edu.kit.typicalc.model.type.NamedType;
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.step.*;

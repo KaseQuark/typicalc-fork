@@ -1,4 +1,82 @@
 package edu.kit.typicalc.model.type;
 
+import edu.kit.typicalc.model.UnificationError;
+import edu.kit.typicalc.util.Result;
+
+/**
+ * Models the type of a lambda term.
+ */
 public abstract class Type {
+    /**
+     * Checks whether some type occurs in this type.
+     * @param x the type to look for
+     * @return whether the specified type occurs in this type
+     */
+    public abstract boolean contains(Type x);
+
+    /**
+     * Substitutes a type Variable for a different type
+     * @param a the type to replace
+     * @param b the type to insert
+     * @return a Type that is created by replacing a with b
+     */
+    public abstract Type substitute(TypeVariable a, Type b);
+
+    /**
+     * Accepts a visitor
+     * @param typeVisitor the visitor that wants to visit this
+     */
+    public abstract void accept(TypeVisitor typeVisitor);
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with
+     * another type.
+     * @param type  the other type
+     * @return unification steps neccessary, or an error if that is impossible
+     */
+    public abstract Result<UnificationActions, UnificationError> constrainEqualTo(Type type);
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * function type.
+     * @param type the function type
+     * @return unification steps neccessary, or an error if that is impossible
+     */
+    public abstract Result<UnificationActions, UnificationError> constrainEqualToFunction(Type type);
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * named type.
+     * @param type the named type
+     * @return unification steps neccessary, or an error if that is impossible
+     */
+    public abstract Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type);
+
+    /**
+     * Computes the neccessary constraints (and substitution) to unify this type with a
+     * type variable.
+     * @param type the type variable
+     * @return the unification steps neccessary, or an error if that is impossible
+     */
+    public abstract Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type);
+
+    /**
+     * Checks whether this is equal to another Type
+     * @param o the other Type
+     * @return whether this is equal to the other Type or not.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (this instanceof NamedType && o instanceof NamedType) {
+            return ((NamedType) o).getName().equals(((NamedType) this).getName());
+        }
+        if (this instanceof TypeVariable && o instanceof TypeVariable) {
+            return ((TypeVariable) o).getIndex() == ((TypeVariable) this).getIndex();
+        }
+        if (this instanceof FunctionType && o instanceof FunctionType) {
+            return (((FunctionType) o).getOutput().equals(((FunctionType) this).getOutput())
+                    && ((FunctionType) o).getParameter().equals(((FunctionType) this).getParameter()));
+        }
+        return false;
+    }
 }
