@@ -12,6 +12,7 @@ import edu.kit.typicalc.view.MathjaxAdapter;
  * with MathJax.
  */
 @Tag("tc-display")
+@JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-display.ts")
 public class MathjaxDisplay extends LitTemplate implements MathjaxAdapter {
 

@@ -13,6 +13,7 @@ import edu.kit.typicalc.view.MathjaxAdapter;
  * step-revealing capabilities. Relies on MathjaxUnificationJS to interact with MathJax.
  */
 @Tag("tc-unification")
+@JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-unification.ts")
 public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 

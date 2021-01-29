@@ -22,6 +22,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
 
     private final Div content;
     private final ControlPanel controlPanel;
+    MathjaxProofTree mjxPT;
 
     public StartPageView() {
         // todo implement correctly
@@ -44,8 +45,8 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         content.add(new MathjaxUnification("\\(conswwwwwwWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
                 + "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
                 + "WWWWWWWWWWWWWWWWWWWWWtraint test \\vdash \\)"));
-        MathjaxProofTree mjxPT = new MathjaxProofTree(getTranslation("demo-tree"));
-        mjxPT.showStep(10);
+        mjxPT = new MathjaxProofTree(getTranslation("demo-tree"));
+        content.add(mjxPT);
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
@@ -53,8 +54,9 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
     }
 
     private void disableControlPanel() {
-        controlPanel.setEnabledFirstStep(false);
-        controlPanel.setEnabledLastStep(false);
+        // todo disable everything
+//        controlPanel.setEnabledFirstStep(false);
+//        controlPanel.setEnabledLastStep(false);
         controlPanel.setEnabledNextStep(false);
         controlPanel.setEnabledPreviousStep(false);
         controlPanel.setEnabledShareButton(false);
@@ -66,10 +68,12 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
 
     @Override
     public void firstStepButton() {
+        mjxPT.showStep(0);
     }
 
     @Override
     public void lastStepButton() {
+        mjxPT.showStep(5);
     }
 
     @Override

@@ -14,6 +14,7 @@ import edu.kit.typicalc.view.MathjaxAdapter;
  * with MathJax.
  */
 @Tag("tc-proof-tree")
+@JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-proof-tree.ts")
 public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
 
@@ -26,6 +27,7 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
      * Creates a new HTML element that renders the proof tree and cuts it into steps.
      * The latex String must consist of exactly one proof tree environment in order for
      * this element to work. In other cases the expected behaviour is undefined.
+     *
      * @param latex the LaTeX-String to render with MathJax
      */
     public MathjaxProofTree(String latex) {
