@@ -32,15 +32,10 @@ public class TypeInferenceView extends HorizontalLayout
     }
 
     private void buildView(TypeInfererInterface typeInferer) {
-        if (typeInferer == null) {
-            // todo throw exception
-            unification = new MathjaxUnification("\\vdash test");
-            tree = new MathjaxProofTree(getTranslation("demo-tree"));
-        } else {
-                LatexCreator lc = new LatexCreator(typeInferer);
-                unification = new MathjaxUnification(lc.getUnification());
-                tree = new MathjaxProofTree(lc.getTree());
-        }
+        // todo implement correctly
+        LatexCreator lc = new LatexCreator(typeInferer);
+        unification = new MathjaxUnification(lc.getUnification());
+        tree = new MathjaxProofTree(lc.getTree());
         add(unification);
         add(new Scroller(tree));
     }

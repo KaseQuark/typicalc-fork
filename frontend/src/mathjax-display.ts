@@ -7,11 +7,7 @@ class MathjaxDisplay extends MathjaxAdapter {
         return super.render();
     }
 
-
     protected showStep(_n: number): void {
-    }
-
-    protected calculateSteps(): void {
     }
 }
 

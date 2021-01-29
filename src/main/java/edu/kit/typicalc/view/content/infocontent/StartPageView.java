@@ -23,6 +23,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
     private final Div content;
     private final ControlPanel controlPanel;
     MathjaxProofTree mjxPT;
+    MathjaxUnification mjxU;
 
     public StartPageView() {
         // todo implement correctly
@@ -35,17 +36,17 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
-        disableControlPanel();
+//        disableControlPanel();
         createContent();
 
     }
 
     private void createContent() {
+        String[] strings = new String[]{"$\\vdash$", "$\\Gamma$"};
         content.add(new MathjaxDisplay(getTranslation("abs-rule")));
-        content.add(new MathjaxUnification("\\(conswwwwwwWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
-                + "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
-                + "WWWWWWWWWWWWWWWWWWWWWtraint test \\vdash \\)"));
+        mjxU = new MathjaxUnification(strings);
         mjxPT = new MathjaxProofTree(getTranslation("demo-tree"));
+        content.add(mjxU);
         content.add(mjxPT);
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
@@ -55,8 +56,8 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
 
     private void disableControlPanel() {
         // todo disable everything
-//        controlPanel.setEnabledFirstStep(false);
-//        controlPanel.setEnabledLastStep(false);
+        controlPanel.setEnabledFirstStep(false);
+        controlPanel.setEnabledLastStep(false);
         controlPanel.setEnabledNextStep(false);
         controlPanel.setEnabledPreviousStep(false);
         controlPanel.setEnabledShareButton(false);
@@ -78,9 +79,11 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
 
     @Override
     public void nextStepButton() {
+        mjxU.showStep(1);
     }
 
     @Override
     public void previousStepButton() {
+        mjxU.showStep(0);
     }
 }

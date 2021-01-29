@@ -9,13 +9,11 @@ declare let window: {
 };
 
 export abstract class MathjaxAdapter extends LitElement {
-    protected execTypeset() {
+    protected execTypeset(shadowRoot: ShadowRoot | null) {
         if (window.MathJax !== undefined) {
-            window.MathJax.typesetShadow(this.shadowRoot, () => this.calculateSteps());
+            window.MathJax.typesetShadow(shadowRoot, () => this.calculateSteps());
         }
     }
-            // @ts-ignore
-
 
     render(): TemplateResult {
         return html`<mjx-doc id="mjx-document"><mjx-head></mjx-head><mjx-body>
@@ -25,14 +23,15 @@ export abstract class MathjaxAdapter extends LitElement {
 
     protected abstract showStep(n: number): void;
 
-    protected abstract calculateSteps(): void;
+    protected calculateSteps(): void {
+    }
 
     connectedCallback() {
         super.connectedCallback();
         if (window.MathJax === undefined || !window.MathJax.isInitialized) {
-            window.addEventListener('mathjax-initialized', () => this.execTypeset());
+            window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot));
         } else {
-            this.execTypeset();
+            this.execTypeset(this.shadowRoot);
         }
     }
 }
