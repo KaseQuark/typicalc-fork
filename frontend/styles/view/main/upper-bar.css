@@ -16,7 +16,7 @@
   cursor: pointer;
 }
 
-#icon {
+#helpIcon {
 	margin-left: auto;
 	margin-right: 1em;
 }
@@ -33,7 +33,7 @@
 
 @media (min-width: 1000px) {
     #inputBar {
-		margin-left: 30em;
+		margin-left: 26em;
 	}
 	
 	#viewTitle {
