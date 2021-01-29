@@ -10,6 +10,7 @@ import edu.kit.typicalc.model.type.TypeVaribaleKind;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -24,7 +25,7 @@ public class TypeInferer implements TypeInfererInterface {
 
     private final Tree tree;
     private final Unification unification;
-    private final TypeInferenceResult typeInfResult;
+    private final Optional<TypeInferenceResult> typeInfResult;
 
     /**
      * Initializes a new TypeInferer for the given type assumptions and lambda term.
@@ -45,14 +46,14 @@ public class TypeInferer implements TypeInfererInterface {
 
         // cancel algorithm if term can't be typified
         if (!unification.getSubstitutions().isOk()) {
-            typeInfResult = null;
+            typeInfResult = Optional.empty();
             // TODO: schönere Methode, mit nicht typisierbar umzugehen?
             //  getter unten anpassen!
             return;
         }
 
         List<Substitution> substitutions = unification.getSubstitutions().getValue();
-        typeInfResult = new TypeInferenceResult(substitutions, tree.getFirstTypeVariable());
+        typeInfResult = Optional.of(new TypeInferenceResult(substitutions, tree.getFirstTypeVariable()));
     }
 
     private Map<VarTerm, TypeAbstraction> createAssForFreeVariables(LambdaTerm lambdaTerm) {
@@ -79,12 +80,12 @@ public class TypeInferer implements TypeInfererInterface {
     }
 
     @Override
-    public List<Substitution> getMGU() {
-        return typeInfResult.getMGU();
+    public Optional<List<Substitution>> getMGU() {
+        return typeInfResult.map(TypeInferenceResult::getMGU);
     }
 
     @Override
-    public Type getType() {
-        return typeInfResult.getType();
+    public Optional<Type> getType() {
+        return typeInfResult.map(TypeInferenceResult::getType);
     }
 }

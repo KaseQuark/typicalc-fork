@@ -4,6 +4,7 @@ import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.type.Type;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Interface for a type inferer with getter methods used to extract the information about
@@ -30,15 +31,15 @@ public interface TypeInfererInterface {
      * as a list of substitutions. If no valid type (correlating with no valid mgu) can be
      * found for the lambda term to type-infer, null is returned.
      *
-     * @return the most general unifier, null if there is no valid mgu
+     * @return the most general unifier, empty if there is no valid mgu
      */
-    List<Substitution> getMGU();
+    Optional<List<Substitution>> getMGU(); // TODO: change of API -> document!
 
     /**
      * Returns the type that is the result of the type inference.
      * If no valid type can be found for the lambda term to type-infer, null is returned.
      *
-     * @return the final type of the lambda term, null if there is no valid type
+     * @return the final type of the lambda term, empty if there is no valid type
      */
-    Type getType();
+    Optional<Type> getType(); // TODO: change of API -> document!
 }

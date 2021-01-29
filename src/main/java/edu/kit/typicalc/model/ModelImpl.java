@@ -5,6 +5,7 @@ import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.util.Result;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,7 +34,7 @@ public class ModelImpl implements Model {
         //TODO: Parse Type Assumptions and add list to typeInferer
 
         //Create and return TypeInferer
-        TypeInferer typeInferer = new TypeInferer(result.unwrap(), null);
+        TypeInferer typeInferer = new TypeInferer(result.unwrap(), new HashMap<>());
         return new Result<>(typeInferer, null);
     }
 }
