@@ -1,0 +1,11 @@
+#ruleContainer {
+	overflow: auto;
+	margin: 0;
+	height: 100%;
+	max-width: 256px;
+	padding: 0.5em 0.5em;
+}
+
+#drawerContent {
+	padding: 0.5em 0;
+}
