@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
@@ -15,6 +16,8 @@ import edu.kit.typicalc.view.MathjaxAdapter;
 @JsModule("./src/mathjax-unification.ts")
 public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
+    private int stepCount = -1;
+
     @Id("tc-content")
     private Div content;
 
@@ -27,10 +30,14 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
         content.add(latex);
     }
 
+    @ClientCallable
+    private void setStepCount(int stepCount) {
+        this.stepCount = stepCount;
+    }
+
     @Override
     public int getStepCount() {
-        // todo implement
-        return 0;
+        return this.stepCount;
     }
 
     @Override

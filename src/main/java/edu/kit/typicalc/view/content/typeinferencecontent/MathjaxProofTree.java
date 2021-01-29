@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
@@ -16,6 +17,8 @@ import edu.kit.typicalc.view.MathjaxAdapter;
 @JsModule("./src/mathjax-proof-tree.ts")
 public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
 
+    private int stepCount = -1;
+
     @Id("tc-content")
     private Div content;
 
@@ -29,14 +32,19 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
         content.add(latex);
     }
 
+    @ClientCallable
+    private void setStepCount(int stepCount) {
+        this.stepCount = stepCount;
+    }
+
     @Override
     public int getStepCount() {
-        return 0;
+        return this.stepCount;
     }
 
     @Override
     public void showStep(int n) {
-
+        getElement().callJsFunction("showStep", n);
     }
 
     @Override
