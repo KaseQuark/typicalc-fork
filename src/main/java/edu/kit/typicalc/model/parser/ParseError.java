@@ -8,11 +8,6 @@ public enum ParseError {
     UNEXPECTED_TOKEN,
 
     /**
-     * some tokens were remaining after parsing a full lambda term
-     */
-    TOO_MANY_TOKENS,
-
-    /**
      * some tokens were required, but not provided
      */
     TOO_FEW_TOKENS,
@@ -20,5 +15,23 @@ public enum ParseError {
     /**
      * the string contained a character not allowed in that context
      */
-    UNEXPECTED_CHARACTER
+    UNEXPECTED_CHARACTER;
+
+    private Token cause;
+
+    public ParseError withToken(Token cause) {
+        this.cause = cause;
+        return this;
+    }
+
+    /**
+     * @return the token associated with this error, or null if none
+     */
+    public Token getCause() { // TODO: document
+        return cause;
+    }
+
+    ParseError() {
+
+    }
 }

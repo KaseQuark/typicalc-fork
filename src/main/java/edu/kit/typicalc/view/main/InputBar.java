@@ -2,13 +2,14 @@ package edu.kit.typicalc.view.main;
 
 import java.util.Optional;
 import java.util.function.Consumer;
+
+import com.vaadin.flow.component.textfield.TextArea;
 import org.apache.commons.lang3.StringUtils;
 import com.vaadin.componentfactory.Tooltip;
 import com.vaadin.componentfactory.TooltipAlignment;
 import com.vaadin.componentfactory.TooltipPosition;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.Icon;
@@ -26,8 +27,9 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     private final Tooltip infoTooltip;
     private final Icon infoIcon;
+    private final Button exampleButton;
     private final Button lambdaButton;
-    private final ComboBox<String> inputField;
+    private final TextArea inputField;
     private final Button inferTypeButton;
 
     /**
@@ -45,13 +47,23 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         infoTooltip.setPosition(TooltipPosition.BOTTOM);
         infoTooltip.setAlignment(TooltipAlignment.TOP);
 
-        inputField = new ComboBox<>();
-        initComboBox();
+        inputField = new TextArea();
+        inputField.setId("inputField");
+        inputField.setClearButtonVisible(true);
+        //TODO seems to be the only solution to "immediately" parse backslash
+        inputField.addValueChangeListener(event -> {
+            if (inputField.getOptionalValue().isPresent()) {
+                String value = inputField.getValue();
+                value = value.replace("\\", "λ");
+                inputField.setValue(value);
+            }
+        });
         lambdaButton = new Button(getTranslation("root.lambda"), event -> onlambdaButtonClick());
+        exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        add(infoIcon, infoTooltip, lambdaButton, inputField, inferTypeButton);
+        add(infoIcon, infoTooltip, exampleButton, lambdaButton, inputField, inferTypeButton);
         setAlignItems(FlexComponent.Alignment.CENTER);
     }
 
@@ -69,22 +81,9 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.focus();
     }
 
-    private void initComboBox() {
-	//TODO remove magic string in this method (used for demo)
-	inputField.setId("inputField");
-	inputField.setClearButtonVisible(true);
-	inputField.setAllowCustomValue(true);
-	inputField.setItems("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)");
-	inputField.addCustomValueSetListener(event -> inputField.setValue(event.getDetail()));
-
-	//TODO seems to be the only solution to "immediately" parse backslash
-	inputField.addValueChangeListener(event -> {
-	   if (inputField.getOptionalValue().isPresent()) {
-	       String value = inputField.getValue();
-	       value = value.replace("\\", "λ");
-	       inputField.setValue(value);
-	   }
-	});
+    private void onExampleButtonClick() {
+        ExampleDialog exampleDialog = new ExampleDialog(inputField::setValue);
+        exampleDialog.open();
     }
 
     private void initInfoTooltip() {
