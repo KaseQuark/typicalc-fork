@@ -37,7 +37,6 @@ public class LambdaParser {
      */
     public LambdaParser(String term) {
         this.lexer = new LambdaLexer(term);
-        nextToken();
     }
 
     /**
@@ -58,10 +57,13 @@ public class LambdaParser {
      * Returns false otherwise.
      * @param type the token type to compare the current token type to
      */
-    private boolean expect(TokenType type) {
+    private Optional<ParseError> expect(TokenType type) {
         TokenType current = token.getType();
-        nextToken(); // TODO: Fehlerbehandlung
-        return current == type;
+        Optional<ParseError> error = nextToken();
+        if (current != type) {
+            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(token));
+        }
+        return error;
     }
 
     /**
@@ -69,9 +71,13 @@ public class LambdaParser {
      * @return the term given by the String
      */
     public Result<LambdaTerm, ParseError> parse() {
-        Result<LambdaTerm, ParseError> t = parseTerm();
-        if (!expect(TokenType.EOF)) {
-            return new Result<>(null, ParseError.TOO_MANY_TOKENS);
+        Result<LambdaTerm, ParseError> t = parseTerm(true);
+        if (t.isError()) {
+            return t;
+        }
+        Optional<ParseError> next = expect(TokenType.EOF);
+        if (next.isPresent()) {
+            return new Result<>(null, next.get());
         }
         return t;
     }
@@ -80,7 +86,13 @@ public class LambdaParser {
      * Parses a term.
      * @return the term, or an error
      */
-    private Result<LambdaTerm, ParseError> parseTerm() {
+    private Result<LambdaTerm, ParseError> parseTerm(boolean next) {
+        if (next) {
+            Optional<ParseError> error = nextToken();
+            if (error.isPresent()) {
+                return new Result<>(null, error.get());
+            }
+        }
         switch (token.getType()) {
             case LAMBDA:
                 Result<AbsTerm, ParseError> abs = parseAbstraction();
@@ -98,10 +110,11 @@ public class LambdaParser {
     private Result<AbsTerm, ParseError> parseAbstraction() {
         nextToken();
         Result<VarTerm, ParseError> var = parseVar();
-        if (!expect(TokenType.DOT)) {
-            return new Result<>(null, ParseError.UNEXPECTED_TOKEN);
+        Optional<ParseError> next = expect(TokenType.DOT);
+        if (next.isPresent()) {
+            return new Result<>(null, next.get());
         }
-        Result<LambdaTerm, ParseError> body = parseTerm();
+        Result<LambdaTerm, ParseError> body = parseTerm(false);
         // TODO: Fehlerbehandlung
         return new Result<>(new AbsTerm(var.unwrap(), body.unwrap()));
     }
@@ -111,22 +124,37 @@ public class LambdaParser {
      * @return the term, or an error
      */
     private Result<LambdaTerm, ParseError> parseApplication() {
-        LambdaTerm left = parseAtom().unwrap(); // TODO: Fehlerbehandlung
-        while (ATOM_START_TOKENS.contains(token.getType())) {
-            LambdaTerm atom = parseAtom().unwrap(); // TODO: Fehlerbehandlung
-            left = new AppTerm(left, atom);
+        Result<LambdaTerm, ParseError> left = parseAtom();
+        if (left.isError()) {
+            return left;
         }
-        return new Result<>(left);
+        while (ATOM_START_TOKENS.contains(token.getType())) {
+            Result<LambdaTerm, ParseError> atom = parseAtom();
+            if (atom.isError()) {
+                return atom;
+            }
+            left = new Result<>(new AppTerm(left.unwrap(), atom.unwrap()));
+        }
+        return left;
     }
 
     private Result<LetTerm, ParseError> parseLet() {
         // TODO: Fehlerbehandlung
-        expect(TokenType.LET);
+        Optional<ParseError> error = expect(TokenType.LET);
+        if (error.isPresent()) {
+            return new Result<>(null, error.get());
+        }
         VarTerm var = parseVar().unwrap();
-        expect(TokenType.EQ);
-        LambdaTerm def = parseTerm().unwrap();
-        expect(TokenType.IN);
-        LambdaTerm body = parseTerm().unwrap();
+        error = expect(TokenType.EQ);
+        if (error.isPresent()) {
+            return new Result<>(null, error.get());
+        }
+        LambdaTerm def = parseTerm(false).unwrap();
+        error = expect(TokenType.IN);
+        if (error.isPresent()) {
+            return new Result<>(null, error.get());
+        }
+        LambdaTerm body = parseTerm(false).unwrap();
         return new Result<>(new LetTerm(var, def, body));
     }
 
@@ -145,7 +173,7 @@ public class LambdaParser {
                 try {
                     n = Integer.parseInt(number);
                 } catch (NumberFormatException e) {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(token));
                 }
                 nextToken();
                 return new Result<>(new IntegerTerm(n));
@@ -157,7 +185,7 @@ public class LambdaParser {
                 return new Result<>(new BooleanTerm(b));
             default:
                 expect(TokenType.LP);
-                Result<LambdaTerm, ParseError> term = parseTerm();
+                Result<LambdaTerm, ParseError> term = parseTerm(false);
                 expect(TokenType.RP);
                 return term;
         }
@@ -165,8 +193,9 @@ public class LambdaParser {
 
     private Result<VarTerm, ParseError> parseVar() {
         String s = token.getText();
-        if (!expect(TokenType.VARIABLE)) {
-            return new Result<>(null, ParseError.UNEXPECTED_TOKEN);
+        Optional<ParseError> next = expect(TokenType.VARIABLE);
+        if (next.isPresent()) {
+            return new Result<>(null, next.get());
         }
         return new Result<>(new VarTerm(s));
     }

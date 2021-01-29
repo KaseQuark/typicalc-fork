@@ -85,5 +85,14 @@ class LambdaParserTest {
     void miscellaneousTerms() {
         LambdaParser parser = new LambdaParser("");
         assertEquals(ParseError.TOO_FEW_TOKENS, parser.parse().unwrapError());
+        parser = new LambdaParser("x)");
+        assertEquals(ParseError.UNEXPECTED_TOKEN, parser.parse().unwrapError());
+        System.out.println("parsing ??");
+        parser = new LambdaParser("??");
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
+        parser = new LambdaParser("123333333333333");
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
+        parser = new LambdaParser("x 123333333333333");
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
     }
 }
