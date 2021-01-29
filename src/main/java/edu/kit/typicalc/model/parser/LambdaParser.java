@@ -88,6 +88,8 @@ public class LambdaParser {
             case LET:
                 Result<LetTerm, ParseError> let = parseLet();
                 return new Result<>(let.unwrap(), let.getError());
+            case EOF:
+                return new Result<>(null, ParseError.TOO_FEW_TOKENS);
             default:
                 return parseApplication();
         }

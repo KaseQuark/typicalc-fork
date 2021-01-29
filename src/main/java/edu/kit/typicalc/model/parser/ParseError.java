@@ -13,6 +13,11 @@ public enum ParseError {
     TOO_MANY_TOKENS,
 
     /**
+     * some tokens were required, but not provided
+     */
+    TOO_FEW_TOKENS,
+
+    /**
      * the string contained a character not allowed in that context
      */
     UNEXPECTED_CHARACTER

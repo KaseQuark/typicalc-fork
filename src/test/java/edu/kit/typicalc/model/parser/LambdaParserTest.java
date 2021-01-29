@@ -77,4 +77,9 @@ class LambdaParserTest {
 						new BooleanTerm(true)
 				));
 	}
+	@Test
+	void miscellaneousTerms() {
+		LambdaParser parser = new LambdaParser("");
+		assertEquals(parser.parse().unwrapError(), ParseError.TOO_FEW_TOKENS);
+	}
 }
