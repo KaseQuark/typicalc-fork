@@ -1,5 +1,7 @@
 package edu.kit.typicalc.view.main;
 
+import java.util.HashMap;
+
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H1;
@@ -27,7 +29,8 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         add(new DrawerToggle());
         this.viewTitle = new H1(getTranslation("root.typicalc"));
         viewTitle.setId("viewTitle");
-        this.inputBar = new InputBar(null); //TODO init correctly
+        this.inputBar = new InputBar(this::typeInfer);
+        inputBar.setId("inputBar");
         this.helpDialogIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
         helpDialogIcon.setId("icon");
         
@@ -35,14 +38,14 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         
         add(viewTitle, inputBar, helpDialogIcon);
         setId("header");
-        getThemeList().set("dark", true);
+        getThemeList().set("dark", true); // remove magic string
         setWidthFull();
         setSpacing(false);
         setAlignItems(FlexComponent.Alignment.CENTER);
     }
     
-    protected void typeInfer() {
-        //TODO implement
+    protected void typeInfer(final String lambdaString) {
+        presenter.typeInferLambdaString(lambdaString, new HashMap<String, String>());
     }
     
     private void createHelpDialog() {

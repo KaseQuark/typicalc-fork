@@ -13,14 +13,35 @@
 
 #viewTitle {
   font-size: var(--lumo-font-size-l);
-  margin-right: auto;
   cursor: pointer;
 }
 
 #icon {
 	margin-left: auto;
-	margin-right: 20px;
+	margin-right: 1em;
 }
+
+@media (max-width: 500px) {
+   	#inputBar {
+		margin: auto;
+	}
+	
+	#viewTitle {
+		margin-right: 5em;
+	}
+}
+
+@media (min-width: 1000px) {
+    #inputBar {
+		margin-left: 30em;
+	}
+	
+	#viewTitle {
+		margin-right: auto;
+	}
+}
+
+
 
 
 
