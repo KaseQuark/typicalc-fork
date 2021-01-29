@@ -3,6 +3,7 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.TypeVariableFactory;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Models a type abstraction with its type and the type variables bound by the for-all
@@ -70,5 +71,20 @@ public class TypeAbstraction {
         return type;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeAbstraction that = (TypeAbstraction) o;
+        return Objects.equals(type, that.type) && Objects.equals(quantifiedVariables, that.quantifiedVariables);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, quantifiedVariables);
+    }
 }

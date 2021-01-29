@@ -1,7 +1,5 @@
 package edu.kit.typicalc.view;
 
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
@@ -23,17 +21,17 @@ public class TypicalcI18NProvider implements I18NProvider {
      * Prefix of all language related .property-files
      */
     public static final String LANGUAGE_BUNDLE_PREFIX = "language.translation";
-    
+
     /**
      * Prefix of general, language independent .property file
      */
     public static final String GENERAL_BUNDLE_PREFIX = "language.general";
-    
-    private final ResourceBundle generalBundle = ResourceBundle.getBundle(GENERAL_BUNDLE_PREFIX);
+
+    private final transient ResourceBundle generalBundle = ResourceBundle.getBundle(GENERAL_BUNDLE_PREFIX);
 
     @Override
     public List<Locale> getProvidedLocales() {
-        return Collections.unmodifiableList(Arrays.asList(Locale.GERMAN, Locale.ENGLISH));
+        return List.of(Locale.GERMAN, Locale.ENGLISH);
     }
 
     @Override
@@ -41,7 +39,7 @@ public class TypicalcI18NProvider implements I18NProvider {
         if (key == null) {
             return StringUtils.EMPTY;
         }
-        
+
         final ResourceBundle bundle = ResourceBundle.getBundle(LANGUAGE_BUNDLE_PREFIX, locale);
         String translation;
 
@@ -52,7 +50,7 @@ public class TypicalcI18NProvider implements I18NProvider {
             try {
                 translation = this.generalBundle.getString(key);
             } catch (final MissingResourceException exception) {
-                // this should never be the case 
+                // this should never be the case
                 return key;
             }
         }

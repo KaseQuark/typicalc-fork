@@ -3,6 +3,8 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
+import java.util.Objects;
+
 /**
  * Models a type variable
  */
@@ -109,5 +111,22 @@ public class TypeVariable extends Type {
     public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
         //TODO
         return null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeVariable that = (TypeVariable) o;
+        return index == that.index && kind == that.kind;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(kind, index);
     }
 }

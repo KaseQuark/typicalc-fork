@@ -16,7 +16,7 @@ import edu.kit.typicalc.presenter.Presenter;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 
 /**
- * Contains all the displayed components and builds the applications user interface (UI). 
+ * Contains all the displayed components and builds the applications user interface (UI).
  * Vaadins app layout provides the rough structure of the UI. Using this structure the UI always
  * consists of an upper bar at the top of the screen and a drawer on the left side of
  * the screen.

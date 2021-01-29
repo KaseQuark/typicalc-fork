@@ -4,6 +4,7 @@ import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -34,8 +35,7 @@ public class TypeInfererLet extends TypeInferer {
      * @return the constraints needed in the outer inference
      */
     public List<Constraint> getLetConstraints() {
-        return null;
-        // TODO
+        return new ArrayList<>();
     }
 
 }

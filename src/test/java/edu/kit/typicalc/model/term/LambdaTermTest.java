@@ -10,7 +10,7 @@ import java.util.HashSet;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class LambdaTermTest {
+class LambdaTermTest {
 
     private static VarTerm x1;
     private static VarTerm x2;
@@ -30,17 +30,17 @@ public class LambdaTermTest {
     }
 
     @Test
-    public void freeVariablesVarTerm() {
+    void freeVariablesVarTerm() {
         assertEquals(new HashSet<>(Collections.singletonList(x1)), x1.getFreeVariables());
     }
 
     @Test
-    public void freeVariablesConstTerm() {
+    void freeVariablesConstTerm() {
         assertEquals(new HashSet<>(), c.getFreeVariables());
     }
 
     @Test
-    public void freeVariablesAbsTerm() {
+    void freeVariablesAbsTerm() {
         AbsTerm abs1 = new AbsTerm(x1, x2);
         assertEquals(new HashSet<>(Collections.singletonList(x2)), abs1.getFreeVariables());
 
@@ -61,7 +61,7 @@ public class LambdaTermTest {
     }
 
     @Test
-    public void freeVariablesAppTerm() {
+    void freeVariablesAppTerm() {
         AppTerm app1 = new AppTerm(x1, x1);
         assertEquals(new HashSet<>(Collections.singletonList(x1)), app1.getFreeVariables());
 
@@ -79,7 +79,7 @@ public class LambdaTermTest {
     }
 
     @Test
-    public void freeVariablesLetTerm() {
+    void freeVariablesLetTerm() {
         LetTerm let1 = new LetTerm(x1, x2, x1);
         assertEquals(new HashSet<>(Collections.singletonList(x2)), let1.getFreeVariables());
 
@@ -94,7 +94,7 @@ public class LambdaTermTest {
     }
 
     @Test
-    public void freeVariablesComplexTerm() {
+    void freeVariablesComplexTerm() {
         // let x1 = (x2 let x1 = \x2. x2 in x1) in x3 (\x3. x1 x4 \x4. x4)
         LetTerm let = new LetTerm(x1,
                 new AppTerm(x2, new LetTerm(x1, new AbsTerm(x2, x2), x1)),

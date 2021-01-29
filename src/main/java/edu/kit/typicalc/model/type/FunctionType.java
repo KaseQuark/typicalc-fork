@@ -3,6 +3,8 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
+import java.util.Objects;
+
 /**
  * Models the type of an abstraction/function.
  */
@@ -126,5 +128,22 @@ public class FunctionType extends Type {
      */
     public Type getParameter() {
         return parameter;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        FunctionType that = (FunctionType) o;
+        return Objects.equals(parameter, that.parameter) && Objects.equals(output, that.output);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(parameter, output);
     }
 }

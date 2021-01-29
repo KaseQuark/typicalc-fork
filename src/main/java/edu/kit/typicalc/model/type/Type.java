@@ -59,24 +59,4 @@ public abstract class Type {
      * @return the unification steps necessary, or an error if that is impossible
      */
     public abstract Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type);
-
-    /**
-     * Checks whether this is equal to another Type
-     * @param o the other Type
-     * @return whether this is equal to the other Type or not.
-     */
-    @Override
-    public boolean equals(Object o) {
-        if (this instanceof NamedType && o instanceof NamedType) {
-            return ((NamedType) o).getName().equals(((NamedType) this).getName());
-        }
-        if (this instanceof TypeVariable && o instanceof TypeVariable) {
-            return ((TypeVariable) o).getIndex() == ((TypeVariable) this).getIndex();
-        }
-        if (this instanceof FunctionType && o instanceof FunctionType) {
-            return (((FunctionType) o).getOutput().equals(((FunctionType) this).getOutput())
-                    && ((FunctionType) o).getParameter().equals(((FunctionType) this).getParameter()));
-        }
-        return false;
-    }
 }

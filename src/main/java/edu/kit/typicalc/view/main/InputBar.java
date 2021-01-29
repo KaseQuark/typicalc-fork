@@ -29,31 +29,32 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private final Button lambdaButton;
     private final ComboBox<String> inputField;
     private final Button inferTypeButton;
-     
+
     /**
      * Creates an InputBar with a Consumer-object to call the inferType()-method in UpperBar.
      *  The current user input is passed as the methods argument.
-     * 
+     *
      * @param callback Consumer to call the inferType()-method in UpperBar
      */
     protected InputBar(final Consumer<String> callback) {
         infoIcon =  new Icon(VaadinIcon.INFO_CIRCLE);
+        // TODO: where is this tooltip supposed to show up?
         infoTooltip = new Tooltip();
         initInfoTooltip();
         infoTooltip.attachToComponent(infoIcon);
         infoTooltip.setPosition(TooltipPosition.BOTTOM);
         infoTooltip.setAlignment(TooltipAlignment.TOP);
-        
+
         inputField = new ComboBox<>();
         initComboBox();
         lambdaButton = new Button(getTranslation("root.lambda"), event -> onlambdaButtonClick());
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        
+
         add(infoIcon, infoTooltip, lambdaButton, inputField, inferTypeButton);
         setAlignItems(FlexComponent.Alignment.CENTER);
     }
-    
+
     private void onTypeInferButtonClick(final Consumer<String> callback) {
         final Optional<String> currentInput = inputField.getOptionalValue();
         currentInput.ifPresentOrElse(callback::accept, () -> callback.accept(StringUtils.EMPTY));
@@ -67,7 +68,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setValue(inputBuilder.toString());
         inputField.focus();
     }
-    
+
     private void initComboBox() {
 	//TODO remove magic string in this method (used for demo)
 	inputField.setId("inputField");
@@ -75,7 +76,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 	inputField.setAllowCustomValue(true);
 	inputField.setItems("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)");
 	inputField.addCustomValueSetListener(event -> inputField.setValue(event.getDetail()));
-	
+
 	//TODO seems to be the only solution to "immediately" parse backslash
 	inputField.addValueChangeListener(event -> {
 	   if (inputField.getOptionalValue().isPresent()) {

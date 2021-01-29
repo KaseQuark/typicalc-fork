@@ -3,6 +3,8 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
+import java.util.Objects;
+
 /**
  * Models a simple named type.
  */
@@ -107,5 +109,22 @@ public class NamedType extends Type {
 	public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
 		//TODO
 		return null;
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		NamedType namedType = (NamedType) o;
+		return Objects.equals(name, namedType.name);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(name);
 	}
 }
