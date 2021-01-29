@@ -45,32 +45,32 @@ public class TypeInferenceView extends HorizontalLayout
         // todo implement
     }
 
-    //todo implement correctly
+    private void refreshElements(int currentStep) {
+        unification.showStep(currentStep);
+        tree.showStep(currentStep < tree.getStepCount() ? currentStep : tree.getStepCount() - 1);
+    }
+
     @Override
     public void firstStepButton() {
-        currentStep = 0;
-        unification.showStep(currentStep);
-        tree.showStep(currentStep);
+        currentStep = currentStep > tree.getStepCount() ? tree.getStepCount() : 0;
+        refreshElements(currentStep);
     }
 
     @Override
     public void lastStepButton() {
-        currentStep = unification.getStepCount() - 1;
-        unification.showStep(currentStep);
-        tree.showStep(tree.getStepCount() - 1);
+        currentStep = currentStep < tree.getStepCount() - 1 ? tree.getStepCount() - 1 : unification.getStepCount() - 1;
+        refreshElements(currentStep);
     }
 
     @Override
     public void nextStepButton() {
-        currentStep++;
-        unification.showStep(currentStep);
-        tree.showStep(currentStep);
+        currentStep = currentStep < unification.getStepCount() - 1 ? currentStep + 1 : currentStep;
+        refreshElements(currentStep);
     }
 
     @Override
     public void previousStepButton() {
-        currentStep--;
-        unification.showStep(currentStep);
-        tree.showStep(currentStep);
+        currentStep = currentStep > 0 ? currentStep - 1 : currentStep;
+        refreshElements(currentStep);
     }
 }
