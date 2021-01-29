@@ -52,7 +52,7 @@ public class TypeInferenceView extends HorizontalLayout
 
     @Override
     public void firstStepButton() {
-        currentStep = currentStep > tree.getStepCount() ? tree.getStepCount() : 0;
+        currentStep = currentStep > tree.getStepCount() ? tree.getStepCount() - 1 : 0;
         refreshElements(currentStep);
     }
 
