@@ -17,7 +17,6 @@ class LambdaParserTest {
     void varTerm() {
         LambdaParser parser = new LambdaParser("x");
         Result<LambdaTerm, ParseError> term = parser.parse();
-        System.out.println(term);
         assertEquals(new VarTerm("x"), term.unwrap());
     }
     @Test
@@ -87,7 +86,6 @@ class LambdaParserTest {
         assertEquals(ParseError.TOO_FEW_TOKENS, parser.parse().unwrapError());
         parser = new LambdaParser("x)");
         assertEquals(ParseError.UNEXPECTED_TOKEN, parser.parse().unwrapError());
-        System.out.println("parsing ??");
         parser = new LambdaParser("??");
         assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
         parser = new LambdaParser("123333333333333");
