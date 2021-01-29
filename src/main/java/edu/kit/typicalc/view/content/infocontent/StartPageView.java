@@ -32,6 +32,14 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         Scroller scroller = new Scroller(content);
         scroller.setSizeFull();
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
+        setAlignItems(Alignment.CENTER);
+        add(scroller, controlPanel);
+        disableControlPanel();
+        createContent();
+
+    }
+
+    private void createContent() {
         content.add(new MathjaxDisplay(getTranslation("abs-rule")));
         content.add(new MathjaxUnification("\\(conswwwwwwWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
                 + "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
@@ -42,32 +50,33 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
-        setAlignItems(Alignment.CENTER);
-        add(scroller, controlPanel);
+    }
+
+    private void disableControlPanel() {
+        controlPanel.setEnabledFirstStep(false);
+        controlPanel.setEnabledLastStep(false);
+        controlPanel.setEnabledNextStep(false);
+        controlPanel.setEnabledPreviousStep(false);
+        controlPanel.setEnabledShareButton(false);
     }
 
     @Override
     public void shareButton() {
-
     }
 
     @Override
     public void firstStepButton() {
-
     }
 
     @Override
     public void lastStepButton() {
-
     }
 
     @Override
     public void nextStepButton() {
-
     }
 
     @Override
     public void previousStepButton() {
-
     }
 }
