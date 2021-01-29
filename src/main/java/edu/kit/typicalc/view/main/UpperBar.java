@@ -15,6 +15,9 @@ import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 
 @CssImport("./styles/view/main/upper-bar.css")
+/**
+ * Contains all the components constantly shown in the upper part of the webage.
+ */
 public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     
     private final H1 viewTitle;
@@ -23,10 +26,14 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     
     private final MainViewListener presenter;
     
+    /**
+     * Initializes a new UpperBar with the provided mainViewListener.
+     * 
+     * @param presenter the listener used to communicate with the model
+     */
     protected UpperBar(final MainViewListener presenter) {
         this.presenter = presenter;
         
-        add(new DrawerToggle());
         this.viewTitle = new H1(getTranslation("root.typicalc"));
         viewTitle.setId("viewTitle");
         this.inputBar = new InputBar(this::typeInfer);
@@ -36,7 +43,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         
         viewTitle.addClickListener(event -> this.getUI().get().navigate(StartPageView.class));
         
-        add(viewTitle, inputBar, helpDialogIcon);
+        add(new DrawerToggle(), viewTitle, inputBar, helpDialogIcon);
         setId("header");
         getThemeList().set("dark", true); // remove magic string
         setWidthFull();
@@ -44,8 +51,13 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         setAlignItems(FlexComponent.Alignment.CENTER);
     }
     
+    /**
+     * Starts the type inference algorithm by passing the required arguments to the MainViewListener.
+     * 
+     * @param lambdaString the lambda term to be type-inferred
+     */
     protected void typeInfer(final String lambdaString) {
-        presenter.typeInferLambdaString(lambdaString, new HashMap<String, String>());
+        presenter.typeInferLambdaString(lambdaString, new HashMap<>());
     }
     
     private void createHelpDialog() {
