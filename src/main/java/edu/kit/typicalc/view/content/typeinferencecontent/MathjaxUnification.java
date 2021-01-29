@@ -1,13 +1,9 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
-import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.littemplate.LitTemplate;
-import com.vaadin.flow.component.notification.Notification;
 import edu.kit.typicalc.view.MathjaxAdapter;
-
-import java.util.Arrays;
 
 /**
  * Renders the constraints and unification from LaTeX using MathJax and allows step-by-
@@ -18,10 +14,7 @@ import java.util.Arrays;
 @JsModule("./src/mathjax-unification.ts")
 public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
-    private int stepCount = -1;
-//
-//    @Id("tc-content")
-//    private Div content;
+    private final String[] latex;
 
     /**
      * Creates a new HTML element that renders the constraints and unification and
@@ -29,21 +22,16 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
      * @param latex the LaTeX-String[] to render with MathJax
      */
     public MathjaxUnification(String[] latex) {
-        Notification.show(Arrays.toString(latex));
+        this.latex = latex;
         for (String s : latex) {
             getElement().callJsFunction("setTex", s);
         }
-        showStep(1);
-    }
-
-    @ClientCallable
-    private void setStepCount(int stepCount) {
-        this.stepCount = stepCount;
+        showStep(0);
     }
 
     @Override
     public int getStepCount() {
-        return this.stepCount;
+        return this.latex.length;
     }
 
     @Override
