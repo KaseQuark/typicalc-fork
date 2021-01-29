@@ -3,7 +3,8 @@ package edu.kit.typicalc.view.main;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
+
 import org.apache.commons.lang3.StringUtils;
 import com.vaadin.componentfactory.Tooltip;
 import com.vaadin.componentfactory.TooltipAlignment;
@@ -25,11 +26,15 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 @CssImport("./styles/view/main/input-bar.css")
 public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
+    private static final long serialVersionUID = -6099700300418752958L;
+   
+    private static final String INPUT_FIELD_ID = "inputField";
+    
     private final Tooltip infoTooltip;
     private final Icon infoIcon;
     private final Button exampleButton;
     private final Button lambdaButton;
-    private final TextArea inputField;
+    private final TextField inputField;
     private final Button inferTypeButton;
 
     /**
@@ -40,21 +45,19 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     protected InputBar(final Consumer<String> callback) {
         infoIcon =  new Icon(VaadinIcon.INFO_CIRCLE);
-        // TODO: where is this tooltip supposed to show up?
-        infoTooltip = new Tooltip();
+        // TODO: where is this tooltip supposed to show up? next to icon, currently not working
+        infoTooltip = new Tooltip(infoIcon, TooltipPosition.LEFT, TooltipAlignment.LEFT);
+        infoTooltip.add(new H5("Hallo"));
         initInfoTooltip();
-        infoTooltip.attachToComponent(infoIcon);
-        infoTooltip.setPosition(TooltipPosition.BOTTOM);
-        infoTooltip.setAlignment(TooltipAlignment.TOP);
-
-        inputField = new TextArea();
-        inputField.setId("inputField");
+        
+        inputField = new TextField();
+        inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
         //TODO seems to be the only solution to "immediately" parse backslash
         inputField.addValueChangeListener(event -> {
             if (inputField.getOptionalValue().isPresent()) {
                 String value = inputField.getValue();
-                value = value.replace("\\", "λ");
+                value = value.replace("\\", "λ"); //TODO exchange magic strings
                 inputField.setValue(value);
             }
         });
@@ -63,7 +66,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        add(infoIcon, infoTooltip, exampleButton, lambdaButton, inputField, inferTypeButton);
+        add(infoTooltip, infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
         setAlignItems(FlexComponent.Alignment.CENTER);
     }
 
