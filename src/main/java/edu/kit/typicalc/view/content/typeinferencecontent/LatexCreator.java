@@ -5,10 +5,9 @@ import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.*;
-import edu.kit.typicalc.model.type.FunctionType;
-import edu.kit.typicalc.model.type.NamedType;
-import edu.kit.typicalc.model.type.TypeVariable;
-import edu.kit.typicalc.model.type.TypeVisitor;
+import edu.kit.typicalc.model.type.*;
+
+import java.util.Map;
 
 /**
  * Generates LaTeX-code from a TypeInfererInterface object. Two mostly independent pie-
@@ -19,8 +18,12 @@ import edu.kit.typicalc.model.type.TypeVisitor;
  */
 public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
+    private static final String CONST = "Const";
+
+    private static final String NEW_LINE = System.lineSeparator();
     private static final String SPACE = " ";
     private static final String EQUAL_SIGN = "=";
+    private static final String DOLLAR_SIGN = "$";
     private static final String CURLY_LEFT = "{";
     private static final String CURLY_RIGHT = "}";
     private static final String UNDERSCORE = "_";
@@ -43,6 +46,8 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
     private static final String TEXTTT = "\\texttt";
     private static final String RIGHT_ARROW = "\\rightarrow";
+    private static final String INSTANTIATE_SIGN = "\\succeq";
+    private static final String LATEX_IN = "\\in";
     private static final String TREE_BEGIN = "\\begin{prooftree}";
     private static final String TREE_END = "\\end{prooftree}";
 
@@ -53,9 +58,13 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     private final boolean stepLabels;
 
     /**
-     * Needed for typeVisitor methods
+     * Needed for visitor methods
      */
     private String visitorBuffer = "";
+
+    /**
+     * Needed for visitor methods
+     */
     private boolean needsParentheses = false;
 
     /**
@@ -97,20 +106,24 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         return "the packages should be here";
     } // todo implement
 
-    private String conclusionToLatex(Conclusion conclusion) {
+    private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
 
-        return "{some text}";
+        return "{some other text}";
+    }
+
+    private String conclusionToLatex(Conclusion conclusion) {
+        String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
+        return "{$some text$}";
     }
 
     private StringBuilder generateConclusion(InferenceStep step, String label, String command) {
         StringBuilder conclusion = new StringBuilder();
         if (stepLabels) {
-            conclusion.append(label);
-            conclusion.append(System.lineSeparator());
+            conclusion.append(label).append(NEW_LINE);
         }
-        conclusion.append(command);
-        conclusion.append(conclusionToLatex(step.getConclusion()));
-        conclusion.append(System.lineSeparator());
+        conclusion.append(command)
+                .append(conclusionToLatex(step.getConclusion()))
+                .append(NEW_LINE);
         return conclusion;
     }
 
@@ -121,6 +134,21 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         String secondType = visitorBuffer;
         return firstType + SPACE + EQUAL_SIGN + SPACE + secondType;
     }
+
+    private String generateVarStepPremise(VarStep var) {
+        String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions());
+        var.getConclusion().getLambdaTerm().accept(this);
+        String term = visitorBuffer;
+        String type = generateTypeAbstraction(var.getTypeAbsInPremise());
+        return AXC + CURLY_LEFT + DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
+                + PAREN_RIGHT + EQUAL_SIGN + type + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
+    }
+
+    private String generateTypeAbstraction(TypeAbstraction abs) {
+        // todo implement
+        return "";
+    }
+
 
     // todo use generateConstraint
     @Override
@@ -145,28 +173,29 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     @Override
     public void visit(ConstStepDefault constD) {
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
-        // todo implement
-        StringBuilder temp = new StringBuilder();
-        temp.append(AXC).append("{const default}");
-        tree.insert(0, temp);
+        constD.getConclusion().getLambdaTerm().accept(this);
+        String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
+                + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
+        tree.insert(0, step);
     }
 
     @Override
     public void visit(VarStepDefault varD) {
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
-        // todo implement
-        StringBuilder temp = new StringBuilder();
-        temp.append(AXC).append("{var default}");
-        tree.insert(0, temp);
+        tree.insert(0, generateVarStepPremise(varD));
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
-        tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
-        // todo implement
-        StringBuilder temp = new StringBuilder();
-        temp.append(AXC).append("{var with let}");
-        tree.insert(0, temp);
+        tree.insert(0, generateConclusion(varL, LABEL_VAR, BIC));
+        String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
+        varL.getInstantiatedTypeAbs().accept(this);
+        String instantiatedType = visitorBuffer;
+        String premiseRight = AXC + CURLY_LEFT + DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
+                + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
+        tree.insert(0, premiseRight);
+        String premiseLeft = generateVarStepPremise(varL);
+        tree.insert(0, premiseLeft);
     }
 
     @Override
