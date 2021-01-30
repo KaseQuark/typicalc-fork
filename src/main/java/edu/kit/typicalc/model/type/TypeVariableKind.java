@@ -3,7 +3,7 @@ package edu.kit.typicalc.model.type;
 /**
  * Describes the kind of type variable (the context it was generated / it is used in).
  */
-public enum TypeVaribaleKind {
+public enum TypeVariableKind {
 
     /**
      * Used if the type variable was created from user input.

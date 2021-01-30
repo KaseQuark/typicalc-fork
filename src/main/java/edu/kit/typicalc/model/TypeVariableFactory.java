@@ -1,7 +1,7 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.type.TypeVariable;
-import edu.kit.typicalc.model.type.TypeVaribaleKind;
+import edu.kit.typicalc.model.type.TypeVariableKind;
 
 /**
  * Provides unique type variables on demand.
@@ -10,7 +10,7 @@ public class TypeVariableFactory {
 
     private static final int FIRST_VARIABLE_INDEX = 1;
 
-    private final TypeVaribaleKind kind;
+    private final TypeVariableKind kind;
     private int nextVariableIndex;
 
     /**
@@ -18,7 +18,7 @@ public class TypeVariableFactory {
      *
      * @param kind the kind of the created type variables
      */
-    protected TypeVariableFactory(TypeVaribaleKind kind) {
+    protected TypeVariableFactory(TypeVariableKind kind) {
         this.kind = kind;
         nextVariableIndex = FIRST_VARIABLE_INDEX;
     }

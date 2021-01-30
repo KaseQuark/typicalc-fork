@@ -5,7 +5,7 @@ import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
-import edu.kit.typicalc.model.type.TypeVaribaleKind;
+import edu.kit.typicalc.model.type.TypeVariableKind;
 
 import java.util.HashMap;
 import java.util.List;
@@ -55,7 +55,7 @@ public class TypeInferer implements TypeInfererInterface {
     }
 
     private Map<VarTerm, TypeAbstraction> createAssForFreeVariables(LambdaTerm lambdaTerm) {
-        TypeVariableFactory typeVarFactory = new TypeVariableFactory(TypeVaribaleKind.GENERATED_TYPE_ASSUMPTION);
+        TypeVariableFactory typeVarFactory = new TypeVariableFactory(TypeVariableKind.GENERATED_TYPE_ASSUMPTION);
         Set<VarTerm> freeVariables = lambdaTerm.getFreeVariables();
 
         Map<VarTerm, TypeAbstraction> generatedTypeAss = new HashMap<>();

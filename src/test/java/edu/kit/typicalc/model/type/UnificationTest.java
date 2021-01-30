@@ -13,9 +13,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class UnificationTest {
     @Test
     void all() {
-        TypeVariable a1 = new TypeVariable(TypeVaribaleKind.TREE, 1);
-        TypeVariable a2 = new TypeVariable(TypeVaribaleKind.TREE, 2);
-        TypeVariable a3 = new TypeVariable(TypeVaribaleKind.TREE, 3);
+        TypeVariable a1 = new TypeVariable(TypeVariableKind.TREE, 1);
+        TypeVariable a2 = new TypeVariable(TypeVariableKind.TREE, 2);
+        TypeVariable a3 = new TypeVariable(TypeVariableKind.TREE, 3);
         FunctionType id = new FunctionType(a1, a1);
         FunctionType fun = new FunctionType(a2, a3);
         NamedType string = new NamedType("string");

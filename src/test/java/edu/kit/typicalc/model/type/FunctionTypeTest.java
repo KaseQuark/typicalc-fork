@@ -14,9 +14,9 @@ class FunctionTypeTest {
 
     @Test
     void substitute() {
-        TypeVariable typeVariable1 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 1);
-        TypeVariable typeVariable2 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 2);
-        TypeVariable typeVariable3 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 3);
+        TypeVariable typeVariable1 = new TypeVariable(TypeVariableKind.USER_INPUT, 1);
+        TypeVariable typeVariable2 = new TypeVariable(TypeVariableKind.USER_INPUT, 2);
+        TypeVariable typeVariable3 = new TypeVariable(TypeVariableKind.USER_INPUT, 3);
 
         FunctionType functionType1 = new FunctionType(typeVariable1, typeVariable2);
 
@@ -27,10 +27,10 @@ class FunctionTypeTest {
 
     @Test
     void substitute2() {
-        TypeVariable typeVariable1 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 1);
-        TypeVariable typeVariable2 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 2);
-        TypeVariable typeVariable3 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 3);
-        TypeVariable typeVariable4 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 4);
+        TypeVariable typeVariable1 = new TypeVariable(TypeVariableKind.USER_INPUT, 1);
+        TypeVariable typeVariable2 = new TypeVariable(TypeVariableKind.USER_INPUT, 2);
+        TypeVariable typeVariable3 = new TypeVariable(TypeVariableKind.USER_INPUT, 3);
+        TypeVariable typeVariable4 = new TypeVariable(TypeVariableKind.USER_INPUT, 4);
 
         FunctionType functionType1 = new FunctionType(typeVariable1, typeVariable2);
         FunctionType functionType2 = new FunctionType(functionType1, typeVariable3);

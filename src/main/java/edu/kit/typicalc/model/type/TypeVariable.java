@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public class TypeVariable extends Type {
 
-    private final TypeVaribaleKind kind;
+    private final TypeVariableKind kind;
     private final int index;
 
     /**
@@ -19,7 +19,7 @@ public class TypeVariable extends Type {
      * @param kind the kind of type variable
      * @param index the index of this variable
      */
-    public TypeVariable(TypeVaribaleKind kind, int index) {
+    public TypeVariable(TypeVariableKind kind, int index) {
         this.kind = kind;
         this.index = index;
     }
@@ -28,7 +28,7 @@ public class TypeVariable extends Type {
      * Returns the kind of the type variable.
      * @return the variable's kind
      */
-    public TypeVaribaleKind getKind() {
+    public TypeVariableKind getKind() {
         return kind;
     }
 
