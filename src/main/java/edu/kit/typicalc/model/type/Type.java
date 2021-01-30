@@ -42,7 +42,7 @@ public abstract class Type {
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
-    public abstract Result<UnificationActions, UnificationError> constrainEqualToFunction(Type type);
+    public abstract Result<UnificationActions, UnificationError> constrainEqualToFunction(FunctionType type);
 
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a

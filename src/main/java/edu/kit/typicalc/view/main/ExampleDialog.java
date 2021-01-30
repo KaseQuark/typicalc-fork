@@ -11,12 +11,17 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ExampleDialog extends Dialog implements LocaleChangeObserver {
+    
+    private static final long serialVersionUID = 8718432784530464215L;
+    
     private static final List<String> EXAMPLES =
             List.of("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)");
+    private final Paragraph instruction;
 
     public ExampleDialog(Consumer<String> callback) {
         VerticalLayout layout = new VerticalLayout();
-        layout.add(new Paragraph(getTranslation("root.selectExample")));
+        instruction = new Paragraph(getTranslation("root.selectExample"));
+        layout.add(instruction);
         for (String term : EXAMPLES) {
             Button button = new Button(term);
             button.addClickListener(click -> callback.accept(term));
@@ -27,6 +32,6 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-        // TODO
+        instruction.setText(getTranslation("root.selectExample"));
     }
 }

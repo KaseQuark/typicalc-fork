@@ -13,3 +13,7 @@
 #inputField {
 	height: 2.3em;
 }
+
+#inputBar {
+	align-items: center;
+}

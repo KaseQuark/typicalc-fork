@@ -4,27 +4,35 @@ import java.util.HashMap;
 
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
-import com.vaadin.flow.i18n.LocaleChangeObserver;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 
-@CssImport("./styles/view/main/upper-bar.css")
 /**
  * Contains all the components constantly shown in the upper part of the webage.
  */
-public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
+@CssImport("./styles/view/main/upper-bar.css")
+public class UpperBar extends HorizontalLayout {
+    
+    private static final long serialVersionUID = -7344967027514015830L;
+    
+    /*
+     * Id's for the imported css-file
+     */
+    private static final String VIEW_TITLE_ID = "viewTitle";
+    private static final String INPUT_BAR_ID = "inputBar";
+    private static final String HELP_ICON_ID = "helpIcon";
+    private static final String UPPER_BAR_ID = "header";
     
     private final H1 viewTitle;
     private final InputBar inputBar;
-    private final Icon helpDialogIcon;
+    private final Icon helpIcon;
     
-    private final MainViewListener presenter;
+    private final transient MainViewListener presenter;
     
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
@@ -35,20 +43,18 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         this.presenter = presenter;
         
         this.viewTitle = new H1(getTranslation("root.typicalc"));
-        viewTitle.setId("viewTitle");
-        this.inputBar = new InputBar(this::typeInfer);
-        inputBar.setId("inputBar");
-        this.helpDialogIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
-        helpDialogIcon.setId("icon");
-        
         viewTitle.addClickListener(event -> this.getUI().get().navigate(StartPageView.class));
-        
-        add(new DrawerToggle(), viewTitle, inputBar, helpDialogIcon);
-        setId("header");
-        getThemeList().set("dark", true); // remove magic string
-        setWidthFull();
+        viewTitle.setId(VIEW_TITLE_ID);
+        this.inputBar = new InputBar(this::typeInfer);
+        inputBar.setId(INPUT_BAR_ID);
+        this.helpIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
+        helpIcon.addClickListener(event -> onHelpIconClick());
+        helpIcon.setId(HELP_ICON_ID);
+                
+        add(new DrawerToggle(), viewTitle, inputBar, helpIcon);
+        setId(UPPER_BAR_ID);
+        getThemeList().set("dark", true); //TODO remove magic string
         setSpacing(false);
-        setAlignItems(FlexComponent.Alignment.CENTER);
     }
     
     /**
@@ -60,12 +66,8 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         presenter.typeInferLambdaString(lambdaString, new HashMap<>());
     }
     
-    private void createHelpDialog() {
-        //TODO create help dialog here --> maybe move to separate class if too big
-    }
-
-    @Override
-    public void localeChange(LocaleChangeEvent event) {
-        // TODO Auto-generated method stub
-    }
+    private void onHelpIconClick() {
+        Dialog helpDialog = new HelpDialog();
+        helpDialog.open();
+    }    
 }

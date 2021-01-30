@@ -2,29 +2,58 @@ package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H4;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
+@CssImport("./styles/view/main/inference-rule-field.css")
 @JsModule("./src/copy-to-clipboard.js")
-public class InferenceRuleField extends Div implements LocaleChangeObserver {
+public class InferenceRuleField extends VerticalLayout implements LocaleChangeObserver {
     
-    private final String latex;
+    private static final long serialVersionUID = -8551851183297707985L;
+    
+    /*
+     * Id's for the imported css-file
+     */
+    private static final String INFERENCE_RULE_FIELD_ID = "inferenceRuleField";
+    private static final String HEADER_ID = "headerField";
+    private static final String MAIN_ID = "main";
+    private static final String RULE_NAME_ID = "ruleName";
+    
     private final String nameKey;
     private final Button copyButton;
+    private final H4 ruleName;
+    private final MathjaxDisplay rule;
     
     public InferenceRuleField(final String latex, final String nameKey) {
-        this.latex = latex;
         this.nameKey = nameKey;
-        this.copyButton = new Button(getTranslation("root.copyLatex"), 
-                event -> UI.getCurrent().getPage().executeJs("window.copyToClipboard($0)", latex));
+        
+        final HorizontalLayout header = new HorizontalLayout();
+        header.setId(HEADER_ID);
+        this.ruleName = new H4(getTranslation(nameKey));
+        ruleName.setId(RULE_NAME_ID);
+        header.add(ruleName);
+        
+        final VerticalLayout main = new VerticalLayout();
+        main.setId(MAIN_ID);
+        this.copyButton = new Button(getTranslation("root.copyLatex"), new Icon(VaadinIcon.CLIPBOARD));
+        this.rule = new MathjaxDisplay(latex); //TODO scale, when method implemented
+        copyButton.addClickListener(event -> UI.getCurrent().getPage().executeJs("window.copyToClipboard($0)", latex));
+        main.add(rule, copyButton);
+        add(header, main);
+        setId(INFERENCE_RULE_FIELD_ID);
     }
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
         copyButton.setText(getTranslation("root.copyLatex"));
-        //TODO use nameKey to change name of rule, when attribute is created
+        ruleName.setText(getTranslation(nameKey));
     }
 
 }

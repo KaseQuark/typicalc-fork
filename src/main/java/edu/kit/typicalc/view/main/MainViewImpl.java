@@ -9,6 +9,9 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+
 import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
@@ -17,7 +20,7 @@ import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 
 /**
  * Contains all the displayed components and builds the applications user interface (UI).
- * Vaadins app layout provides the rough structure of the UI. Using this structure the UI always
+ * Vaadin's app layout provides the rough structure of the UI. Using this structure the UI always
  * consists of an upper bar at the top of the screen and a drawer on the left side of
  * the screen.
  */
@@ -25,6 +28,7 @@ import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 @JsModule("./styles/shared-styles.js")
 @JavaScript("./src/tex-svg-full.js")
 public class MainViewImpl extends AppLayout implements MainView {
+    private static final long serialVersionUID = -2411433187835906976L;
 
     /**
      * Creates a new MainViewImpl.
@@ -43,13 +47,16 @@ public class MainViewImpl extends AppLayout implements MainView {
 
     @Override
     public void displayError(final ParseError error) {
-	//TODO add error keys to bundle
+        //TODO add error keys to bundle
+        final VerticalLayout container = new VerticalLayout();
         final Span errorText = new Span(getTranslation("root." + error.toString()));
         final Notification errorNotification = new Notification();
         final Button closeButton = new Button(getTranslation("root.close"), event -> errorNotification.close());
 
         errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        errorNotification.add(errorText, closeButton);
+        container.add(errorText, closeButton);
+        container.setAlignItems(FlexComponent.Alignment.CENTER);
+        errorNotification.add(container);
         errorNotification.setPosition(Position.MIDDLE);
         errorNotification.open();
     }

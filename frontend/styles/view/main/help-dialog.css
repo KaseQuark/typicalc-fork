@@ -1,0 +1,9 @@
+#contentLayout {
+	height: 80vh;
+}
+
+#headingLayout {
+	width: 80vw;
+	align-items: center;
+	justify-content: center;
+}

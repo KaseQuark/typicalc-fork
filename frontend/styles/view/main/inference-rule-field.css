@@ -1,0 +1,30 @@
+#inferenceRuleField {
+	display: flex;
+	align-items: center;
+	border: 2px solid #e8e8e8;
+	border-radius: 5px;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+	margin-top: 0.25em;
+	margin-bottom: 0.25em;
+	padding: 0px;
+}
+
+#headerField {
+	border-bottom: 2px solid #e8e8e8;
+	background-color: #f8f8f8;
+	align-items: center;
+	justify-content: center;
+	width: 100%;
+	padding: 0.5em 0em;
+}
+
+#ruleName {
+	margin: 1px;
+}
+
+#main {
+	align-items: center;
+	width: 100%;
+	margin: 0px;
+	padding-top: 0.2em;
+}

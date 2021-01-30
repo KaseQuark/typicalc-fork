@@ -22,7 +22,8 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
 
     private final Div content;
     private final ControlPanel controlPanel;
-    MathjaxProofTree mjxPT;
+    MathjaxProofTree tree;
+    MathjaxUnification unification;
 
     public StartPageView() {
         // todo implement correctly
@@ -35,18 +36,20 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
-        disableControlPanel();
+//        disableControlPanel();
         createContent();
 
     }
 
     private void createContent() {
+        String[] strings = new String[]{"$\\tau_0$", "$\\tau_1$", "$\\tau_2$", "$\\tau_3$", "$\\tau_4$",
+                "$\\tau_5$", "$\\tau_6$", "$\\tau_7$", "$\\tau_8$", "$\\tau_9$", "$\\tau_{10}$", "$\\tau_{11}$",
+                "$\\tau_{12}$", "$\\tau_{13}$", "$\\tau_{14}$"};
         content.add(new MathjaxDisplay(getTranslation("abs-rule")));
-        content.add(new MathjaxUnification("\\(conswwwwwwWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
-                + "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
-                + "WWWWWWWWWWWWWWWWWWWWWtraint test \\vdash \\)"));
-        mjxPT = new MathjaxProofTree(getTranslation("demo-tree"));
-        content.add(mjxPT);
+        unification = new MathjaxUnification(strings);
+        tree = new MathjaxProofTree(getTranslation("demo-tree"));
+        content.add(unification);
+        content.add(tree);
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
         content.add(new MathjaxProofTree(getTranslation("demo-tree")));
@@ -55,8 +58,8 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
 
     private void disableControlPanel() {
         // todo disable everything
-//        controlPanel.setEnabledFirstStep(false);
-//        controlPanel.setEnabledLastStep(false);
+        controlPanel.setEnabledFirstStep(false);
+        controlPanel.setEnabledLastStep(false);
         controlPanel.setEnabledNextStep(false);
         controlPanel.setEnabledPreviousStep(false);
         controlPanel.setEnabledShareButton(false);
@@ -66,21 +69,33 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
     public void shareButton() {
     }
 
+    private int currentStep = 0;
+    private void refreshElements(int currentStep) {
+        unification.showStep(currentStep);
+        tree.showStep(currentStep < tree.getStepCount() ? currentStep : tree.getStepCount() - 1);
+    }
+
     @Override
     public void firstStepButton() {
-        mjxPT.showStep(0);
+        currentStep = currentStep > tree.getStepCount() ? tree.getStepCount() - 1 : 0;
+        refreshElements(currentStep);
     }
 
     @Override
     public void lastStepButton() {
-        mjxPT.showStep(5);
+        currentStep = currentStep < tree.getStepCount() - 1 ? tree.getStepCount() - 1 : unification.getStepCount() - 1;
+        refreshElements(currentStep);
     }
 
     @Override
     public void nextStepButton() {
+        currentStep = currentStep < unification.getStepCount() - 1 ? currentStep + 1 : currentStep;
+        refreshElements(currentStep);
     }
 
     @Override
     public void previousStepButton() {
+        currentStep = currentStep > 0 ? currentStep - 1 : currentStep;
+        refreshElements(currentStep);
     }
 }

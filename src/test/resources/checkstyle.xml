@@ -8,6 +8,11 @@
     <property name="severity" value="warning"/>
     <module name="TreeWalker">
         <property name="tabWidth" value="4"/>
+        <module name="RegexpSinglelineJava">
+            <property name="format" value="^\t"/>
+            <property name="message" value="Line has leading tab characters; indentation should be performed with spaces only."/>
+            <property name="ignoreComments" value="true"/>
+        </module>
         <module name="JavadocType">
             <property name="scope" value="package"/>
             <property name="severity" value="info"/>

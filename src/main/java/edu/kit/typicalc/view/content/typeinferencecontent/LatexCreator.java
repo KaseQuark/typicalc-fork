@@ -76,7 +76,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     /**
      * @return the LaTeX-code for constraints nad unification
      */
-    protected String getUnification() {
+    protected String[] getUnification() {
         return null;
     } // todo implement
 
@@ -88,7 +88,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     } // todo implement
 
     private String conclusionToLatex(Conclusion conclusion) {
-        // todo implement
+
         return "{some text}";
     }
 
