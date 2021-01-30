@@ -41,23 +41,7 @@ public class FunctionType extends Type {
      */
     @Override
     public FunctionType substitute(TypeVariable a, Type b) {
-        boolean first = false;
-        boolean second = false;
-        if (this.parameter.contains(a)) {
-            first = true;
-        }
-        if (this.output.contains(a)) {
-             second = true;
-        }
-        if (first && second) {
-            return new FunctionType(parameter.substitute(a, b), output.substitute(a, b));
-        } else if (first) {
-            return new FunctionType(parameter.substitute(a, b), output);
-        } else if (second) {
-            return new FunctionType(parameter, output.substitute(a, b));
-        } else {
-            return this;
-        }
+        return new FunctionType(parameter.substitute(a, b), output.substitute(a, b));
     }
 
     /**
