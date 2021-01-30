@@ -24,6 +24,8 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     private static final String SPACE = " ";
     private static final String EQUAL_SIGN = "=";
     private static final String DOLLAR_SIGN = "$";
+    private static final String DOT_SIGN = ".";
+    private static final String COLON = ":";
     private static final String CURLY_LEFT = "{";
     private static final String CURLY_RIGHT = "}";
     private static final String UNDERSCORE = "_";
@@ -44,6 +46,8 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     private static final String GENERATED_ASSUMPTION_VARIABLE = "\\beta";
     private static final String USER_VARIABLE = "\\tau";
 
+    private static final String LAMBDA = "\\lambda";
+    private static final String LATEX_SPACE = "\\ ";
     private static final String TEXTTT = "\\texttt";
     private static final String RIGHT_ARROW = "\\rightarrow";
     private static final String INSTANTIATE_SIGN = "\\succeq";
@@ -107,7 +111,10 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     } // todo implement
 
     private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
-
+//        typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
+//            varTerm.accept(this);
+//            visitorBuffer
+//        }));
         return "{some other text}";
     }
 
@@ -209,27 +216,41 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
     @Override
     public void visit(AppTerm appTerm) {
-
+        appTerm.getFunction().accept(this);
+        String function = visitorBuffer;
+        appTerm.getParameter().accept(this);
+        String parameter = needsParentheses ? PAREN_LEFT + visitorBuffer + PAREN_RIGHT : visitorBuffer;
+        needsParentheses = true;
+        visitorBuffer = function + LATEX_SPACE + parameter;
     }
 
     @Override
     public void visit(AbsTerm absTerm) {
-
-    }
-
-    @Override
-    public void visit(LetTerm letTerm) {
-
+        absTerm.getVariable().accept(this);
+        String variable = visitorBuffer;
+        absTerm.getInner().accept(this);
+        String inner = visitorBuffer;
+        needsParentheses = false;
+        visitorBuffer = LAMBDA + SPACE + variable + DOT_SIGN + LATEX_SPACE + inner;
     }
 
     @Override
     public void visit(VarTerm varTerm) {
-
+        needsParentheses = false;
+        visitorBuffer = TEXTTT + CURLY_LEFT + varTerm.getName() + CURLY_RIGHT;
     }
 
     @Override
     public void visit(ConstTerm constTerm) {
+        // todo implement correctly (with extended termVisitor)
+        String constant = visitorBuffer;
+        needsParentheses = false;
+        visitorBuffer = TEXTTT + CURLY_LEFT + constant + CURLY_RIGHT;
+    }
 
+    @Override
+    public void visit(LetTerm letTerm) {
+        // todo implement
     }
 
 
