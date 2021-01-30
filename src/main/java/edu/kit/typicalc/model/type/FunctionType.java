@@ -10,8 +10,8 @@ import java.util.Objects;
  */
 public class FunctionType extends Type {
 
-    private Type parameter;
-    private Type output;
+    private final Type parameter;
+    private final Type output;
     /**
      * Initializes a new FunctionType with the given parameter and output types.
      * @param parameter the type of this function’s parameter
@@ -60,9 +60,9 @@ public class FunctionType extends Type {
      * @param type  the other type
      * @return unification steps necessary, or an error if that is impossible
      */
+    @Override
     public Result<UnificationActions, UnificationError> constrainEqualTo(Type type) {
-        //TODO
-        return null;
+        return type.constrainEqualToFunction(this);
     }
 
     /**
@@ -71,9 +71,9 @@ public class FunctionType extends Type {
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
-    public Result<UnificationActions, UnificationError> constrainEqualToFunction(Type type) {
-        //TODO
-        return null;
+    @Override
+    public Result<UnificationActions, UnificationError> constrainEqualToFunction(FunctionType type) {
+        return UnificationUtil.functionFunction(this, type);
     }
 
     /**
@@ -82,9 +82,9 @@ public class FunctionType extends Type {
      * @param type the named type
      * @return unification steps necessary, or an error if that is impossible
      */
+    @Override
     public Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type) {
-        //TODO
-        return null;
+        return UnificationUtil.functionNamed(this, type);
     }
 
     /**
@@ -93,9 +93,9 @@ public class FunctionType extends Type {
      * @param type the type variable
      * @return the unification steps necessary, or an error if that is impossible
      */
+    @Override
     public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
-        //TODO
-        return null;
+        return UnificationUtil.functionVariable(this, type);
     }
 
     /**

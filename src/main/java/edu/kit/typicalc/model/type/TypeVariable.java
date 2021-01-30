@@ -56,6 +56,7 @@ public class TypeVariable extends Type {
      * @param b the type to insert
      * @return itself, or b if a is equal to this object
      */
+    @Override
     public Type substitute(TypeVariable a, Type b) {
         if (this.equals(a)) {
         return b;
@@ -79,9 +80,9 @@ public class TypeVariable extends Type {
      * @param type  the other type
      * @return unification steps necessary, or an error if that is impossible
      */
+    @Override
     public Result<UnificationActions, UnificationError> constrainEqualTo(Type type) {
-        //TODO
-        return null;
+        return type.constrainEqualToVariable(this);
     }
 
     /**
@@ -90,9 +91,9 @@ public class TypeVariable extends Type {
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
-    public Result<UnificationActions, UnificationError> constrainEqualToFunction(Type type) {
-        //TODO
-        return null;
+    @Override
+    public Result<UnificationActions, UnificationError> constrainEqualToFunction(FunctionType type) {
+        return UnificationUtil.functionVariable(type, this);
     }
 
     /**
@@ -101,9 +102,9 @@ public class TypeVariable extends Type {
      * @param type the named type
      * @return unification steps necessary, or an error if that is impossible
      */
+    @Override
     public Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type) {
-        //TODO
-        return null;
+        return UnificationUtil.variableNamed(this, type);
     }
 
     /**
@@ -112,9 +113,9 @@ public class TypeVariable extends Type {
      * @param type the type variable
      * @return the unification steps necessary, or an error if that is impossible
      */
+    @Override
     public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
-        //TODO
-        return null;
+        return UnificationUtil.variableVariable(this, type);
     }
 
     @Override

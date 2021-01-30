@@ -18,7 +18,7 @@ public class NamedType extends Type {
 	 */
 	public static final NamedType INT = new NamedType("int");
 
-	private String name;
+	private final String name;
 
 	/**
 	 * Initializes a new NamedType with the given name.
@@ -72,9 +72,9 @@ public class NamedType extends Type {
 	 * @param type  the other type
 	 * @return unification steps necessary, or an error if that is impossible
 	 */
+	@Override
 	public Result<UnificationActions, UnificationError> constrainEqualTo(Type type) {
-		//TODO
-		return null;
+		return type.constrainEqualToNamedType(this);
 	}
 
 	/**
@@ -83,9 +83,9 @@ public class NamedType extends Type {
 	 * @param type the function type
 	 * @return unification steps necessary, or an error if that is impossible
 	 */
-	public Result<UnificationActions, UnificationError> constrainEqualToFunction(Type type) {
-		//TODO
-		return null;
+	@Override
+	public Result<UnificationActions, UnificationError> constrainEqualToFunction(FunctionType type) {
+		return UnificationUtil.functionNamed(type, this);
 	}
 
 	/**
@@ -94,9 +94,9 @@ public class NamedType extends Type {
 	 * @param type the named type
 	 * @return unification steps necessary, or an error if that is impossible
 	 */
+	@Override
 	public Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type) {
-		//TODO
-		return null;
+		return UnificationUtil.namedNamed(this, type);
 	}
 
 	/**
@@ -105,9 +105,9 @@ public class NamedType extends Type {
 	 * @param type the type variable
 	 * @return the unification steps necessary, or an error if that is impossible
 	 */
+	@Override
 	public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
-		//TODO
-		return null;
+		return UnificationUtil.variableNamed(type, this);
 	}
 
 	@Override

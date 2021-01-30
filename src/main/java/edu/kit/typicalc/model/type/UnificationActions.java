@@ -4,14 +4,15 @@ import edu.kit.typicalc.model.Constraint;
 import edu.kit.typicalc.model.Substitution;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 /**
  * Models the necessary actions to process a constraint.
  */
 public class UnificationActions {
-    private Collection<Constraint> constraints;
-    private Optional<Substitution> substitution;
+    private final Collection<Constraint> constraints;
+    private final Optional<Substitution> substitution;
 
     /**
      * Initializes this object using the provided constraints and substitution.
@@ -21,6 +22,14 @@ public class UnificationActions {
     protected UnificationActions(Collection<Constraint> constraints, Optional<Substitution> substitution) {
         this.constraints = constraints;
         this.substitution = substitution;
+    }
+
+    /**
+     * Initializes an empty object.
+     */
+    protected UnificationActions() {
+        this.constraints = Collections.emptyList();
+        this.substitution = Optional.empty();
     }
 
     /**
