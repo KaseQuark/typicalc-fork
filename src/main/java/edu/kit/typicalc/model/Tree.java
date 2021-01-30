@@ -146,8 +146,7 @@ public class Tree implements TermVisitorTree {
     }
 
     @Override
-    public InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType)
-            throws IllegalStateException {
+    public InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         TypeAbstraction premiseAbs = typeAssumptions.get(varTerm);
         if (premiseAbs == null) {
             throw new IllegalStateException("Cannot create VarStep for VarTerm '"

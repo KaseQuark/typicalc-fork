@@ -5,6 +5,7 @@ import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.NamedType;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -24,6 +25,12 @@ class ConclusionTest {
     static void setUp() {
         typeAssumptions.put(new VarTerm("var2"), new TypeAbstraction(new NamedType("type2"), new ArrayList<>()));
     }
+
+    @Test
+    void equalsTest() {
+        EqualsVerifier.forClass(Conclusion.class).usingGetClass().verify();
+    }
+
 
     @Test
     void getTypeAssumptionsTest() {
