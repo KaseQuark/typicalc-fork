@@ -24,15 +24,14 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
  */
 @CssImport("./styles/view/main/input-bar.css")
 public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
-
     private static final long serialVersionUID = -6099700300418752958L;
-   
+
     /*
      * Id's for the imported css-file
      */
     private static final String INPUT_FIELD_ID = "inputField";
     private static final String INPUT_BAR_ID = "inputBar";
-    
+
     private final Tooltip infoTooltip;
     private final Icon infoIcon;
     private final Button exampleButton;
@@ -42,17 +41,17 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     /**
      * Creates an InputBar with a Consumer-object to call the inferType()-method in UpperBar.
-     *  The current user input is passed as the methods argument.
+     * The current user input is passed as the methods argument.
      *
      * @param callback Consumer to call the inferType()-method in UpperBar
      */
     protected InputBar(final Consumer<String> callback) {
-        infoIcon =  new Icon(VaadinIcon.INFO_CIRCLE);
+        infoIcon = new Icon(VaadinIcon.INFO_CIRCLE);
         // TODO: where is this tooltip supposed to show up? next to icon, currently not working
         infoTooltip = new Tooltip(infoIcon, TooltipPosition.LEFT, TooltipAlignment.LEFT);
         infoTooltip.add(new H5("Hallo"));
         initInfoTooltip();
-        
+
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
@@ -93,7 +92,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void initInfoTooltip() {
-	infoTooltip.add(new H5("Hallo"));
+        infoTooltip.add(new H5("Hallo"));
     }
 
     @Override

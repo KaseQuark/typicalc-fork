@@ -10,16 +10,16 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 public class DrawerContent extends VerticalLayout implements LocaleChangeObserver {
 
     private static final long serialVersionUID = -5751275682270653335L;
-    
+
     /*
-     * Id's for the imported css-file
+     * IDs for the imported CSS file
      */
     private static final String RULE_CONTAINER_ID = "ruleContainer";
     private static final String DRAWER_CONTENT_ID = "drawerContent";
 
     private final H3 heading;
     private final VerticalLayout ruleContainer;
-    
+
     public DrawerContent() {
         heading = new H3(getTranslation("root.inferenceRules"));
         ruleContainer = new VerticalLayout();
@@ -28,18 +28,18 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
         add(heading, ruleContainer);
         setId(DRAWER_CONTENT_ID);
     }
-    
+
     private void initRuleContainer() {
-	//TODO just demo content, exchange with correct rules
-	ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-	ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-	ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-	ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-	ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
+        //TODO just demo content, exchange with correct rules
+        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
     }
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-	heading.setText(getTranslation("root.inferenceRules"));
+        heading.setText(getTranslation("root.inferenceRules"));
     }
 }

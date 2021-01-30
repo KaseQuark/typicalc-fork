@@ -20,7 +20,7 @@ import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 
 /**
  * Contains all the displayed components and builds the applications user interface (UI).
- * Vaadins app layout provides the rough structure of the UI. Using this structure the UI always
+ * Vaadin's app layout provides the rough structure of the UI. Using this structure the UI always
  * consists of an upper bar at the top of the screen and a drawer on the left side of
  * the screen.
  */
@@ -28,7 +28,6 @@ import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 @JsModule("./styles/shared-styles.js")
 @JavaScript("./src/tex-svg-full.js")
 public class MainViewImpl extends AppLayout implements MainView {
-
     private static final long serialVersionUID = -2411433187835906976L;
 
     /**
@@ -48,8 +47,8 @@ public class MainViewImpl extends AppLayout implements MainView {
 
     @Override
     public void displayError(final ParseError error) {
-	//TODO add error keys to bundle
-	final VerticalLayout container = new VerticalLayout();
+        //TODO add error keys to bundle
+        final VerticalLayout container = new VerticalLayout();
         final Span errorText = new Span(getTranslation("root." + error.toString()));
         final Notification errorNotification = new Notification();
         final Button closeButton = new Button(getTranslation("root.close"), event -> errorNotification.close());
