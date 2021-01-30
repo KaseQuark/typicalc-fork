@@ -30,7 +30,10 @@ public class UnificationActions {
     public Collection<Constraint> getConstraints() {
         return constraints;
     }
-
+    /**
+     * Getter for substitution
+     * @return the substitution stored in this object
+     */
     public Optional<Substitution> getSubstitution() {
         return substitution;
     }

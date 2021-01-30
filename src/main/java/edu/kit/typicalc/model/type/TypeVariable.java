@@ -64,6 +64,10 @@ public class TypeVariable extends Type {
         }
     }
 
+    /**
+     * Accepts a visitor.
+     * @param typeVisitor the visitor that wants to visit this
+     */
     public void accept(TypeVisitor typeVisitor) {
         typeVisitor.visit(this);
     }
