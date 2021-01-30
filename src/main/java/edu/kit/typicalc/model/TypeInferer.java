@@ -47,8 +47,6 @@ public class TypeInferer implements TypeInfererInterface {
         // cancel algorithm if term can't be typified
         if (!unification.getSubstitutions().isOk()) {
             typeInfResult = Optional.empty();
-            // TODO: schönere Methode, mit nicht typisierbar umzugehen?
-            //  getter unten anpassen!
             return;
         }
 
