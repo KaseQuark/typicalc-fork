@@ -1,7 +1,5 @@
 package edu.kit.typicalc.view.main;
 
-import java.util.HashMap;
-
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -11,6 +9,8 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
+
+import java.util.HashMap;
 
 /**
  * Contains all the components constantly shown in the upper part of the webage.
@@ -43,7 +43,7 @@ public class UpperBar extends HorizontalLayout {
         this.presenter = presenter;
         
         this.viewTitle = new H1(getTranslation("root.typicalc"));
-        viewTitle.addClickListener(event -> this.getUI().get().navigate(StartPageView.class));
+        viewTitle.addClickListener(event -> this.getUI().ifPresent(ui -> ui.navigate(StartPageView.class)));
         viewTitle.setId(VIEW_TITLE_ID);
         this.inputBar = new InputBar(this::typeInfer);
         inputBar.setId(INPUT_BAR_ID);
