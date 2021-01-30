@@ -53,8 +53,7 @@ public class NamedType extends Type {
 	 */
 	@Override
 	public Type substitute(TypeVariable a, Type b) {
-		//TODO: Methode überhaupt sinnvoll?
-		return null;
+		return this;
 	}
 
 	/**
