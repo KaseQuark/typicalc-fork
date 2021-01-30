@@ -108,6 +108,7 @@ public class LambdaLexer {
                 return new Result<>(t);
             default:
                 if (Character.isLetter(c)) {
+                    int startPos = pos;
                     // identifier
                     StringBuilder sb = new StringBuilder();
                     do {
@@ -133,17 +134,17 @@ public class LambdaLexer {
                             type = TokenType.VARIABLE;
                             break;
                     }
-                    return new Result<>(new Token(type, sb.toString(), pos));
+                    return new Result<>(new Token(type, sb.toString(), startPos));
                 } else if (Character.isDigit(c)) {
+                    int startPos = pos;
                     // number literal
                     StringBuilder sb = new StringBuilder();
                     do {
                         sb.append(term.charAt(pos));
                         advance();
                     } while (pos < term.length() && Character.isDigit(term.charAt(pos)));
-                    return new Result<>(new Token(TokenType.NUMBER, sb.toString(), pos));
+                    return new Result<>(new Token(TokenType.NUMBER, sb.toString(), startPos));
                 } else {
-                    //throw new ParseException("Illegal character '" + term.charAt(pos) + "'");
                     return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
                 }
         }

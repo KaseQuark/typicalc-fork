@@ -2,6 +2,7 @@ package edu.kit.typicalc.model.type;
 
 import edu.kit.typicalc.model.TypeVariableFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -11,8 +12,8 @@ import java.util.Objects;
  */
 public class TypeAbstraction {
 
-    private Type type;
-    private List<TypeVariable> quantifiedVariables;
+    private final Type type;
+    private final List<TypeVariable> quantifiedVariables;
     /**
      * Initializes a new type abstraction with its type and the type variables bound by
      * the for-all quantifier.
@@ -31,7 +32,7 @@ public class TypeAbstraction {
      */
     public TypeAbstraction(Type type) {
         this.type = type;
-        this.quantifiedVariables = null;
+        this.quantifiedVariables = Collections.emptyList();
     }
 
     /**

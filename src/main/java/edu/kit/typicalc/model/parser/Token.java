@@ -1,5 +1,7 @@
 package edu.kit.typicalc.model.parser;
 
+import java.util.Objects;
+
 /**
  * A token of the Prolog language.
  */
@@ -73,6 +75,23 @@ public class Token {
 
     @Override
     public String toString() {
-        return type + "(\"" + text + "\")";
+        return type + "(\"" + text + "\")[" + pos + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Token token = (Token) o;
+        return pos == token.pos && type == token.type && Objects.equals(text, token.text);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(type, text, pos);
     }
 }

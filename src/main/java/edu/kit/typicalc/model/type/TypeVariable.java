@@ -115,7 +115,12 @@ public class TypeVariable extends Type {
      */
     @Override
     public Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type) {
-        return UnificationUtil.variableVariable(this, type);
+        return UnificationUtil.variableVariable(type, this);
+    }
+
+    @Override
+    public String toString() {
+        return "TypeVariable[" + kind + "_" + index + "]";
     }
 
     @Override

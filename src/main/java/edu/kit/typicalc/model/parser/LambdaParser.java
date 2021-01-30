@@ -58,10 +58,11 @@ public class LambdaParser {
      * @param type the token type to compare the current token type to
      */
     private Optional<ParseError> expect(TokenType type) {
+        Token lastToken = token;
         TokenType current = token.getType();
         Optional<ParseError> error = nextToken();
         if (current != type) {
-            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(token));
+            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(lastToken));
         }
         return error;
     }

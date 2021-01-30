@@ -2,6 +2,8 @@ package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.type.Type;
 
+import java.util.Objects;
+
 /**
  * Constrains two types to be equal.
  */
@@ -35,4 +37,21 @@ public class Constraint {
         return b;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Constraint that = (Constraint) o;
+        return (a.equals(that.a) && b.equals(that.b))
+                || (a.equals(that.b) && b.equals(that.a));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(a, b);
+    }
 }

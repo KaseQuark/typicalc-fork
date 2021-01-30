@@ -9,6 +9,7 @@ import edu.kit.typicalc.model.term.IntegerTerm;
 import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
@@ -85,12 +86,16 @@ class LambdaParserTest {
         LambdaParser parser = new LambdaParser("");
         assertEquals(ParseError.TOO_FEW_TOKENS, parser.parse().unwrapError());
         parser = new LambdaParser("x)");
-        assertEquals(ParseError.UNEXPECTED_TOKEN, parser.parse().unwrapError());
+        ParseError error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.RP, ")", 1), error.getCause());
         parser = new LambdaParser("??");
         assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
         parser = new LambdaParser("123333333333333");
         assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
         parser = new LambdaParser("x 123333333333333");
-        assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, error);
+        assertEquals(new Token(TokenType.NUMBER, "123333333333333", 2), error.getCause());
     }
 }

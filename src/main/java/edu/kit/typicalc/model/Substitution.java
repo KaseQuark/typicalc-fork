@@ -3,6 +3,8 @@ package edu.kit.typicalc.model;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
 
+import java.util.Objects;
+
 /**
  * A substitution specifies that some type should be replaced by a different type.
  */
@@ -35,5 +37,27 @@ public class Substitution {
      */
     Type getType() {
         return b;
+    }
+
+    @Override
+    public String toString() {
+        return "Substitution[" + a + " => " + b + "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Substitution that = (Substitution) o;
+        return a.equals(that.a) && b.equals(that.b);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(a, b);
     }
 }

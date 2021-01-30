@@ -18,8 +18,6 @@ final class UnificationUtil {
 
     }
 
-    // TODO: check for infinite types
-
     static Result<UnificationActions, UnificationError> functionFunction(FunctionType a, FunctionType b) {
         return new Result<>(new UnificationActions(List.of(
                 new Constraint(a.getParameter(), b.getParameter()),
@@ -31,6 +29,9 @@ final class UnificationUtil {
     }
 
     static Result<UnificationActions, UnificationError> functionVariable(FunctionType a, TypeVariable b) {
+        if (a.contains(b)) {
+            return new Result<>(null, UnificationError.INFINITE_TYPE);
+        }
         return new Result<>(new UnificationActions(Collections.emptyList(),
                 Optional.of(new Substitution(b, a))));
     }
@@ -41,8 +42,12 @@ final class UnificationUtil {
     }
 
     static Result<UnificationActions, UnificationError> variableVariable(TypeVariable a, TypeVariable b) {
-        return new Result<>(new UnificationActions(Collections.emptyList(),
-                Optional.of(new Substitution(a, b))));
+        if (!a.equals(b)) {
+            return new Result<>(new UnificationActions(Collections.emptyList(),
+                    Optional.of(new Substitution(a, b))));
+        } else {
+            return new Result<>(new UnificationActions());
+        }
     }
 
     static Result<UnificationActions, UnificationError> namedNamed(NamedType a, NamedType b) {
