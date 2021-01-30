@@ -1,5 +1,7 @@
 package edu.kit.typicalc.view.main;
 
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -11,7 +13,6 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-
 import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
@@ -42,7 +43,8 @@ public class MainViewImpl extends AppLayout implements MainView {
 
     @Override
     public void setTypeInferenceView(final TypeInfererInterface typeInferer) {
-        this.getUI().ifPresent(ui -> ui.navigate(TypeInferenceView.class, typeInferer));
+        ComponentUtil.setData(UI.getCurrent(), TypeInfererInterface.class, typeInferer);
+        this.getUI().ifPresent(ui -> ui.navigate(TypeInferenceView.class));
     }
 
     @Override

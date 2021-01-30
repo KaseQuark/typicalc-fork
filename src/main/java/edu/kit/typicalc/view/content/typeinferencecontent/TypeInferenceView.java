@@ -1,9 +1,9 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.Scroller;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import edu.kit.typicalc.model.TypeInfererInterface;
@@ -14,24 +14,21 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 @Route(value = "visualize", layout = MainViewImpl.class)
 @PageTitle("TypeInferenceView")
 public class TypeInferenceView extends HorizontalLayout
-        implements ControlPanelView, HasUrlParameter<TypeInfererInterface> {
+        implements ControlPanelView {
 
     private int currentStep;
 
     private MathjaxUnification unification;
     private MathjaxProofTree tree;
+    private TypeInfererInterface typeInferer;
 
     public TypeInferenceView() {
         setId("type-inference-view");
         add(new ControlPanel(this));
+        typeInferer = ComponentUtil.getData(UI.getCurrent(), TypeInfererInterface.class);
     }
 
-    @Override
-    public void setParameter(BeforeEvent event, TypeInfererInterface typeInferer) {
-        buildView(typeInferer);
-    }
-
-    private void buildView(TypeInfererInterface typeInferer) {
+    private void buildView() {
         // todo implement correctly
         LatexCreator lc = new LatexCreator(typeInferer);
         unification = new MathjaxUnification(lc.getUnification());
