@@ -63,16 +63,24 @@ class TreeTest {
         TypeVariable variable3 = new TypeVariable(TypeVariableKind.TREE, 3);
 
         Tree tree = new Tree(TYPE_ASSUMPTIONS, ABS);
+
         Map<VarTerm, TypeAbstraction> varTypeAss = new HashMap<>(TYPE_ASSUMPTIONS);
         varTypeAss.put(VAR, new TypeAbstraction(variable2));
         Conclusion varConclusion = new Conclusion(varTypeAss, VAR, variable3);
+        Constraint varConstraint = new Constraint(variable2, variable3);
         InferenceStep varStep = new VarStepDefault(new TypeAbstraction(variable2), variable2, varConclusion,
-                new Constraint(variable2, variable3));
+                varConstraint);
 
         Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, ABS, tree.getFirstTypeVariable());
-        InferenceStep expectedStep = new AbsStepDefault(varStep, conclusion,
-                new Constraint(tree.getFirstTypeVariable(), new FunctionType(variable2, variable3)));
+        Constraint absConstraint = new Constraint(tree.getFirstTypeVariable(), new FunctionType(variable2, variable3));
+        InferenceStep expectedStep = new AbsStepDefault(varStep, conclusion, absConstraint);
+
         assertEquals(expectedStep, tree.getFirstInferenceStep());
+
+        List<Constraint> constraints = new ArrayList<>();
+        constraints.add(varConstraint);
+        constraints.add(absConstraint);
+        assertEquals(constraints, tree.getConstraints());
     }
 
     @Test
