@@ -6,6 +6,7 @@ import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Models the conclusion of an inference rule and consists of a list of type assumptions, a lambda term and a type.
@@ -49,5 +50,23 @@ public class Conclusion {
      */
     public Type getType() {
         return type;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Conclusion that = (Conclusion) o;
+        return typeAssumptions.equals(that.typeAssumptions)
+                && lambdaTerm.equals(that.lambdaTerm) && type.equals(that.type);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(typeAssumptions, lambdaTerm, type);
     }
 }

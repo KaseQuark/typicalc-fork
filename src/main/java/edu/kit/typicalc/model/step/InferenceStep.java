@@ -3,6 +3,8 @@ package edu.kit.typicalc.model.step;
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
 
+import java.util.Objects;
+
 /**
  * Models one step of the inference tree.
  * Depending on the inference rule that is applied in a step,
@@ -51,4 +53,21 @@ public abstract class InferenceStep {
      * @param stepVisitor the visitor that wants to visit this object
      */
     public abstract void accept(StepVisitor stepVisitor);
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        InferenceStep that = (InferenceStep) o;
+        return conclusion.equals(that.conclusion) && constraint.equals(that.constraint);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(conclusion, constraint);
+    }
 }

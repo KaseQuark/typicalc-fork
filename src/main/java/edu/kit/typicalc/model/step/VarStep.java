@@ -5,6 +5,8 @@ import edu.kit.typicalc.model.Constraint;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
+import java.util.Objects;
+
 /**
  * Models one step of the inference tree where the variable rule is applied. It contains a type
  * abstraction that is identified as the type of the variable in the premise of the step.
@@ -45,5 +47,26 @@ public abstract class VarStep extends InferenceStep {
      */
     public Type getInstantiatedTypeAbs() {
         return instantiatedTypeAbs;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        VarStep varStep = (VarStep) o;
+        return typeAbstractionInPremise.equals(varStep.typeAbstractionInPremise)
+                && instantiatedTypeAbs.equals(varStep.instantiatedTypeAbs);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), typeAbstractionInPremise, instantiatedTypeAbs);
     }
 }
