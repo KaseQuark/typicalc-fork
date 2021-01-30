@@ -12,6 +12,11 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
+/**
+ * Visual representation of an inference rule. The component is composed of the rule itself (displayed
+ * in LaTeX rendered by MathJax), the name of the rule and a button to copy the LaTeX-code to the 
+ * clipboard. Each InferenceRuleField is displayed in drawer area of the web page.
+ */
 @CssImport("./styles/view/main/inference-rule-field.css")
 @JsModule("./src/copy-to-clipboard.js")
 public class InferenceRuleField extends VerticalLayout implements LocaleChangeObserver {
@@ -31,7 +36,14 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
     private final H4 ruleName;
     private final MathjaxDisplay rule;
     
-    public InferenceRuleField(final String latex, final String nameKey) {
+    /**
+     * Initializes an InferenceRuleField with a key to get the name of the inference rule and the LaTeX-code
+     * for its visual representation.
+     * 
+     * @param latex the LaTeX-code
+     * @param nameKey the key to get the name of the inference rule
+     */
+    protected InferenceRuleField(final String latex, final String nameKey) {
         this.nameKey = nameKey;
         
         final HorizontalLayout header = new HorizontalLayout();
