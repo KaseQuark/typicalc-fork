@@ -1,17 +1,12 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
 
-import edu.kit.typicalc.model.type.NamedType;
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.step.*;
-import edu.kit.typicalc.model.term.AbsTerm;
-import edu.kit.typicalc.model.term.AppTerm;
-import edu.kit.typicalc.model.term.ConstTerm;
-import edu.kit.typicalc.model.term.LetTerm;
-import edu.kit.typicalc.model.term.TermVisitor;
-import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.FunctionType;
+import edu.kit.typicalc.model.type.NamedType;
 import edu.kit.typicalc.model.type.TypeVariable;
 import edu.kit.typicalc.model.type.TypeVisitor;
 
@@ -24,7 +19,13 @@ import edu.kit.typicalc.model.type.TypeVisitor;
  */
 public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
+    private static final String SPACE = " ";
     private static final String EQUAL_SIGN = "=";
+    private static final String CURLY_LEFT = "{";
+    private static final String CURLY_RIGHT = "}";
+    private static final String UNDERSCORE = "_";
+    private static final String PAREN_LEFT = "(";
+    private static final String PAREN_RIGHT = ")";
 
     private static final String LABEL_ABS = "\\LeftLabel{ABS}";
     private static final String LABEL_APP = "\\LeftLabel{APP}";
@@ -36,6 +37,12 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     private static final String BIC = "\\BinaryInfC";
     private static final String AXC = "\\AxiomC";
 
+    private static final String TREE_VARIABLE = "\\alpha";
+    private static final String GENERATED_ASSUMPTION_VARIABLE = "\\beta";
+    private static final String USER_VARIABLE = "\\tau";
+
+    private static final String TEXTTT = "\\texttt";
+    private static final String RIGHT_ARROW = "\\rightarrow";
     private static final String TREE_BEGIN = "\\begin{prooftree}";
     private static final String TREE_END = "\\end{prooftree}";
 
@@ -48,7 +55,8 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     /**
      * Needed for typeVisitor methods
      */
-    private String typeBuffer;
+    private String visitorBuffer = "";
+    private boolean needsParentheses;
 
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
@@ -104,18 +112,12 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         return conclusion;
     }
 
-    private StringBuilder generateConstraint(InferenceStep step) {
-        // todo implement maybe rename to addConstraint
-        StringBuilder constraint = new StringBuilder();
+    private String generateConstraint(InferenceStep step) {
         step.getConstraint().getFirstType().accept(this);
-        String firstType = typeBuffer;
+        String firstType = visitorBuffer;
         step.getConstraint().getSecondType().accept(this);
-        String secondType = typeBuffer;
-        constraint.append(firstType)
-                .append(EQUAL_SIGN)
-                .append(secondType)
-                .append(System.lineSeparator());
-        return constraint;
+        String secondType = visitorBuffer;
+        return firstType + SPACE + EQUAL_SIGN + SPACE + secondType;
     }
 
     // todo use generateConstraint
@@ -203,16 +205,37 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
     @Override
     public void visit(NamedType named) {
-
+        visitorBuffer = TEXTTT + CURLY_LEFT + named.getName() + CURLY_RIGHT;
+        needsParentheses = false;
     }
 
     @Override
     public void visit(TypeVariable variable) {
-
+        String name;
+        switch (variable.getKind()) {
+            case TREE:
+                name = TREE_VARIABLE;
+                break;
+            case GENERATED_TYPE_ASSUMPTION:
+                name = GENERATED_ASSUMPTION_VARIABLE;
+                break;
+            case USER_INPUT:
+                name = USER_VARIABLE;
+                break;
+            default:
+                throw new IllegalStateException("unreachable code");
+        }
+        visitorBuffer = name + UNDERSCORE + CURLY_LEFT + variable.getIndex() + CURLY_RIGHT;
+        needsParentheses = false;
     }
 
     @Override
     public void visit(FunctionType function) {
-
+        function.getParameter().accept(this);
+        String parameter = needsParentheses ? PAREN_LEFT + visitorBuffer + PAREN_RIGHT : visitorBuffer;
+        function.getOutput().accept(this);
+        String output = visitorBuffer;
+        visitorBuffer = parameter + SPACE + RIGHT_ARROW + SPACE + output;
+        needsParentheses = true;
     }
 }
