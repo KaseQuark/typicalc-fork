@@ -4,4 +4,6 @@
 
 #headingLayout {
 	width: 80vw;
+	align-items: center;
+	justify-content: center;
 }

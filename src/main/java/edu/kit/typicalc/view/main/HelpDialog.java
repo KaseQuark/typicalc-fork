@@ -4,8 +4,6 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.H5;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -16,6 +14,9 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 
     private static final long serialVersionUID = 4470277770276296164L;
     
+    /*
+     * Id's for the imported css-file
+     */
     private static final String HEADING_LAYOUT_ID = "headingLayout";
     private static final String CONTENT_LAYOUT_ID = "contentLayout";
     
@@ -27,8 +28,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 	heading = new H3(getTranslation("root.operatingHelp"));
 	headingLayout.setId(HEADING_LAYOUT_ID);
 	headingLayout.add(heading);
-	headingLayout.setAlignItems(FlexComponent.Alignment.CENTER);
-	headingLayout.setJustifyContentMode(JustifyContentMode.CENTER);
 	
 	final VerticalLayout contentLayout = new VerticalLayout();
 	inputSyntax = new H5(getTranslation("root.inputSyntax"));

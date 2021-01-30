@@ -15,7 +15,6 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H5;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -28,7 +27,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     private static final long serialVersionUID = -6099700300418752958L;
    
+    /*
+     * Id's for the imported css-file
+     */
     private static final String INPUT_FIELD_ID = "inputField";
+    private static final String INPUT_BAR_ID = "inputBar";
     
     private final Tooltip infoTooltip;
     private final Icon infoIcon;
@@ -67,7 +70,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         add(infoTooltip, infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
-        setAlignItems(FlexComponent.Alignment.CENTER);
+        setId(INPUT_BAR_ID);
     }
 
     private void onTypeInferButtonClick(final Consumer<String> callback) {

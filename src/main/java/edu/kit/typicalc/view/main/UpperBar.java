@@ -8,7 +8,6 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
@@ -21,6 +20,9 @@ public class UpperBar extends HorizontalLayout {
     
     private static final long serialVersionUID = -7344967027514015830L;
     
+    /*
+     * Id's for the imported css-file
+     */
     private static final String VIEW_TITLE_ID = "viewTitle";
     private static final String INPUT_BAR_ID = "inputBar";
     private static final String HELP_ICON_ID = "helpIcon";
@@ -41,21 +43,18 @@ public class UpperBar extends HorizontalLayout {
         this.presenter = presenter;
         
         this.viewTitle = new H1(getTranslation("root.typicalc"));
+        viewTitle.addClickListener(event -> this.getUI().get().navigate(StartPageView.class));
         viewTitle.setId(VIEW_TITLE_ID);
         this.inputBar = new InputBar(this::typeInfer);
         inputBar.setId(INPUT_BAR_ID);
         this.helpIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
         helpIcon.addClickListener(event -> onHelpIconClick());
         helpIcon.setId(HELP_ICON_ID);
-        
-        viewTitle.addClickListener(event -> this.getUI().get().navigate(StartPageView.class));
-        
+                
         add(new DrawerToggle(), viewTitle, inputBar, helpIcon);
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true); //TODO remove magic string
-        setWidthFull();
         setSpacing(false);
-        setAlignItems(FlexComponent.Alignment.CENTER);
     }
     
     /**

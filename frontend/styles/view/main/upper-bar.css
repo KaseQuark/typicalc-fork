@@ -1,5 +1,7 @@
 #header {
   height: var(--lumo-size-xl);
+  width: 100%;
+  align-items: center;
 }
 
 #header img {
