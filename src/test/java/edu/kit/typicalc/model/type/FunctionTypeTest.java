@@ -1,10 +1,16 @@
 package edu.kit.typicalc.model.type;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FunctionTypeTest {
+
+    @Test
+    void equalsTest() {
+        EqualsVerifier.forClass(FunctionType.class).usingGetClass().verify();
+    }
 
     @Test
     void substitute() {

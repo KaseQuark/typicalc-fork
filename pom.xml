@@ -127,6 +127,13 @@
             <version>5.7.0</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>nl.jqno.equalsverifier</groupId>
+            <artifactId>equalsverifier</artifactId>
+            <version>3.5.2</version>
+            <scope>test</scope>
+        </dependency>
         <!-- need these for IntelliJ -->
         <dependency>
             <groupId>org.junit.platform</groupId>
