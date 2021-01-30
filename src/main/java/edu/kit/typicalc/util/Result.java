@@ -21,6 +21,16 @@ public class Result<T, E> {
     }
 
     /**
+     * Creates a new result by copying another one.
+     *
+     * @param other the result
+     */
+    public Result(Result other) {
+        this.value = (T) other.value;
+        this.error = (E) other.error;
+    }
+
+    /**
      * Creates a new result containing the given value or error.
      * Only one of the parameters may be non-null.
      *
@@ -75,20 +85,6 @@ public class Result<T, E> {
         if (error == null) {
             throw new IllegalStateException("tried to unwrap a value");
         }
-        return error;
-    }
-
-    /**
-     * @return the value contained, or null
-     */
-    public T getValue() {
-        return value;
-    }
-
-    /**
-     * @return the error contained, or null
-     */
-    public E getError() {
         return error;
     }
 }

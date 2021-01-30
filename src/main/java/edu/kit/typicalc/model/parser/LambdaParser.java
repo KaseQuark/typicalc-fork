@@ -25,7 +25,7 @@ public class LambdaParser {
      * When calling a parseX method, token is the first token of X
      * (as opposed to the last token of the previous construct).
      */
-    private Token token;
+    private Token token = new Token(TokenType.EOF, "", -1);
 
     private static final Set<TokenType> ATOM_START_TOKENS
             = EnumSet.of(TokenType.VARIABLE, TokenType.NUMBER, TokenType.TRUE,
@@ -97,10 +97,16 @@ public class LambdaParser {
         switch (token.getType()) {
             case LAMBDA:
                 Result<AbsTerm, ParseError> abs = parseAbstraction();
-                return new Result<>(abs.unwrap(), abs.getError());
+                if (abs.isError()) {
+                    return new Result<>(abs);
+                }
+                return new Result<>(abs.unwrap());
             case LET:
                 Result<LetTerm, ParseError> let = parseLet();
-                return new Result<>(let.unwrap(), let.getError());
+                if (let.isError()) {
+                    return new Result<>(let);
+                }
+                return new Result<>(let.unwrap());
             case EOF:
                 return new Result<>(null, ParseError.TOO_FEW_TOKENS);
             default:
@@ -111,12 +117,17 @@ public class LambdaParser {
     private Result<AbsTerm, ParseError> parseAbstraction() {
         nextToken();
         Result<VarTerm, ParseError> var = parseVar();
+        if (var.isError()) {
+            return new Result<>(var);
+        }
         Optional<ParseError> next = expect(TokenType.DOT);
         if (next.isPresent()) {
             return new Result<>(null, next.get());
         }
         Result<LambdaTerm, ParseError> body = parseTerm(false);
-        // TODO: Fehlerbehandlung
+        if (body.isError()) {
+            return new Result<>(body);
+        }
         return new Result<>(new AbsTerm(var.unwrap(), body.unwrap()));
     }
 
@@ -140,23 +151,31 @@ public class LambdaParser {
     }
 
     private Result<LetTerm, ParseError> parseLet() {
-        // TODO: Fehlerbehandlung
         Optional<ParseError> error = expect(TokenType.LET);
         if (error.isPresent()) {
             return new Result<>(null, error.get());
         }
-        VarTerm var = parseVar().unwrap();
+        Result<VarTerm, ParseError> var = parseVar();
+        if (var.isError()) {
+            return new Result<>(var);
+        }
         error = expect(TokenType.EQ);
         if (error.isPresent()) {
             return new Result<>(null, error.get());
         }
-        LambdaTerm def = parseTerm(false).unwrap();
+        Result<LambdaTerm, ParseError> def = parseTerm(false);
+        if (def.isError()) {
+            return new Result<>(def);
+        }
         error = expect(TokenType.IN);
         if (error.isPresent()) {
             return new Result<>(null, error.get());
         }
-        LambdaTerm body = parseTerm(false).unwrap();
-        return new Result<>(new LetTerm(var, def, body));
+        Result<LambdaTerm, ParseError> body = parseTerm(false);
+        if (body.isError()) {
+            return new Result<>(body);
+        }
+        return new Result<>(new LetTerm(var.unwrap(), def.unwrap(), body.unwrap()));
     }
 
     /**
@@ -167,7 +186,10 @@ public class LambdaParser {
         switch (token.getType()) {
             case VARIABLE:
                 Result<VarTerm, ParseError> var = parseVar();
-                return new Result<>(var.unwrap(), var.getError());
+                if (var.isError()) {
+                    return new Result<>(var);
+                }
+                return new Result<>(var.unwrap());
             case NUMBER:
                 String number = token.getText();
                 int n;
@@ -176,18 +198,30 @@ public class LambdaParser {
                 } catch (NumberFormatException e) {
                     return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(token));
                 }
-                nextToken();
+                Optional<ParseError> error = nextToken();
+                if (error.isPresent()) {
+                    return new Result<>(null, error.get());
+                }
                 return new Result<>(new IntegerTerm(n));
             case TRUE:
             case FALSE:
                 String boolText = token.getText();
                 boolean b = Boolean.parseBoolean(boolText);
-                nextToken();
+                error = nextToken();
+                if (error.isPresent()) {
+                    return new Result<>(null, error.get());
+                }
                 return new Result<>(new BooleanTerm(b));
             default:
-                expect(TokenType.LP);
+                error = expect(TokenType.LP);
+                if (error.isPresent()) {
+                    return new Result<>(null, error.get());
+                }
                 Result<LambdaTerm, ParseError> term = parseTerm(false);
-                expect(TokenType.RP);
+                error = expect(TokenType.RP);
+                if (error.isPresent()) {
+                    return new Result<>(null, error.get());
+                }
                 return term;
         }
     }
