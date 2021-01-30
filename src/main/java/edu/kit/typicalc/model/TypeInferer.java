@@ -50,7 +50,7 @@ public class TypeInferer implements TypeInfererInterface {
             return;
         }
 
-        List<Substitution> substitutions = unification.getSubstitutions().getValue();
+        List<Substitution> substitutions = unification.getSubstitutions().unwrap();
         typeInfResult = Optional.of(new TypeInferenceResult(substitutions, tree.getFirstTypeVariable()));
     }
 
