@@ -42,7 +42,7 @@ public class Tree implements TermVisitorTree {
      * @param lambdaTerm the lambda term to generate the tree for
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm) {
-        this(typeAssumptions, lambdaTerm, new TypeVariableFactory(TypeVaribaleKind.TREE));
+        this(typeAssumptions, lambdaTerm, new TypeVariableFactory(TypeVariableKind.TREE));
     }
 
     /**

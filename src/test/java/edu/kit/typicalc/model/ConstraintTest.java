@@ -2,16 +2,16 @@ package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
-import edu.kit.typicalc.model.type.TypeVaribaleKind;
+import edu.kit.typicalc.model.type.TypeVariableKind;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class ConstraintTest {
+class ConstraintTest {
 
-    private static final Type type1 = new TypeVariable(TypeVaribaleKind.USER_INPUT, 1);
-    private static final Type type2 = new TypeVariable(TypeVaribaleKind.TREE, 2);
+    private static final Type type1 = new TypeVariable(TypeVariableKind.USER_INPUT, 1);
+    private static final Type type2 = new TypeVariable(TypeVariableKind.TREE, 2);
 
     @Test
     void equalsTest() {

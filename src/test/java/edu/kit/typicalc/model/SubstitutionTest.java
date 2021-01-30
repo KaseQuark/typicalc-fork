@@ -2,7 +2,7 @@ package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
-import edu.kit.typicalc.model.type.TypeVaribaleKind;
+import edu.kit.typicalc.model.type.TypeVariableKind;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubstitutionTest {
 
-    private static final TypeVariable var = new TypeVariable(TypeVaribaleKind.USER_INPUT, 1);
-    private static final Type type = new TypeVariable(TypeVaribaleKind.TREE, 2);
+    private static final TypeVariable var = new TypeVariable(TypeVariableKind.USER_INPUT, 1);
+    private static final Type type = new TypeVariable(TypeVariableKind.TREE, 2);
 
     @Test
     void equalsTest() {
