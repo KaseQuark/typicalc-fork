@@ -45,7 +45,7 @@ public class TypeInferer implements TypeInfererInterface {
         unification = new Unification(tree.getConstraints());
 
         // cancel algorithm if term can't be typified
-        if (!unification.getSubstitutions().isOk()) {
+        if (unification.getSubstitutions().isError()) {
             typeInfResult = Optional.empty();
             return;
         }
