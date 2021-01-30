@@ -9,6 +9,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
+/**
+ * Contains information on how to use the application.
+ */
 @CssImport("./styles/view/main/help-dialog.css")
 public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final long serialVersionUID = 4470277770276296164L;
@@ -22,7 +25,10 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private final H3 heading;
     private final H5 inputSyntax;
 
-    public HelpDialog() {
+    /**
+     * Create a new HelpDialog.
+     */
+    protected HelpDialog() {
         final HorizontalLayout headingLayout = new HorizontalLayout();
         heading = new H3(getTranslation("root.operatingHelp"));
         headingLayout.setId(HEADING_LAYOUT_ID);

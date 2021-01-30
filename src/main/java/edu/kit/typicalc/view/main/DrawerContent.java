@@ -6,6 +6,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
+/**
+ * Container for the components displayed in the drawer area of the web page.
+ */
 @CssImport("./styles/view/main/drawer-content.css")
 public class DrawerContent extends VerticalLayout implements LocaleChangeObserver {
 
@@ -20,7 +23,10 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
     private final H3 heading;
     private final VerticalLayout ruleContainer;
 
-    public DrawerContent() {
+    /**
+     * Creates a new DrawerContent. 
+     */
+    protected DrawerContent() {
         heading = new H3(getTranslation("root.inferenceRules"));
         ruleContainer = new VerticalLayout();
         ruleContainer.setId(RULE_CONTAINER_ID);
