@@ -56,7 +56,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
      * Needed for typeVisitor methods
      */
     private String visitorBuffer = "";
-    private boolean needsParentheses;
+    private boolean needsParentheses = false;
 
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
@@ -71,28 +71,30 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
 
-        typeInferer.getFirstInferenceStep().accept(this);
+//        typeInferer.getFirstInferenceStep().accept(this);
     }
 
     /**
      * @return the LaTeX-code for the proof tree
      */
     protected String getTree() {
-        return null;
+        return "the $\\LaTeX$ inference tree should be here ";
     } // todo implement
 
     /**
      * @return the LaTeX-code for constraints nad unification
      */
     protected String[] getUnification() {
-        return null;
+        return new String[]{"$\\tau_0$", "$\\tau_1$", "$\\tau_2$", "$\\tau_3$", "$\\tau_4$",
+                "$\\tau_5$", "$\\tau_6$", "$\\tau_7$", "$\\tau_8$", "$\\tau_9$", "$\\tau_{10}$", "$\\tau_{11}$",
+                "$\\tau_{12}$", "$\\tau_{13}$", "$\\tau_{14}$"};
     } // todo implement
 
     /**
      * @return the packages needed for the LaTeX-code from getTree() and getUnification()to work
      */
     protected String getLatexPackages() {
-        return null;
+        return "the packages should be here";
     } // todo implement
 
     private String conclusionToLatex(Conclusion conclusion) {
