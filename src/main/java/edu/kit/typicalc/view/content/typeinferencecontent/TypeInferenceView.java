@@ -1,9 +1,10 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
-import com.vaadin.flow.router.BeforeEvent;
-import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import edu.kit.typicalc.model.TypeInfererInterface;
@@ -13,31 +14,37 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 
 @Route(value = "visualize", layout = MainViewImpl.class)
 @PageTitle("TypeInferenceView")
-public class TypeInferenceView extends HorizontalLayout
-        implements ControlPanelView, HasUrlParameter<TypeInfererInterface> {
+public class TypeInferenceView extends VerticalLayout
+        implements ControlPanelView {
 
-    private int currentStep;
+    private int currentStep = 0;
 
     private MathjaxUnification unification;
     private MathjaxProofTree tree;
+    private TypeInfererInterface typeInferer;
+    private Div content;
+    private ControlPanel controlPanel;
 
     public TypeInferenceView() {
+        typeInferer = ComponentUtil.getData(UI.getCurrent(), TypeInfererInterface.class);
         setId("type-inference-view");
-        add(new ControlPanel(this));
+        setSizeFull();
+        content = new Div();
+        controlPanel = new ControlPanel(this);
+        Scroller scroller = new Scroller(content);
+        scroller.setSizeFull();
+        scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
+        setAlignItems(Alignment.CENTER);
+        add(scroller, controlPanel);
+        setContent();
     }
 
-    @Override
-    public void setParameter(BeforeEvent event, TypeInfererInterface typeInferer) {
-        buildView(typeInferer);
-    }
-
-    private void buildView(TypeInfererInterface typeInferer) {
+    private void setContent() {
         // todo implement correctly
         LatexCreator lc = new LatexCreator(typeInferer);
         unification = new MathjaxUnification(lc.getUnification());
         tree = new MathjaxProofTree(lc.getTree());
-        add(unification);
-        add(new Scroller(tree));
+        content.add(unification, tree);
     }
 
     @Override
@@ -52,7 +59,7 @@ public class TypeInferenceView extends HorizontalLayout
 
     @Override
     public void firstStepButton() {
-        currentStep = currentStep > tree.getStepCount() ? tree.getStepCount() - 1 : 0;
+        currentStep = currentStep > tree.getStepCount()  && tree.getStepCount() > 0 ? tree.getStepCount() - 1 : 0;
         refreshElements(currentStep);
     }
 
