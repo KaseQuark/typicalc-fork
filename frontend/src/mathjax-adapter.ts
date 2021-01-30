@@ -9,10 +9,25 @@ declare let window: {
 };
 
 export abstract class MathjaxAdapter extends LitElement {
-    protected execTypeset(shadowRoot: ShadowRoot | null) {
+    private execTypeset(shadowRoot: ShadowRoot | null) {
         if (window.MathJax !== undefined) {
             window.MathJax.typesetShadow(shadowRoot, () => this.calculateSteps());
         }
+    }
+
+    protected requestTypeset() {
+        this.updateComplete.then(() => {
+            if (window.MathJax === undefined || !window.MathJax.isInitialized) {
+                window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot));
+            } else {
+                this.execTypeset(this.shadowRoot);
+            }
+        });
+    }
+
+    connectedCallback() {
+        super.connectedCallback();
+        this.requestTypeset();
     }
 
     render(): TemplateResult {
@@ -26,13 +41,13 @@ export abstract class MathjaxAdapter extends LitElement {
     protected calculateSteps(): void {
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        if (window.MathJax === undefined || !window.MathJax.isInitialized) {
-            window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot));
-        } else {
-            this.execTypeset(this.shadowRoot);
-        }
-    }
+    // connectedCallback() {
+    //     super.connectedCallback();
+    //     if (window.MathJax === undefined || !window.MathJax.isInitialized) {
+    //         window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot));
+    //     } else {
+    //         this.execTypeset(this.shadowRoot);
+    //     }
+    // }
 }
 

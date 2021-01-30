@@ -20,8 +20,7 @@ class MathjaxUnification extends MathjaxAdapter {
 
     protected showStep(n: number): void {
         this.content = this.latex[n];
-        this.updateComplete.then(() => this.execTypeset(this.shadowRoot));
-
+        this.requestTypeset();
     }
 
     public setTex(tex: String): void {
