@@ -1,13 +1,7 @@
 package edu.kit.typicalc.model;
 
-import edu.kit.typicalc.model.step.AbsStepDefault;
-import edu.kit.typicalc.model.step.ConstStepDefault;
-import edu.kit.typicalc.model.step.InferenceStep;
-import edu.kit.typicalc.model.step.VarStepDefault;
-import edu.kit.typicalc.model.term.AbsTerm;
-import edu.kit.typicalc.model.term.ConstTerm;
-import edu.kit.typicalc.model.term.IntegerTerm;
-import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.step.*;
+import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -23,6 +17,7 @@ class TreeTest {
     private static final ConstTerm CONST = new IntegerTerm(10);
     private static final VarTerm VAR = new VarTerm("var");
     private static final AbsTerm ABS = new AbsTerm(VAR, VAR);
+    private static final AppTerm APP = new AppTerm(VAR, VAR);
     private static final NamedType TYPE = new NamedType("type");
     private static final TypeAbstraction TYPE_ABS = new TypeAbstraction(TYPE);
 
@@ -55,6 +50,34 @@ class TreeTest {
         assertThrows(IllegalStateException.class, () -> {
                 new Tree(ass, VAR);
         });
+    }
+
+    @Test
+    void visitApp() {
+        TypeVariable variable2 = new TypeVariable(TypeVariableKind.TREE, 2);
+        TypeVariable variable3 = new TypeVariable(TypeVariableKind.TREE, 3);
+
+        Tree tree = new Tree(TYPE_ASSUMPTIONS, APP);
+
+        Conclusion varLeftConclusion = new Conclusion(TYPE_ASSUMPTIONS, VAR, variable2);
+        Constraint varLeftConstraint = new Constraint(variable2, TYPE);
+        InferenceStep varLeftStep = new VarStepDefault(TYPE_ABS, TYPE, varLeftConclusion, varLeftConstraint);
+
+        Conclusion varRightConclusion = new Conclusion(TYPE_ASSUMPTIONS, VAR, variable3);
+        Constraint varRightConstraint = new Constraint(variable3, TYPE);
+        InferenceStep varRightStep = new VarStepDefault(TYPE_ABS, TYPE, varRightConclusion, varRightConstraint);
+
+        Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, APP, tree.getFirstTypeVariable());
+        Constraint appConstraint = new Constraint(variable2, new FunctionType(variable3, tree.getFirstTypeVariable()));
+        InferenceStep expectedStep = new AppStepDefault(varLeftStep, varRightStep, conclusion, appConstraint);
+
+        assertEquals(expectedStep, tree.getFirstInferenceStep());
+
+        List<Constraint> constraints = new ArrayList<>();
+        constraints.add(varLeftConstraint);
+        constraints.add(varRightConstraint);
+        constraints.add(appConstraint);
+        assertEquals(constraints, tree.getConstraints());
     }
 
     @Test
