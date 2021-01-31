@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class TypeInferenceResult {
 
-    private final List<Substitution> MGU;
+    private final List<Substitution> mgu;
     private final Type finalType;
 
     /**
@@ -26,16 +26,16 @@ public class TypeInferenceResult {
      * @param typeVar the type variable belonging to the original lambda term
      */
     protected TypeInferenceResult(List<Substitution> substitutions, TypeVariable typeVar) {
-        MGU = new ArrayList<>(substitutions);
+        mgu = new ArrayList<>(substitutions);
         findMGU();
         finalType = findFinalType(typeVar);
     }
 
     private void findMGU() {
-        for (int i = 0; i < MGU.size(); i++) {
-            Substitution applySub = MGU.get(i);
-            for (int j = 0; j < MGU.size(); j++) {
-                Substitution toSub = MGU.get(j);
+        for (int i = 0; i < mgu.size(); i++) {
+            Substitution applySub = mgu.get(i);
+            for (int j = 0; j < mgu.size(); j++) {
+                Substitution toSub = mgu.get(j);
                 if (i == j) {
                     continue;
                 } else if (applySub.getVariable().equals(toSub.getVariable())) {
@@ -46,13 +46,13 @@ public class TypeInferenceResult {
                 }
 
                 Substitution resultSub = new Substitution(toSub.getVariable(), toSub.getType().substitute(applySub));
-                MGU.set(j, resultSub);
+                mgu.set(j, resultSub);
             }
         }
     }
 
     private Type findFinalType(TypeVariable typeVar) {
-        for (Substitution substitution : MGU) {
+        for (Substitution substitution : mgu) {
             if (substitution.getVariable().equals(typeVar)) {
                 return substitution.getType();
             }
@@ -68,7 +68,7 @@ public class TypeInferenceResult {
      * @return the most general unifier, null if there is no valid mgu
      */
     protected List<Substitution> getMGU() {
-        return MGU;
+        return mgu;
     }
 
     /**
