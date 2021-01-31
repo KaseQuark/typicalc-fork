@@ -85,8 +85,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onInfoIconClick() {
-	final Dialog infoDialog = new InfoDialog();
-	infoDialog.open();
+        final Dialog infoDialog = new InfoDialog();
+        infoDialog.open();
     }
 
     @Override
