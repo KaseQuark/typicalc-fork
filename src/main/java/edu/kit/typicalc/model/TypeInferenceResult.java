@@ -3,6 +3,7 @@ package edu.kit.typicalc.model;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -31,7 +32,7 @@ public class TypeInferenceResult {
      * @return the most general unifier, null if there is no valid mgu
      */
     protected List<Substitution> getMGU() {
-        return null;
+        return Collections.emptyList();
         // TODO
     }
 

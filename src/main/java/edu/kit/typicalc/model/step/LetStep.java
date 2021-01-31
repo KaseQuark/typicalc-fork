@@ -4,6 +4,8 @@ import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
 import edu.kit.typicalc.model.TypeInfererLet;
 
+import java.util.Objects;
+
 /**
  * Models one step of the inference tree where the let rule is applied. A let step contains an
  * additional instance of a type inferer that is responisble for the „sub-inference“ that takes
@@ -45,5 +47,25 @@ public abstract class LetStep extends InferenceStep {
      */
     public TypeInfererLet getTypeInferer() {
         return typeInferer;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        if (!super.equals(o)) {
+            return false;
+        }
+        LetStep letStep = (LetStep) o;
+        return premise.equals(letStep.premise) && typeInferer.equals(letStep.typeInferer);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(), premise, typeInferer);
     }
 }

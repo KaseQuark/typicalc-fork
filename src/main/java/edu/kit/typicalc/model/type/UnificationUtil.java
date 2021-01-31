@@ -13,10 +13,7 @@ import java.util.Optional;
  * Utility class to avoid unification logic duplication in type methods.
  */
 final class UnificationUtil {
-    // TODO: document class? implementation detail?
-    private UnificationUtil() {
-
-    }
+    private UnificationUtil() { }
 
     static Result<UnificationActions, UnificationError> functionFunction(FunctionType a, FunctionType b) {
         return new Result<>(new UnificationActions(List.of(

@@ -28,10 +28,6 @@ public class LambdaLexer {
      */
     public LambdaLexer(String term) {
         this.term = term;
-        tokenize();
-    }
-
-    private void tokenize() {
         Deque<Token> tokens = new ArrayDeque<>();
         while (true) {
             Result<Token, ParseError> token = parseNextToken();
