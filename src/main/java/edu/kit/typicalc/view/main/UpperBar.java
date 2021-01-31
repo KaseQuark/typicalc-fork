@@ -21,7 +21,7 @@ public class UpperBar extends HorizontalLayout {
     private static final long serialVersionUID = -7344967027514015830L;
     
     /*
-     * Id's for the imported css-file
+     * IDs for the imported .css-file
      */
     private static final String VIEW_TITLE_ID = "viewTitle";
     private static final String INPUT_BAR_ID = "inputBar";

@@ -17,7 +17,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final long serialVersionUID = 4470277770276296164L;
 
     /*
-     * IDs for the imported CSS file
+     * IDs for the imported .css-file
      */
     private static final String HEADING_LAYOUT_ID = "headingLayout";
     private static final String CONTENT_LAYOUT_ID = "contentLayout";
@@ -35,6 +35,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         headingLayout.add(heading);
 
         final VerticalLayout contentLayout = new VerticalLayout();
+        //TODO inputSyntax wird im inputDialog behandelt --> hier anderer Content
         inputSyntax = new H5(getTranslation("root.inputSyntax"));
         contentLayout.setId(CONTENT_LAYOUT_ID);
         contentLayout.add(inputSyntax);
