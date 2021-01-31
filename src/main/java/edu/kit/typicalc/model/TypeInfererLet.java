@@ -33,10 +33,18 @@ public class TypeInfererLet extends TypeInferer {
      * C := { αi = σ(αi) | σ defined for αi }
      *
      * @return the constraints needed in the outer inference
+     * @throws IllegalStateException if the method is called despite missing mgu
      */
     public List<Constraint> getLetConstraints() {
-        return new ArrayList<>();
-        // TODO
+        if (this.getMGU().isEmpty()) {
+            throw new IllegalStateException("getLetConstraints() should never be called when no mgu was found");
+        }
+        List<Constraint> letConstraints = new ArrayList<>();
+        for (Substitution substitution : this.getMGU().get()) {
+            Constraint constraint = new Constraint(substitution.getVariable(), substitution.getType());
+            letConstraints.add(constraint);
+        }
+        return letConstraints;
     }
 
 }
