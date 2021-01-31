@@ -9,6 +9,8 @@ import edu.kit.typicalc.model.type.*;
 
 import java.util.Map;
 
+import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
+
 /**
  * Generates LaTeX-code from a TypeInfererInterface object. Two mostly independent pie-
  * ces of code are generated, one for the constraints/unification and one for the proof tree.
@@ -17,47 +19,6 @@ import java.util.Map;
  * outside of MathJax, in a normal .tex document.
  */
 public class LatexCreator implements StepVisitor, TypeVisitor {
-
-    private static final String CONST = "Const";
-
-    private static final String NEW_LINE = System.lineSeparator();
-    private static final String SPACE = " ";
-    private static final String EQUAL_SIGN = "=";
-    private static final String DOLLAR_SIGN = "$";
-    private static final String DOT_SIGN = ".";
-    private static final String COLON = ":";
-    private static final String CURLY_LEFT = "{";
-    private static final String CURLY_RIGHT = "}";
-    private static final String UNDERSCORE = "_";
-    private static final String PAREN_LEFT = "(";
-    private static final String PAREN_RIGHT = ")";
-
-    private static final String LABEL_ABS = "\\LeftLabel{ABS}";
-    private static final String LABEL_APP = "\\LeftLabel{APP}";
-    private static final String LABEL_CONST = "\\LeftLabel{CONST}";
-    private static final String LABEL_VAR = "\\LeftLabel{VAR}";
-    private static final String LABEL_LET = "\\LeftLabel{LET}";
-
-    private static final String UIC = "\\UnaryInfC";
-    private static final String BIC = "\\BinaryInfC";
-    private static final String AXC = "\\AxiomC";
-
-    private static final String TREE_VARIABLE = "\\alpha";
-    private static final String GENERATED_ASSUMPTION_VARIABLE = "\\beta";
-    private static final String USER_VARIABLE = "\\tau";
-    private static final String GAMMA = "\\Gamma";
-
-    private static final String LAMBDA = "\\lambda";
-    private static final String LATEX_SPACE = "\\ ";
-    private static final String TEXTTT = "\\texttt";
-    private static final String RIGHT_ARROW = "\\rightarrow";
-    private static final String INSTANTIATE_SIGN = "\\succeq";
-    private static final String LATEX_IN = "\\in";
-    private static final String VDASH = "\\vdash";
-    private static final String TREE_BEGIN = "\\begin{prooftree}";
-    private static final String TREE_END = "\\end{prooftree}";
-
-
 
     private final TypeInfererInterface typeInferer;
     private final StringBuilder tree;
@@ -93,7 +54,7 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
      */
     protected String getTree() {
         typeInferer.getFirstInferenceStep().accept(this);
-        return TREE_BEGIN + tree.toString() + TREE_END;
+        return TREE_BEGIN + NEW_LINE + tree.toString() + TREE_END;
     }
 
     /**
@@ -123,7 +84,8 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
         String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
-        String type = " \\tau_{42}";
+        conclusion.getType().accept(this);
+        String type = visitorBuffer;
         return DOLLAR_SIGN + GAMMA + VDASH + term + COLON + type + DOLLAR_SIGN;
     }
 

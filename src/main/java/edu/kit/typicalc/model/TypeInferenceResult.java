@@ -29,7 +29,7 @@ public class TypeInferenceResult {
     protected TypeInferenceResult(List<Substitution> substitutions, TypeVariable typeVar) {
         mgu = new ArrayList<>(substitutions);
         findMGU();
-        MGU.sort(Comparator.comparingInt((Substitution o) ->
+        mgu.sort(Comparator.comparingInt((Substitution o) ->
                 o.getVariable().getIndex()).thenComparing(o -> o.getVariable().getKind()));
         finalType = findFinalType(typeVar);
     }
