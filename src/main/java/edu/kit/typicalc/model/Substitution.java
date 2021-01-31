@@ -35,7 +35,7 @@ public class Substitution {
     /**
      * @return the replacement type
      */
-    Type getType() {
+    public Type getType() {
         return b;
     }
 

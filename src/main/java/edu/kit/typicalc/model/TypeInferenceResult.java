@@ -3,6 +3,7 @@ package edu.kit.typicalc.model;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,6 +12,10 @@ import java.util.List;
  * accessed right after instantiation (no additional initialization is required).
  */
 public class TypeInferenceResult {
+
+    private final List<Substitution> MGU;
+    private final Type finalType;
+
     /**
      * Initializes a new TypeInferenceResult for the given substitutions (resulting from
      * the unification) and the given type variable belonging to the original lambda term
@@ -21,7 +26,39 @@ public class TypeInferenceResult {
      * @param typeVar the type variable belonging to the original lambda term
      */
     protected TypeInferenceResult(List<Substitution> substitutions, TypeVariable typeVar) {
-        // TODO
+        MGU = new ArrayList<>(substitutions);
+        findMGU();
+        finalType = findFinalType(typeVar);
+    }
+
+    private void findMGU() {
+        for (int i = 0; i < MGU.size(); i++) {
+            Substitution applySub = MGU.get(i);
+            for (int j = 0; j < MGU.size(); j++) {
+                Substitution toSub = MGU.get(j);
+                if (i == j) {
+                    continue;
+                } else if (applySub.getVariable().equals(toSub.getVariable())) {
+                    throw new IllegalStateException(
+                            "MGU cannot be calculated for two substitutions with same Variable:\n"
+                                    + applySub.toString() + "\n"
+                                    + toSub.toString());
+                }
+
+                Substitution resultSub = new Substitution(toSub.getVariable(), toSub.getType().substitute(applySub));
+                MGU.set(j, resultSub);
+            }
+        }
+    }
+
+    private Type findFinalType(TypeVariable typeVar) {
+        for (Substitution substitution : MGU) {
+            if (substitution.getVariable().equals(typeVar)) {
+                return substitution.getType();
+            }
+        }
+        throw new IllegalStateException("MGU has to contain substitution for original type variable: "
+                + typeVar.toString());
     }
 
     /**
@@ -31,8 +68,7 @@ public class TypeInferenceResult {
      * @return the most general unifier, null if there is no valid mgu
      */
     protected List<Substitution> getMGU() {
-        return null;
-        // TODO
+        return MGU;
     }
 
     /**
@@ -43,7 +79,6 @@ public class TypeInferenceResult {
      * @return the final type of the lambda term, null if there is no valid type
      */
     protected Type getType() {
-        return null;
-        // TODO
+        return finalType;
     }
 }
