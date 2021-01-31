@@ -16,7 +16,7 @@ import java.util.Map;
  * only use packages and commands that MathJax supports. The LaTeX code is also usable
  * outside of MathJax, in a normal .tex document.
  */
-public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
+public class LatexCreator implements StepVisitor, TypeVisitor {
 
     private static final String CONST = "Const";
 
@@ -45,6 +45,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     private static final String TREE_VARIABLE = "\\alpha";
     private static final String GENERATED_ASSUMPTION_VARIABLE = "\\beta";
     private static final String USER_VARIABLE = "\\tau";
+    private static final String GAMMA = "\\Gamma";
 
     private static final String LAMBDA = "\\lambda";
     private static final String LATEX_SPACE = "\\ ";
@@ -52,6 +53,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     private static final String RIGHT_ARROW = "\\rightarrow";
     private static final String INSTANTIATE_SIGN = "\\succeq";
     private static final String LATEX_IN = "\\in";
+    private static final String VDASH = "\\vdash";
     private static final String TREE_BEGIN = "\\begin{prooftree}";
     private static final String TREE_END = "\\end{prooftree}";
 
@@ -120,7 +122,9 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
-        return "{$some text$}";
+        String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
+        String type = " \\tau_{42}";
+        return DOLLAR_SIGN + GAMMA + VDASH + term + COLON + type + DOLLAR_SIGN;
     }
 
     private StringBuilder generateConclusion(InferenceStep step, String label, String command) {
@@ -129,7 +133,9 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
             conclusion.append(label).append(NEW_LINE);
         }
         conclusion.append(command)
+                .append(CURLY_LEFT)
                 .append(conclusionToLatex(step.getConclusion()))
+                .append(CURLY_RIGHT)
                 .append(NEW_LINE);
         return conclusion;
     }
@@ -144,8 +150,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
     private String generateVarStepPremise(VarStep var) {
         String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions());
-        var.getConclusion().getLambdaTerm().accept(this);
-        String term = visitorBuffer;
+        String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm()).getLatex();
         String type = generateTypeAbstraction(var.getTypeAbsInPremise());
         return AXC + CURLY_LEFT + DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
                 + PAREN_RIGHT + EQUAL_SIGN + type + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
@@ -180,7 +185,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     @Override
     public void visit(ConstStepDefault constD) {
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
-        constD.getConclusion().getLambdaTerm().accept(this);
+        visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm()).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
                 + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, step);
@@ -211,49 +216,6 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
         letD.getPremise().accept(this);
         // todo implement
     }
-
-
-
-    @Override
-    public void visit(AppTerm appTerm) {
-        appTerm.getFunction().accept(this);
-        String function = visitorBuffer;
-        appTerm.getParameter().accept(this);
-        String parameter = needsParentheses ? PAREN_LEFT + visitorBuffer + PAREN_RIGHT : visitorBuffer;
-        needsParentheses = true;
-        visitorBuffer = function + LATEX_SPACE + parameter;
-    }
-
-    @Override
-    public void visit(AbsTerm absTerm) {
-        absTerm.getVariable().accept(this);
-        String variable = visitorBuffer;
-        absTerm.getInner().accept(this);
-        String inner = visitorBuffer;
-        needsParentheses = false;
-        visitorBuffer = LAMBDA + SPACE + variable + DOT_SIGN + LATEX_SPACE + inner;
-    }
-
-    @Override
-    public void visit(VarTerm varTerm) {
-        needsParentheses = false;
-        visitorBuffer = TEXTTT + CURLY_LEFT + varTerm.getName() + CURLY_RIGHT;
-    }
-
-    @Override
-    public void visit(ConstTerm constTerm) {
-        // todo implement correctly (with extended termVisitor)
-        String constant = visitorBuffer;
-        needsParentheses = false;
-        visitorBuffer = TEXTTT + CURLY_LEFT + constant + CURLY_RIGHT;
-    }
-
-    @Override
-    public void visit(LetTerm letTerm) {
-        // todo implement
-    }
-
-
 
     @Override
     public void visit(NamedType named) {
