@@ -21,9 +21,9 @@ public class TypeInferenceView extends VerticalLayout
 
     private MathjaxUnification unification;
     private MathjaxProofTree tree;
-    private TypeInfererInterface typeInferer;
-    private Div content;
-    private ControlPanel controlPanel;
+    private final transient TypeInfererInterface typeInferer;
+    private final Div content;
+    private final ControlPanel controlPanel;
 
     public TypeInferenceView() {
         typeInferer = ComponentUtil.getData(UI.getCurrent(), TypeInfererInterface.class);

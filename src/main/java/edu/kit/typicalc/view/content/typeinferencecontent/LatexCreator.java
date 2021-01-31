@@ -57,7 +57,7 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
 
 
 
-
+    private final TypeInfererInterface typeInferer;
     private final StringBuilder tree;
     private final boolean stepLabels;
 
@@ -81,18 +81,18 @@ public class LatexCreator implements StepVisitor, TermVisitor, TypeVisitor {
     }
 
     protected LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
+        this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
-
-//        typeInferer.getFirstInferenceStep().accept(this);
     }
 
     /**
      * @return the LaTeX-code for the proof tree
      */
     protected String getTree() {
-        return "the $\\LaTeX$ inference tree should be here ";
-    } // todo implement
+        typeInferer.getFirstInferenceStep().accept(this);
+        return TREE_BEGIN + tree.toString() + TREE_END;
+    }
 
     /**
      * @return the LaTeX-code for constraints nad unification
