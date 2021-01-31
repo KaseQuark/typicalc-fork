@@ -18,7 +18,7 @@ class TypeVariableFactoryTest {
     }
 
     @Test
-    void createDistinctTypeVariables_100() {
+    void createDistinctTypeVariables100() {
         TypeVariableFactory factory = new TypeVariableFactory(TypeVariableKind.TREE);
 
         TypeVariable[] typeVariables = new TypeVariable[100];

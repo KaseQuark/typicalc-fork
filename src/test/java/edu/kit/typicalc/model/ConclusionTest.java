@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConclusionTest {
 
-    private static final Map<VarTerm, TypeAbstraction> typeAssumptions = new HashMap<>();
-    private static final LambdaTerm lambdaTerm = new VarTerm("var");
-    private static final Type type = new NamedType("type");
+    private static final Map<VarTerm, TypeAbstraction> TYPE_ASSUMPTIONS = new HashMap<>();
+    private static final LambdaTerm LAMBDA_TERM = new VarTerm("var");
+    private static final Type TYPE = new NamedType("type");
 
     @BeforeAll
     static void setUp() {
-        typeAssumptions.put(new VarTerm("var2"), new TypeAbstraction(new NamedType("type2"), new ArrayList<>()));
+        TYPE_ASSUMPTIONS.put(new VarTerm("var2"), new TypeAbstraction(new NamedType("type2"), new ArrayList<>()));
     }
 
     @Test
@@ -34,19 +34,19 @@ class ConclusionTest {
 
     @Test
     void getTypeAssumptionsTest() {
-        Conclusion conclusion = new Conclusion(typeAssumptions, lambdaTerm, type);
-        assertEquals(typeAssumptions, conclusion.getTypeAssumptions());
+        Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, LAMBDA_TERM, TYPE);
+        assertEquals(TYPE_ASSUMPTIONS, conclusion.getTypeAssumptions());
     }
 
     @Test
     void getLambdaTermTest() {
-        Conclusion conclusion = new Conclusion(typeAssumptions, lambdaTerm, type);
-        assertEquals(lambdaTerm, conclusion.getLambdaTerm());
+        Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, LAMBDA_TERM, TYPE);
+        assertEquals(LAMBDA_TERM, conclusion.getLambdaTerm());
     }
 
     @Test
     void getTypeTest() {
-        Conclusion conclusion = new Conclusion(typeAssumptions, lambdaTerm, type);
-        assertEquals(type, conclusion.getType());
+        Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, LAMBDA_TERM, TYPE);
+        assertEquals(TYPE, conclusion.getType());
     }
 }

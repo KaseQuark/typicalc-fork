@@ -10,8 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class SubstitutionTest {
 
-    private static final TypeVariable var = new TypeVariable(TypeVariableKind.USER_INPUT, 1);
-    private static final Type type = new TypeVariable(TypeVariableKind.TREE, 2);
+    private static final TypeVariable VAR = new TypeVariable(TypeVariableKind.USER_INPUT, 1);
+    private static final Type TYPE = new TypeVariable(TypeVariableKind.TREE, 2);
 
     @Test
     void equalsTest() {
@@ -20,13 +20,13 @@ class SubstitutionTest {
 
     @Test
     void getVariableTest() {
-        Substitution sub = new Substitution(var,type);
-        assertEquals(var, sub.getVariable());
+        Substitution sub = new Substitution(VAR, TYPE);
+        assertEquals(VAR, sub.getVariable());
     }
 
     @Test
     void getTypeTest() {
-        Substitution sub = new Substitution(var,type);
-        assertEquals(type, sub.getType());
+        Substitution sub = new Substitution(VAR, TYPE);
+        assertEquals(TYPE, sub.getType());
     }
 }
