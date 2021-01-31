@@ -15,8 +15,8 @@ import java.util.Objects;
  * The subclasses vary in the premise(s) they contain.
  */
 public abstract class InferenceStep {
-    private Conclusion conclusion;
-    private Constraint constraint;
+    private final Conclusion conclusion;
+    private final Constraint constraint;
 
     /**
      * Initializes a new InferenceStep with the given values.

@@ -17,7 +17,7 @@ public enum ParseError {
      */
     UNEXPECTED_CHARACTER;
 
-    private Token cause;
+    private Token cause = new Token(Token.TokenType.EOF, "", -1);
 
     public ParseError withToken(Token cause) {
         this.cause = cause;
