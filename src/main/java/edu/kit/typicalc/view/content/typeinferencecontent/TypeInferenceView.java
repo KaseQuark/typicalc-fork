@@ -1,11 +1,14 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.vaadin.flow.component.AttachEvent;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.PreserveOnRefresh;
 import com.vaadin.flow.router.Route;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
@@ -14,8 +17,9 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 
 @Route(value = "visualize", layout = MainViewImpl.class)
 @PageTitle("TypeInferenceView")
+@PreserveOnRefresh
 public class TypeInferenceView extends VerticalLayout
-        implements ControlPanelView {
+        implements ControlPanelView, ComponentEventListener<AttachEvent> {
 
     private int currentStep = 0;
 
@@ -29,6 +33,7 @@ public class TypeInferenceView extends VerticalLayout
         typeInferer = ComponentUtil.getData(UI.getCurrent(), TypeInfererInterface.class);
         setId("type-inference-view");
         setSizeFull();
+        addAttachListener(this);
         content = new Div();
         controlPanel = new ControlPanel(this);
         Scroller scroller = new Scroller(content);
@@ -78,6 +83,12 @@ public class TypeInferenceView extends VerticalLayout
     @Override
     public void previousStepButton() {
         currentStep = currentStep > 0 ? currentStep - 1 : currentStep;
+        refreshElements(currentStep);
+    }
+
+    @Override
+    public void onComponentEvent(AttachEvent attachEvent) {
+        currentStep = 0;
         refreshElements(currentStep);
     }
 }

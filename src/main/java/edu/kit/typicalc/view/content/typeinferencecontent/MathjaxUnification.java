@@ -2,7 +2,9 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.littemplate.LitTemplate;
+import com.vaadin.flow.component.template.Id;
 import edu.kit.typicalc.view.MathjaxAdapter;
 
 /**
@@ -16,6 +18,9 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
     private final String[] latex;
 
+    @Id("tc-content")
+    private Div content;
+
     /**
      * Creates a new HTML element that renders the constraints and unification and
      * calculates the steps.
@@ -23,9 +28,6 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
      */
     public MathjaxUnification(String[] latex) {
         this.latex = latex;
-        for (String s : latex) {
-            getElement().callJsFunction("setTex", s);
-        }
         showStep(0);
     }
 
@@ -36,6 +38,10 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
     @Override
     public void showStep(int n) {
+        if (n < latex.length) {
+            content.removeAll();
+            content.add(latex[n]);
+        }
         getElement().callJsFunction("showStep", n);
     }
 

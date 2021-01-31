@@ -1,0 +1,9 @@
+#infoHeader {
+	width: 30vw;
+	align-items: center;
+	justify-content: center;
+}
+
+#infoContent {
+	height: 50vh;
+}

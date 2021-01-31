@@ -6,13 +6,10 @@ import java.util.function.Consumer;
 import com.vaadin.flow.component.textfield.TextField;
 
 import org.apache.commons.lang3.StringUtils;
-import com.vaadin.componentfactory.Tooltip;
-import com.vaadin.componentfactory.TooltipAlignment;
-import com.vaadin.componentfactory.TooltipPosition;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -27,12 +24,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -6099700300418752958L;
 
     /*
-     * Id's for the imported css-file
+     * IDs for the imported .css-file
      */
     private static final String INPUT_FIELD_ID = "inputField";
     private static final String INPUT_BAR_ID = "inputBar";
 
-    private final Tooltip infoTooltip;
     private final Icon infoIcon;
     private final Button exampleButton;
     private final Button lambdaButton;
@@ -47,11 +43,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     protected InputBar(final Consumer<String> callback) {
         infoIcon = new Icon(VaadinIcon.INFO_CIRCLE);
-        // TODO: where is this tooltip supposed to show up? next to icon, currently not working
-        infoTooltip = new Tooltip(infoIcon, TooltipPosition.LEFT, TooltipAlignment.LEFT);
-        infoTooltip.add(new H5("Hallo"));
-        initInfoTooltip();
-
+        infoIcon.addClickListener(event -> onInfoIconClick());
+        
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
@@ -68,7 +61,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
-        add(infoTooltip, infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
+        add(infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
         setId(INPUT_BAR_ID);
     }
 
@@ -87,12 +80,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onExampleButtonClick() {
-        ExampleDialog exampleDialog = new ExampleDialog(inputField::setValue);
+        final Dialog exampleDialog = new ExampleDialog(inputField::setValue);
         exampleDialog.open();
     }
 
-    private void initInfoTooltip() {
-        infoTooltip.add(new H5("Hallo"));
+    private void onInfoIconClick() {
+        final Dialog infoDialog = new InfoDialog();
+        infoDialog.open();
     }
 
     @Override

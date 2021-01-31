@@ -15,7 +15,7 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
     private static final long serialVersionUID = -5751275682270653335L;
 
     /*
-     * IDs for the imported CSS file
+     * IDs for the imported .css-file
      */
     private static final String RULE_CONTAINER_ID = "ruleContainer";
     private static final String DRAWER_CONTENT_ID = "drawerContent";

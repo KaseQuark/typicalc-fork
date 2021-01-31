@@ -24,7 +24,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
     private static final long serialVersionUID = -8551851183297707985L;
     
     /*
-     * Id's for the imported css-file
+     * IDs for the imported .css-file
      */
     private static final String INFERENCE_RULE_FIELD_ID = "inferenceRuleField";
     private static final String HEADER_ID = "headerField";
