@@ -1,5 +1,6 @@
 package edu.kit.typicalc.model.type;
 
+import edu.kit.typicalc.model.Substitution;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
@@ -15,12 +16,21 @@ public abstract class Type {
     public abstract boolean contains(Type x);
 
     /**
-     * Substitutes a type Variable for a different type
+     * Substitutes a type Variable for a different type.
      * @param a the type to replace
      * @param b the type to insert
      * @return a Type that is created by replacing a with b
      */
     public abstract Type substitute(TypeVariable a, Type b);
+
+    /**
+     * Applies the given substitution to the type.
+     * @param substitution the substitution to apply to the type
+     * @return the substituted type
+     */
+    public Type substitute(Substitution substitution) {
+        return substitute(substitution.getVariable(), substitution.getType());
+    }
 
     /**
      * Accepts a visitor
