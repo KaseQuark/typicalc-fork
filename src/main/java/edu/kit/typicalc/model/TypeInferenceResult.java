@@ -4,6 +4,7 @@ import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -28,6 +29,8 @@ public class TypeInferenceResult {
     protected TypeInferenceResult(List<Substitution> substitutions, TypeVariable typeVar) {
         MGU = new ArrayList<>(substitutions);
         findMGU();
+        MGU.sort(Comparator.comparingInt((Substitution o) ->
+                o.getVariable().getIndex()).thenComparing(o -> o.getVariable().getKind()));
         finalType = findFinalType(typeVar);
     }
 

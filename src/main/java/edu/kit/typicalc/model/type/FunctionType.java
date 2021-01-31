@@ -115,6 +115,11 @@ public class FunctionType extends Type {
     }
 
     @Override
+    public String toString() {
+        return "FunctionType[" + parameter + " -> " + output + ']';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
