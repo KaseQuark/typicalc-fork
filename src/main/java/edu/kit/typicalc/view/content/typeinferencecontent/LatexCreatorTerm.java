@@ -8,15 +8,10 @@ import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.TermVisitor;
 import edu.kit.typicalc.model.term.VarTerm;
 
+import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
+
 public class LatexCreatorTerm implements TermVisitor {
     // TODO: document
-    private static final String PAREN_LEFT = "(";
-    private static final String PAREN_RIGHT = ")";
-    private static final String LATEX_SPACE = "\\ ";
-    private static final String LAMBDA = "\\lambda";
-    private static final String CURLY_LEFT = "{";
-    private static final String CURLY_RIGHT = "}";
-    private static final String TEXTTT = "\\texttt";
 
     private final StringBuilder latex;
     private boolean needsParentheses = false;
@@ -27,6 +22,11 @@ public class LatexCreatorTerm implements TermVisitor {
     }
 
     public String getLatex() {
+        // remove most outer parentheses if they exist
+//        if (latex.indexOf(PAREN_LEFT) == 0 && latex.indexOf(PAREN_RIGHT) == latex.length() - 1) {
+//            latex.deleteCharAt(latex.length() - 1);
+//            latex.deleteCharAt(0);
+//        }
         return latex.toString();
     }
 
@@ -34,32 +34,37 @@ public class LatexCreatorTerm implements TermVisitor {
     public void visit(AppTerm appTerm) {
         appTerm.getFunction().accept(this);
         latex.append(LATEX_SPACE);
+        latex.append(PAREN_LEFT);
+        int index = latex.length() - 1;
         appTerm.getParameter().accept(this);
         if (needsParentheses) {
-            latex.insert(0, PAREN_LEFT);
             latex.append(PAREN_RIGHT);
+        } else {
+            latex.deleteCharAt(index);
         }
         needsParentheses = true;
     }
 
     @Override
     public void visit(AbsTerm absTerm) {
+        latex.append(PAREN_LEFT);
         latex.append(LAMBDA);
-        latex.append(' ');
+        latex.append(SPACE);
         absTerm.getVariable().accept(this);
-        latex.append('.');
+        latex.append(DOT_SIGN);
         latex.append(LATEX_SPACE);
         absTerm.getInner().accept(this);
+        latex.append(PAREN_RIGHT);
         needsParentheses = false;
     }
 
     @Override
     public void visit(VarTerm varTerm) {
-        needsParentheses = false;
         latex.append(TEXTTT);
         latex.append(CURLY_LEFT);
         latex.append(varTerm.getName());
         latex.append(CURLY_RIGHT);
+        needsParentheses = false;
     }
 
     @Override
