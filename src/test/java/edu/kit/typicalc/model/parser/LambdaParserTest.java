@@ -20,6 +20,9 @@ class LambdaParserTest {
         LambdaParser parser = new LambdaParser("x");
         Result<LambdaTerm, ParseError> term = parser.parse();
         assertEquals(new VarTerm("x"), term.unwrap());
+        parser = new LambdaParser("β1 α1");
+        term = parser.parse();
+        assertEquals(new AppTerm(new VarTerm("β1"), new VarTerm("α1")), term.unwrap());
     }
     @Test
     void absTerm() {

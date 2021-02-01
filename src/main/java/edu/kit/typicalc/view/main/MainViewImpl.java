@@ -27,6 +27,7 @@ import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
  */
 @CssImport("./styles/view/main/main-view.css")
 @JsModule("./styles/shared-styles.js")
+@JavaScript("./src/svg-pan-zoom.min.js")
 @JavaScript("./src/tex-svg-full.js")
 public class MainViewImpl extends AppLayout implements MainView {
     private static final long serialVersionUID = -2411433187835906976L;

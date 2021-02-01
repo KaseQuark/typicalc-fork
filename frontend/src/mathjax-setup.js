@@ -85,6 +85,7 @@ window.MathJax = {
                 const OutputJax = startup.getOutputJax();
                 const html = mathjax.document(root, {InputJax, OutputJax});
                 html.render();
+                window.svgPanZoomFun(root.querySelector("svg"));
                 if (callback != null) {
                     callback(html);
                 }

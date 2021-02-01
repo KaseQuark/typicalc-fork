@@ -20,7 +20,7 @@ public class LambdaLexer {
      * current position in the term
      */
     private int pos = 0;
-    private Result<Deque<Token>, ParseError> result;
+    private final Result<Deque<Token>, ParseError> result;
 
     /**
      * Constructs a lexer that lexes the given term
@@ -66,7 +66,6 @@ public class LambdaLexer {
         } else {
             return new Result<>(new Token(TokenType.EOF, "", 0));
         }
-
     }
 
     private Result<Token, ParseError> parseNextToken() {
