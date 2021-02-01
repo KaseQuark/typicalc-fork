@@ -2,8 +2,6 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.ComponentUtil;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -29,8 +27,8 @@ public class TypeInferenceView extends VerticalLayout
     private final Div content;
     private final ControlPanel controlPanel;
 
-    public TypeInferenceView() {
-        typeInferer = ComponentUtil.getData(UI.getCurrent(), TypeInfererInterface.class);
+    public TypeInferenceView(TypeInfererInterface typeInferer) {
+        this.typeInferer = typeInferer;
         setId("type-inference-view");
         setSizeFull();
         addAttachListener(this);

@@ -1,6 +1,5 @@
 package edu.kit.typicalc.view.main;
 
-import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.button.Button;
@@ -13,6 +12,7 @@ import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.router.Location;
 import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
@@ -30,7 +30,10 @@ import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 @JavaScript("./src/tex-svg-full.js")
 public class MainViewImpl extends AppLayout implements MainView {
     private static final long serialVersionUID = -2411433187835906976L;
+    private static final String ROUTE = "infer";
+    private static final String SLASH = "/";
 
+    private String termToType = "lambda x.x"; //todo replace with real value
     /**
      * Creates a new MainViewImpl.
      */
@@ -39,12 +42,14 @@ public class MainViewImpl extends AppLayout implements MainView {
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
         addToNavbar(true, new UpperBar(presenter));
         addToDrawer(new DrawerContent());
+
     }
 
     @Override
     public void setTypeInferenceView(final TypeInfererInterface typeInferer) {
-        ComponentUtil.setData(UI.getCurrent(), TypeInfererInterface.class, typeInferer);
-        this.getUI().ifPresent(ui -> ui.navigate(TypeInferenceView.class));
+        TypeInferenceView tiv = new TypeInferenceView(typeInferer);
+        UI.getCurrent().getPage().getHistory().replaceState(null, new Location(ROUTE + SLASH + termToType));
+        setContent(tiv);
     }
 
     @Override
