@@ -18,11 +18,11 @@ public final class LatexCreatorConstants {
     protected static final String PAREN_LEFT = "(";
     protected static final String PAREN_RIGHT = ")";
 
-    protected static final String LABEL_ABS = "\\LeftLabel{ABS}";
-    protected static final String LABEL_APP = "\\LeftLabel{APP}";
-    protected static final String LABEL_CONST = "\\LeftLabel{CONST}";
-    protected static final String LABEL_VAR = "\\LeftLabel{VAR}";
-    protected static final String LABEL_LET = "\\LeftLabel{LET}";
+    protected static final String LABEL_ABS = "\\LeftLabel{\\rm A{\\small BS}}";
+    protected static final String LABEL_APP = "\\LeftLabel{\\rm A{\\small PP}}";
+    protected static final String LABEL_CONST = "\\LeftLabel{\\rm C{\\small ONST}}";
+    protected static final String LABEL_VAR = "\\LeftLabel{\\rm V{\\small AR}}";
+    protected static final String LABEL_LET = "\\LeftLabel{\\rm L{\\small ET}}";
 
     protected static final String UIC = "\\UnaryInfC";
     protected static final String BIC = "\\BinaryInfC";
