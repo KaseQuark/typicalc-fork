@@ -8,7 +8,8 @@ import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.util.Result;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Accepts user input and returns a type inference result.
