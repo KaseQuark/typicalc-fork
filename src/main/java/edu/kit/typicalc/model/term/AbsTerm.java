@@ -64,6 +64,11 @@ public class AbsTerm extends LambdaTerm {
     }
 
     @Override
+    public String toString() {
+        return "λ" + var + "." + body;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

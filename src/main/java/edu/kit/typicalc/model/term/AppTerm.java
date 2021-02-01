@@ -60,6 +60,11 @@ public class AppTerm extends LambdaTerm {
     }
 
     @Override
+    public String toString() {
+        return "(" + left + ")(" + right + ")";
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
