@@ -1,5 +1,7 @@
 package edu.kit.typicalc.view.main;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -8,10 +10,15 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 
 import java.util.HashMap;
+import java.util.function.Consumer;
+
+import org.apache.commons.lang3.StringUtils;
+
 
 /**
  * Contains all the components constantly shown in the upper part of the webage.
@@ -34,17 +41,20 @@ public class UpperBar extends HorizontalLayout {
     private final Button rules;
 
     private final transient MainViewListener presenter;
-
+    private final Consumer<Component> setContent;
+    
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
      *
      * @param presenter the listener used to communicate with the model
+     * @param setContent function to set the content of the application
      */
-    protected UpperBar(final MainViewListener presenter) {
+    protected UpperBar(final MainViewListener presenter, final Consumer<Component> setContent) {
         this.presenter = presenter;
-
+        this.setContent = setContent;
+        
         this.viewTitle = new H1(getTranslation("root.typicalc"));
-        viewTitle.addClickListener(event -> this.getUI().ifPresent(ui -> ui.navigate(StartPageView.class)));
+        viewTitle.addClickListener(event -> routeToStartPage());
         viewTitle.setId(VIEW_TITLE_ID);
         this.inputBar = new InputBar(this::typeInfer);
         inputBar.setId(INPUT_BAR_ID);
@@ -66,7 +76,17 @@ public class UpperBar extends HorizontalLayout {
      * @param lambdaString the lambda term to be type-inferred
      */
     protected void typeInfer(final String lambdaString) {
-        presenter.typeInferLambdaString(lambdaString, new HashMap<>());
+        inputBar.reset(); //TODO should term remain in input field?
+        if (lambdaString.equals(StringUtils.EMPTY)) {
+            routeToStartPage();
+        } else {
+            presenter.typeInferLambdaString(lambdaString, new HashMap<>());
+        }
+    }
+    
+    private void routeToStartPage() {
+        setContent.accept(new StartPageView());
+        UI.getCurrent().getPage().getHistory().replaceState(null, StringUtils.EMPTY);
     }
 
     private void onHelpIconClick() {

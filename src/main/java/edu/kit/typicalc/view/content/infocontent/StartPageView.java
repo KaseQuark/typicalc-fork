@@ -13,7 +13,7 @@ import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxUnification;
 import edu.kit.typicalc.view.main.MainViewImpl;
 import edu.kit.typicalc.view.main.MathjaxDisplay;
 
-@Route(value = "home", layout = MainViewImpl.class)
+@Route(value = "", layout = MainViewImpl.class)
 @PageTitle("Typicalc")
 @JsModule("./src/mathjax-setup.js")
 public class StartPageView extends VerticalLayout implements ControlPanelView {

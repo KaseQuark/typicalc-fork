@@ -6,12 +6,15 @@ import java.util.function.Consumer;
 import com.vaadin.flow.component.textfield.TextField;
 
 import org.apache.commons.lang3.StringUtils;
+
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -28,6 +31,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     private static final String INPUT_FIELD_ID = "inputField";
     private static final String INPUT_BAR_ID = "inputBar";
+    
+    private static final short MAX_INPUT_LENGTH = 1000;
 
     private final Icon infoIcon;
     private final Button exampleButton;
@@ -48,26 +53,35 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
-        //TODO seems to be the only solution to "immediately" parse backslash
-        inputField.addValueChangeListener(event -> {
-            if (inputField.getOptionalValue().isPresent()) {
-                String value = inputField.getValue();
-                value = value.replace("\\", "λ"); //TODO exchange magic strings
-                inputField.setValue(value);
-            }
-        });
+        inputField.addValueChangeListener(event -> onInputFieldValueChange());
         lambdaButton = new Button(getTranslation("root.lambda"), event -> onlambdaButtonClick());
         exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
+        inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
         add(infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
         setId(INPUT_BAR_ID);
     }
+    
+    protected void reset() {
+        inputField.clear();
+    }
+    
+    private void onInputFieldValueChange() {
+        inputField.getOptionalValue().ifPresent(value -> inputField
+                .setValue(value.replace(getTranslation("root.backslash"), getTranslation("root.lambda"))));
+    }
 
     private void onTypeInferButtonClick(final Consumer<String> callback) {
-        final Optional<String> currentInput = inputField.getOptionalValue();
-        currentInput.ifPresentOrElse(callback::accept, () -> callback.accept(StringUtils.EMPTY));
+        final String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
+        
+        if (currentInput.length() < MAX_INPUT_LENGTH) {
+            callback.accept(currentInput);
+        } else {
+            final Notification errorNotification = new ErrorNotification(getTranslation("root.overlongInput"));
+            errorNotification.open();
+        }
     }
 
     private void onlambdaButtonClick() {

@@ -2,16 +2,10 @@ package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.Notification.Position;
-import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
-import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Location;
 import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
@@ -41,7 +35,7 @@ public class MainViewImpl extends AppLayout implements MainView {
     public MainViewImpl() {
         setDrawerOpened(false);
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
-        addToNavbar(true, new UpperBar(presenter));
+        addToNavbar(true, new UpperBar(presenter, this::setContent));
         addToDrawer(new DrawerContent());
     }
 
@@ -55,16 +49,7 @@ public class MainViewImpl extends AppLayout implements MainView {
     @Override
     public void displayError(final ParseError error) {
         //TODO add error keys to bundle
-        final VerticalLayout container = new VerticalLayout();
-        final Span errorText = new Span(getTranslation("root." + error.toString()));
-        final Notification errorNotification = new Notification();
-        final Button closeButton = new Button(getTranslation("root.close"), event -> errorNotification.close());
-
-        errorNotification.addThemeVariants(NotificationVariant.LUMO_ERROR);
-        container.add(errorText, closeButton);
-        container.setAlignItems(FlexComponent.Alignment.CENTER);
-        errorNotification.add(container);
-        errorNotification.setPosition(Position.MIDDLE);
+        final Notification errorNotification = new ErrorNotification(getTranslation("root." + error.toString()));
         errorNotification.open();
     }
 }
