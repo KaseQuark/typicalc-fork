@@ -78,7 +78,6 @@ public class TypeAssumptionParserTest {
                         new FunctionType(BOOLEAN, BOOLEAN)
                 ),
                 Collections.emptyList()), assumption.getValue());
-        System.err.println("new type");
         parser = new TypeAssumptionParser();
         type = parser.parse("id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
         if (type.isError()) {

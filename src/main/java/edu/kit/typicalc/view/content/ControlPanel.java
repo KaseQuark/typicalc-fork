@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.content;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
@@ -23,7 +24,7 @@ public class ControlPanel extends HorizontalLayout {
      *
      * @param view the view that reacts to the button clicks
      */
-    public ControlPanel(ControlPanelView view) {
+    public ControlPanel(ControlPanelView view, Component focusArea) {
         firstStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT), evt -> view.firstStepButton());
         lastStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT), evt -> view.lastStepButton());
         nextStep = new Button(new Icon(VaadinIcon.ANGLE_RIGHT), evt -> view.nextStepButton());
@@ -31,10 +32,10 @@ public class ControlPanel extends HorizontalLayout {
         share = new Button(new Icon(VaadinIcon.CONNECT), evt -> view.shareButton());
 
         // todo change shortcut scope
-        firstStep.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL);
-        lastStep.addClickShortcut(Key.ARROW_RIGHT, KeyModifier.CONTROL);
-        nextStep.addClickShortcut(Key.ARROW_RIGHT);
-        previousStep.addClickShortcut(Key.ARROW_LEFT);
+        firstStep.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL).listenOn(focusArea);
+        lastStep.addClickShortcut(Key.ARROW_RIGHT, KeyModifier.CONTROL).listenOn(focusArea);
+        nextStep.addClickShortcut(Key.ARROW_RIGHT).listenOn(focusArea);
+        previousStep.addClickShortcut(Key.ARROW_LEFT).listenOn(focusArea);
 
         add(share, firstStep, previousStep, nextStep, lastStep);
     }

@@ -28,7 +28,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         setId("start-page");
         setSizeFull();
         content = new Div();
-        controlPanel = new ControlPanel(this);
+        controlPanel = new ControlPanel(this, this);
         Scroller scroller = new Scroller(content);
         scroller.setSizeFull();
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
