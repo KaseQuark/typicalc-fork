@@ -42,7 +42,6 @@ public class MainViewImpl extends AppLayout implements MainView {
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
         addToNavbar(true, new UpperBar(presenter));
         addToDrawer(new DrawerContent());
-
     }
 
     @Override

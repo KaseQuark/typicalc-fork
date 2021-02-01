@@ -75,6 +75,11 @@ public class LetTerm extends LambdaTerm {
     }
 
     @Override
+    public String toString() {
+        return "let " + variable + " = " + definition + " in " + body;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

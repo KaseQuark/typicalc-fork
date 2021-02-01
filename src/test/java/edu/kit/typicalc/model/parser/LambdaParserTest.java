@@ -24,16 +24,20 @@ class LambdaParserTest {
     @Test
     void absTerm() {
         LambdaParser parser = new LambdaParser("λx.x");
-        assertEquals(new AbsTerm(new VarTerm("x"), new VarTerm("x")), parser.parse().unwrap());
+        LambdaTerm term = parser.parse().unwrap();
+        assertEquals(new AbsTerm(new VarTerm("x"), new VarTerm("x")), term);
+        assertEquals("λx.x", term.toString());
     }
     @Test
     void appTerm() {
         LambdaParser parser = new LambdaParser("(λx.x)(λx.x)");
+        LambdaTerm term = parser.parse().unwrap();
         assertEquals(
                 new AppTerm(new AbsTerm(new VarTerm("x"), new VarTerm("x")),
                         new AbsTerm(new VarTerm("x"), new VarTerm("x"))),
-                parser.parse().unwrap()
+                term
         );
+        assertEquals("(λx.x)(λx.x)", term.toString());
     }
     @Test
     void letTerm() {
