@@ -2,11 +2,13 @@ package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.parser.LambdaParser;
 import edu.kit.typicalc.model.parser.ParseError;
+import edu.kit.typicalc.model.parser.TypeAssumptionParser;
 import edu.kit.typicalc.model.term.LambdaTerm;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.util.Result;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Accepts user input and returns a type inference result.
@@ -31,10 +33,21 @@ public class ModelImpl implements Model {
         if (result.isError()) {
             return new Result<>(null, result.unwrapError());
         }
-        //TODO: Parse Type Assumptions and add list to typeInferer
+        //Parse Type Assumptions
+        TypeAssumptionParser assumptionParser = new TypeAssumptionParser();
+        HashMap<VarTerm, TypeAbstraction> assumptionMap = new HashMap<>();
+
+        for (Map.Entry<String, String> entry : typeAssumptions.entrySet()) {
+            Result<Map<VarTerm, TypeAbstraction>, ParseError> newAssumption =
+                    assumptionParser.parse(entry.getKey(), entry.getValue());
+            if (newAssumption.isError()) {
+                return new Result<>(null, newAssumption.unwrapError());
+            }
+            assumptionMap.putAll(newAssumption.unwrap());
+        }
 
         //Create and return TypeInferer
-        TypeInferer typeInferer = new TypeInferer(result.unwrap(), new HashMap<>());
+        TypeInferer typeInferer = new TypeInferer(result.unwrap(), assumptionMap);
         return new Result<>(typeInferer, null);
     }
 }

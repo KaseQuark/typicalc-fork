@@ -12,9 +12,16 @@ import java.util.Objects;
  * term.
  */
 public abstract class AppStep extends InferenceStep {
-    private InferenceStep premise1;
-    private InferenceStep premise2;
+    private final InferenceStep premise1;
+    private final InferenceStep premise2;
 
+    /**
+     Initializes a new AbsStepWithLet with the given values.
+     * @param premise1 the first premise of this step
+     * @param premise2 the second premise of this step
+     * @param conclusion the conclusion of this step
+     * @param constraint constraint that can be derived from this step
+     */
     protected AppStep(InferenceStep premise1, InferenceStep premise2, Conclusion conclusion, Constraint constraint) {
         super(conclusion, constraint);
         this.premise1 = premise1;

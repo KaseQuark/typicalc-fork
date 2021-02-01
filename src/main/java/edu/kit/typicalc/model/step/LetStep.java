@@ -16,8 +16,8 @@ import java.util.Objects;
  * and the „outer“ inference should be interrupted
  */
 public abstract class LetStep extends InferenceStep {
-    private InferenceStep premise;
-    private TypeInfererLet typeInferer;
+    private final InferenceStep premise;
+    private final TypeInfererLet typeInferer;
 
     /**
      * Initializes a new LetStep with the given values.

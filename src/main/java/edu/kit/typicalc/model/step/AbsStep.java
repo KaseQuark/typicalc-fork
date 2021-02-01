@@ -10,7 +10,7 @@ import java.util.Objects;
  */
 public abstract class AbsStep extends InferenceStep {
 
-    private InferenceStep premise;
+    private final InferenceStep premise;
 
     /**
      * Initializes a new AbsStep with the given values.
