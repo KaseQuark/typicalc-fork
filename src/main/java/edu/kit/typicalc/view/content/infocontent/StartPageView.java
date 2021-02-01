@@ -6,7 +6,6 @@ import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.router.RouteAlias;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxProofTree;
@@ -16,7 +15,6 @@ import edu.kit.typicalc.view.main.MathjaxDisplay;
 
 @Route(value = "home", layout = MainViewImpl.class)
 @PageTitle("Typicalc")
-@RouteAlias(value = "", layout = MainViewImpl.class)
 @JsModule("./src/mathjax-setup.js")
 public class StartPageView extends VerticalLayout implements ControlPanelView {
 
