@@ -17,3 +17,7 @@
 #inputBar {
 	align-items: center;
 }
+
+vaadin-drawer-toggle {
+	width: 10em;
+}
