@@ -85,7 +85,31 @@ window.MathJax = {
                 const OutputJax = startup.getOutputJax();
                 const html = mathjax.document(root, {InputJax, OutputJax});
                 html.render();
-                window.svgPanZoomFun(root.querySelector("svg"));
+                const svg = root.querySelector("svg");
+                window.svgPanZoomFun(svg);
+                var nodeIterator = svg.querySelectorAll("g[data-mml-node='mtr']");
+                for (var a of nodeIterator) {
+                    var left = null;
+                    var i = 0;
+                    for (var node of a.childNodes) {
+                        if (i == 1 || i == 3) {
+                            i += 1;
+                            continue;
+                        }
+                        var bbox = node.getBBox();
+                        var mat = node.transform.baseVal[0];
+                        if (mat != undefined) {
+                            bbox.x += mat.matrix.e;
+                        }
+                        if (left == null) {
+                            left = bbox.x + bbox.width;
+                        } else {
+                            mat.matrix.e -= bbox.x - left;
+                            left = bbox.x + mat.matrix.e + bbox.width;
+                        }
+                        i += 1;
+                    }
+                }
                 if (callback != null) {
                     callback(html);
                 }
