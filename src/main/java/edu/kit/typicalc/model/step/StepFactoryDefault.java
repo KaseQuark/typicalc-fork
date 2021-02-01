@@ -2,6 +2,7 @@ package edu.kit.typicalc.model.step;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
+import edu.kit.typicalc.model.TypeInfererLet;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
@@ -59,5 +60,22 @@ public class StepFactoryDefault implements StepFactory {
     public VarStepDefault createVarStep(TypeAbstraction typeAbstraction, Type instantiatedTypeAbs,
                                         Conclusion conclusion, Constraint constraint) {
         return new VarStepDefault(typeAbstraction, instantiatedTypeAbs, conclusion, constraint);
+    }
+
+    /**
+     * Throws an UnsupportedOperationException.
+     * This method should never be called, as a StepFactoryDefault should only be used
+     * for lambda terms without any let polymorphism and therefore should never have
+     * to create a step where the let rule is applied.
+     * @param conclusion the conclusion of this step
+     * @param constraint the constraint that can be derived from this step
+     * @param premise the premise that doesn't need its own type inference
+     * @param typeInferer the typeInferer for the premise that needs its own type inference
+     * @return nothing
+     */
+    @Override
+    public LetStep createLetStep(Conclusion conclusion, Constraint constraint,
+                                 InferenceStep premise, TypeInfererLet typeInferer) {
+        throw new UnsupportedOperationException("Not possible to create LetStep when no let is present in the term");
     }
 }

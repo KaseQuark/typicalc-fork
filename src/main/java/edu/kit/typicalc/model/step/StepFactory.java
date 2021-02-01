@@ -2,6 +2,7 @@ package edu.kit.typicalc.model.step;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
+import edu.kit.typicalc.model.TypeInfererLet;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
@@ -46,5 +47,14 @@ public interface StepFactory {
      */
     VarStep createVarStep(TypeAbstraction typeAbstraction, Type instantiatedTypeAbs,
                           Conclusion conclusion, Constraint constraint);
-    //TODO LetStep
+    /**
+     * Creates a LetStep.
+     * @param conclusion the conclusion of this step
+     * @param constraint the constraint that can be derived from this step
+     * @param premise the premise that doesn't need its own type inference
+     * @param typeInferer the typeInferer for the premise that needs its own type inference
+     * @return the created AppStep
+     */
+    LetStep createLetStep(Conclusion conclusion, Constraint constraint,
+                          InferenceStep premise, TypeInfererLet typeInferer);
 }
