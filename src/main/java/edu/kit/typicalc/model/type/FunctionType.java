@@ -116,7 +116,7 @@ public class FunctionType extends Type {
 
     @Override
     public String toString() {
-        return "FunctionType[" + parameter + " -> " + output + ']';
+        return "Function[" + parameter + " -> " + output + ']';
     }
 
     @Override

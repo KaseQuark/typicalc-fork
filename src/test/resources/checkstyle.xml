@@ -100,7 +100,9 @@
         <module name="DefaultComesLast"/>
         <module name="MultipleVariableDeclarations"/>
         <module name="PackageDeclaration"/>
+        <!--
         <module name="ParameterAssignment"/>
+        -->
     </module>
     <module name="LineLength">
         <property name="max" value="120"/>

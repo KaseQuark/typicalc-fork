@@ -88,7 +88,7 @@ class LambdaParserTest {
         parser = new LambdaParser("x)");
         ParseError error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.RP, ")", 1), error.getCause());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 1), error.getCause());
         parser = new LambdaParser("??");
         assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
         parser = new LambdaParser("123333333333333");

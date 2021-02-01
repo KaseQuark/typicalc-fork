@@ -29,7 +29,7 @@ public class LambdaParser {
 
     private static final Set<TokenType> ATOM_START_TOKENS
             = EnumSet.of(TokenType.VARIABLE, TokenType.NUMBER, TokenType.TRUE,
-            TokenType.FALSE, TokenType.LP);
+            TokenType.FALSE, TokenType.LEFT_PARENTHESIS);
 
     /**
      * Constructs a parser with the specified String
@@ -159,7 +159,7 @@ public class LambdaParser {
         if (var.isError()) {
             return new Result<>(var);
         }
-        error = expect(TokenType.EQ);
+        error = expect(TokenType.EQUALS);
         if (error.isPresent()) {
             return new Result<>(null, error.get());
         }
@@ -213,12 +213,12 @@ public class LambdaParser {
                 }
                 return new Result<>(new BooleanTerm(b));
             default:
-                error = expect(TokenType.LP);
+                error = expect(TokenType.LEFT_PARENTHESIS);
                 if (error.isPresent()) {
                     return new Result<>(null, error.get());
                 }
                 Result<LambdaTerm, ParseError> term = parseTerm(false);
-                error = expect(TokenType.RP);
+                error = expect(TokenType.RIGHT_PARENTHESIS);
                 if (error.isPresent()) {
                     return new Result<>(null, error.get());
                 }

@@ -4,7 +4,9 @@ import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.util.Result;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Deque;
+import java.util.List;
 
 /**
  * This class lexes a term given as String into tokens.
@@ -69,7 +71,14 @@ public class LambdaLexer {
 
     }
 
-    public Result<Token, ParseError> parseNextToken() {
+    public Result<List<Token>, ParseError> allTokens() {
+        if (result.isError()) {
+            return new Result<>(result);
+        }
+        return new Result<>(new ArrayList<>(result.unwrap()));
+    }
+
+    private Result<Token, ParseError> parseNextToken() {
         while (pos < term.length() && Character.isWhitespace(term.charAt(pos))) {
             advance();
         }
@@ -80,21 +89,30 @@ public class LambdaLexer {
         Token t;
         char c = term.charAt(pos);
         switch (c) {
+            case '-':
+                if (pos + 1 < term.length() && term.charAt(pos + 1) == '>') {
+                    t = new Token(TokenType.ARROW, "->", pos);
+                    advance();
+                    advance();
+                    return new Result<>(t);
+                } else {
+                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+                }
             // bunch of single-character tokens
             case '.':
                 t = new Token(TokenType.DOT, ".", pos);
                 advance();
                 return new Result<>(t);
             case '(':
-                t = new Token(TokenType.LP, "(", pos);
+                t = new Token(TokenType.LEFT_PARENTHESIS, "(", pos);
                 advance();
                 return new Result<>(t);
             case ')':
-                t = new Token(TokenType.RP, ")", pos);
+                t = new Token(TokenType.RIGHT_PARENTHESIS, ")", pos);
                 advance();
                 return new Result<>(t);
             case '=':
-                t = new Token(TokenType.EQ, "=", pos);
+                t = new Token(TokenType.EQUALS, "=", pos);
                 advance();
                 return new Result<>(t);
             case '\\':

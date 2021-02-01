@@ -2,6 +2,7 @@ package edu.kit.typicalc.model.type;
 
 import edu.kit.typicalc.model.TypeVariableFactory;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -74,6 +75,13 @@ public class TypeAbstraction {
      */
     public Type getInnerType() {
         return type;
+    }
+
+    @Override
+    public String toString() {
+        return "TypeAbstraction{"
+                + "type=" + type
+                + ", quantifiedVariables=" + Arrays.toString(quantifiedVariables.toArray()) + '}';
     }
 
     @Override

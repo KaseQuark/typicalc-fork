@@ -20,10 +20,11 @@ public class Token {
         TRUE, // true
         FALSE, // false
         NUMBER, // [0-9]+
-        LP, // (
-        RP, // )
+        LEFT_PARENTHESIS, // (
+        RIGHT_PARENTHESIS, // )
         DOT, // .
-        EQ, // =
+        EQUALS, // =
+        ARROW, // -> TODO: document
         EOF // pseudo token if end of file is reached
     }
 
