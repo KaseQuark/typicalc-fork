@@ -11,6 +11,7 @@ import edu.kit.typicalc.model.term.LetTerm;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.util.Result;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 class LambdaParserTest {
@@ -82,7 +83,7 @@ class LambdaParserTest {
         );
     }
     @Test
-    void miscellaneousTerms() {
+    void errorHandling() {
         LambdaParser parser = new LambdaParser("");
         assertEquals(ParseError.TOO_FEW_TOKENS, parser.parse().unwrapError());
         parser = new LambdaParser("x)");
@@ -97,5 +98,42 @@ class LambdaParserTest {
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_CHARACTER, error);
         assertEquals(new Token(TokenType.NUMBER, "123333333333333", 2), error.getCause());
+        parser = new LambdaParser("λ)");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 1), error.getCause());
+        parser = new LambdaParser("λx=");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.EQUALS, "=", 2), error.getCause());
+        parser = new LambdaParser("λx..");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.DOT, ".", 3), error.getCause());
+        parser = new LambdaParser("let ) =");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 4), error.getCause());
+        parser = new LambdaParser("let x .");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.DOT, ".", 6), error.getCause());
+        parser = new LambdaParser("let x = )");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 8), error.getCause());
+        parser = new LambdaParser("let x = y )");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 10), error.getCause());
+        parser = new LambdaParser("let x = y in )");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 13), error.getCause());
+    }
+
+    @Test
+    void equality() {
+        EqualsVerifier.forClass(Token.class).usingGetClass().verify();
     }
 }

@@ -186,10 +186,7 @@ public class LambdaParser {
         switch (token.getType()) {
             case VARIABLE:
                 Result<VarTerm, ParseError> var = parseVar();
-                if (var.isError()) {
-                    return new Result<>(var);
-                }
-                return new Result<>(var.unwrap());
+                return new Result<>(var.unwrap()); // variable token can always be parsed
             case NUMBER:
                 String number = token.getText();
                 int n;

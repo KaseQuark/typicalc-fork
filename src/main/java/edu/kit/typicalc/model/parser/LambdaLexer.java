@@ -4,9 +4,7 @@ import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.util.Result;
 
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.List;
 
 /**
  * This class lexes a term given as String into tokens.
@@ -69,13 +67,6 @@ public class LambdaLexer {
             return new Result<>(new Token(TokenType.EOF, "", 0));
         }
 
-    }
-
-    public Result<List<Token>, ParseError> allTokens() {
-        if (result.isError()) {
-            return new Result<>(result);
-        }
-        return new Result<>(new ArrayList<>(result.unwrap()));
     }
 
     private Result<Token, ParseError> parseNextToken() {
