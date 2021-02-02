@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Component;
 import com.vaadin.flow.i18n.I18NProvider;
 
@@ -36,10 +35,6 @@ public class TypicalcI18NProvider implements I18NProvider {
 
     @Override
     public String getTranslation(String key, Locale locale, Object... params) {
-        if (key == null) {
-            return StringUtils.EMPTY;
-        }
-
         final ResourceBundle bundle = ResourceBundle.getBundle(LANGUAGE_BUNDLE_PREFIX, locale);
         String translation;
 

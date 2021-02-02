@@ -17,7 +17,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      * in other LaTeX documents. Should be in the form „\\usepackage<package>“
      * @param latexCode LaTeX code for users to copy into their own LaTeX document(s)
      */
-    protected ShareDialog(String url, String latexPackages, String latexCode) {
+    public ShareDialog(String url, String latexPackages, String latexCode) {
 
     }
 

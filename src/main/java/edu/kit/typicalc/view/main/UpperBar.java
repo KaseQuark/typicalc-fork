@@ -41,8 +41,8 @@ public class UpperBar extends HorizontalLayout {
     private final Button rules;
 
     private final transient MainViewListener presenter;
-    private final Consumer<Component> setContent;
-    
+    private final transient Consumer<Component> setContent;
+
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
      *
@@ -52,7 +52,7 @@ public class UpperBar extends HorizontalLayout {
     protected UpperBar(final MainViewListener presenter, final Consumer<Component> setContent) {
         this.presenter = presenter;
         this.setContent = setContent;
-        
+
         this.viewTitle = new H1(getTranslation("root.typicalc"));
         viewTitle.addClickListener(event -> routeToStartPage());
         viewTitle.setId(VIEW_TITLE_ID);
@@ -83,7 +83,7 @@ public class UpperBar extends HorizontalLayout {
             presenter.typeInferLambdaString(lambdaString, new HashMap<>());
         }
     }
-    
+
     private void routeToStartPage() {
         setContent.accept(new StartPageView());
         UI.getCurrent().getPage().getHistory().replaceState(null, StringUtils.EMPTY);

@@ -86,19 +86,20 @@ window.MathJax = {
                 const html = mathjax.document(root, {InputJax, OutputJax});
                 html.render();
                 const svg = root.querySelector("svg");
-                window.svgPanZoomFun(svg);
-                var nodeIterator = svg.querySelectorAll("g[data-mml-node='mtr']");
-                for (var a of nodeIterator) {
-                    var left = null;
-                    var i = 0;
-                    for (var node of a.childNodes) {
-                        if (i == 1 || i == 3) {
+                const nodeIterator = svg.querySelectorAll("g[data-mml-node='mtr']");
+                let counter = 0;
+                for (const a of nodeIterator) {
+                    counter++;
+                    let left = null;
+                    let i = 0;
+                    for (const node of a.childNodes) {
+                        if (i === 1 || i === 3) {
                             i += 1;
                             continue;
                         }
-                        var bbox = node.getBBox();
-                        var mat = node.transform.baseVal[0];
-                        if (mat != undefined) {
+                        const bbox = node.getBBox();
+                        const mat = node.transform.baseVal[0];
+                        if (mat !== undefined) {
                             bbox.x += mat.matrix.e;
                         }
                         if (left == null) {
@@ -109,6 +110,10 @@ window.MathJax = {
                         }
                         i += 1;
                     }
+                }
+                if (counter >= 3) {
+                    // should not be used on empty SVGs
+                    window.svgPanZoomFun(svg);
                 }
                 if (callback != null) {
                     callback(html);

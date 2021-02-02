@@ -43,8 +43,6 @@ public class TypeAssumptionParser {
             return new Result<>(token);
         }
         Token t = token.unwrap();
-        //System.err.println(t);
-        //System.err.println("expecting " + parenCount);
         Type type;
         int removedParens = 0;
         switch (t.getType()) {
@@ -66,26 +64,21 @@ public class TypeAssumptionParser {
             default:
                 return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
         }
-        //System.err.println("acquired type " + type);
         while (true) {
             token = lexer.nextToken();
-            //System.err.println("new token " + token.unwrap());
             if (token.isError()) {
                 return new Result<>(token);
             }
             t = token.unwrap();
             if (t.getType() == TokenType.RIGHT_PARENTHESIS) {
-                //System.err.println("returning " + type);
                 parenCount -= 1;
                 removedParens += 1;
                 if (parenCount <= 0) {
                     return new Result<>(new ImmutablePair<>(type, removedParens));
-                } else {
-                    continue;
                 }
+                continue;
             }
             if (t.getType() == TokenType.EOF) {
-                //System.err.println("returning " + type);
                 return new Result<>(new ImmutablePair<>(type, removedParens));
             }
             if (t.getType() != TokenType.ARROW) {
@@ -96,7 +89,6 @@ public class TypeAssumptionParser {
                 return nextType;
             }
             type = new FunctionType(type, nextType.unwrap().getLeft());
-            //System.err.println("constructed " + type);
             removedParens += nextType.unwrap().getRight();
             parenCount -= nextType.unwrap().getRight();
             if (parenCount < 0) {

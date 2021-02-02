@@ -31,7 +31,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     private static final String INPUT_FIELD_ID = "inputField";
     private static final String INPUT_BAR_ID = "inputBar";
-    
+
     private static final short MAX_INPUT_LENGTH = 1000;
 
     private final Icon infoIcon;
@@ -49,7 +49,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     protected InputBar(final Consumer<String> callback) {
         infoIcon = new Icon(VaadinIcon.INFO_CIRCLE);
         infoIcon.addClickListener(event -> onInfoIconClick());
-        
+
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
@@ -63,19 +63,19 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         add(infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
         setId(INPUT_BAR_ID);
     }
-    
+
     protected void reset() {
         inputField.clear();
     }
-    
+
     private void onInputFieldValueChange() {
         inputField.getOptionalValue().ifPresent(value -> inputField
-                .setValue(value.replace(getTranslation("root.backslash"), getTranslation("root.lambda"))));
+                .setValue(value.replace("\\", getTranslation("root.lambda"))));
     }
 
     private void onTypeInferButtonClick(final Consumer<String> callback) {
         final String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
-        
+
         if (currentInput.length() < MAX_INPUT_LENGTH) {
             callback.accept(currentInput);
         } else {
