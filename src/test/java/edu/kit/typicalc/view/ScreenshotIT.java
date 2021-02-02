@@ -1,16 +1,18 @@
 package edu.kit.typicalc.view;
 
 import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
 
-import edu.kit.typicalc.view.main.MainViewImpl;
 import org.junit.Test;
 import org.openqa.selenium.HasCapabilities;
 
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.commands.TestBenchCommandExecutor;
+
+import edu.kit.typicalc.view.pageobjects.InputBarElement;
 
 /**
  * This example contains usage examples of screenshot comparison feature.
@@ -18,6 +20,8 @@ import com.vaadin.testbench.commands.TestBenchCommandExecutor;
  */
 public class ScreenshotIT extends AbstractIT {
 
+    private static final String IDENTITY_TERM = "λx.x";
+    
     /**
      * We'll want to perform some additional setup functions, so we override the
      * setUp() method.
@@ -52,7 +56,25 @@ public class ScreenshotIT extends AbstractIT {
                         + " for error images",
                 testBench().compareScreen("initialView"));
     }
-
+    
+    @Test
+    public void basicExecution() throws Exception {
+        //TODO take screenshot and add to proper folder
+        InputBarElement inputBar = $(InputBarElement.class).first();
+        inputBar.setCurrentValue(IDENTITY_TERM);
+        
+        assertEquals(IDENTITY_TERM, inputBar.getCurrentValue());
+        
+        inputBar.typeInfer();
+        TestBenchCommandExecutor executer = getCommandExecutor();
+        executer.waitForVaadin();
+        
+        assertTrue("Screenshot comparison for 'identityView' failed, see "
+                        + Parameters.getScreenshotErrorDirectory()
+                        + " for error images",
+                testBench().compareScreen("identityView"));
+    }
+    
     /**
      * Generates a reference screenshot if no reference exists.
      * <p>

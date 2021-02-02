@@ -77,10 +77,10 @@ public class UpperBar extends HorizontalLayout {
      */
     protected void typeInfer(final String lambdaString) {
         inputBar.reset(); //TODO should term remain in input field?
+        
+        presenter.typeInferLambdaString(lambdaString, new HashMap<>());
         if (lambdaString.equals(StringUtils.EMPTY)) {
             routeToStartPage();
-        } else {
-            presenter.typeInferLambdaString(lambdaString, new HashMap<>());
         }
     }
 

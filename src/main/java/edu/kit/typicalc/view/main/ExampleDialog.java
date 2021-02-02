@@ -19,6 +19,8 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
     
     private static final long serialVersionUID = 8718432784530464215L;
     
+    private static final String EXAMPLE_DIALOG_ID = "exampleDialog";
+    
     private static final List<String> EXAMPLES =
             List.of("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)");
     private final Paragraph instruction;
@@ -39,9 +41,11 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
         	callback.accept(term);
         	this.close();
             });
+            button.setId(term); // needed for IT
             layout.add(button);
         }
         add(layout);
+        setId(EXAMPLE_DIALOG_ID);
     }
 
     @Override

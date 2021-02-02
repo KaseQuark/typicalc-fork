@@ -212,7 +212,7 @@
                 <configuration>
                     <configLocation>${project.build.directory}/../src/test/resources/checkstyle.xml</configLocation>
                     <suppressionsLocation>${project.build.directory}/../src/test/resources/checkstyle-suppressions.xml</suppressionsLocation>
-                    <failOnViolation>true</failOnViolation>
+                    <failOnViolation>false</failOnViolation>
                     <violationSeverity>warning</violationSeverity>
                 </configuration>
                 <executions>

@@ -31,6 +31,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     private static final String INPUT_FIELD_ID = "inputField";
     private static final String INPUT_BAR_ID = "inputBar";
+    private static final String INFER_BUTTON_ID = "inferButton";
+    private static final String EXAMPLE_BUTTON_ID = "exampleButton";
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
@@ -56,9 +58,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.addValueChangeListener(event -> onInputFieldValueChange());
         lambdaButton = new Button(getTranslation("root.lambda"), event -> onlambdaButtonClick());
         exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
+        exampleButton.setId(EXAMPLE_BUTTON_ID);
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        inferTypeButton.setId(INFER_BUTTON_ID);
 
         add(infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
         setId(INPUT_BAR_ID);

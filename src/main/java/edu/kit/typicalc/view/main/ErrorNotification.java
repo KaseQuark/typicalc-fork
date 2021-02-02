@@ -10,6 +10,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class ErrorNotification extends Notification {
 
     private static final long serialVersionUID = 1L;
+    
+    private static final String NOTIFICATION_ID = "errorNotification";
 
     protected ErrorNotification(final String errorMessage) {
         final VerticalLayout container = new VerticalLayout();
@@ -21,5 +23,6 @@ public class ErrorNotification extends Notification {
         addThemeVariants(NotificationVariant.LUMO_ERROR);
         add(container);
         setPosition(Position.MIDDLE);
+        setId(NOTIFICATION_ID);
     }
 }
