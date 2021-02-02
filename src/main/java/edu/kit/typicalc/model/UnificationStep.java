@@ -2,7 +2,9 @@ package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.util.Result;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Models one step of the unification algorithm with a list of constraints and a list of substitutions.
@@ -41,5 +43,30 @@ public class UnificationStep {
      */
     public List<Constraint> getConstraints() {
         return constraints;
+    }
+
+    @Override
+    public String toString() {
+        return "UnificationStep{"
+                + "substitutions=" + substitutions
+                + ", constraints=" + Arrays.toString(constraints.toArray())
+                + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        UnificationStep that = (UnificationStep) o;
+        return substitutions.equals(that.substitutions) && constraints.equals(that.constraints);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(substitutions, constraints);
     }
 }

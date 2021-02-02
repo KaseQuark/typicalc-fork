@@ -1,5 +1,7 @@
 package edu.kit.typicalc.util;
 
+import java.util.Objects;
+
 /**
  * Can be a value of type T or an error of type E (if the computation failed).
  *
@@ -25,7 +27,7 @@ public class Result<T, E> {
      *
      * @param other the result
      */
-    public Result(Result other) {
+    public Result(Result<?, ?> other) {
         this.value = (T) other.value;
         this.error = (E) other.error;
     }
@@ -86,5 +88,31 @@ public class Result<T, E> {
             throw new IllegalStateException("tried to unwrap a value");
         }
         return error;
+    }
+
+    @Override
+    public String toString() {
+        if (isOk()) {
+            return "Ok(" + value + ")";
+        } else {
+            return "Error(" + error + ")";
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Result<?, ?> result = (Result<?, ?>) o;
+        return Objects.equals(value, result.value) && Objects.equals(error, result.error);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(value, error);
     }
 }

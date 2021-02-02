@@ -7,6 +7,7 @@ import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.model.type.TypeVariableKind;
 
+import java.util.ArrayDeque;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class TypeInferer implements TypeInfererInterface {
 
         // TODO: Abbrechen bei fehlgeschlagener let-Teilinferenz, evtl. getUnificationSteps() anpassen
 
-        unification = new Unification(tree.getConstraints());
+        unification = new Unification(new ArrayDeque<>(tree.getConstraints()));
 
         // cancel algorithm if term can't be typified
         if (unification.getSubstitutions().isError()) {
