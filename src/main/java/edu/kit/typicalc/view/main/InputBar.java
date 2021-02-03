@@ -1,12 +1,5 @@
 package edu.kit.typicalc.view.main;
 
-import java.util.Optional;
-import java.util.function.Consumer;
-
-import com.vaadin.flow.component.textfield.TextField;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -16,8 +9,13 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.Optional;
+import java.util.function.Consumer;
 
 /**
  * Contains components which allow the user to enter a lambda term and start the type inference algorithm.
@@ -56,7 +54,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
         inputField.addValueChangeListener(event -> onInputFieldValueChange());
-        lambdaButton = new Button(getTranslation("root.lambda"), event -> onlambdaButtonClick());
+        lambdaButton = new Button(getTranslation("root.lambda"), event -> onLambdaButtonClick());
         exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
@@ -88,7 +86,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         }
     }
 
-    private void onlambdaButtonClick() {
+    private void onLambdaButtonClick() {
         final StringBuilder inputBuilder = new StringBuilder();
         final Optional<String> currentInput = inputField.getOptionalValue();
         currentInput.ifPresent(inputBuilder::append);
@@ -110,5 +108,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent event) {
         inferTypeButton.setText(getTranslation("root.typeInfer"));
+    }
+
+    //todo documentation
+    protected void inferTerm(String term) {
+        inputField.setValue(term);
+        inferTypeButton.click();
     }
 }

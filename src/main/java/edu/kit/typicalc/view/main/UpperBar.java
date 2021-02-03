@@ -10,14 +10,12 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.function.Consumer;
-
-import org.apache.commons.lang3.StringUtils;
 
 
 /**
@@ -92,5 +90,10 @@ public class UpperBar extends HorizontalLayout {
     private void onHelpIconClick() {
         Dialog helpDialog = new HelpDialog();
         helpDialog.open();
+    }
+
+    //TODO documentation
+    protected void inferTerm(String term) {
+        inputBar.inferTerm(term);
     }
 }
