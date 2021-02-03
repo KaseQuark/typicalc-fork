@@ -72,6 +72,8 @@ public class Unification {
      * Returns as a {@link Result} either the list of substitutions that result from the unification,
      * needed for the subsequent calculation of the most general unifier and final type.
      * Or, in case of a constraint list that can't be unified, a {@link UnificationError}.
+     *
+     * @return a {@link Result} containing either the list of the resulting substitutions or a {@link UnificationError}
      */
     protected Result<List<Substitution>, UnificationError> getSubstitutions() {
         return substitutionsResult;

@@ -33,6 +33,8 @@ public class UnificationStep {
      * Returns as a {@link Result} either the list of all substitutions
      * of the unification (in the state resulting from this step).
      * Or, in case of a detected contradiction or infinite type, a {@link UnificationError}.
+     *
+     * @return a {@link Result} containing either the list of all resulting substitutions or a {@link UnificationError}
      */
     public Result<List<Substitution>, UnificationError> getSubstitutions() {
         return substitutions;

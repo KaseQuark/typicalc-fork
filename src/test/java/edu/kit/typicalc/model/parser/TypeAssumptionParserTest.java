@@ -1,6 +1,5 @@
 package edu.kit.typicalc.model.parser;
 
-import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.FunctionType;
 import edu.kit.typicalc.model.type.NamedType;
@@ -62,7 +61,8 @@ public class TypeAssumptionParserTest {
     @Test
     void complicatedTypes() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id", "(int -> int) -> (boolean -> boolean)");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(
+                "id", "(int -> int) -> (boolean -> boolean)");
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());
@@ -79,7 +79,8 @@ public class TypeAssumptionParserTest {
                 ),
                 Collections.emptyList()), assumption.getValue());
         parser = new TypeAssumptionParser();
-        type = parser.parse("id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
+        type = parser.parse(
+                "id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());
