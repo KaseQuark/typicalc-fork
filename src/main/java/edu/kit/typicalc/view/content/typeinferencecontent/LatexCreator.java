@@ -18,21 +18,10 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorCon
  * only use packages and commands that MathJax supports. The LaTeX code is also usable
  * outside of MathJax, in a normal .tex document.
  */
-public class LatexCreator implements StepVisitor, TypeVisitor {
-
+public class LatexCreator implements StepVisitor {
     private final TypeInfererInterface typeInferer;
     private final StringBuilder tree;
     private final boolean stepLabels;
-
-    /**
-     * Needed for visitor methods
-     */
-    private String visitorBuffer = "";
-
-    /**
-     * Needed for visitor methods
-     */
-    private boolean needsParentheses = false;
 
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
@@ -84,8 +73,7 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
         String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
-        conclusion.getType().accept(this);
-        String type = visitorBuffer;
+        String type = new LatexCreatorType(conclusion.getType()).getLatex();
         return DOLLAR_SIGN + GAMMA + VDASH + term + COLON + type + DOLLAR_SIGN;
     }
 
@@ -103,10 +91,8 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
     }
 
     private String generateConstraint(InferenceStep step) {
-        step.getConstraint().getFirstType().accept(this);
-        String firstType = visitorBuffer;
-        step.getConstraint().getSecondType().accept(this);
-        String secondType = visitorBuffer;
+        String firstType = new LatexCreatorType(step.getConstraint().getFirstType()).getLatex();
+        String secondType = new LatexCreatorType(step.getConstraint().getSecondType()).getLatex();
         return firstType + SPACE + EQUAL_SIGN + SPACE + secondType;
     }
 
@@ -147,7 +133,7 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
     @Override
     public void visit(ConstStepDefault constD) {
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
-        visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm()).getLatex();
+        String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm()).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
                 + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, step);
@@ -163,8 +149,7 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
     public void visit(VarStepWithLet varL) {
         tree.insert(0, generateConclusion(varL, LABEL_VAR, BIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
-        varL.getInstantiatedTypeAbs().accept(this);
-        String instantiatedType = visitorBuffer;
+        String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
         String premiseRight = AXC + CURLY_LEFT + DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
                 + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, premiseRight);
@@ -182,41 +167,5 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
     @Override
     public void visit(EmptyStep empty) {
         // TODO
-    }
-
-    @Override
-    public void visit(NamedType named) {
-        visitorBuffer = TEXTTT + CURLY_LEFT + named.getName() + CURLY_RIGHT;
-        needsParentheses = false;
-    }
-
-    @Override
-    public void visit(TypeVariable variable) {
-        String name;
-        switch (variable.getKind()) {
-            case TREE:
-                name = TREE_VARIABLE;
-                break;
-            case GENERATED_TYPE_ASSUMPTION:
-                name = GENERATED_ASSUMPTION_VARIABLE;
-                break;
-            case USER_INPUT:
-                name = USER_VARIABLE;
-                break;
-            default:
-                throw new IllegalStateException("unreachable code");
-        }
-        visitorBuffer = name + UNDERSCORE + CURLY_LEFT + variable.getIndex() + CURLY_RIGHT;
-        needsParentheses = false;
-    }
-
-    @Override
-    public void visit(FunctionType function) {
-        function.getParameter().accept(this);
-        String parameter = needsParentheses ? PAREN_LEFT + visitorBuffer + PAREN_RIGHT : visitorBuffer;
-        function.getOutput().accept(this);
-        String output = visitorBuffer;
-        visitorBuffer = parameter + SPACE + RIGHT_ARROW + SPACE + output;
-        needsParentheses = true;
     }
 }

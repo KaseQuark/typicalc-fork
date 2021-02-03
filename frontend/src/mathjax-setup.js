@@ -85,6 +85,24 @@ window.MathJax = {
                 const OutputJax = startup.getOutputJax();
                 const html = mathjax.document(root, {InputJax, OutputJax});
                 html.render();
+                if (root.querySelector("#style-fixes") == null) {
+                    const style = document.createElement('style');
+                    style.type = "text/css";
+                    style.innerHTML = "\
+mjx-doc, mjx-body, mjx-container, #tc-content, svg {\
+    height: 100%;\
+}\
+mjx-container {\
+    margin: 0 !important;\
+}\
+                    ";
+                    console.log(root.host.tagName);
+                    if (root.host.tagName === "TC-PROOF-TREE") {
+                        style.innerHTML += "svg { width: 100%; }";
+                    }
+                    style.id = "style-fixes";
+                    root.querySelector("mjx-head").appendChild(style);
+                }
                 const svg = root.querySelector("svg");
                 const nodeIterator = svg.querySelectorAll("g[data-mml-node='mtr']");
                 let counter = 0;

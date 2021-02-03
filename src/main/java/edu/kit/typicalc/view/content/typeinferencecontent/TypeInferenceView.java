@@ -2,6 +2,7 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -14,8 +15,11 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 
 @Route(value = "visualize", layout = MainViewImpl.class)
 @PageTitle("TypeInferenceView")
+@CssImport("./styles/view/type-inference.css")
 public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent> {
+    private static final String SCROLLER_ID = "scroller";
+    private static final String CONTENT_ID = "content";
 
     private int currentStep = 0;
 
@@ -31,9 +35,10 @@ public class TypeInferenceView extends VerticalLayout
         setSizeFull();
         addAttachListener(this);
         content = new Div();
+        content.setId(CONTENT_ID);
         controlPanel = new ControlPanel(this, this);
         Scroller scroller = new Scroller(content);
-        scroller.setSizeFull();
+        scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
