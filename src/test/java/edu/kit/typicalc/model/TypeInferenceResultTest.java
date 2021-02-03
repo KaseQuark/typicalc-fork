@@ -1,6 +1,7 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.type.FunctionType;
+import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
 import edu.kit.typicalc.model.type.TypeVariableKind;
 import org.junit.jupiter.api.Test;
@@ -54,5 +55,20 @@ class TypeInferenceResultTest {
         TypeInferenceResult result2 = new TypeInferenceResult(substitutions2, A_1);
 
         assertEquals(expectedMGU, result2.getMGU());
+    }
+
+    @Test
+    void getType() {
+        List<Substitution> substitutions = new ArrayList<>(Arrays.asList(
+                new Substitution(A_7, A_2),
+                new Substitution(A_4, new FunctionType(A_7, A_5)),
+                new Substitution(A_6, new FunctionType(A_7, A_5)),
+                new Substitution(A_3, new FunctionType(A_4, A_5)),
+                new Substitution(A_1, new FunctionType(A_2, A_3))
+        ));
+        TypeInferenceResult result = new TypeInferenceResult(substitutions, A_1);
+
+        Type expectedType = new FunctionType(A_2, new FunctionType(new FunctionType(A_2, A_5), A_5));
+        assertEquals(expectedType, result.getType());
     }
 }
