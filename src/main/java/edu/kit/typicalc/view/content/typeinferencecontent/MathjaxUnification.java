@@ -1,6 +1,7 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.littemplate.LitTemplate;
@@ -14,6 +15,7 @@ import edu.kit.typicalc.view.MathjaxAdapter;
 @Tag("tc-unification")
 @JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-unification.ts")
+@CssImport("./styles/view/unification.css")
 public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
     private final String[] latex;
