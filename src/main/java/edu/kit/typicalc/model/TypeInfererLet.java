@@ -1,18 +1,27 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * Instances of this subclass of TypeInferer are used to execute the sub-inference starting in let steps.
  * They provide an extended constructor to make sure this sub-inference is consistent with the „outer“ inference.
  */
-public class TypeInfererLet extends TypeInferer {
+public class TypeInfererLet implements TypeInfererInterface {
+
+    private final Tree tree;
+    private final Unification unification;
+    private final Optional<TypeInferenceResult> typeInfResult;
+
     /**
      * Initializes a new TypeInfererLet for the given type assumptions, lambda term and type variable factory.
      *
@@ -23,8 +32,20 @@ public class TypeInfererLet extends TypeInferer {
      */
     protected TypeInfererLet(LambdaTerm lambdaTerm, Map<VarTerm, TypeAbstraction> typeAssumptions,
                              TypeVariableFactory typeVarFactory) {
-        super(lambdaTerm, typeAssumptions);
-        // TODO
+        tree = new Tree(typeAssumptions, lambdaTerm, typeVarFactory);
+
+        // TODO: Abbrechen bei fehlgeschlagener let-Teilinferenz, evtl. getUnificationSteps() anpassen
+
+        unification = new Unification(new ArrayDeque<>(tree.getConstraints()));
+
+        // cancel algorithm if term can't be typified
+        if (unification.getSubstitutions().isError()) {
+            typeInfResult = Optional.empty();
+            return;
+        }
+
+        List<Substitution> substitutions = unification.getSubstitutions().unwrap();
+        typeInfResult = Optional.of(new TypeInferenceResult(substitutions, tree.getFirstTypeVariable()));
     }
 
     /**
@@ -47,4 +68,23 @@ public class TypeInfererLet extends TypeInferer {
         return letConstraints;
     }
 
+    @Override
+    public InferenceStep getFirstInferenceStep() {
+        return tree.getFirstInferenceStep();
+    }
+
+    @Override
+    public List<UnificationStep> getUnificationSteps() {
+        return unification.getUnificationSteps();
+    }
+
+    @Override
+    public Optional<List<Substitution>> getMGU() {
+        return typeInfResult.map(TypeInferenceResult::getMGU);
+    }
+
+    @Override
+    public Optional<Type> getType() {
+        return typeInfResult.map(TypeInferenceResult::getType);
+    }
 }
