@@ -20,6 +20,7 @@ public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent> {
     private static final String SCROLLER_ID = "scroller";
     private static final String CONTENT_ID = "content";
+    private static final String ID = "type-inference-view";
 
     private int currentStep = 0;
 
@@ -31,7 +32,7 @@ public class TypeInferenceView extends VerticalLayout
 
     public TypeInferenceView(TypeInfererInterface typeInferer) {
         this.typeInferer = typeInferer;
-        setId("type-inference-view");
+        setId(ID);
         setSizeFull();
         addAttachListener(this);
         content = new Div();

@@ -2,11 +2,18 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 
 import edu.kit.typicalc.model.Conclusion;
+import edu.kit.typicalc.model.Constraint;
+import edu.kit.typicalc.model.Substitution;
 import edu.kit.typicalc.model.TypeInfererInterface;
+import edu.kit.typicalc.model.UnificationError;
+import edu.kit.typicalc.model.UnificationStep;
 import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.*;
+import edu.kit.typicalc.util.Result;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
@@ -50,9 +57,34 @@ public class LatexCreator implements StepVisitor {
      * @return the LaTeX-code for constraints nad unification
      */
     protected String[] getUnification() {
-        return new String[]{"$\\tau_0$", "$\\tau_1$", "$\\tau_2$", "$\\tau_3$", "$\\tau_4$",
-                "$\\tau_5$", "$\\tau_6$", "$\\tau_7$", "$\\tau_8$", "$\\tau_9$", "$\\tau_{10}$", "$\\tau_{11}$",
-                "$\\tau_{12}$", "$\\tau_{13}$", "$\\tau_{14}$"};
+        List<String> steps = new ArrayList<>();
+        for (UnificationStep step : typeInferer.getUnificationSteps()) {
+            Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
+            if (subs.isError()) {
+                continue; // TODO
+            }
+            StringBuilder latex = new StringBuilder();
+            latex.append(DOLLAR_SIGN);
+            latex.append("\\begin{align}");
+            List<Substitution> substitutions = subs.unwrap();
+            for (Substitution s : substitutions) {
+                latex.append(new LatexCreatorType(s.getVariable()).getLatex());
+                latex.append(RIGHT_ARROW);
+                latex.append(new LatexCreatorType(s.getType()).getLatex());
+                latex.append("\\\\");
+            }
+            List<Constraint> constraints = step.getConstraints();
+            for (Constraint c : constraints) {
+                latex.append(new LatexCreatorType(c.getFirstType()).getLatex());
+                latex.append(EQUALS);
+                latex.append(new LatexCreatorType(c.getSecondType()).getLatex());
+                latex.append("\\\\");
+            }
+            latex.append("\\end{align}");
+            latex.append(DOLLAR_SIGN);
+            steps.add(latex.toString());
+        }
+        return steps.toArray(new String[0]);
     } // todo implement
 
     /**
@@ -93,7 +125,7 @@ public class LatexCreator implements StepVisitor {
     private String generateConstraint(InferenceStep step) {
         String firstType = new LatexCreatorType(step.getConstraint().getFirstType()).getLatex();
         String secondType = new LatexCreatorType(step.getConstraint().getSecondType()).getLatex();
-        return firstType + SPACE + EQUAL_SIGN + SPACE + secondType;
+        return firstType + SPACE + EQUALS + SPACE + secondType;
     }
 
     private String generateVarStepPremise(VarStep var) {
@@ -101,7 +133,7 @@ public class LatexCreator implements StepVisitor {
         String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm()).getLatex();
         String type = generateTypeAbstraction(var.getTypeAbsInPremise());
         return AXC + CURLY_LEFT + DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
-                + PAREN_RIGHT + EQUAL_SIGN + type + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
+                + PAREN_RIGHT + EQUALS + type + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
     }
 
     private String generateTypeAbstraction(TypeAbstraction abs) {
