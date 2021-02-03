@@ -180,6 +180,11 @@ public class LatexCreator implements StepVisitor, TypeVisitor {
     }
 
     @Override
+    public void visit(EmptyStep empty) {
+        // TODO
+    }
+
+    @Override
     public void visit(NamedType named) {
         visitorBuffer = TEXTTT + CURLY_LEFT + named.getName() + CURLY_RIGHT;
         needsParentheses = false;

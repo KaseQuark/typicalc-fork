@@ -1,9 +1,6 @@
 package edu.kit.typicalc.model;
 
-import edu.kit.typicalc.model.step.InferenceStep;
-import edu.kit.typicalc.model.step.StepFactory;
-import edu.kit.typicalc.model.step.StepFactoryDefault;
-import edu.kit.typicalc.model.step.StepFactoryWithLet;
+import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.AbsTerm;
 import edu.kit.typicalc.model.term.AppTerm;
 import edu.kit.typicalc.model.term.ConstTerm;
@@ -133,7 +130,43 @@ public class Tree implements TermVisitorTree {
 
     @Override
     public InferenceStep visit(LetTerm letTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
-        return null; // TODO
+        TypeInfererLet typeInfererLet = new TypeInfererLet(
+                letTerm.getVariableDefinition(), typeAssumptions, typeVarFactory);
+
+        Type premiseType = typeVarFactory.nextTypeVariable();
+        Constraint newConstraint = new Constraint(conclusionType, premiseType);
+        InferenceStep premise;
+
+        if (typeInfererLet.getType().isPresent()) {
+            Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new HashMap<>(typeAssumptions);
+            extendedTypeAssumptions.replaceAll((key, value) -> {
+                Type newType = value.getInnerType();
+                for (Substitution substitution : typeInfererLet.getMGU().get()) {
+                    if (value.getQuantifiedVariables().contains(substitution.getVariable())) {
+                        continue;
+                    }
+                    newType = newType.substitute(substitution);
+                }
+                return new TypeAbstraction(newType, value.getQuantifiedVariables());
+            });
+
+            List<TypeVariable> variablesToQuantify = new ArrayList<>();
+            // TODO variablesToQuantify berechnen
+
+            TypeAbstraction newTypeAbstraction = new TypeAbstraction(typeInfererLet.getType().get(),
+                    variablesToQuantify);
+            extendedTypeAssumptions.put(letTerm.getVariable(), newTypeAbstraction);
+
+            premise = letTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
+
+            constraints.add(newConstraint);
+            constraints.addAll(typeInfererLet.getLetConstraints());
+        } else {
+            premise = new EmptyStep();
+        }
+
+        Conclusion conclusion = new Conclusion(typeAssumptions, letTerm, conclusionType);
+        return stepFactory.createLetStep(conclusion, newConstraint, premise, typeInfererLet);
     }
 
     @Override
