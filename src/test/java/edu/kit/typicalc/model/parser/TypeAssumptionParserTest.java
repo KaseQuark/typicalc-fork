@@ -9,6 +9,7 @@ import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static edu.kit.typicalc.model.type.NamedType.BOOLEAN;
@@ -16,11 +17,13 @@ import static edu.kit.typicalc.model.type.NamedType.INT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TypeAssumptionParserTest {
+    class TypeAssumptionParserTest {
     @Test
     void simpleType() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("a", "int");
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("a", "int");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -32,7 +35,9 @@ public class TypeAssumptionParserTest {
     @Test
     void functionType() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id", "int -> int");
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("id", "int -> int");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -40,7 +45,9 @@ public class TypeAssumptionParserTest {
         assertEquals(new VarTerm("id"), assumption.getKey());
         assertEquals(new TypeAbstraction(new FunctionType(INT, INT), Collections.emptyList()), assumption.getValue());
 
-        type = parser.parse("f", "int -> int -> int");
+        HashMap<String, String> assumptions2 = new HashMap<>();
+        assumptions2.put("f", "int -> int -> int");
+        type = parser.parse(assumptions2);
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());
@@ -61,8 +68,9 @@ public class TypeAssumptionParserTest {
     @Test
     void complicatedTypes() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(
-                "id", "(int -> int) -> (boolean -> boolean)");
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("id", "(int -> int) -> (boolean -> boolean)");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());
@@ -79,8 +87,9 @@ public class TypeAssumptionParserTest {
                 ),
                 Collections.emptyList()), assumption.getValue());
         parser = new TypeAssumptionParser();
-        type = parser.parse(
-                "id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
+        HashMap<String, String> assumptions2 = new HashMap<>();
+        assumptions2.put("id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
+        type = parser.parse(assumptions2);
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());

@@ -15,15 +15,16 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TypeAssumptionParser {
-    // TODO: why is a Map returned?
-    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(String varName, String type) {
+    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> oldAssumptions) {
         Map<VarTerm, TypeAbstraction> typeAssumptions = new HashMap<>();
-        VarTerm var = new VarTerm(varName);
-        Result<TypeAbstraction, ParseError> typeAbs = parseType(type);
-        if (typeAbs.isError()) {
-            return new Result<>(typeAbs);
+        for (Map.Entry<String, String> entry : oldAssumptions.entrySet()) {
+            VarTerm var = new VarTerm(entry.getKey());
+            Result<TypeAbstraction, ParseError> typeAbs = parseType(entry.getValue());
+            if (typeAbs.isError()) {
+                return new Result<>(typeAbs);
+            }
+            typeAssumptions.put(var, typeAbs.unwrap());
         }
-        typeAssumptions.put(var, typeAbs.unwrap());
         return new Result<>(typeAssumptions);
     }
 
