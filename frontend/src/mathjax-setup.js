@@ -85,6 +85,13 @@ window.MathJax = {
                 const OutputJax = startup.getOutputJax();
                 const html = mathjax.document(root, {InputJax, OutputJax});
                 html.render();
+                const hostTag = root.host.tagName.toLowerCase();
+                if (hostTag !== "tc-proof-tree" && hostTag !== "tc-unification") {
+                    if (callback != null) {
+                        callback(html);
+                    }
+                    return html;
+                }
                 if (root.querySelector("#style-fixes") == null) {
                     const style = document.createElement('style');
                     style.type = "text/css";
@@ -97,7 +104,7 @@ mjx-container {\
 }\
                     ";
                     console.log(root.host.tagName);
-                    if (root.host.tagName === "TC-PROOF-TREE") {
+                    if (hostTag === "tc-proof-tree") {
                         style.innerHTML += "svg { width: 100%; }";
                     }
                     style.id = "style-fixes";
@@ -129,6 +136,8 @@ mjx-container {\
                         i += 1;
                     }
                 }
+                const bbox = svg.childNodes[1].getBBox();
+                svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height)
                 if (counter >= 3) {
                     // should not be used on empty SVGs
                     window.svgPanZoomFun(svg);
