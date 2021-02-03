@@ -130,7 +130,8 @@ mjx-container {\
                         if (left == null) {
                             left = bbox.x + bbox.width;
                         } else {
-                            mat.matrix.e -= bbox.x - left;
+                            // 500 space between inference steps
+                            mat.matrix.e -= bbox.x - left - 500;
                             left = bbox.x + mat.matrix.e + bbox.width;
                         }
                         i += 1;
