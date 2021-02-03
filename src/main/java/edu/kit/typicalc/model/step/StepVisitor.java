@@ -47,8 +47,9 @@ public interface StepVisitor {
      */
     void visit(LetStepDefault letD);
 
-
-
-
-
+    /**
+     * Visits an empty step
+     * @param empty the empty step to visit
+     */
+    void visit(EmptyStep empty);
 }
