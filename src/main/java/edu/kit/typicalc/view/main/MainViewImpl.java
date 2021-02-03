@@ -13,6 +13,7 @@ import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.presenter.Presenter;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
@@ -35,14 +36,13 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
 
     private final UpperBar upperBar;
 
-    private String termToType = "x"; //todo replace with real value
     /**
      * Creates a new MainViewImpl.
      */
     public MainViewImpl() {
         setDrawerOpened(false);
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
-        upperBar = new UpperBar(presenter, this::setContent);
+        upperBar = new UpperBar(presenter, this::setContent, this::setTermInURL);
         addToNavbar(upperBar);
         addToDrawer(new DrawerContent());
     }
@@ -50,7 +50,6 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
     @Override
     public void setTypeInferenceView(final TypeInfererInterface typeInferer) {
         TypeInferenceView tiv = new TypeInferenceView(typeInferer);
-        UI.getCurrent().getPage().getHistory().replaceState(null, new Location(ROUTE + SLASH + termToType));
         setContent(tiv);
     }
 
@@ -70,14 +69,20 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
             List<String> segments = event.getLocation().getSegments();
             String term = segments.get(segments.size() - 1);
             upperBar.inferTerm(decodeURL(term));
-            return HttpServletResponse.SC_OK;
+        } else if (event.getLocation().getPath().equals(ROUTE)) {
+            setContent(new StartPageView());
+            upperBar.inferTerm(StringUtils.EMPTY);
         } else if (event.getLocation().getPath().equals("")) {
             setContent(new StartPageView());
-            return HttpServletResponse.SC_OK;
         } else {
-            setContent(new NotFoundView(event));
+            setContent(new NotFoundView());
             return HttpServletResponse.SC_NOT_FOUND;
         }
+        return HttpServletResponse.SC_OK;
+    }
+
+    protected void setTermInURL(String lambdaTerm) {
+        UI.getCurrent().getPage().getHistory().replaceState(null, new Location(ROUTE + SLASH + lambdaTerm));
     }
 
     private String decodeURL(String encodedUrl) {
