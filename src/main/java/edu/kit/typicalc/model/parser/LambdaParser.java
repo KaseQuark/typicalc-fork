@@ -107,6 +107,8 @@ public class LambdaParser {
                     return new Result<>(let);
                 }
                 return new Result<>(let.unwrap());
+            case VARIABLE:
+                return new Result<>(parseApplication());
             case EOF:
                 return new Result<>(null, ParseError.TOO_FEW_TOKENS);
             default:
@@ -140,8 +142,13 @@ public class LambdaParser {
         if (left.isError()) {
             return left;
         }
-        while (ATOM_START_TOKENS.contains(token.getType())) {
-            Result<LambdaTerm, ParseError> atom = parseAtom();
+        while (ATOM_START_TOKENS.contains(token.getType()) || token.getType() == TokenType.LAMBDA) {
+            Result<LambdaTerm, ParseError> atom;
+            if (token.getType() == TokenType.LAMBDA) {
+                atom = new Result<>(parseAbstraction());
+            } else {
+                atom = parseAtom();
+            }
             if (atom.isError()) {
                 return atom;
             }
