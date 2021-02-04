@@ -83,6 +83,9 @@ class MathjaxProofTree extends MathjaxAdapter {
                         labelElement.style.display = "none";
                         above.push(labelElement);
                     }
+                    if (stepIdx === 1) {
+                        steps.push([a, []]);
+                    }
                     if (!semantics.startsWith("bspr_axiom")) {
                         steps.push([a, above]);
                     }
