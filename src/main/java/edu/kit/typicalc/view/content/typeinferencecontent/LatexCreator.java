@@ -91,22 +91,32 @@ public class LatexCreator implements StepVisitor {
      * @return the packages needed for the LaTeX-code from getTree() and getUnification()to work
      */
     protected String getLatexPackages() {
-        return "the packages should be here";
+        return BUSSPROOFS;
     } // todo implement
 
-    private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
-//        typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
-//            varTerm.accept(this);
-//            visitorBuffer
-//        }));
-        return "{some other text}";
+    private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) { //todo sort entries?
+        if (typeAssumptions.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder assumptions = new StringBuilder();
+            typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
+                String termLatex = new LatexCreatorTerm(varTerm).getLatex();
+                String abstraction = generateTypeAbstraction(typeAbstraction);
+                assumptions.append(termLatex)
+                        .append(COLON)
+                        .append(abstraction)
+                        .append(COMMA);
+            }));
+            assumptions.deleteCharAt(assumptions.length() - 1);
+            return assumptions.toString();
+        }
     }
 
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
         String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
         String type = new LatexCreatorType(conclusion.getType()).getLatex();
-        return DOLLAR_SIGN + GAMMA + VDASH + term + COLON + type + DOLLAR_SIGN;
+        return DOLLAR_SIGN + typeAssumptions + VDASH + term + COLON + type + DOLLAR_SIGN;
     }
 
     private StringBuilder generateConclusion(InferenceStep step, String label, String command) {
@@ -137,8 +147,18 @@ public class LatexCreator implements StepVisitor {
     }
 
     private String generateTypeAbstraction(TypeAbstraction abs) {
-        // todo implement
-        return "";
+        StringBuilder abstraction = new StringBuilder();
+        if (abs.hasQuantifiedVariables()) {
+            abstraction.append(FOR_ALL);
+            abs.getQuantifiedVariables().forEach(typeVariable -> {
+                String variableTex = new LatexCreatorType(typeVariable).getLatex();
+                abstraction.append(variableTex).append(COMMA);
+            });
+            abstraction.deleteCharAt(abstraction.length() - 1);
+            abstraction.append(DOT_SIGN);
+        }
+        abstraction.append(new LatexCreatorType(abs.getInnerType()).getLatex());
+        return abstraction.toString();
     }
 
 
@@ -198,6 +218,7 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(EmptyStep empty) {
-        // TODO
+        String step = AXC + CURLY_LEFT + CURLY_RIGHT + NEW_LINE;
+        tree.insert(0, step);
     }
 }

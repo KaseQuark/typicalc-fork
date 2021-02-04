@@ -56,14 +56,19 @@ public class LatexCreatorType implements TypeVisitor {
     @Override
     public void visit(FunctionType function) {
         latex.append(PAREN_LEFT);
+        int index = latex.length() - 1;
         function.getParameter().accept(this);
-        latex.append(PAREN_RIGHT); // TODO: reduce parentheses
+        if (needsParentheses) {
+            latex.append(PAREN_RIGHT);
+        } else {
+            latex.deleteCharAt(index);
+        }
+
         latex.append(SPACE);
         latex.append(RIGHT_ARROW);
         latex.append(SPACE);
-        latex.append(PAREN_LEFT);
+
         function.getOutput().accept(this);
-        latex.append(PAREN_RIGHT); // TODO: reduce parentheses
         needsParentheses = true;
     }
 }

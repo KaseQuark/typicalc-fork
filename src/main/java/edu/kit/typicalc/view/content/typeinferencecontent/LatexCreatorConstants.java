@@ -10,6 +10,7 @@ public final class LatexCreatorConstants {
     protected static final String SPACE = " ";
     protected static final String DOLLAR_SIGN = "$";
     protected static final String EQUALS = "=";
+    protected static final String COMMA = ",";
     protected static final String DOT_SIGN = ".";
     protected static final String COLON = ":";
     protected static final String UNDERSCORE = "_";
@@ -35,6 +36,7 @@ public final class LatexCreatorConstants {
 
     protected static final String LAMBDA = "\\lambda";
     protected static final String LATEX_SPACE = "\\ ";
+    protected static final String FOR_ALL = "\\forall";
     protected static final String TEXTTT = "\\texttt";
     protected static final String RIGHT_ARROW = "\\rightarrow";
     protected static final String INSTANTIATE_SIGN = "\\succeq";
@@ -42,4 +44,6 @@ public final class LatexCreatorConstants {
     protected static final String VDASH = "\\vdash";
     protected static final String TREE_BEGIN = "\\begin{prooftree}";
     protected static final String TREE_END = "\\end{prooftree}";
+
+    protected static final String BUSSPROOFS = "\\usepackage{bussproofs}";
 }
