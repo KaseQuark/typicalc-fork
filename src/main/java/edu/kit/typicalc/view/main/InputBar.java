@@ -10,8 +10,10 @@ import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
@@ -53,6 +55,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
+        inputField.setValueChangeMode(ValueChangeMode.EAGER);
         inputField.addValueChangeListener(event -> onInputFieldValueChange());
         lambdaButton = new Button(getTranslation("root.lambda"), event -> onLambdaButtonClick());
         exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
@@ -65,14 +68,15 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         add(infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
         setId(INPUT_BAR_ID);
     }
-
-    protected void reset() {
-        inputField.clear();
+    
+    protected void inferTerm(final String term) {
+        inputField.setValue(term);
+        inferTypeButton.click();
     }
 
     private void onInputFieldValueChange() {
-        inputField.getOptionalValue().ifPresent(value -> inputField
-                .setValue(value.replace("\\", getTranslation("root.lambda"))));
+       inputField.getOptionalValue().ifPresent(value -> inputField
+               .setValue(value.replace("\\", getTranslation("root.lambda"))));
     }
 
     private void onTypeInferButtonClick(final Consumer<String> callback) {
@@ -108,11 +112,5 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent event) {
         inferTypeButton.setText(getTranslation("root.typeInfer"));
-    }
-
-    //todo documentation
-    protected void inferTerm(String term) {
-        inputField.setValue(term);
-        inferTypeButton.click();
     }
 }
