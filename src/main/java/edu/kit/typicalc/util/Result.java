@@ -71,7 +71,7 @@ public class Result<T, E> {
      */
     public T unwrap() throws IllegalStateException {
         if (value == null) {
-            throw new IllegalStateException("tried to unwrap an error");
+            throw new IllegalStateException("tried to unwrap a result, but error = " + error);
         }
         return value;
     }
@@ -85,7 +85,7 @@ public class Result<T, E> {
      */
     public E unwrapError() {
         if (error == null) {
-            throw new IllegalStateException("tried to unwrap a value");
+            throw new IllegalStateException("tried to unwrap the error, but value = " + value);
         }
         return error;
     }

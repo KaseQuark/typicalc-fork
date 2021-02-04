@@ -8,7 +8,6 @@ import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.util.Result;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,19 +35,12 @@ public class ModelImpl implements Model {
         }
         //Parse Type Assumptions
         TypeAssumptionParser assumptionParser = new TypeAssumptionParser();
-        HashMap<VarTerm, TypeAbstraction> assumptionMap = new HashMap<>();
-
-        for (Map.Entry<String, String> entry : typeAssumptions.entrySet()) {
-            Result<Map<VarTerm, TypeAbstraction>, ParseError> newAssumption =
-                    assumptionParser.parse(entry.getKey(), entry.getValue());
-            if (newAssumption.isError()) {
-                return new Result<>(null, newAssumption.unwrapError());
-            }
-            assumptionMap.putAll(newAssumption.unwrap());
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> assumptionMap = assumptionParser.parse(typeAssumptions);
+        if (assumptionMap.isError()) {
+            return new Result<>(null, assumptionMap.unwrapError());
         }
-
         //Create and return TypeInferer
-        TypeInferer typeInferer = new TypeInferer(result.unwrap(), assumptionMap);
+        TypeInferer typeInferer = new TypeInferer(result.unwrap(), assumptionMap.unwrap());
         return new Result<>(typeInferer, null);
     }
 }

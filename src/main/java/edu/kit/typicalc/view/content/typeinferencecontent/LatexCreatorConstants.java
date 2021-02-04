@@ -9,7 +9,7 @@ public final class LatexCreatorConstants {
     protected static final String NEW_LINE = System.lineSeparator();
     protected static final String SPACE = " ";
     protected static final String DOLLAR_SIGN = "$";
-    protected static final String EQUAL_SIGN = "=";
+    protected static final String EQUALS = "=";
     protected static final String DOT_SIGN = ".";
     protected static final String COLON = ":";
     protected static final String UNDERSCORE = "_";

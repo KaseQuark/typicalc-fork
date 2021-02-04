@@ -15,6 +15,8 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 class LambdaParserTest {
+    private static final VarTerm X = new VarTerm("x");
+
     @Test
     void varTerm() {
         LambdaParser parser = new LambdaParser("x");
@@ -63,6 +65,11 @@ class LambdaParserTest {
     @Test
     void complicatedTerm() {
         LambdaParser parser = new LambdaParser("(λx.λy.x y 5)(λz.z)(true)");
+        Result<LambdaTerm, ParseError> term = parser.parse();
+        if (term.isError()) {
+            System.err.println(term.unwrapError());
+            System.err.println(term.unwrapError().getCause());
+        }
         assertEquals(
                 new AppTerm(
                         new AppTerm(
@@ -86,7 +93,7 @@ class LambdaParserTest {
                         ),
                         new BooleanTerm(true)
                 ),
-                parser.parse().unwrap()
+                term.unwrap()
         );
     }
     @Test
@@ -137,6 +144,17 @@ class LambdaParserTest {
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
         assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 13), error.getCause());
+    }
+
+    @Test
+    void bugFoundByThomas() {
+        LambdaParser parser = new LambdaParser("(λx. x) λx. x");
+        Result<LambdaTerm, ParseError> term = parser.parse();
+        if (term.isError()) {
+            System.err.println(term.unwrapError());
+            System.err.println(term.unwrapError().getCause());
+        }
+        assertEquals(new AppTerm(new AbsTerm(X, X), new AbsTerm(X, X)), term.unwrap());
     }
 
     @Test

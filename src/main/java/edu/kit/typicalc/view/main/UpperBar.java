@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.router.Location;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 import org.apache.commons.lang3.StringUtils;
@@ -40,16 +41,21 @@ public class UpperBar extends HorizontalLayout {
 
     private final transient MainViewListener presenter;
     private final transient Consumer<Component> setContent;
+    private final transient Consumer<String> setTermInURL;
 
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
      *
      * @param presenter the listener used to communicate with the model
      * @param setContent function to set the content of the application
+     * @param setTermInURL function to set the term into the URL
      */
-    protected UpperBar(final MainViewListener presenter, final Consumer<Component> setContent) {
+    protected UpperBar(final MainViewListener presenter, final Consumer<Component> setContent,
+                       final Consumer<String> setTermInURL) {
+
         this.presenter = presenter;
         this.setContent = setContent;
+        this.setTermInURL = setTermInURL;
 
         this.viewTitle = new H1(getTranslation("root.typicalc"));
         viewTitle.addClickListener(event -> routeToStartPage());
@@ -74,17 +80,18 @@ public class UpperBar extends HorizontalLayout {
      * @param lambdaString the lambda term to be type-inferred
      */
     protected void typeInfer(final String lambdaString) {
-        inputBar.reset(); //TODO should term remain in input field?
-        
+//        inputBar.reset(); //TODO should term remain in input field?
+        setTermInURL.accept(lambdaString);
         presenter.typeInferLambdaString(lambdaString, new HashMap<>());
-        if (lambdaString.equals(StringUtils.EMPTY)) {
-            routeToStartPage();
-        }
+        // todo ich finde es ohne Wechsel auf Startseite besser, man bekommt ja schon ne Warnung
+//        if (lambdaString.equals(StringUtils.EMPTY)) {
+//            routeToStartPage();
+//        }
     }
 
     private void routeToStartPage() {
         setContent.accept(new StartPageView());
-        UI.getCurrent().getPage().getHistory().replaceState(null, StringUtils.EMPTY);
+        UI.getCurrent().getPage().getHistory().replaceState(null, new Location(StringUtils.EMPTY));
     }
 
     private void onHelpIconClick() {

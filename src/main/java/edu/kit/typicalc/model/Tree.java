@@ -97,9 +97,9 @@ public class Tree implements TermVisitorTree {
     @Override
     public InferenceStep visit(AppTerm appTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         Type leftType = typeVarFactory.nextTypeVariable();
+        Type rightType = typeVarFactory.nextTypeVariable();
         InferenceStep leftPremise = appTerm.getFunction().accept(this, typeAssumptions, leftType);
 
-        Type rightType = typeVarFactory.nextTypeVariable();
         InferenceStep rightPremise = appTerm.getParameter().accept(this, typeAssumptions, rightType);
 
         Type function = new FunctionType(rightType, conclusionType);

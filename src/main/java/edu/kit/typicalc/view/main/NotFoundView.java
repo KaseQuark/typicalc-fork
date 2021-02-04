@@ -1,17 +1,18 @@
 package edu.kit.typicalc.view.main;
 
-import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.html.H1;
+import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.ParentLayout;
 
 @ParentLayout(MainViewImpl.class)
 public class NotFoundView extends VerticalLayout {
 
 
-    public NotFoundView(BeforeEnterEvent event) {
-        Label error = new Label(event.getLocation().getPath());
-        add(error);
+    public NotFoundView() {
+        H1 error404 = new H1("404 - Not found");
+        H2 suggestion = new H2("Try \"/infer/<term>\" or type your favourite term into the input field");
+        add(error404, suggestion); // todo make beautiful
         setAlignItems(Alignment.CENTER);
     }
 }
