@@ -163,8 +163,8 @@ public class LatexCreator implements StepVisitor {
         String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions());
         String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm()).getLatex();
         String type = generateTypeAbstraction(var.getTypeAbsInPremise());
-        return AXC + CURLY_LEFT + DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
-                + PAREN_RIGHT + EQUALS + type + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
+        return DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
+                + PAREN_RIGHT + EQUALS + type + DOLLAR_SIGN;
     }
 
     private String generateTypeAbstraction(TypeAbstraction abs) {
@@ -220,19 +220,22 @@ public class LatexCreator implements StepVisitor {
     public void visit(VarStepDefault varD) {
         constraintsGenerator.addConstraint(varD);
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
-        tree.insert(0, generateVarStepPremise(varD));
+        tree.insert(0, AXC + CURLY_LEFT + generateVarStepPremise(varD) + CURLY_RIGHT + NEW_LINE);
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
         constraintsGenerator.addConstraint(varL);
-        tree.insert(0, generateConclusion(varL, LABEL_VAR, BIC));
+        tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
-        String premiseRight = AXC + CURLY_LEFT + DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
-                + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
-        tree.insert(0, premiseRight);
-        String premiseLeft = generateVarStepPremise(varL);
+        String premiseRight = DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
+                + DOLLAR_SIGN + NEW_LINE;
+        String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + "\\begin{align}"
+                + generateVarStepPremise(varL).replace(DOLLAR_SIGN, "")
+                + " \\\\ " // TODO: less magic strings, less replacement fixups
+                + premiseRight.replace(DOLLAR_SIGN, "")
+                + "\\end{align}" + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, premiseLeft);
     }
 
