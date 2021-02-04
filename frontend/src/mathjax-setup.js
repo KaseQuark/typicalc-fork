@@ -86,7 +86,7 @@ window.MathJax = {
                 const html = mathjax.document(root, {InputJax, OutputJax});
                 html.render();
                 const hostTag = root.host.tagName.toLowerCase();
-                if (hostTag !== "tc-proof-tree" && hostTag !== "tc-unification") {
+                if (hostTag !== "tc-proof-tree") {
                     if (callback != null) {
                         callback(html);
                     }
