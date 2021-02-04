@@ -4,12 +4,13 @@ import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
 
 /**
- * Empty Steps are used if the sub-inference started when creating a let step failed and the second premise of
+ * Empty steps are used if the sub-inference that is started when creating a let step failed and the second premise of
  * this let step therefore cannot be calculated.
  */
 public class EmptyStep extends InferenceStep {
+
     /**
-     * Initializes a new EmptyStep.
+     * Initializes a new empty step.
      */
     public EmptyStep() {
         super(null, null); // TODO

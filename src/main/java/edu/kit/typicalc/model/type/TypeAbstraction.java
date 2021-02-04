@@ -1,10 +1,13 @@
 package edu.kit.typicalc.model.type;
 
 import edu.kit.typicalc.model.TypeVariableFactory;
+import edu.kit.typicalc.model.term.VarTerm;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -34,6 +37,18 @@ public class TypeAbstraction {
     public TypeAbstraction(Type type) {
         this.type = type;
         this.quantifiedVariables = Collections.emptyList();
+    }
+
+    /**
+     * Initializes a new type abstraction with its type and all type variables quantified
+     * that occur free in the given type, but not free in the given type assumptions
+     *
+     * @param type the type of the type abstraction
+     * @param typeAssumptions the type assumptions to consider when quantifying the type variables
+     */
+    public TypeAbstraction(Type type, Map<VarTerm, TypeAbstraction> typeAssumptions) {
+        this.type = type;
+        this.quantifiedVariables = new ArrayList<>(); // TODO
     }
 
     /**
