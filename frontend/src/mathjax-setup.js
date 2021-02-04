@@ -4,6 +4,9 @@ window.MathJax = {
         packages: {'[+]': ['bussproofs', 'unicode']},
         inlineMath: [['$', '$'], ['\\(', '\\)']]
     },
+    svg: {
+        displayAlign: "left" // TODO: does not actually work
+    },
     startup: {
         ready: () => {
             const mathjax = MathJax._.mathjax.mathjax;
@@ -110,41 +113,6 @@ mjx-container {\
                     style.id = "style-fixes";
                     root.querySelector("mjx-head").appendChild(style);
                 }
-                /*
-                const svg = root.querySelector("svg");
-                const nodeIterator = svg.querySelectorAll("g[data-mml-node='mtr']");
-                let counter = 0;
-                for (const a of nodeIterator) {
-                    counter++;
-                    let left = null;
-                    let i = 0;
-                    for (const node of a.childNodes) {
-                        if (i === 1 || i === 3) {
-                            i += 1;
-                            continue;
-                        }
-                        const bbox = node.getBBox();
-                        const mat = node.transform.baseVal[0];
-                        if (mat !== undefined) {
-                            bbox.x += mat.matrix.e;
-                        }
-                        if (left == null) {
-                            left = bbox.x + bbox.width;
-                        } else {
-                            // 500 space between inference steps
-                            mat.matrix.e -= bbox.x - left - 500;
-                            left = bbox.x + mat.matrix.e + bbox.width;
-                        }
-                        i += 1;
-                    }
-                }
-                const bbox = svg.childNodes[1].getBBox();
-                svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height)
-                if (counter >= 3) {
-                    // should not be used on empty SVGs
-                    window.svgPanZoomFun(svg);
-                }
-                 */
                 if (callback != null) {
                     callback(html);
                 }

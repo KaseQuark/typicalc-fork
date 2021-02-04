@@ -26,6 +26,7 @@ class MathjaxProofTree extends MathjaxAdapter {
 
     protected calculateSteps(): void {
         if (this.shadowRoot !== null) {
+            let semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
             // first, enumerate all of the steps
             let nodeIterator = document.createNodeIterator(this.shadowRoot, NodeFilter.SHOW_ELEMENT);
             let steps = [];
@@ -36,7 +37,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 if (semantics == null || a.nodeName !== "g") {
                     continue;
                 }
-                if (semantics.startsWith("bspr_inference:") || semantics.startsWith("bspr_axiom")) {
+                if (semanticsMatch(semantics)) {
                     a.setAttribute("typicalc", "step");
                     a.setAttribute("id", "step" + stepIdx);
                     stepIdx++;
@@ -86,7 +87,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 if (semantics == null || a.nodeName !== "g") {
                     continue;
                 }
-                if (semantics.startsWith("bspr_inference:") || semantics.startsWith("bspr_axiom")) {
+                if (semanticsMatch(semantics)) {
                     const id = "step" + stepIdx;
                     stepIdx++;
 
@@ -102,6 +103,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                         parent.removeAttribute("id");
                     }
                     const rule = a.querySelector("#" + id + " g[semantics=\"bspr_inferenceRule:down\"]");
+                    console.log(rule);
                     if (rule !== null) {
                         let i = 0;
                         for (const node of rule.childNodes) {
@@ -114,16 +116,12 @@ class MathjaxProofTree extends MathjaxAdapter {
                     const label = a.querySelector("#" + id +" g[semantics=\"bspr_prooflabel:left\"]");
                     if (label !== null) {
                         const labelElement = label as HTMLElement;
-                        //labelElement.style.display = "none";
                         above.push(labelElement);
                     }
                     if (stepIdx === 1) {
                         steps.push([a, []]);
                     }
-                    if (!semantics.startsWith("bspr_axiom")) {
-                        steps.push([a, above]);
-                    }
-                    //a.style.display = "none";
+                    steps.push([a, above]);
                 }
             }
             const svg = this.shadowRoot.querySelector<SVGElement>("svg")!;
