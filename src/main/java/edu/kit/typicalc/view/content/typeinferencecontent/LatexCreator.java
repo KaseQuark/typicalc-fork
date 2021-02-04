@@ -28,6 +28,7 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorCon
 public class LatexCreator implements StepVisitor {
     private final TypeInfererInterface typeInferer;
     private final StringBuilder tree;
+    private final LatexCreatorConstraints constraintsGenerator;
     private final boolean stepLabels;
 
     /**
@@ -43,13 +44,14 @@ public class LatexCreator implements StepVisitor {
         this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
+        constraintsGenerator = new LatexCreatorConstraints();
+        typeInferer.getFirstInferenceStep().accept(this);
     }
 
     /**
      * @return the LaTeX-code for the proof tree
      */
     protected String getTree() {
-        typeInferer.getFirstInferenceStep().accept(this);
         return TREE_BEGIN + NEW_LINE + tree.toString() + TREE_END;
     }
 
@@ -57,6 +59,39 @@ public class LatexCreator implements StepVisitor {
      * @return the LaTeX-code for constraints and unification
      */
     protected String[] getUnification() {
+        List<String> result = new ArrayList<>(constraintsGenerator.getConstraints());
+        result.addAll(generateUnification());
+        //todo MGU and final type
+        return result.toArray(new String[0]);
+    } // todo implement
+
+    /**
+     * @return the packages needed for the LaTeX-code from getTree() and getUnification()to work
+     */
+    protected String getLatexPackages() {
+        return BUSSPROOFS;
+    } // todo implement
+
+    private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
+        //todo sort entries?
+        if (typeAssumptions.isEmpty()) {
+            return "";
+        } else {
+            StringBuilder assumptions = new StringBuilder();
+            typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
+                String termLatex = new LatexCreatorTerm(varTerm).getLatex();
+                String abstraction = generateTypeAbstraction(typeAbstraction);
+                assumptions.append(termLatex)
+                        .append(COLON)
+                        .append(abstraction)
+                        .append(COMMA);
+            }));
+            assumptions.deleteCharAt(assumptions.length() - 1);
+            return assumptions.toString();
+        }
+    }
+
+    private List<String> generateUnification() {
         List<String> steps = new ArrayList<>();
         // TODO: check if unification is present
         for (UnificationStep step : typeInferer.getUnificationSteps().orElseThrow(IllegalStateException::new)) {
@@ -85,32 +120,8 @@ public class LatexCreator implements StepVisitor {
             latex.append(DOLLAR_SIGN);
             steps.add(latex.toString());
         }
-        return steps.toArray(new String[0]);
-    } // todo implement
+        return steps;
 
-    /**
-     * @return the packages needed for the LaTeX-code from getTree() and getUnification()to work
-     */
-    protected String getLatexPackages() {
-        return BUSSPROOFS;
-    } // todo implement
-
-    private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) { //todo sort entries?
-        if (typeAssumptions.isEmpty()) {
-            return "";
-        } else {
-            StringBuilder assumptions = new StringBuilder();
-            typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
-                String termLatex = new LatexCreatorTerm(varTerm).getLatex();
-                String abstraction = generateTypeAbstraction(typeAbstraction);
-                assumptions.append(termLatex)
-                        .append(COLON)
-                        .append(abstraction)
-                        .append(COMMA);
-            }));
-            assumptions.deleteCharAt(assumptions.length() - 1);
-            return assumptions.toString();
-        }
     }
 
     private String conclusionToLatex(Conclusion conclusion) {
@@ -131,12 +142,6 @@ public class LatexCreator implements StepVisitor {
                 .append(CURLY_RIGHT)
                 .append(NEW_LINE);
         return conclusion;
-    }
-
-    private String generateConstraint(InferenceStep step) {
-        String firstType = new LatexCreatorType(step.getConstraint().getFirstType()).getLatex();
-        String secondType = new LatexCreatorType(step.getConstraint().getSecondType()).getLatex();
-        return firstType + SPACE + EQUALS + SPACE + secondType;
     }
 
     private String generateVarStepPremise(VarStep var) {
@@ -166,18 +171,21 @@ public class LatexCreator implements StepVisitor {
     // todo use generateConstraint
     @Override
     public void visit(AbsStepDefault absD) {
+        constraintsGenerator.addConstraint(absD);
         tree.insert(0, generateConclusion(absD, LABEL_ABS, UIC));
         absD.getPremise().accept(this);
     }
 
     @Override
     public void visit(AbsStepWithLet absL) {
+        constraintsGenerator.addConstraint(absL);
         tree.insert(0, generateConclusion(absL, LABEL_ABS, UIC));
         absL.getPremise().accept(this);
     }
 
     @Override
     public void visit(AppStepDefault appD) {
+        constraintsGenerator.addConstraint(appD);
         tree.insert(0, generateConclusion(appD, LABEL_APP, BIC));
         appD.getPremise2().accept(this);
         appD.getPremise1().accept(this);
@@ -185,6 +193,7 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(ConstStepDefault constD) {
+        constraintsGenerator.addConstraint(constD);
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
         String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm()).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
@@ -194,12 +203,14 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(VarStepDefault varD) {
+        constraintsGenerator.addConstraint(varD);
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
         tree.insert(0, generateVarStepPremise(varD));
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
+        constraintsGenerator.addConstraint(varL);
         tree.insert(0, generateConclusion(varL, LABEL_VAR, BIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
@@ -212,6 +223,7 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(LetStepDefault letD) {
+        constraintsGenerator.addConstraint(letD);
         tree.insert(0, generateConclusion(letD, LABEL_LET, BIC));
         letD.getPremise().accept(this);
         // todo implement
