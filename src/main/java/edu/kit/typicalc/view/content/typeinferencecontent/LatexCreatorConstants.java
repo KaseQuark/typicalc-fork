@@ -20,6 +20,8 @@ public final class LatexCreatorConstants {
     protected static final String CURLY_RIGHT = "}";
     protected static final String PAREN_LEFT = "(";
     protected static final String PAREN_RIGHT = ")";
+    protected static final String BRACKET_LEFT = "[";
+    protected static final String BRACKET_RIGHT = "]";
 
     protected static final String LABEL_ABS = "\\LeftLabel{\\rm A{\\small BS}}";
     protected static final String LABEL_APP = "\\LeftLabel{\\rm A{\\small PP}}";
