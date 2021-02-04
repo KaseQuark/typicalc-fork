@@ -36,12 +36,14 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
     }
 
     private void initRuleContainer() {
-        //TODO just demo content, exchange with correct rules
-        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
-        ruleContainer.add(new InferenceRuleField(getTranslation("abs-rule"), "root.absRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("root.absLatex"), "root.absRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("root.appLatex"), "root.appRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("root.varLatex"), "root.varRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("root.constLatex"), "root.constRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("root.letLatex"), "root.letRule"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("root.absLetLatex"), "root.absRuleLet"));
+        ruleContainer.add(new InferenceRuleField(getTranslation("root.varLetLatex"), "root.varRuleLet"));
+
     }
 
     @Override

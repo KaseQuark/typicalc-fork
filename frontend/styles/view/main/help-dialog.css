@@ -4,6 +4,13 @@
 
 #headingLayout {
 	width: 80vw;
+	display: flex;
+	position: relative;
 	align-items: center;
 	justify-content: center;
+}
+
+#languageSelect {
+	position: absolute;
+	right: 0;
 }

@@ -8,7 +8,7 @@ public final class LatexCreatorConstants {
     protected static final String LET = "let";
     protected static final String IN = "in";
 
-    protected static final String NEW_LINE = System.lineSeparator();
+    protected static final String NEW_LINE = "\n";
     protected static final String SPACE = " ";
     protected static final String DOLLAR_SIGN = "$";
     protected static final String EQUALS = "=";

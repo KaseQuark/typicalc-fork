@@ -110,6 +110,7 @@ mjx-container {\
                     style.id = "style-fixes";
                     root.querySelector("mjx-head").appendChild(style);
                 }
+                /*
                 const svg = root.querySelector("svg");
                 const nodeIterator = svg.querySelectorAll("g[data-mml-node='mtr']");
                 let counter = 0;
@@ -143,6 +144,7 @@ mjx-container {\
                     // should not be used on empty SVGs
                     window.svgPanZoomFun(svg);
                 }
+                 */
                 if (callback != null) {
                     callback(html);
                 }

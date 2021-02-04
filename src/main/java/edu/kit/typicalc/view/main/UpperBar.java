@@ -10,6 +10,8 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.Location;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
@@ -23,7 +25,7 @@ import java.util.function.Consumer;
  * Contains all the components constantly shown in the upper part of the webage.
  */
 @CssImport("./styles/view/main/upper-bar.css")
-public class UpperBar extends HorizontalLayout {
+public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -7344967027514015830L;
 
     /*
@@ -100,5 +102,10 @@ public class UpperBar extends HorizontalLayout {
     private void onHelpIconClick() {
         Dialog helpDialog = new HelpDialog();
         helpDialog.open();
+    }
+
+    @Override
+    public void localeChange(LocaleChangeEvent event) {
+       rules.setText(getTranslation("root.inferenceRules")); 
     }
 }
