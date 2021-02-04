@@ -40,7 +40,7 @@ class TreeTest {
             factory.nextTypeVariable();
             factoryRef.nextTypeVariable();
         }
-        Tree tree = new Tree(TYPE_ASSUMPTIONS, VAR, factory);
+        Tree tree = new Tree(TYPE_ASSUMPTIONS, VAR, factory, false);
         assertEquals(tree.getFirstTypeVariable(), factoryRef.nextTypeVariable());
     }
 
