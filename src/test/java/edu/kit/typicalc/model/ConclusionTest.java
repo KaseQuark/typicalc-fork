@@ -9,7 +9,6 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -23,7 +22,7 @@ class ConclusionTest {
 
     @BeforeAll
     static void setUp() {
-        TYPE_ASSUMPTIONS.put(new VarTerm("var2"), new TypeAbstraction(new NamedType("type2"), new ArrayList<>()));
+        TYPE_ASSUMPTIONS.put(new VarTerm("var2"), new TypeAbstraction(new NamedType("type2")));
     }
 
     @Test
