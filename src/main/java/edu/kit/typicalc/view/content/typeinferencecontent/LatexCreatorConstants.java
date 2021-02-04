@@ -5,6 +5,8 @@ public final class LatexCreatorConstants {
     }
 
     protected static final String CONST = "Const";
+    protected static final String LET = "let";
+    protected static final String IN = "in";
 
     protected static final String NEW_LINE = System.lineSeparator();
     protected static final String SPACE = " ";
@@ -39,6 +41,7 @@ public final class LatexCreatorConstants {
     protected static final String LATEX_SPACE = "\\ ";
     protected static final String FOR_ALL = "\\forall";
     protected static final String TEXTTT = "\\texttt";
+    protected static final String TEXTBF = "\\textbf";
     protected static final String RIGHT_ARROW = "\\rightarrow";
     protected static final String INSTANTIATE_SIGN = "\\succeq";
     protected static final String LATEX_IN = "\\in";

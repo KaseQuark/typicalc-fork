@@ -1,12 +1,6 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
-import edu.kit.typicalc.model.term.AbsTerm;
-import edu.kit.typicalc.model.term.AppTerm;
-import edu.kit.typicalc.model.term.ConstTerm;
-import edu.kit.typicalc.model.term.LambdaTerm;
-import edu.kit.typicalc.model.term.LetTerm;
-import edu.kit.typicalc.model.term.TermVisitor;
-import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.term.*;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
 
@@ -68,17 +62,46 @@ public class LatexCreatorTerm implements TermVisitor {
     }
 
     @Override
-    public void visit(ConstTerm constTerm) {
-        // todo implement correctly (with extended termVisitor)
+    public void visit(IntegerTerm intTerm) {
         latex.append(TEXTTT);
         latex.append(CURLY_LEFT);
-        constTerm.accept(this);
+        latex.append(intTerm.getValue());
+        latex.append(CURLY_RIGHT);
+        needsParentheses = false;
+    }
+
+    @Override
+    public void visit(BooleanTerm boolTerm) {
+        latex.append(TEXTTT);
+        latex.append(CURLY_LEFT);
+        latex.append(boolTerm.getValue());
         latex.append(CURLY_RIGHT);
         needsParentheses = false;
     }
 
     @Override
     public void visit(LetTerm letTerm) {
-        // todo implement
+        latex.append(TEXTTT)
+                .append(CURLY_LEFT)
+                .append(TEXTBF)
+                .append(CURLY_LEFT)
+                .append(LET)
+                .append(CURLY_RIGHT)
+                .append(CURLY_RIGHT)
+                .append(LATEX_SPACE);
+        letTerm.getVariable().accept(this);
+        latex.append(EQUALS);
+        letTerm.getVariableDefinition().accept(this);
+        latex.append(LATEX_SPACE)
+                .append(TEXTTT)
+                .append(CURLY_LEFT)
+                .append(TEXTBF)
+                .append(CURLY_LEFT)
+                .append(IN)
+                .append(CURLY_RIGHT)
+                .append(CURLY_RIGHT)
+                .append(LATEX_SPACE);
+        letTerm.getInner().accept(this);
+        needsParentheses = true;
     }
 }
