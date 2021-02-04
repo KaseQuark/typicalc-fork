@@ -2,18 +2,21 @@ package edu.kit.typicalc.model.parser;
 
 import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.model.term.VarTerm;
-import edu.kit.typicalc.model.type.FunctionType;
-import edu.kit.typicalc.model.type.NamedType;
-import edu.kit.typicalc.model.type.Type;
-import edu.kit.typicalc.model.type.TypeAbstraction;
+import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class TypeAssumptionParser {
+
+    private static final String TYPE_VARIABLE_PATTERN = "t(\\d+)";
+    private static final int GRPUP_CONTAINING_INDEX = 1;
+
     public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> oldAssumptions) {
         Map<VarTerm, TypeAbstraction> typeAssumptions = new HashMap<>();
         for (Map.Entry<String, String> entry : oldAssumptions.entrySet()) {
@@ -59,7 +62,14 @@ public class TypeAssumptionParser {
                 }
                 break;
             case VARIABLE:
-                type = new NamedType(t.getText());
+                Pattern typeVariablePattern = Pattern.compile(TYPE_VARIABLE_PATTERN);
+                Matcher typeVariableMatcher = typeVariablePattern.matcher(t.getText());
+                if (typeVariableMatcher.matches()) {
+                    int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(GRPUP_CONTAINING_INDEX));
+                    type = new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
+                } else {
+                    type = new NamedType(t.getText());
+                }
                 break;
             default:
                 return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));

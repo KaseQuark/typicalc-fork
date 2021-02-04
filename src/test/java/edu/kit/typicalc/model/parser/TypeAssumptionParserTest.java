@@ -1,10 +1,7 @@
 package edu.kit.typicalc.model.parser;
 
 import edu.kit.typicalc.model.term.VarTerm;
-import edu.kit.typicalc.model.type.FunctionType;
-import edu.kit.typicalc.model.type.NamedType;
-import edu.kit.typicalc.model.type.Type;
-import edu.kit.typicalc.model.type.TypeAbstraction;
+import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
@@ -16,7 +13,7 @@ import static edu.kit.typicalc.model.type.NamedType.INT;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-    class TypeAssumptionParserTest {
+class TypeAssumptionParserTest {
     @Test
     void simpleType() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
@@ -29,6 +26,58 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
         assertEquals(new VarTerm("a"), assumption.getKey());
         assertEquals(new TypeAbstraction(INT), assumption.getValue());
+    }
+
+    @Test
+    void typeVariablesOneDigitIndex() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("x", "t1");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
+        assertEquals(1, types.size());
+        Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
+        assertEquals(new VarTerm("x"), assumption.getKey());
+        assertEquals(new TypeAbstraction(new TypeVariable(TypeVariableKind.USER_INPUT, 1)), assumption.getValue());
+
+        HashMap<String, String> assumptions2 = new HashMap<>();
+        assumptions2.put("x", "t001");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type2 = parser.parse(assumptions2);
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types2 = type2.unwrap();
+        assertEquals(1, types2.size());
+        Map.Entry<VarTerm, TypeAbstraction> assumption2 = types2.entrySet().stream().findFirst().get();
+        assertEquals(new VarTerm("x"), assumption2.getKey());
+        assertEquals(new TypeAbstraction(new TypeVariable(TypeVariableKind.USER_INPUT, 1)), assumption2.getValue());
+    }
+
+    @Test
+    void typeVariablesMultipleDigitIndex() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("x", "t123456");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
+        assertEquals(1, types.size());
+        Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
+        assertEquals(new VarTerm("x"), assumption.getKey());
+        assertEquals(new TypeAbstraction(new TypeVariable(TypeVariableKind.USER_INPUT, 123456)), assumption.getValue());
+    }
+
+    @Test
+    void namedTypeStartingWithT() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("x", "tau1");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
+        assertEquals(1, types.size());
+        Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
+        assertEquals(new VarTerm("x"), assumption.getKey());
+        assertEquals(new TypeAbstraction(new NamedType("tau1")), assumption.getValue());
     }
 
     @Test
@@ -61,6 +110,21 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
                         INT,
                         new FunctionType(INT, INT)
                 )), assumption.getValue());
+    }
+
+    @Test
+    void functionTypeWithVariables() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("fun", "t0 -> t0");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
+        assertEquals(1, types.size());
+        Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
+        assertEquals(new VarTerm("fun"), assumption.getKey());
+        TypeVariable expectedVar = new TypeVariable(TypeVariableKind.USER_INPUT, 0);
+        assertEquals(new TypeAbstraction(new FunctionType(expectedVar, expectedVar)), assumption.getValue());
     }
 
     @Test
