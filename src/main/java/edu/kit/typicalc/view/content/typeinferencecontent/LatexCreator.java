@@ -95,7 +95,8 @@ public class LatexCreator implements StepVisitor {
     private List<String> generateUnification() {
         List<String> steps = new ArrayList<>();
         // TODO: check if unification is present
-        List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps().orElseThrow(IllegalStateException::new);
+        List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps()
+                .orElseThrow(IllegalStateException::new);
         for (UnificationStep step : unificationSteps) {
             Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
             Optional<UnificationError> error = Optional.empty();
