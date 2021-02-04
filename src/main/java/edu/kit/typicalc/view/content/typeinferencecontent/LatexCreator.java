@@ -226,7 +226,8 @@ public class LatexCreator implements StepVisitor {
         constraintsGenerator.addConstraint(letD);
         tree.insert(0, generateConclusion(letD, LABEL_LET, BIC));
         letD.getPremise().accept(this);
-        // todo implement
+        letD.getTypeInferer().getFirstInferenceStep().accept(this);
+        // todo correct?
     }
 
     @Override

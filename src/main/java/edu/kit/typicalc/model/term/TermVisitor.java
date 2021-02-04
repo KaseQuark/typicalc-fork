@@ -26,8 +26,14 @@ public interface TermVisitor {
     void visit(VarTerm varTerm);
 
     /**
-     * Visit a constant.
-     * @param constTerm the constant
+     * Visit an integer constant.
+     * @param intTerm the integer constant
      */
-    void visit(ConstTerm constTerm);
+    void visit(IntegerTerm intTerm);
+
+    /**
+     * Visit a boolean constant.
+     * @param boolTerm the boolean constant
+     */
+    void visit(BooleanTerm boolTerm);
 }

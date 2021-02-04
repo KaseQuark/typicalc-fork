@@ -18,9 +18,22 @@ public class IntegerTerm extends ConstTerm {
         this.value = value;
     }
 
+    /**
+     * Returns the value of the integer constant term.
+     * @return the value of the term
+     */
+    public int getValue() {
+        return value;
+    }
+
     @Override
     public NamedType getType() {
         return NamedType.INT;
+    }
+
+    @Override
+    public void accept(TermVisitor termVisitor) {
+        termVisitor.visit(this);
     }
 
     @Override

@@ -18,14 +18,22 @@ public class BooleanTerm extends ConstTerm {
         this.value = value;
     }
 
+    /**
+     * Returns the value of the boolean constant term.
+     * @return the value of the term
+     */
+    public boolean getValue() {
+        return value;
+    }
+
     @Override
     public NamedType getType() {
         return NamedType.BOOLEAN;
     }
 
     @Override
-    public boolean hasLet() {
-        return false;
+    public void accept(TermVisitor termVisitor) {
+        termVisitor.visit(this);
     }
 
     @Override

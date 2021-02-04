@@ -29,11 +29,6 @@ public abstract class ConstTerm extends LambdaTerm {
     }
 
     @Override
-    public void accept(TermVisitor termVisitor) {
-        termVisitor.visit(this);
-    }
-
-    @Override
     public InferenceStep accept(TermVisitorTree visitor, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
         return visitor.visit(this, assumptions, type);
     }
