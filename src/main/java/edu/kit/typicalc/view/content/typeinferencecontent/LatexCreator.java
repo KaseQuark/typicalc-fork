@@ -15,6 +15,7 @@ import edu.kit.typicalc.util.Result;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
 
@@ -94,10 +95,14 @@ public class LatexCreator implements StepVisitor {
     private List<String> generateUnification() {
         List<String> steps = new ArrayList<>();
         // TODO: check if unification is present
-        for (UnificationStep step : typeInferer.getUnificationSteps().orElseThrow(IllegalStateException::new)) {
+        List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps().orElseThrow(IllegalStateException::new);
+        for (UnificationStep step : unificationSteps) {
             Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
+            Optional<UnificationError> error = Optional.empty();
             if (subs.isError()) {
-                continue; // TODO
+                error = Optional.of(subs.unwrapError());
+                step = unificationSteps.get(unificationSteps.size() - 2);
+                subs = step.getSubstitutions(); // TODO: what if first step fails?
             }
             StringBuilder latex = new StringBuilder();
             latex.append(DOLLAR_SIGN);
@@ -107,6 +112,10 @@ public class LatexCreator implements StepVisitor {
                 latex.append(new LatexCreatorType(s.getVariable()).getLatex());
                 latex.append(SUBSTITUTION_SIGN);
                 latex.append(new LatexCreatorType(s.getType()).getLatex());
+                latex.append("\\\\");
+            }
+            error.ifPresent(latex::append); // TODO: translation
+            if (error.isPresent()) {
                 latex.append("\\\\");
             }
             List<Constraint> constraints = step.getConstraints();

@@ -40,9 +40,9 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         headingLayout.setId(HEADING_LAYOUT_ID);
         languageSelect = new Select<>(getTranslation("root.german"), getTranslation("root.english"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
-        languageSelect.setValue(getTranslation("root." 
+        languageSelect.setValue(getTranslation("root."
                 + UI.getCurrent().getLocale().getDisplayLanguage(Locale.ENGLISH).toLowerCase()));
-        languageSelect.addValueChangeListener(event -> onLaguageChange());
+        languageSelect.addValueChangeListener(event -> onLanguageChange());
         languageSelect.setId(LANGUAGE_SELECT_ID);
         headingLayout.add(heading, languageSelect);
 
@@ -54,12 +54,14 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         add(headingLayout, contentLayout);
     }
 
-    private void onLaguageChange() {
-        Locale newLocale = Locale.getDefault();
+    private void onLanguageChange() {
+        Locale newLocale;
         if (languageSelect.getValue().equals(getTranslation("root.german"))) {
             newLocale = Locale.GERMAN;
         } else if (languageSelect.getValue().equals(getTranslation("root.english"))) {
             newLocale = Locale.ENGLISH;
+        } else {
+            throw new IllegalStateException();
         }
         UI.getCurrent().setLocale(newLocale);
     }
