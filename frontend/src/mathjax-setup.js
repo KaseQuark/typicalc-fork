@@ -1,7 +1,7 @@
 window.MathJax = {
-    loader: {load: ['[tex]/bussproofs', '[tex]/html', '[tex]/action']},
+    loader: {load: ['[tex]/bussproofs', '[tex]/unicode']},
     tex: {
-        packages: {'[+]': ['bussproofs', 'html', 'action']},
+        packages: {'[+]': ['bussproofs', 'unicode']},
         inlineMath: [['$', '$'], ['\\(', '\\)']]
     },
     startup: {

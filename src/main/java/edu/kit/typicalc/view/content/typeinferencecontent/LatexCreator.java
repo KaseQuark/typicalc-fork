@@ -69,7 +69,7 @@ public class LatexCreator implements StepVisitor {
             List<Substitution> substitutions = subs.unwrap();
             for (Substitution s : substitutions) {
                 latex.append(new LatexCreatorType(s.getVariable()).getLatex());
-                latex.append(RIGHT_ARROW);
+                latex.append(SUBSTITUTION_SIGN);
                 latex.append(new LatexCreatorType(s.getType()).getLatex());
                 latex.append("\\\\");
             }

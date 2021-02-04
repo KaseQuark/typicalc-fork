@@ -34,6 +34,7 @@ public final class LatexCreatorConstants {
     protected static final String USER_VARIABLE = "\\tau";
     protected static final String GAMMA = "\\Gamma";
 
+    protected static final String SUBSTITUTION_SIGN = "\\mathrel{\\unicode{x21E8}}";
     protected static final String LAMBDA = "\\lambda";
     protected static final String LATEX_SPACE = "\\ ";
     protected static final String FOR_ALL = "\\forall";
