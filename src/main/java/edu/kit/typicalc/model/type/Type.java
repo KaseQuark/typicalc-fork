@@ -4,6 +4,8 @@ import edu.kit.typicalc.model.Substitution;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
+import java.util.Set;
+
 /**
  * Models the type of a lambda term.
  */
@@ -14,6 +16,12 @@ public abstract class Type {
      * @return whether the specified type occurs in this type
      */
     public abstract boolean contains(Type x);
+
+    /**
+     * Returns a set of all free type variables occurring in the type.
+     * @return all free type variables
+     */
+    public abstract Set<TypeVariable> getFreeTypeVariables();
 
     /**
      * Substitutes a type Variable for a different type.

@@ -61,7 +61,7 @@ public class TypeInfererLet implements TypeInfererInterface {
             throw new IllegalStateException("getLetConstraints() should never be called when no mgu was found");
         }
         List<Constraint> letConstraints = new ArrayList<>();
-        for (Substitution substitution : this.getMGU().get()) {
+        for (Substitution substitution : this.getMGU().orElseThrow(IllegalStateException::new)) {
             Constraint constraint = new Constraint(substitution.getVariable(), substitution.getType());
             letConstraints.add(constraint);
         }

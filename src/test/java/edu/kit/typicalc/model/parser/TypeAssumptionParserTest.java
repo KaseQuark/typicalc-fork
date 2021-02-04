@@ -8,7 +8,6 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         assertEquals(1, types.size());
         Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
         assertEquals(new VarTerm("a"), assumption.getKey());
-        assertEquals(new TypeAbstraction(INT, Collections.emptyList()), assumption.getValue());
+        assertEquals(new TypeAbstraction(INT), assumption.getValue());
     }
 
     @Test
@@ -43,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
         assertEquals(1, types.size());
         Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
         assertEquals(new VarTerm("id"), assumption.getKey());
-        assertEquals(new TypeAbstraction(new FunctionType(INT, INT), Collections.emptyList()), assumption.getValue());
+        assertEquals(new TypeAbstraction(new FunctionType(INT, INT)), assumption.getValue());
 
         HashMap<String, String> assumptions2 = new HashMap<>();
         assumptions2.put("f", "int -> int -> int");
@@ -61,8 +60,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
                 new FunctionType(
                         INT,
                         new FunctionType(INT, INT)
-                ),
-                Collections.emptyList()), assumption.getValue());
+                )), assumption.getValue());
     }
 
     @Test
@@ -84,8 +82,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
                 new FunctionType(
                         new FunctionType(INT, INT),
                         new FunctionType(BOOLEAN, BOOLEAN)
-                ),
-                Collections.emptyList()), assumption.getValue());
+                )), assumption.getValue());
         parser = new TypeAssumptionParser();
         HashMap<String, String> assumptions2 = new HashMap<>();
         assumptions2.put("id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
@@ -111,7 +108,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
                                 new FunctionType(int2, boolean2),
                                 new FunctionType(boolean2, int2)
                         )
-                ),
-                Collections.emptyList()), assumption.getValue());
+                )), assumption.getValue());
     }
 }

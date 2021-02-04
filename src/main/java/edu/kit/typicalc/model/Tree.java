@@ -141,7 +141,7 @@ public class Tree implements TermVisitorTree {
             Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new HashMap<>(typeAssumptions);
             extendedTypeAssumptions.replaceAll((key, value) -> {
                 Type newType = value.getInnerType();
-                for (Substitution substitution : typeInfererLet.getMGU().get()) {
+                for (Substitution substitution : typeInfererLet.getMGU().orElseThrow(IllegalStateException::new)) {
                     if (value.getQuantifiedVariables().contains(substitution.getVariable())) {
                         continue;
                     }
@@ -150,11 +150,8 @@ public class Tree implements TermVisitorTree {
                 return new TypeAbstraction(newType, value.getQuantifiedVariables());
             });
 
-            List<TypeVariable> variablesToQuantify = new ArrayList<>();
-            // TODO variablesToQuantify berechnen
-
-            TypeAbstraction newTypeAbstraction = new TypeAbstraction(typeInfererLet.getType().get(),
-                    variablesToQuantify);
+            TypeAbstraction newTypeAbstraction = new TypeAbstraction(
+                    typeInfererLet.getType().orElseThrow(IllegalStateException::new), extendedTypeAssumptions);
             extendedTypeAssumptions.put(letTerm.getVariable(), newTypeAbstraction);
 
             premise = letTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);

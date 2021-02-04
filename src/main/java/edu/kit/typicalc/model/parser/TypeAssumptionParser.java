@@ -1,16 +1,15 @@
 package edu.kit.typicalc.model.parser;
 
+import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.FunctionType;
 import edu.kit.typicalc.model.type.NamedType;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
-import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.util.Result;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +33,7 @@ public class TypeAssumptionParser {
         if (parsedType.isError()) {
             return new Result<>(null, parsedType.unwrapError());
         }
-        return new Result<>(new TypeAbstraction(parsedType.unwrap().getLeft(), Collections.emptyList()));
+        return new Result<>(new TypeAbstraction(parsedType.unwrap().getLeft()));
     }
 
     private Result<Pair<Type, Integer>, ParseError> parseType(LambdaLexer lexer, int parenCount) {

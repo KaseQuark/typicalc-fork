@@ -3,7 +3,10 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Models a type variable
@@ -48,6 +51,11 @@ public class TypeVariable extends Type {
     @Override
     public boolean contains(Type x) {
         return this.equals(x);
+    }
+
+    @Override
+    public Set<TypeVariable> getFreeTypeVariables() {
+        return new HashSet<>(Collections.singletonList(this));
     }
 
     /**
