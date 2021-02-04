@@ -3,7 +3,9 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Models the type of an abstraction/function.
@@ -30,6 +32,13 @@ public class FunctionType extends Type {
     @Override
     public boolean contains(Type x) {
         return (parameter.contains(x) || output.contains(x));
+    }
+
+    @Override
+    public Set<TypeVariable> getFreeTypeVariables() {
+        Set<TypeVariable> set = new HashSet<>(this.parameter.getFreeTypeVariables());
+        set.addAll(this.output.getFreeTypeVariables());
+        return set;
     }
 
     /**

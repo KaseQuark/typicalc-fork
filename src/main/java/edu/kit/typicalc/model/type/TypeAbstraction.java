@@ -3,12 +3,12 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.TypeVariableFactory;
 import edu.kit.typicalc.model.term.VarTerm;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * Models a type abstraction with its type and the type variables bound by the for-all
@@ -17,14 +17,14 @@ import java.util.Objects;
 public class TypeAbstraction {
 
     private final Type type;
-    private final List<TypeVariable> quantifiedVariables;
+    private final Set<TypeVariable> quantifiedVariables;
     /**
      * Initializes a new type abstraction with its type and the type variables bound by
      * the for-all quantifier.
      * @param type  the type of the type abstraction
      * @param quantifiedVariables the type variables bound by the for-all quantifier
      */
-    public TypeAbstraction(Type type, List<TypeVariable> quantifiedVariables) {
+    public TypeAbstraction(Type type, Set<TypeVariable> quantifiedVariables) {
         this.type = type;
         this.quantifiedVariables = quantifiedVariables;
     }
@@ -36,7 +36,7 @@ public class TypeAbstraction {
      */
     public TypeAbstraction(Type type) {
         this.type = type;
-        this.quantifiedVariables = Collections.emptyList();
+        this.quantifiedVariables = Collections.emptySet();
     }
 
     /**
@@ -48,7 +48,9 @@ public class TypeAbstraction {
      */
     public TypeAbstraction(Type type, Map<VarTerm, TypeAbstraction> typeAssumptions) {
         this.type = type;
-        this.quantifiedVariables = new ArrayList<>(); // TODO
+        Set<TypeVariable> varsToBeQuantified = type.getFreeTypeVariables();
+        typeAssumptions.forEach((var, abs) -> varsToBeQuantified.removeAll(abs.getFreeTypeVariables()));
+        this.quantifiedVariables = varsToBeQuantified;
     }
 
     /**
@@ -80,8 +82,18 @@ public class TypeAbstraction {
      * type abstraction.
      * @return a list of all quantified type variables
      */
-    public List<TypeVariable> getQuantifiedVariables() {
+    public Set<TypeVariable> getQuantifiedVariables() {
         return quantifiedVariables;
+    }
+
+    /**
+     * Returns a set of all free type variables occurring in the type abstraction.
+     * @return all free type variables
+     */
+    public Set<TypeVariable> getFreeTypeVariables() {
+        Set<TypeVariable> set = new HashSet<>(this.type.getFreeTypeVariables());
+        set.removeAll(this.quantifiedVariables);
+        return set;
     }
 
     /**
