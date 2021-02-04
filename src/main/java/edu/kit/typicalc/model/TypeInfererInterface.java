@@ -24,7 +24,7 @@ public interface TypeInfererInterface {
      *
      * @return the list of unification steps
      */
-    List<UnificationStep> getUnificationSteps();
+    Optional<List<UnificationStep>> getUnificationSteps();
 
     /**
      * Returns the most general unifier (mgu) for the lambda term that is type-inferred,
@@ -33,7 +33,7 @@ public interface TypeInfererInterface {
      *
      * @return the most general unifier, empty if there is no valid mgu
      */
-    Optional<List<Substitution>> getMGU(); // TODO: change of API -> document!
+    Optional<List<Substitution>> getMGU();
 
     /**
      * Returns the type that is the result of the type inference.
@@ -41,5 +41,5 @@ public interface TypeInfererInterface {
      *
      * @return the final type of the lambda term, empty if there is no valid type
      */
-    Optional<Type> getType(); // TODO: change of API -> document!
+    Optional<Type> getType();
 }

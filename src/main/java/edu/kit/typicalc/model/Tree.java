@@ -30,6 +30,8 @@ public class Tree implements TermVisitorTree {
     private final InferenceStep firstInferenceStep;
     private final List<Constraint> constraints;
 
+    private boolean failedSubInference;
+
     /**
      * Initializes a new Tree representing the proof tree for the type inference of the given
      * lambda term considering the given type assumptions. The inference step structure
@@ -62,6 +64,8 @@ public class Tree implements TermVisitorTree {
 
         this.firstTypeVariable = typeVarFactory.nextTypeVariable();
         this.firstInferenceStep = lambdaTerm.accept(this, typeAssumptions, firstTypeVariable);
+
+        this.failedSubInference = false;
     }
 
     /**
@@ -92,6 +96,15 @@ public class Tree implements TermVisitorTree {
      */
     protected List<Constraint> getConstraints() {
         return constraints;
+    }
+
+    /**
+     * Indicates whether the tree contains a sub-inference of a let step that failed
+     *
+     * @return true, if the tree contains a failed sub-inference, false otherwise
+     */
+    protected boolean hasFailedSubInference() {
+        return failedSubInference;
     }
 
     @Override
@@ -160,6 +173,7 @@ public class Tree implements TermVisitorTree {
             constraints.addAll(typeInfererLet.getLetConstraints());
         } else {
             premise = new EmptyStep();
+            failedSubInference = true;
         }
 
         Conclusion conclusion = new Conclusion(typeAssumptions, letTerm, conclusionType);

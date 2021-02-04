@@ -19,7 +19,7 @@ import java.util.Optional;
 public class TypeInfererLet implements TypeInfererInterface {
 
     private final Tree tree;
-    private final Unification unification;
+    private final Optional<Unification> unification;
     private final Optional<TypeInferenceResult> typeInfResult;
 
     /**
@@ -34,17 +34,22 @@ public class TypeInfererLet implements TypeInfererInterface {
                              TypeVariableFactory typeVarFactory) {
         tree = new Tree(typeAssumptions, lambdaTerm, typeVarFactory);
 
-        // TODO: Abbrechen bei fehlgeschlagener let-Teilinferenz, evtl. getUnificationSteps() anpassen
-
-        unification = new Unification(new ArrayDeque<>(tree.getConstraints()));
-
-        // cancel algorithm if term can't be typified
-        if (unification.getSubstitutions().isError()) {
+        // cancel algorithm if a sub-inference failed
+        if (tree.hasFailedSubInference()) {
+            unification = Optional.empty();
             typeInfResult = Optional.empty();
             return;
         }
 
-        List<Substitution> substitutions = unification.getSubstitutions().unwrap();
+        unification = Optional.of(new Unification(new ArrayDeque<>(tree.getConstraints())));
+
+        // cancel algorithm if term can't be typified
+        if (unification.get().getSubstitutions().isError()) {
+            typeInfResult = Optional.empty();
+            return;
+        }
+
+        List<Substitution> substitutions = unification.get().getSubstitutions().unwrap();
         typeInfResult = Optional.of(new TypeInferenceResult(substitutions, tree.getFirstTypeVariable()));
     }
 
@@ -74,8 +79,8 @@ public class TypeInfererLet implements TypeInfererInterface {
     }
 
     @Override
-    public List<UnificationStep> getUnificationSteps() {
-        return unification.getUnificationSteps();
+    public Optional<List<UnificationStep>> getUnificationSteps() {
+        return unification.map(Unification::getUnificationSteps);
     }
 
     @Override

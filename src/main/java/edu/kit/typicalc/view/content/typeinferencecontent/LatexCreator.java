@@ -54,11 +54,12 @@ public class LatexCreator implements StepVisitor {
     }
 
     /**
-     * @return the LaTeX-code for constraints nad unification
+     * @return the LaTeX-code for constraints and unification
      */
     protected String[] getUnification() {
         List<String> steps = new ArrayList<>();
-        for (UnificationStep step : typeInferer.getUnificationSteps()) {
+        // TODO: check if unification is present
+        for (UnificationStep step : typeInferer.getUnificationSteps().orElseThrow(IllegalStateException::new)) {
             Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
             if (subs.isError()) {
                 continue; // TODO
