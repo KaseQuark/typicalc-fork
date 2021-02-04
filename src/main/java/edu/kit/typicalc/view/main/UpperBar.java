@@ -81,6 +81,16 @@ public class UpperBar extends HorizontalLayout {
         setTermInURL.accept(lambdaString);
         presenter.typeInferLambdaString(lambdaString, new HashMap<>());
     }
+    
+    /**
+     * Calls the inferTerm method in {@link edu.kit.typicalc.view.main.InputBar} with the provided
+     * string as the argument.
+     * 
+     * @param term the provided string
+     */
+    protected void inferTerm(final String term) {
+        inputBar.inferTerm(term);
+    }
 
     private void routeToStartPage(Consumer<Component> setContent) {
         setContent.accept(new StartPageView());
@@ -90,10 +100,5 @@ public class UpperBar extends HorizontalLayout {
     private void onHelpIconClick() {
         Dialog helpDialog = new HelpDialog();
         helpDialog.open();
-    }
-
-    //TODO documentation
-    protected void inferTerm(String term) {
-        inputBar.inferTerm(term);
     }
 }

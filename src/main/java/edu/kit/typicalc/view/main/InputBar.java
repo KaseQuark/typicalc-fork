@@ -13,7 +13,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
-
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Optional;
@@ -69,6 +68,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         setId(INPUT_BAR_ID);
     }
     
+    /**
+     * Sets the provided string as the value of the inputField and starts the type inference algorithm.
+     * 
+     * @param term the provided string
+     */
     protected void inferTerm(final String term) {
         inputField.setValue(term);
         inferTypeButton.click();

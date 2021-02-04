@@ -72,7 +72,7 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
         } else if (event.getLocation().getPath().equals(ROUTE)) {
             setContent(new StartPageView());
             upperBar.inferTerm(StringUtils.EMPTY);
-        } else if (event.getLocation().getPath().equals("")) {
+        } else if (event.getLocation().getPath().equals(StringUtils.EMPTY)) {
             setContent(new StartPageView());
         } else {
             setContent(new NotFoundView());
@@ -81,7 +81,8 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
         return HttpServletResponse.SC_OK;
     }
 
-    protected void setTermInURL(String lambdaTerm) {
+    
+    private void setTermInURL(String lambdaTerm) {
         UI.getCurrent().getPage().getHistory().replaceState(null, new Location(ROUTE + SLASH + lambdaTerm));
     }
 
