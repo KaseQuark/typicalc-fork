@@ -42,10 +42,44 @@ class MathjaxProofTree extends MathjaxAdapter {
                     stepIdx++;
                 }
             }
+            // then fix some more mathjax layout issues
+            for (const step of this.shadowRoot.querySelectorAll<HTMLElement>('g[typicalc="step"]')) {
+                const infRule = step.querySelector<HTMLElement>('g[semantics="bspr_inferenceRule:down"]');
+                if (infRule === null) {
+                    continue;
+                }
+                if (infRule.childNodes.length != 3) {
+                    continue;
+                }
+                const stepAbove = infRule.childNodes[0] as HTMLElement & SVGGraphicsElement;
+                const infRuleAbove = stepAbove.querySelector<HTMLElement>('g[semantics="bspr_inferenceRule:down"]')!;
+                if (infRuleAbove === null || infRuleAbove.childNodes.length != 3) {
+                    continue;
+                }
+                let termAbove = infRuleAbove.childNodes[1] as SVGGraphicsElement;
+                let dx = termAbove.getBBox().x;
+                termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
+                while (true) {
+                    // @ts-ignore
+                    if (termAbove.parentNode.getAttribute("semantics") === "bspr_inferenceRule:down") {
+                        break;
+                    }
+                    if (termAbove.transform.baseVal !== null) {
+                        if (termAbove.transform.baseVal.numberOfItems !== 1) {
+                            termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
+                            continue;
+                        }
+                        // @ts-ignore
+                        dx += termAbove.transform.baseVal[0].matrix.e;
+                        termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
+                    }
+                }
+                // @ts-ignore
+                stepAbove.transform.baseVal[0].matrix.e -= dx;
+            }
             // then create the steps
             nodeIterator = document.createNodeIterator(this.shadowRoot, NodeFilter.SHOW_ELEMENT);
             steps = [];
-            a = null;
             stepIdx = 0;
             while (a = nodeIterator.nextNode() as HTMLElement) {
                 let semantics = a.getAttribute("semantics");
@@ -80,7 +114,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                     const label = a.querySelector("#" + id +" g[semantics=\"bspr_prooflabel:left\"]");
                     if (label !== null) {
                         const labelElement = label as HTMLElement;
-                        labelElement.style.display = "none";
+                        //labelElement.style.display = "none";
                         above.push(labelElement);
                     }
                     if (stepIdx === 1) {
@@ -89,8 +123,46 @@ class MathjaxProofTree extends MathjaxAdapter {
                     if (!semantics.startsWith("bspr_axiom")) {
                         steps.push([a, above]);
                     }
-                    a.style.display = "none";
+                    //a.style.display = "none";
                 }
+            }
+            const svg = this.shadowRoot.querySelector<SVGElement>("svg")!;
+            const nodeIterator2 = svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']");
+            let counter = 0;
+            for (const a of nodeIterator2) {
+                counter++;
+                let left = null;
+                let i = 0;
+                for (const node of a.childNodes) {
+                    if (i === 1 || i === 3) {
+                        i += 1;
+                        continue;
+                    }
+                    // @ts-ignore
+                    const bbox = node.getBBox();
+                    // @ts-ignore
+                    const mat = node.transform.baseVal[0];
+                    if (mat !== undefined) {
+                        bbox.x += mat.matrix.e;
+                    }
+                    // 500 space between inference steps
+                    // TODO: somehow broken since moving this algorithm to the TS file
+                    if (left == null) {
+                        left = bbox.x + bbox.width + 500;
+                    } else {
+                        mat.matrix.e -= bbox.x - left;
+                        left = bbox.x + mat.matrix.e + bbox.width + 500;
+                    }
+                    i += 1;
+                }
+            }
+            // @ts-ignore
+            const bbox = svg.childNodes[1].getBBox();
+            svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height)
+            if (counter >= 3) {
+                // should not be used on empty SVGs
+                // @ts-ignore
+                window.svgPanZoomFun(svg);
             }
             this.steps = steps;
             this.showStep(0);
