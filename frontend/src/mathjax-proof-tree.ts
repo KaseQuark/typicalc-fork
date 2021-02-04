@@ -16,7 +16,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 node.style.display = "none";
             }
         }
-        for (let current = 0; current <= n; current++) {
+        for (let current = 0; current < this.steps.length && current <= n; current++) {
             this.steps[current][0].style.display = "";
             for (const node of this.steps[current][1]) {
                 node.style.display = "";
