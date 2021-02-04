@@ -61,7 +61,7 @@ public class LatexCreator implements StepVisitor {
     protected String[] getUnification() {
         List<String> result = new ArrayList<>(constraintsGenerator.getConstraints());
         result.addAll(generateUnification());
-        //todo MGU and final type
+        typeInferer.getMGU().ifPresent(mgu -> result.add(generateMGU()));
         return result.toArray(new String[0]);
     } // todo implement
 
@@ -121,7 +121,22 @@ public class LatexCreator implements StepVisitor {
             steps.add(latex.toString());
         }
         return steps;
+    }
 
+    private String generateMGU() {
+        StringBuilder mguLatex = new StringBuilder();
+        mguLatex.append(DOLLAR_SIGN);
+        mguLatex.append(BRACKET_LEFT);
+        typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
+            mguLatex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
+            mguLatex.append(SUBSTITUTION_SIGN);
+            mguLatex.append(new LatexCreatorType(substitution.getType()).getLatex());
+            mguLatex.append(COMMA);
+        }));
+        mguLatex.deleteCharAt(mguLatex.length() - 1);
+        mguLatex.append(BRACKET_RIGHT);
+        mguLatex.append(DOLLAR_SIGN);
+        return mguLatex.toString();
     }
 
     private String conclusionToLatex(Conclusion conclusion) {
