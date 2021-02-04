@@ -104,7 +104,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onExampleButtonClick() {
-        final Dialog exampleDialog = new ExampleDialog(inputField::setValue);
+        final Consumer<String> setValue = value -> {
+            inputField.setValue(value);
+            inputField.focus();
+        };
+        final Dialog exampleDialog = new ExampleDialog(setValue);
         exampleDialog.open();
     }
 
