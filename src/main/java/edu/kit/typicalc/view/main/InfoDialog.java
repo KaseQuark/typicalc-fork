@@ -31,7 +31,6 @@ public class InfoDialog extends Dialog implements LocaleChangeObserver {
 
     /**
      * Creates new InfoDialog.
-     * @throws Exception 
      */
     protected InfoDialog() {
         heading = new H4(getTranslation("root.inputSyntax"));
