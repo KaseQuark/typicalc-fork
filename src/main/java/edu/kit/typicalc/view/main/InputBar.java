@@ -35,9 +35,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
-    private final Icon infoIcon;
-    private final Button exampleButton;
-    private final Button lambdaButton;
     private final TextField inputField;
     private final Button inferTypeButton;
 
@@ -48,7 +45,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param callback Consumer to call the inferType()-method in UpperBar
      */
     protected InputBar(final Consumer<String> callback) {
-        infoIcon = new Icon(VaadinIcon.INFO_CIRCLE);
+        Icon infoIcon = new Icon(VaadinIcon.INFO_CIRCLE);
         infoIcon.addClickListener(event -> onInfoIconClick());
 
         inputField = new TextField();
@@ -56,8 +53,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setClearButtonVisible(true);
         inputField.setValueChangeMode(ValueChangeMode.EAGER);
         inputField.addValueChangeListener(event -> onInputFieldValueChange());
-        lambdaButton = new Button(getTranslation("root.lambda"), event -> onLambdaButtonClick());
-        exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
+        Button lambdaButton = new Button(getTranslation("root.lambda"), event -> onLambdaButtonClick());
+        Button exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
         inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
@@ -67,10 +64,10 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         add(infoIcon, exampleButton, lambdaButton, inputField, inferTypeButton);
         setId(INPUT_BAR_ID);
     }
-    
+
     /**
      * Sets the provided string as the value of the inputField and starts the type inference algorithm.
-     * 
+     *
      * @param term the provided string
      */
     protected void inferTerm(final String term) {

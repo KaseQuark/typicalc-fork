@@ -14,7 +14,6 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
  */
 public class ShareDialog extends Dialog implements LocaleChangeObserver {
 
-    private final VerticalLayout layout;
     private final TextField urlField;
     private final TextField packageField;
     private final TextArea latexArea;
@@ -29,7 +28,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      */
     public ShareDialog(String url, String latexPackages, String latexCode) {
         setWidth(80, Unit.PERCENTAGE);
-        layout = new VerticalLayout();
+        VerticalLayout layout = new VerticalLayout();
         layout.setAlignItems(FlexComponent.Alignment.START);
         layout.setSizeFull();
         add(layout);

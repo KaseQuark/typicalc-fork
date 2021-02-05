@@ -31,21 +31,18 @@ public class TypeInferenceView extends VerticalLayout
 
     private MathjaxUnification unification;
     private MathjaxProofTree tree;
-    private final LatexCreator lc;
-    private final transient TypeInfererInterface typeInferer;
+    private final transient LatexCreator lc;
     private final Div content;
-    private final ControlPanel controlPanel;
-    private ShareDialog shareDialog;
+    private final ShareDialog shareDialog;
 
     public TypeInferenceView(TypeInfererInterface typeInferer) {
-        this.typeInferer = typeInferer;
         setId(ID);
         setSizeFull();
         addAttachListener(this);
         lc = new LatexCreator(typeInferer);
         content = new Div();
         content.setId(CONTENT_ID);
-        controlPanel = new ControlPanel(this, this);
+        ControlPanel controlPanel = new ControlPanel(this, this);
         Scroller scroller = new Scroller(content);
         scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);

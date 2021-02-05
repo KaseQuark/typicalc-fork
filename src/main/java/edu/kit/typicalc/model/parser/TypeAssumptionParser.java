@@ -40,7 +40,6 @@ public class TypeAssumptionParser {
     }
 
     private Result<Pair<Type, Integer>, ParseError> parseType(LambdaLexer lexer, int parenCount) {
-        // TODO: remove misc. logging
         Result<Token, ParseError> token = lexer.nextToken();
         if (token.isError()) {
             return new Result<>(token);

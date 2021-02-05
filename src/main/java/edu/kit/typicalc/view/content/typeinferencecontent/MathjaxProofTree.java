@@ -50,10 +50,5 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
     public void showStep(int n) {
         getElement().callJsFunction("showStep", n);
     }
-
-    @Override
-    public void scale(double newScaling) {
-
-    }
 }
 

@@ -36,10 +36,5 @@ public class MathjaxDisplay extends LitTemplate implements MathjaxAdapter {
     public void showStep(int n) {
         // do nothing
     }
-
-    @Override
-    public void scale(double newScaling) {
-        // todo implement
-    }
 }
 

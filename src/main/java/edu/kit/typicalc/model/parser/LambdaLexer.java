@@ -111,20 +111,21 @@ public class LambdaLexer {
                 advance();
                 return new Result<>(t);
             default:
-                if (Character.isLetter(c)) {
+                // only allow ascii characters in variable names
+                if (Character.isLetter(c) && (int) c < 128) {
                     int startPos = pos;
                     // identifier
                     StringBuilder sb = new StringBuilder();
                     do {
                         sb.append(term.charAt(pos));
                         advance();
-                    } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos)));
-                    String s = sb.toString();
-                    TokenType type;
-                    // only allow ascii characters in variable names
-                    if (!s.matches("\\A\\p{ASCII}*\\z")) {
+                    } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos))
+                            && (int) term.charAt(pos) < 128);
+                    if (pos < term.length() && (int) term.charAt(pos) >= 128) {
                         return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
                     }
+                    String s = sb.toString();
+                    TokenType type;
                     switch (s) {
                         case "let":
                             type = TokenType.LET;

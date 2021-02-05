@@ -2,6 +2,10 @@ package edu.kit.typicalc.model.step;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.NamedType;
+
+import java.util.Collections;
 
 /**
  * Empty steps are used if the sub-inference that is started when creating a let step failed and the second premise of
@@ -13,7 +17,10 @@ public class EmptyStep extends InferenceStep {
      * Initializes a new empty step.
      */
     public EmptyStep() {
-        super(null, null); // TODO
+        super(
+                new Conclusion(Collections.emptyMap(), new VarTerm(""), new NamedType("")),
+                new Constraint(new NamedType(""), new NamedType(""))
+        ); // TODO: better dummy parameters?
     }
 
     @Override

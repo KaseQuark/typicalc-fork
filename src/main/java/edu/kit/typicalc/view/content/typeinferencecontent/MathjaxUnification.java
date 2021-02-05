@@ -46,10 +46,5 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
         }
         getElement().callJsFunction("showStep", n);
     }
-
-    @Override
-    public void scale(double newScaling) {
-        // todo implement
-    }
 }
 
