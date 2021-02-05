@@ -52,6 +52,8 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
-
+        urlField.setLabel(getTranslation("share.url.label"));
+        packageField.setLabel(getTranslation("share.packages.label"));
+        latexArea.setLabel(getTranslation("share.latex.label"));
     }
 }
