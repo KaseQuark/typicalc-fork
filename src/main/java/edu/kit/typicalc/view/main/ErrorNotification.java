@@ -9,15 +9,15 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 public class ErrorNotification extends Notification {
 
-    private static final long serialVersionUID = 1L;
-    
+    private static final long serialVersionUID = 239587L;
+
     private static final String NOTIFICATION_ID = "errorNotification";
 
     protected ErrorNotification(final String errorMessage) {
         final VerticalLayout container = new VerticalLayout();
         final Span errorSpan = new Span(errorMessage);
         final Button closeButton = new Button(getTranslation("root.close"), event -> this.close());
-        
+
         container.add(errorSpan, closeButton);
         container.setAlignItems(FlexComponent.Alignment.CENTER);
         addThemeVariants(NotificationVariant.LUMO_ERROR);

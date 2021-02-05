@@ -11,6 +11,8 @@ import java.util.Optional;
 
 /**
  * Utility class to avoid unification logic duplication in type methods.
+ *
+ * @see Type
  */
 final class UnificationUtil {
     private UnificationUtil() { }

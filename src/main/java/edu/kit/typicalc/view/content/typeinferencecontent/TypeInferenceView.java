@@ -18,37 +18,45 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 @CssImport("./styles/view/type-inference.css")
 public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent> {
+    /**
+     * Route of this view.
+     */
+    public static final String ROUTE = "infer";
     private static final String SCROLLER_ID = "scroller";
     private static final String CONTENT_ID = "content";
     private static final String ID = "type-inference-view";
 
     private int currentStep = 0;
 
+
     private MathjaxUnification unification;
     private MathjaxProofTree tree;
-    private final transient TypeInfererInterface typeInferer;
+    private final transient LatexCreator lc;
     private final Div content;
-    private final ControlPanel controlPanel;
+    private final ShareDialog shareDialog;
 
     public TypeInferenceView(TypeInfererInterface typeInferer) {
-        this.typeInferer = typeInferer;
         setId(ID);
         setSizeFull();
         addAttachListener(this);
+        lc = new LatexCreator(typeInferer);
         content = new Div();
         content.setId(CONTENT_ID);
-        controlPanel = new ControlPanel(this, this);
+        ControlPanel controlPanel = new ControlPanel(this, this);
         Scroller scroller = new Scroller(content);
         scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
         setContent();
+        shareDialog = new ShareDialog(getTranslation("root.domain")
+                + ROUTE + "/"
+                + typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
+                lc.getLatexPackages(), lc.getTree());
     }
 
     private void setContent() {
         // todo implement correctly
-        LatexCreator lc = new LatexCreator(typeInferer);
         unification = new MathjaxUnification(lc.getUnification());
         tree = new MathjaxProofTree(lc.getTree());
         content.add(unification, tree);
@@ -56,7 +64,7 @@ public class TypeInferenceView extends VerticalLayout
 
     @Override
     public void shareButton() {
-        // todo implement
+        shareDialog.open();
     }
 
     private void refreshElements(int currentStep) {

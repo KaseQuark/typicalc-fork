@@ -12,7 +12,6 @@ import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxProofTree;
 import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxUnification;
 import edu.kit.typicalc.view.content.typeinferencecontent.ShareDialog;
 import edu.kit.typicalc.view.main.MainViewImpl;
-import edu.kit.typicalc.view.main.MathjaxDisplay;
 
 @Route(value = "", layout = MainViewImpl.class)
 @PageTitle("Typicalc")
@@ -35,24 +34,13 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
-//        disableControlPanel();
+        disableControlPanel();
         createContent();
 
     }
 
     private void createContent() {
-        String[] strings = new String[]{"$\\tau_0$", "$\\tau_1$", "$\\tau_2$", "$\\tau_3$", "$\\tau_4$",
-                "$\\tau_5$", "$\\tau_6$", "$\\tau_7$", "$\\tau_8$", "$\\tau_9$", "$\\tau_{10}$", "$\\tau_{11}$",
-                "$\\tau_{12}$", "$\\tau_{13}$", "$\\tau_{14}$"};
-        content.add(new MathjaxDisplay(getTranslation("abs-rule")));
-        unification = new MathjaxUnification(strings);
-        tree = new MathjaxProofTree(getTranslation("demo-tree"));
-        content.add(unification);
-        content.add(tree);
-        content.add(new MathjaxProofTree(getTranslation("demo-tree")));
-        content.add(new MathjaxProofTree(getTranslation("demo-tree")));
-        content.add(new MathjaxProofTree(getTranslation("demo-tree")));
-        content.add(new MathjaxProofTree(getTranslation("demo-tree")));
+        content.add("TODO");
     }
 
     private void disableControlPanel() {
