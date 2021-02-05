@@ -1,18 +1,12 @@
 package edu.kit.typicalc.model.parser;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
-import edu.kit.typicalc.model.term.AbsTerm;
-import edu.kit.typicalc.model.term.AppTerm;
-import edu.kit.typicalc.model.term.BooleanTerm;
-import edu.kit.typicalc.model.term.IntegerTerm;
-import edu.kit.typicalc.model.term.LambdaTerm;
-import edu.kit.typicalc.model.term.LetTerm;
-import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.parser.Token.TokenType;
+import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.util.Result;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LambdaParserTest {
     private static final VarTerm X = new VarTerm("x");
@@ -22,9 +16,9 @@ class LambdaParserTest {
         LambdaParser parser = new LambdaParser("x");
         Result<LambdaTerm, ParseError> term = parser.parse();
         assertEquals(new VarTerm("x"), term.unwrap());
-        parser = new LambdaParser("β1 α1");
+        parser = new LambdaParser("b1 a1");
         term = parser.parse();
-        assertEquals(new AppTerm(new VarTerm("β1"), new VarTerm("α1")), term.unwrap());
+        assertEquals(new AppTerm(new VarTerm("b1"), new VarTerm("a1")), term.unwrap());
     }
     @Test
     void absTerm() {
@@ -105,6 +99,10 @@ class LambdaParserTest {
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
         assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 1), error.getCause());
         parser = new LambdaParser("??");
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
+        parser = new LambdaParser("aλ");
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
+        parser = new LambdaParser("ä");
         assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
         parser = new LambdaParser("123333333333333");
         assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
