@@ -84,6 +84,10 @@ window.MathJax = {
                 if (root.getElementById("tc-content") == null) {
                     return;
                 }
+                const mjxContainer = root.querySelector<HTMLElement>("mjx-container");
+                if (mjxContainer !== null) {
+                    mjxContainer.innerHTML = "";
+                }
                 const InputJax = startup.getInputJax();
                 const OutputJax = startup.getOutputJax();
                 const html = mathjax.document(root, {InputJax, OutputJax});
@@ -106,7 +110,6 @@ mjx-container {\
     margin: 0 !important;\
 }\
                     ";
-                    console.log(root.host.tagName);
                     if (hostTag === "tc-proof-tree") {
                         style.innerHTML += "svg { width: 100%; }";
                     }

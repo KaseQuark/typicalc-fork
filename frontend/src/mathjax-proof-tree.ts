@@ -61,8 +61,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 let dx = termAbove.getBBox().x;
                 termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
                 while (true) {
-                    // @ts-ignore
-                    if (termAbove.parentNode.getAttribute("semantics") === "bspr_inferenceRule:down") {
+                    if ((termAbove.parentNode! as HTMLElement).getAttribute("semantics") === "bspr_inferenceRule:down") {
                         break;
                     }
                     if (termAbove.transform.baseVal !== null) {
@@ -103,7 +102,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                         parent.removeAttribute("id");
                     }
                     const rule = a.querySelector("#" + id + " g[semantics=\"bspr_inferenceRule:down\"]");
-                    console.log(rule);
                     if (rule !== null) {
                         let i = 0;
                         for (const node of rule.childNodes) {
@@ -124,39 +122,43 @@ class MathjaxProofTree extends MathjaxAdapter {
                     steps.push([a, above]);
                 }
             }
+            // TODO: also fix line length (some are too long AND some are too short)
+            // this will involve running the algorithm below a second time
             const svg = this.shadowRoot.querySelector<SVGElement>("svg")!;
-            const nodeIterator2 = svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']");
+            const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
+            // start layout fixes in the innermost part of the SVG
+            nodeIterator2.reverse();
+            const padding = 300;
             let counter = 0;
             for (const a of nodeIterator2) {
                 counter++;
                 let left = null;
                 let i = 0;
-                for (const node of a.childNodes) {
+                for (const rawNode of a.childNodes) {
+                    const node = rawNode as SVGGraphicsElement;
                     if (i === 1 || i === 3) {
                         i += 1;
                         continue;
                     }
-                    // @ts-ignore
                     const bbox = node.getBBox();
                     // @ts-ignore
                     const mat = node.transform.baseVal[0];
                     if (mat !== undefined) {
                         bbox.x += mat.matrix.e;
                     }
-                    // 500 space between inference steps
-                    // TODO: somehow broken since moving this algorithm to the TS file
+                    // move box, and add padding between inference steps
                     if (left == null) {
-                        left = bbox.x + bbox.width + 500;
+                        left = bbox.x + bbox.width;
                     } else {
-                        mat.matrix.e -= bbox.x - left;
-                        left = bbox.x + mat.matrix.e + bbox.width + 500;
+                        mat.matrix.e -= bbox.x - left - padding;
+                        left = bbox.x + mat.matrix.e + bbox.width;
                     }
                     i += 1;
                 }
             }
-            // @ts-ignore
-            const bbox = svg.childNodes[1].getBBox();
-            svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height)
+            const bbox = (svg.childNodes[1] as SVGGraphicsElement).getBBox();
+            // TODO: this does not work when using a permalink
+            svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
             if (counter >= 3) {
                 // should not be used on empty SVGs
                 // @ts-ignore

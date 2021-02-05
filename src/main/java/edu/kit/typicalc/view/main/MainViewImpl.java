@@ -31,8 +31,6 @@ import java.util.List;
 @JavaScript("./src/tex-svg-full.js")
 public class MainViewImpl extends AppLayout implements MainView, HasErrorParameter<NotFoundException> {
     private static final long serialVersionUID = -2411433187835906976L;
-    private static final String ROUTE = "infer";
-    private static final String SLASH = "/";
 
     private final UpperBar upperBar;
 
@@ -65,11 +63,11 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
             BeforeEnterEvent event,
             ErrorParameter<NotFoundException> parameter) {
 
-        if (event.getLocation().getPath().matches(ROUTE + SLASH + ".*")) {
+        if (event.getLocation().getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
             List<String> segments = event.getLocation().getSegments();
             String term = segments.get(segments.size() - 1);
             upperBar.inferTerm(decodeURL(term));
-        } else if (event.getLocation().getPath().equals(ROUTE)) {
+        } else if (event.getLocation().getPath().equals(TypeInferenceView.ROUTE)) {
             setContent(new StartPageView());
             upperBar.inferTerm(StringUtils.EMPTY);
         } else if (event.getLocation().getPath().equals(StringUtils.EMPTY)) {
@@ -81,16 +79,13 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
         return HttpServletResponse.SC_OK;
     }
 
-    
+
     private void setTermInURL(String lambdaTerm) {
-        UI.getCurrent().getPage().getHistory().replaceState(null, new Location(ROUTE + SLASH + lambdaTerm));
+        UI.getCurrent().getPage().getHistory().replaceState(null,
+                new Location(TypeInferenceView.ROUTE + "/" + lambdaTerm));
     }
 
     private String decodeURL(String encodedUrl) {
-        try {
-            return java.net.URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8);
-        } catch (IllegalArgumentException e) {
-            return "";
-        }
+        return java.net.URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8);
     }
 }

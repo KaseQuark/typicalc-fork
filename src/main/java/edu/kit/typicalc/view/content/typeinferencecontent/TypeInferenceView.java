@@ -2,7 +2,6 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -19,6 +18,10 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 @CssImport("./styles/view/type-inference.css")
 public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent> {
+    /**
+     * Route of this view.
+     */
+    public static final String ROUTE = "infer";
     private static final String SCROLLER_ID = "scroller";
     private static final String CONTENT_ID = "content";
     private static final String ID = "type-inference-view";
@@ -49,11 +52,10 @@ public class TypeInferenceView extends VerticalLayout
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
         setContent();
-        shareDialog = new ShareDialog("", lc.getLatexPackages(), lc.getTree());
-        UI.getCurrent().getPage().executeJs("return window.location.href").then(String.class, location ->
-            shareDialog = new ShareDialog(location, lc.getLatexPackages(), lc.getTree())
-        );
-
+        shareDialog = new ShareDialog(getTranslation("root.domain")
+                + ROUTE + "/"
+                + typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
+                lc.getLatexPackages(), lc.getTree());
     }
 
     private void setContent() {

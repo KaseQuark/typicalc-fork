@@ -40,14 +40,5 @@ export abstract class MathjaxAdapter extends LitElement {
 
     protected calculateSteps(): void {
     }
-
-    // connectedCallback() {
-    //     super.connectedCallback();
-    //     if (window.MathJax === undefined || !window.MathJax.isInitialized) {
-    //         window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot));
-    //     } else {
-    //         this.execTypeset(this.shadowRoot);
-    //     }
-    // }
 }
 
