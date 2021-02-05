@@ -16,19 +16,20 @@ import java.util.function.Consumer;
  *
  */
 public class ExampleDialog extends Dialog implements LocaleChangeObserver {
-    
+
     private static final long serialVersionUID = 8718432784530464215L;
-    
+
     private static final String EXAMPLE_DIALOG_ID = "exampleDialog";
-    
+
     private static final List<String> EXAMPLES =
-            List.of("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)");
+            List.of("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)",
+                    "(λx.λy.y (x x)) (λz. λa. z g a)");
     private final Paragraph instruction;
 
     /**
      * Creates a new ExampleDialog with a callback method to insert the example string into the input
      * bar.
-     * 
+     *
      * @param callback inserts the string of the chosen example into the input bar
      */
     protected ExampleDialog(Consumer<String> callback) {

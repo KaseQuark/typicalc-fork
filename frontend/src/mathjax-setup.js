@@ -1,3 +1,8 @@
+// polyfill deprecated SVG function (not available in Google Chrome)
+// source: https://www.jointjs.com/blog/announcement-gettransformtoelement-polyfill
+SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(elem) {
+    return elem.getScreenCTM().inverse().multiply(this.getScreenCTM());
+};
 window.MathJax = {
     loader: {load: ['[tex]/bussproofs', '[tex]/unicode']},
     tex: {

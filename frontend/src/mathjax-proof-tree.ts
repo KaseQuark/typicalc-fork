@@ -101,7 +101,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                         }
                         parent.removeAttribute("id");
                     }
-                    const rule = a.querySelector("#" + id + " g[semantics=\"bspr_inferenceRule:down\"]");
+                    const rule = a.querySelector("#" + id + ' g[semantics="bspr_inferenceRule:down"]');
                     if (rule !== null) {
                         let i = 0;
                         for (const node of rule.childNodes) {
@@ -111,7 +111,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                             i += 1;
                         }
                     }
-                    const label = a.querySelector("#" + id +" g[semantics=\"bspr_prooflabel:left\"]");
+                    const label = a.querySelector("#" + id + ' g[semantics="bspr_prooflabel:left"]');
                     if (label !== null) {
                         const labelElement = label as HTMLElement;
                         above.push(labelElement);
@@ -122,8 +122,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                     steps.push([a, above]);
                 }
             }
-            // TODO: also fix line length (some are too long AND some are too short)
-            // this will involve running the algorithm below a second time
             const svg = this.shadowRoot.querySelector<SVGElement>("svg")!;
             const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
             // start layout fixes in the innermost part of the SVG
@@ -152,6 +150,22 @@ class MathjaxProofTree extends MathjaxAdapter {
                     } else {
                         mat.matrix.e -= bbox.x - left - padding;
                         left = bbox.x + mat.matrix.e + bbox.width;
+                    }
+                    if (i == 2) {
+                        let parentNode = node.parentNode as SVGGraphicsElement;
+                        while (parentNode.getAttribute("semantics") !== "bspr_inferenceRule:down") {
+                            parentNode = parentNode.parentNode as SVGGraphicsElement;
+                        }
+                        parentNode = parentNode.childNodes[2] as SVGGraphicsElement;
+                        const rule = node.querySelector<SVGGraphicsElement>('g [semantics="bspr_inferenceRule:down"]')!;
+                        const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
+                        // @ts-ignore
+                        let w = -parentNode.getTransformToElement(term).e;
+                        // @ts-ignore
+                        w += term.getBBox().width;
+                        w += padding;
+                        // @ts-ignore
+                        parentNode.setAttribute("x2", w);
                     }
                     i += 1;
                 }
