@@ -70,5 +70,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
         inputSyntax.setText(getTranslation("root.inputSyntax"));
+        languageSelect.setLabel(getTranslation("root.selectLanguage"));
     }
 }
