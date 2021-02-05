@@ -40,6 +40,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private final TextField inputField;
     private final TypeAssumptionsArea typeAssumptionsArea;
     private final Button inferTypeButton;
+    private final Button typeAssumptions;
 
     /**
      * Creates an InputBar with a Consumer-object to call the inferType()-method in UpperBar.
@@ -57,7 +58,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setValueChangeMode(ValueChangeMode.EAGER);
         inputField.addValueChangeListener(event -> onInputFieldValueChange());
         Button lambdaButton = new Button(getTranslation("root.lambda"), event -> onLambdaButtonClick());
-        Button typeAssumptions = new Button(
+        typeAssumptions = new Button(
                 getTranslation("root.typeAssumptions"),
                 event -> onTypeAssumptionsButton()
         ); // TODO
@@ -69,7 +70,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         inferTypeButton.setId(INFER_BUTTON_ID);
 
-        add(infoIcon, exampleButton, lambdaButton, typeAssumptions, inputField, inferTypeButton);
+        add(infoIcon, typeAssumptions, lambdaButton, inputField, exampleButton, inferTypeButton);
         setId(INPUT_BAR_ID);
     }
 
@@ -129,5 +130,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent event) {
         inferTypeButton.setText(getTranslation("root.typeInfer"));
+        typeAssumptions.setText(getTranslation("root.typeAssumptions"));
     }
 }

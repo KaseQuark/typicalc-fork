@@ -9,14 +9,12 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
-import com.vaadin.flow.i18n.LocaleChangeObserver;
 
 /**
  * Dialog which contains information on the correct syntax for the users input.
  */
 @CssImport("./styles/view/main/info-dialog.css")
-public class InfoDialog extends Dialog implements LocaleChangeObserver {
+public class InfoDialog extends Dialog {
     private static final long serialVersionUID = 2914411566361539614L;
 
     /*
@@ -24,7 +22,7 @@ public class InfoDialog extends Dialog implements LocaleChangeObserver {
      */
     private static final String INFO_HEADER_ID = "infoHeader";
     private static final String INFO_CONTENT_ID = "infoContent";
-    private static final String INPUT_SYNATX_ID = "inputSyntax";
+    private static final String GRAMMAR_ID = "inputSyntax";
     private static final String CLOSE_ICON_ID = "closeIcon";
 
     private final H4 heading;
@@ -41,20 +39,23 @@ public class InfoDialog extends Dialog implements LocaleChangeObserver {
         infoHeader.setId(INFO_HEADER_ID);
         infoHeader.add(closeIcon);
         
-        //TODO fill with content
-        VerticalLayout infoContent = new VerticalLayout();
+        VerticalLayout infoContent = createInfoContent();
         infoContent.setId(INFO_CONTENT_ID);
-        Span explanation = new Span(getTranslation("root.infoExplanation"));
-        Paragraph inputSyntax = new Paragraph();
-        String paragraphContent = getTranslation("root.inputGrammar");
-        inputSyntax.getElement().setProperty("innerHTML", paragraphContent);
-        inputSyntax.setId(INPUT_SYNATX_ID);
-        infoContent.add(explanation, inputSyntax);
+  
         add(infoHeader, infoContent);
     }
-
-    @Override
-    public void localeChange(LocaleChangeEvent event) {
-        heading.setText(getTranslation("root.inputSyntax"));
+    
+    private VerticalLayout createInfoContent() {
+        Span termExplanation = new Span(getTranslation("root.termExplanation"));
+        Paragraph termSyntax = new Paragraph();
+        String termSyntaxContent = getTranslation("root.termGrammar");
+        termSyntax.getElement().setProperty("innerHTML", termSyntaxContent);
+        termSyntax.setId(GRAMMAR_ID);
+        Span assExplanation = new Span(getTranslation("root.assExplanation"));
+        Paragraph assSyntax = new Paragraph();
+        String assSyntaxContent = getTranslation("root.assGrammar");
+        assSyntax.getElement().setProperty("innerHTML", assSyntaxContent);
+        assSyntax.setId(GRAMMAR_ID);
+        return new VerticalLayout(termExplanation, termSyntax, assExplanation, assSyntax);
     }
 }

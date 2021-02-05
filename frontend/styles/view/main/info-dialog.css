@@ -7,7 +7,7 @@
 }
 
 #infoContent {
-	align-items: center;
+	align-items: flex-start;
 }
 
 #inputSyntax {
@@ -18,5 +18,5 @@
 #closeIcon {
 	right: 0;
 	position: absolute;
-	bottom: 0.45em;
+	bottom: 2.1em;
 }
