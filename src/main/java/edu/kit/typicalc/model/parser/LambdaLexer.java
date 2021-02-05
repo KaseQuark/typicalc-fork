@@ -121,6 +121,10 @@ public class LambdaLexer {
                     } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos)));
                     String s = sb.toString();
                     TokenType type;
+                    // only allow ascii characters in variable names
+                    if (!s.matches("\\A\\p{ASCII}*\\z")) {
+                        return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+                    }
                     switch (s) {
                         case "let":
                             type = TokenType.LET;
