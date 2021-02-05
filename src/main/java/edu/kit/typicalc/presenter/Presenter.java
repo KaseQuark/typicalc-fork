@@ -21,7 +21,7 @@ public class Presenter implements MainViewListener {
      * @param model the implementation of the Model
      * @param view the implementation of the MainView
      */
-    public Presenter(final Model model, final MainView view) {
+    public Presenter(Model model, MainView view) {
         this.model = model;
         this.view = view;
     }

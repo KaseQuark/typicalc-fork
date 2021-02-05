@@ -44,7 +44,7 @@ public class TypicalcI18NProvider implements I18NProvider {
         } else {
             try {
                 translation = this.generalBundle.getString(key);
-            } catch (final MissingResourceException exception) {
+            } catch (MissingResourceException exception) {
                 // this should never be the case
                 return "?[" + key + "]?";
             }
