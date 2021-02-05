@@ -24,8 +24,10 @@ public class TypeInferenceView extends VerticalLayout
 
     private int currentStep = 0;
 
+
     private MathjaxUnification unification;
     private MathjaxProofTree tree;
+    private final LatexCreator lc;
     private final transient TypeInfererInterface typeInferer;
     private final Div content;
     private final ControlPanel controlPanel;
@@ -35,6 +37,7 @@ public class TypeInferenceView extends VerticalLayout
         setId(ID);
         setSizeFull();
         addAttachListener(this);
+        lc = new LatexCreator(typeInferer);
         content = new Div();
         content.setId(CONTENT_ID);
         controlPanel = new ControlPanel(this, this);
@@ -48,7 +51,6 @@ public class TypeInferenceView extends VerticalLayout
 
     private void setContent() {
         // todo implement correctly
-        LatexCreator lc = new LatexCreator(typeInferer);
         unification = new MathjaxUnification(lc.getUnification());
         tree = new MathjaxProofTree(lc.getTree());
         content.add(unification, tree);
@@ -56,7 +58,7 @@ public class TypeInferenceView extends VerticalLayout
 
     @Override
     public void shareButton() {
-        // todo implement
+        new ShareDialog("currentURL", lc.getLatexPackages(), lc.getTree()).open(); // TODO
     }
 
     private void refreshElements(int currentStep) {
