@@ -42,7 +42,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
      * @param latex the LaTeX-code
      * @param nameKey the key to get the name of the inference rule
      */
-    protected InferenceRuleField(final String latex, final String nameKey) {
+    protected InferenceRuleField(String latex, String nameKey) {
         this.nameKey = nameKey;
 
         final HorizontalLayout header = new HorizontalLayout();

@@ -13,7 +13,7 @@ public class ErrorNotification extends Notification {
 
     private static final String NOTIFICATION_ID = "errorNotification";
 
-    protected ErrorNotification(final String errorMessage) {
+    protected ErrorNotification(String errorMessage) {
         final VerticalLayout container = new VerticalLayout();
         final Span errorSpan = new Span(errorMessage);
         final Button closeButton = new Button(getTranslation("root.close"), event -> this.close());

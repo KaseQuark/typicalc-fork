@@ -46,13 +46,13 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
     }
 
     @Override
-    public void setTypeInferenceView(final TypeInfererInterface typeInferer) {
+    public void setTypeInferenceView(TypeInfererInterface typeInferer) {
         TypeInferenceView tiv = new TypeInferenceView(typeInferer);
         setContent(tiv);
     }
 
     @Override
-    public void displayError(final ParseError error) {
+    public void displayError(ParseError error) {
         //TODO add error keys to bundle
         final Notification errorNotification = new ErrorNotification(getTranslation("root." + error.toString()));
         errorNotification.open();
