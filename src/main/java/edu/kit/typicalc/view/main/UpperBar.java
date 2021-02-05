@@ -16,13 +16,14 @@ import com.vaadin.flow.router.Location;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 
 /**
- * Contains all the components constantly shown in the upper part of the webage.
+ * Contains all the components constantly shown in the upper part of the webpage.
  */
 @CssImport("./styles/view/main/upper-bar.css")
 public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
@@ -36,9 +37,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String HELP_ICON_ID = "helpIcon";
     private static final String UPPER_BAR_ID = "header";
 
-    private final H1 viewTitle;
     private final InputBar inputBar;
-    private final Icon helpIcon;
     private final Button rules;
 
     private final transient MainViewListener presenter;
@@ -51,18 +50,18 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param setContent function to set the content of the application
      * @param setTermInURL function to set the term into the URL
      */
-    protected UpperBar(final MainViewListener presenter, final Consumer<Component> setContent,
-                       final Consumer<String> setTermInURL) {
+    protected UpperBar(MainViewListener presenter, Consumer<Component> setContent,
+                       Consumer<String> setTermInURL) {
 
         this.presenter = presenter;
         this.setTermInURL = setTermInURL;
 
-        this.viewTitle = new H1(getTranslation("root.typicalc"));
+        H1 viewTitle = new H1(getTranslation("root.typicalc"));
         viewTitle.addClickListener(event -> routeToStartPage(setContent));
         viewTitle.setId(VIEW_TITLE_ID);
         this.inputBar = new InputBar(this::typeInfer);
         inputBar.setId(INPUT_BAR_ID);
-        this.helpIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
+        Icon helpIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
         helpIcon.addClickListener(event -> onHelpIconClick());
         helpIcon.setId(HELP_ICON_ID);
         this.rules = new DrawerToggle();
@@ -77,20 +76,20 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     /**
      * Starts the type inference algorithm by passing the required arguments to the MainViewListener.
      *
-     * @param lambdaString the lambda term to be type-inferred
+     * @param termAndAssumptions the lambda term to be type-inferred and the type assumptions to use
      */
-    protected void typeInfer(final String lambdaString) {
-        setTermInURL.accept(lambdaString);
-        presenter.typeInferLambdaString(lambdaString, new HashMap<>());
+    protected void typeInfer(Pair<String, Map<String, String>> termAndAssumptions) {
+        setTermInURL.accept(termAndAssumptions.getLeft()); // TODO: include types?
+        presenter.typeInferLambdaString(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
     }
-    
+
     /**
      * Calls the inferTerm method in {@link edu.kit.typicalc.view.main.InputBar} with the provided
      * string as the argument.
-     * 
+     *
      * @param term the provided string
      */
-    protected void inferTerm(final String term) {
+    protected void inferTerm(String term) {
         inputBar.inferTerm(term);
     }
 
@@ -106,6 +105,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-       rules.setText(getTranslation("root.inferenceRules")); 
+       rules.setText(getTranslation("root.inferenceRules"));
     }
 }
