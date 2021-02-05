@@ -2,6 +2,7 @@ package edu.kit.typicalc.view.main;
 
 import java.util.Locale;
 
+import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
@@ -29,20 +30,22 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 
     private final H3 heading;
     private final H5 inputSyntax;
-    private final Select<String> languageSelect;
+    private final Select<Locale> languageSelect;
+    private final ItemLabelGenerator<Locale> renderer;
 
     /**
      * Create a new HelpDialog.
      */
     protected HelpDialog() {
         final HorizontalLayout headingLayout = new HorizontalLayout();
+        renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
         heading = new H3(getTranslation("root.operatingHelp"));
         headingLayout.setId(HEADING_LAYOUT_ID);
-        languageSelect = new Select<>(getTranslation("root.german"), getTranslation("root.english"));
+        languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
+        languageSelect.setTextRenderer(renderer);
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
-        languageSelect.setValue(getTranslation("root."
-                + UI.getCurrent().getLocale().getDisplayLanguage(Locale.ENGLISH).toLowerCase()));
-        languageSelect.addValueChangeListener(event -> onLanguageChange());
+        languageSelect.setValue(UI.getCurrent().getLocale());
+        languageSelect.addValueChangeListener(event -> UI.getCurrent().setLocale(event.getValue()));
         languageSelect.setId(LANGUAGE_SELECT_ID);
         headingLayout.add(heading, languageSelect);
 
@@ -53,23 +56,12 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         contentLayout.add(inputSyntax);
         add(headingLayout, contentLayout);
     }
-
-    private void onLanguageChange() {
-        Locale newLocale;
-        if (languageSelect.getValue().equals(getTranslation("root.german"))) {
-            newLocale = Locale.GERMAN;
-        } else if (languageSelect.getValue().equals(getTranslation("root.english"))) {
-            newLocale = Locale.ENGLISH;
-        } else {
-            throw new IllegalStateException();
-        }
-        UI.getCurrent().setLocale(newLocale);
-    }
-
+    
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
         inputSyntax.setText(getTranslation("root.inputSyntax"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
+        languageSelect.setTextRenderer(renderer);
     }
 }
