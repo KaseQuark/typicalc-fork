@@ -2,20 +2,12 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 
 import edu.kit.typicalc.model.Conclusion;
-import edu.kit.typicalc.model.Constraint;
-import edu.kit.typicalc.model.Substitution;
 import edu.kit.typicalc.model.TypeInfererInterface;
-import edu.kit.typicalc.model.UnificationError;
-import edu.kit.typicalc.model.UnificationStep;
 import edu.kit.typicalc.model.step.*;
-import edu.kit.typicalc.model.term.*;
-import edu.kit.typicalc.model.type.*;
-import edu.kit.typicalc.util.Result;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.TypeAbstraction;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
 
@@ -29,7 +21,6 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorCon
 public class LatexCreator implements StepVisitor {
     private final TypeInfererInterface typeInferer;
     private final StringBuilder tree;
-    private final LatexCreatorConstraints constraintsGenerator;
     private final boolean stepLabels;
 
     /**
@@ -51,7 +42,6 @@ public class LatexCreator implements StepVisitor {
         this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
-        constraintsGenerator = new LatexCreatorConstraints(typeInferer);
         typeInferer.getFirstInferenceStep().accept(this);
     }
 
@@ -70,12 +60,8 @@ public class LatexCreator implements StepVisitor {
      * @return the LaTeX-code for constraints and unification
      */
     protected String[] getUnification() {
-        List<String> result = new ArrayList<>(constraintsGenerator.getConstraints());
-        result.addAll(generateUnification());
-        typeInferer.getMGU().ifPresent(mgu -> result.add(generateMGU()));
-        // todo return final type
-        return result.toArray(new String[0]);
-    } // todo implement
+        return new LatexCreatorConstraints(typeInferer).getEverything().toArray(new String[0]);
+    }
 
     /**
      * Returns needed LaTeX packages
@@ -107,66 +93,6 @@ public class LatexCreator implements StepVisitor {
         }
     }
 
-    private List<String> generateUnification() {
-        List<String> steps = new ArrayList<>();
-        // TODO: check if unification is present
-        List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps()
-                .orElseThrow(IllegalStateException::new);
-        for (UnificationStep step : unificationSteps) {
-            Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
-            Optional<UnificationError> error = Optional.empty();
-            if (subs.isError()) {
-                error = Optional.of(subs.unwrapError());
-                step = unificationSteps.get(unificationSteps.size() - 2);
-                subs = step.getSubstitutions(); // TODO: what if first step fails?
-            }
-            StringBuilder latex = new StringBuilder();
-            latex.append(DOLLAR_SIGN);
-            latex.append(ALIGN_BEGIN);
-            List<Substitution> substitutions = subs.unwrap();
-            for (Substitution s : substitutions) {
-                latex.append(new LatexCreatorType(s.getVariable()).getLatex());
-                latex.append(SUBSTITUTION_SIGN);
-                latex.append(new LatexCreatorType(s.getType()).getLatex());
-                latex.append(LATEX_NEW_LINE);
-            }
-            error.ifPresent(latex::append); // TODO: translation
-            if (error.isPresent()) {
-                latex.append(LATEX_NEW_LINE);
-            }
-            List<Constraint> constraints = step.getConstraints();
-            for (Constraint c : constraints) {
-                latex.append(new LatexCreatorType(c.getFirstType()).getLatex());
-                latex.append(EQUALS);
-                latex.append(new LatexCreatorType(c.getSecondType()).getLatex());
-                latex.append(LATEX_NEW_LINE);
-            }
-            latex.append(ALIGN_END);
-            latex.append(DOLLAR_SIGN);
-            steps.add(latex.toString());
-        }
-        return steps;
-    }
-
-    private String generateMGU() {
-        StringBuilder mguLatex = new StringBuilder();
-        mguLatex.append(DOLLAR_SIGN);
-        mguLatex.append(ALIGN_BEGIN);
-        mguLatex.append(BRACKET_LEFT);
-        typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
-            mguLatex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
-            mguLatex.append(SUBSTITUTION_SIGN);
-            mguLatex.append(new LatexCreatorType(substitution.getType()).getLatex());
-            mguLatex.append(COMMA);
-            mguLatex.append(LATEX_NEW_LINE);
-            mguLatex.append(NEW_LINE);
-        }));
-        mguLatex.delete(mguLatex.length() - 3, mguLatex.length());
-        mguLatex.append(BRACKET_RIGHT);
-        mguLatex.append(ALIGN_END);
-        mguLatex.append(DOLLAR_SIGN);
-        return mguLatex.toString();
-    }
 
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
