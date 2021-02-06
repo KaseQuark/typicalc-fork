@@ -4,7 +4,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
     return elem.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 window.MathJax = {
-    loader: {load: ['[tex]/bussproofs', '[tex]/unicode']},
+    loader: {load: ['input/tex-full', 'output/svg', '[tex]/bussproofs', '[tex]/unicode']},
     tex: {
         packages: {'[+]': ['bussproofs', 'unicode']},
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -144,3 +144,10 @@ mjx-container {\
         }
     }
 };
+
+(function () {
+    let script = document.createElement('script');
+    script.src = 'http://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/startup.js';
+    // script.async = true;
+    document.head.appendChild(script);
+})();
