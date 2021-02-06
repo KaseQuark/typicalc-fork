@@ -38,6 +38,8 @@ public final class LatexCreatorConstants {
     protected static final String USER_VARIABLE = "\\tau";
     protected static final String GAMMA = "\\Gamma";
 
+    protected static final String LATEX_NEW_LINE = "\\\\";
+    protected static final String PHANTOM_X = "\\phantom{x}";
     protected static final String SUBSTITUTION_SIGN = "\\mathrel{\\unicode{x21E8}}";
     protected static final String LAMBDA = "\\lambda";
     protected static final String LATEX_SPACE = "\\ ";
@@ -50,6 +52,8 @@ public final class LatexCreatorConstants {
     protected static final String VDASH = "\\vdash";
     protected static final String TREE_BEGIN = "\\begin{prooftree}";
     protected static final String TREE_END = "\\end{prooftree}";
+    protected static final String ALIGN_BEGIN = "\\begin{align*}";
+    protected static final String ALIGN_END = "\\end{align*}";
 
     protected static final String BUSSPROOFS = "\\usepackage{bussproofs}";
 }

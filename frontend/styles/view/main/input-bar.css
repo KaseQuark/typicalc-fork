@@ -1,13 +1,5 @@
-@media (max-width: 500px) {
-    #inputField {
-		width: 20em;
-	}
-}
-
-@media (min-width: 1000px) {
-    #inputField {
-		width: 30em;
-	}
+#inputField {
+	flex-grow: 1;
 }
 
 #inputField {
@@ -16,6 +8,7 @@
 
 #inputBar {
 	align-items: center;
+	padding: 1em;
 }
 
 vaadin-drawer-toggle {

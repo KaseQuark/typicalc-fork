@@ -41,15 +41,23 @@ public class LatexCreator implements StepVisitor {
         this(typeInferer, true);
     }
 
+    /**
+     * Generate the pieces of LaTeX-code from the type inferer.
+     *
+     * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
+     * @param stepLabels turns step labels on (true) or off (false)
+     */
     protected LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
         this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
-        constraintsGenerator = new LatexCreatorConstraints();
+        constraintsGenerator = new LatexCreatorConstraints(typeInferer);
         typeInferer.getFirstInferenceStep().accept(this);
     }
 
     /**
+     * Returns the proof tree
+     *
      * @return the LaTeX-code for the proof tree
      */
     protected String getTree() {
@@ -57,21 +65,28 @@ public class LatexCreator implements StepVisitor {
     }
 
     /**
+     * Returns the LaTeX-code for constraints, unification, MGU and MGU
+     *
      * @return the LaTeX-code for constraints and unification
      */
     protected String[] getUnification() {
         List<String> result = new ArrayList<>(constraintsGenerator.getConstraints());
         result.addAll(generateUnification());
         typeInferer.getMGU().ifPresent(mgu -> result.add(generateMGU()));
+        // todo return final type
         return result.toArray(new String[0]);
     } // todo implement
 
     /**
-     * @return the packages needed for the LaTeX-code from getTree() and getUnification()to work
+     * Returns needed LaTeX packages
+     *
+     * @return the packages needed for the LaTeX-code from getTree() and getUnification() to work
      */
     protected String getLatexPackages() {
         return BUSSPROOFS;
     } // todo implement
+
+
 
     private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
         //todo sort entries?
@@ -107,26 +122,26 @@ public class LatexCreator implements StepVisitor {
             }
             StringBuilder latex = new StringBuilder();
             latex.append(DOLLAR_SIGN);
-            latex.append("\\begin{align}");
+            latex.append(ALIGN_BEGIN);
             List<Substitution> substitutions = subs.unwrap();
             for (Substitution s : substitutions) {
                 latex.append(new LatexCreatorType(s.getVariable()).getLatex());
                 latex.append(SUBSTITUTION_SIGN);
                 latex.append(new LatexCreatorType(s.getType()).getLatex());
-                latex.append("\\\\");
+                latex.append(LATEX_NEW_LINE);
             }
             error.ifPresent(latex::append); // TODO: translation
             if (error.isPresent()) {
-                latex.append("\\\\");
+                latex.append(LATEX_NEW_LINE);
             }
             List<Constraint> constraints = step.getConstraints();
             for (Constraint c : constraints) {
                 latex.append(new LatexCreatorType(c.getFirstType()).getLatex());
                 latex.append(EQUALS);
                 latex.append(new LatexCreatorType(c.getSecondType()).getLatex());
-                latex.append("\\\\");
+                latex.append(LATEX_NEW_LINE);
             }
-            latex.append("\\end{align}");
+            latex.append(ALIGN_END);
             latex.append(DOLLAR_SIGN);
             steps.add(latex.toString());
         }
@@ -136,15 +151,19 @@ public class LatexCreator implements StepVisitor {
     private String generateMGU() {
         StringBuilder mguLatex = new StringBuilder();
         mguLatex.append(DOLLAR_SIGN);
+        mguLatex.append(ALIGN_BEGIN);
         mguLatex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
             mguLatex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
             mguLatex.append(SUBSTITUTION_SIGN);
             mguLatex.append(new LatexCreatorType(substitution.getType()).getLatex());
             mguLatex.append(COMMA);
+            mguLatex.append(LATEX_NEW_LINE);
+            mguLatex.append(NEW_LINE);
         }));
-        mguLatex.deleteCharAt(mguLatex.length() - 1);
+        mguLatex.delete(mguLatex.length() - 3, mguLatex.length());
         mguLatex.append(BRACKET_RIGHT);
+        mguLatex.append(ALIGN_END);
         mguLatex.append(DOLLAR_SIGN);
         return mguLatex.toString();
     }
@@ -193,24 +212,20 @@ public class LatexCreator implements StepVisitor {
     }
 
 
-    // todo use generateConstraint
     @Override
     public void visit(AbsStepDefault absD) {
-        constraintsGenerator.addConstraint(absD);
         tree.insert(0, generateConclusion(absD, LABEL_ABS, UIC));
         absD.getPremise().accept(this);
     }
 
     @Override
     public void visit(AbsStepWithLet absL) {
-        constraintsGenerator.addConstraint(absL);
         tree.insert(0, generateConclusion(absL, LABEL_ABS, UIC));
         absL.getPremise().accept(this);
     }
 
     @Override
     public void visit(AppStepDefault appD) {
-        constraintsGenerator.addConstraint(appD);
         tree.insert(0, generateConclusion(appD, LABEL_APP, BIC));
         appD.getPremise2().accept(this);
         appD.getPremise1().accept(this);
@@ -218,7 +233,6 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(ConstStepDefault constD) {
-        constraintsGenerator.addConstraint(constD);
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
         String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm()).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
@@ -228,30 +242,27 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(VarStepDefault varD) {
-        constraintsGenerator.addConstraint(varD);
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
         tree.insert(0, AXC + CURLY_LEFT + generateVarStepPremise(varD) + CURLY_RIGHT + NEW_LINE);
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
-        constraintsGenerator.addConstraint(varL);
         tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
         String premiseRight = DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
                 + DOLLAR_SIGN + NEW_LINE;
-        String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + "\\begin{align}"
+        String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + ALIGN_BEGIN
                 + generateVarStepPremise(varL).replace(DOLLAR_SIGN, "")
-                + " \\\\ " // TODO: less magic strings, less replacement fixups
+                + SPACE + LATEX_NEW_LINE + SPACE // TODO: less replacement fixups
                 + premiseRight.replace(DOLLAR_SIGN, "")
-                + "\\end{align}" + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
+                + ALIGN_END + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, premiseLeft);
     }
 
     @Override
     public void visit(LetStepDefault letD) {
-        constraintsGenerator.addConstraint(letD);
         tree.insert(0, generateConclusion(letD, LABEL_LET, BIC));
         letD.getPremise().accept(this);
         letD.getTypeInferer().getFirstInferenceStep().accept(this);
