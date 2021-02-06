@@ -13,15 +13,13 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     public LatexCreatorConstraints(TypeInfererInterface typeInferer) {
         constraints = new ArrayList<>();
-        constraints.add("\\phantom{x}");
+        constraints.add(PHANTOM_X);
         typeInferer.getFirstInferenceStep().accept(this);
     }
 
     protected List<String> getConstraints() {
         List<String> temp = new ArrayList<>(constraints);
-        temp.replaceAll(current -> current.equals("")
-                ? current
-                : DOLLAR_SIGN + current + DOLLAR_SIGN);
+        temp.replaceAll(current -> DOLLAR_SIGN + current + DOLLAR_SIGN);
         //todo vllt. noch was anderes drumrum schreiben
         return temp;
     }
