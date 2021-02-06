@@ -49,5 +49,7 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.inferenceRules"));
+        ruleContainer.removeAll();
+        initRuleContainer();
     }
 }

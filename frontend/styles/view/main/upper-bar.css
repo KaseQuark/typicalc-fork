@@ -16,6 +16,7 @@
 #viewTitle {
   font-size: var(--lumo-font-size-l);
   cursor: pointer;
+  bottom: 1em;
 }
 
 #helpIcon {
@@ -35,7 +36,7 @@
 
 @media (min-width: 1000px) {
     #inputBar {
-		margin-left: 15em;
+		margin-left: 22em;
 	}
 
 	#viewTitle {

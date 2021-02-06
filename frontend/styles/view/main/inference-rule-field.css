@@ -16,6 +16,7 @@
 	justify-content: center;
 	width: 100%;
 	padding: 0.5em 0em;
+	border-radius: 5px 5px 0 0;
 }
 
 #ruleName {
@@ -24,6 +25,7 @@
 
 #main {
 	align-items: center;
+	justify-content: center;
 	width: 100%;
 	margin: 0px;
 	padding-top: 0.2em;
