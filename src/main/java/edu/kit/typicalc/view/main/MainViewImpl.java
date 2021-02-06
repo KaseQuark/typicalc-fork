@@ -26,6 +26,7 @@ import java.util.List;
  * the screen.
  */
 @CssImport("./styles/view/main/main-view.css")
+@CssImport(value = "./styles/view/main/app-layout.css", themeFor = "vaadin-app-layout")
 @JsModule("./styles/shared-styles.js")
 @JavaScript("./src/svg-pan-zoom.min.js")
 @PageTitle("Typicalc")
