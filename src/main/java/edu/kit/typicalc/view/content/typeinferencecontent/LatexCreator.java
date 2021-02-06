@@ -45,7 +45,7 @@ public class LatexCreator implements StepVisitor {
         this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
-        constraintsGenerator = new LatexCreatorConstraints();
+        constraintsGenerator = new LatexCreatorConstraints(typeInferer);
         typeInferer.getFirstInferenceStep().accept(this);
     }
 
@@ -196,21 +196,18 @@ public class LatexCreator implements StepVisitor {
     // todo use generateConstraint
     @Override
     public void visit(AbsStepDefault absD) {
-        constraintsGenerator.addConstraint(absD);
         tree.insert(0, generateConclusion(absD, LABEL_ABS, UIC));
         absD.getPremise().accept(this);
     }
 
     @Override
     public void visit(AbsStepWithLet absL) {
-        constraintsGenerator.addConstraint(absL);
         tree.insert(0, generateConclusion(absL, LABEL_ABS, UIC));
         absL.getPremise().accept(this);
     }
 
     @Override
     public void visit(AppStepDefault appD) {
-        constraintsGenerator.addConstraint(appD);
         tree.insert(0, generateConclusion(appD, LABEL_APP, BIC));
         appD.getPremise2().accept(this);
         appD.getPremise1().accept(this);
@@ -218,7 +215,6 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(ConstStepDefault constD) {
-        constraintsGenerator.addConstraint(constD);
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
         String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm()).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
@@ -228,14 +224,12 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(VarStepDefault varD) {
-        constraintsGenerator.addConstraint(varD);
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
         tree.insert(0, AXC + CURLY_LEFT + generateVarStepPremise(varD) + CURLY_RIGHT + NEW_LINE);
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
-        constraintsGenerator.addConstraint(varL);
         tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
@@ -251,7 +245,6 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(LetStepDefault letD) {
-        constraintsGenerator.addConstraint(letD);
         tree.insert(0, generateConclusion(letD, LABEL_LET, BIC));
         letD.getPremise().accept(this);
         letD.getTypeInferer().getFirstInferenceStep().accept(this);
