@@ -45,13 +45,13 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
     protected InferenceRuleField(String latex, String nameKey) {
         this.nameKey = nameKey;
 
-        final HorizontalLayout header = new HorizontalLayout();
+        HorizontalLayout header = new HorizontalLayout();
         header.setId(HEADER_ID);
         this.ruleName = new H4(getTranslation(nameKey));
         ruleName.setId(RULE_NAME_ID);
         header.add(ruleName);
 
-        final VerticalLayout main = new VerticalLayout();
+        VerticalLayout main = new VerticalLayout();
         main.setId(MAIN_ID);
         this.copyButton = new Button(getTranslation("root.copyLatex"), new Icon(VaadinIcon.CLIPBOARD));
         MathjaxDisplay rule = new MathjaxDisplay(latex); //TODO scale, when method implemented

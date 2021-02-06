@@ -27,10 +27,9 @@ class MathjaxProofTree extends MathjaxAdapter {
     protected calculateSteps(): void {
         if (this.shadowRoot !== null) {
             const root = this.shadowRoot;
-            let semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
+            const semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
             // first, enumerate all of the steps
             let nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
-            let steps = [];
             let a = null;
             let stepIdx = 0;
             while (a = nodeIterator.nextNode() as HTMLElement) {
@@ -44,7 +43,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                     stepIdx++;
                 }
             }
-            // then fix some more mathjax layout issues
+            // then fix some mathjax layout issues
             for (const step of root.querySelectorAll<HTMLElement>('g[typicalc="step"]')) {
                 const infRule = step.querySelector<HTMLElement>('g[semantics="bspr_inferenceRule:down"]');
                 if (infRule === null) {
@@ -80,7 +79,7 @@ class MathjaxProofTree extends MathjaxAdapter {
             }
             // then create the steps
             nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
-            steps = [];
+            let steps = [];
             stepIdx = 0;
             while (a = nodeIterator.nextNode() as HTMLElement) {
                 let semantics = a.getAttribute("semantics");
@@ -92,12 +91,12 @@ class MathjaxProofTree extends MathjaxAdapter {
                     stepIdx++;
 
                     // find the next one/two steps above this one
-                    const aboveStep1 = a.querySelector<HTMLElement>("#" + id + " g[typicalc=\"step\"]");
+                    const aboveStep1 = a.querySelector<HTMLElement>("#" + id + ' g[typicalc="step"]');
                     let above = [];
                     if (aboveStep1 != null) {
                         const parent = aboveStep1.parentNode!.parentNode! as HTMLElement;
                         parent.setAttribute("id", "typicalc-selector");
-                        for (const node of parent.querySelectorAll("#typicalc-selector > g > g[typicalc=\"step\"")) {
+                        for (const node of parent.querySelectorAll('#typicalc-selector > g > g[typicalc="step"]')) {
                             above.push(node as HTMLElement);
                         }
                         parent.removeAttribute("id");
@@ -123,17 +122,22 @@ class MathjaxProofTree extends MathjaxAdapter {
                     steps.push([a, above]);
                 }
             }
+            // MathJax layout of bussproofs is sometimes wrong:
+            // https://github.com/mathjax/MathJax/issues/2270
+            // https://github.com/mathjax/MathJax/issues/2626
+            // the following algorithm fixes it by iterating over "rows" in the SVG created by MathJax
+            // in each row, the elements are arranged to not overlap
             const svg = root.querySelector<SVGElement>("svg")!;
             const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
             // start layout fixes in the innermost part of the SVG
             nodeIterator2.reverse();
             const padding = 300;
             let counter = 0;
-            for (const a of nodeIterator2) {
+            for (const row of nodeIterator2) {
                 counter++;
                 let left = null;
                 let i = 0;
-                for (const rawNode of a.childNodes) {
+                for (const rawNode of row.childNodes) {
                     const node = rawNode as SVGGraphicsElement;
                     if (i === 1 || i === 3) {
                         i += 1;
@@ -159,14 +163,13 @@ class MathjaxProofTree extends MathjaxAdapter {
                         }
                         parentNode = parentNode.childNodes[2] as SVGGraphicsElement;
                         const rule = node.querySelector<SVGGraphicsElement>('g [semantics="bspr_inferenceRule:down"]')!;
-                        const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0];
+                        // this selector should be checked again when updating MathJax
+                        const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0] as SVGGraphicsElement;
                         // @ts-ignore
                         let w = -parentNode.getTransformToElement(term).e;
-                        // @ts-ignore
                         w += term.getBBox().width;
                         w += padding;
-                        // @ts-ignore
-                        parentNode.setAttribute("x2", w);
+                        parentNode.setAttribute("x2", w.toString());
                     }
                     i += 1;
                 }

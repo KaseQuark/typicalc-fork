@@ -144,10 +144,7 @@ mjx-container {\
         }
     }
 };
-
-(function () {
-    let script = document.createElement('script');
-    script.src = 'http://cdn.jsdelivr.net/npm/mathjax@3.1.2/es5/startup.js';
-    // script.async = true;
-    document.head.appendChild(script);
-})();
+// disable MathJax context menu
+window.addEventListener("contextmenu", function (event) {
+    event.stopPropagation();
+}, true);

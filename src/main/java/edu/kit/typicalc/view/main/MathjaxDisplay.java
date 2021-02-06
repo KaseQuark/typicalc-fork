@@ -8,8 +8,8 @@ import com.vaadin.flow.component.template.Id;
 import edu.kit.typicalc.view.MathjaxAdapter;
 
 /**
- * Renders static LaTeX content using MathJax. Relies on MathjaxDisplayJS to interact
- * with MathJax.
+ * Renders static LaTeX content using MathJax.
+ * Relies on MathjaxDisplayTS to interact with MathJax.
  */
 @Tag("tc-display")
 @JsModule("./src/mathjax-adapter.ts")

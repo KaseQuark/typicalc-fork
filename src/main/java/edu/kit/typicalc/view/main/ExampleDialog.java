@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * Contains all predefined examples as buttons. Clicking on a button inserts the example string into
- * the input bar.
+ * Contains all predefined examples as buttons.
+ * Clicking on a button inserts the example string into the input field.
  *
  */
 public class ExampleDialog extends Dialog implements LocaleChangeObserver {
@@ -27,14 +27,13 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
     private final Paragraph instruction;
 
     /**
-     * Creates a new ExampleDialog with a callback method to insert the example string into the input
-     * bar.
+     * Creates a new ExampleDialog with a callback method that will receive the selected example.
      *
-     * @param callback inserts the string of the chosen example into the input bar
+     * @param callback function to handle the selected lambda term
      */
     protected ExampleDialog(Consumer<String> callback) {
         VerticalLayout layout = new VerticalLayout();
-        instruction = new Paragraph(getTranslation("root.selectExample"));
+        instruction = new Paragraph();
         layout.add(instruction);
         for (String term : EXAMPLES) {
             Button button = new Button(term);
@@ -42,11 +41,13 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
         	callback.accept(term);
         	this.close();
             });
-            button.setId(term); // needed for IT
+            button.setId(term); // needed for integration test
             layout.add(button);
         }
         add(layout);
         setId(EXAMPLE_DIALOG_ID);
+
+        localeChange(null); // initialize text content
     }
 
     @Override

@@ -4,7 +4,6 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JavaScript;
-import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.*;
 import edu.kit.typicalc.model.ModelImpl;
@@ -27,10 +26,12 @@ import java.util.List;
  */
 @CssImport("./styles/view/main/main-view.css")
 @CssImport(value = "./styles/view/main/app-layout.css", themeFor = "vaadin-app-layout")
-@JsModule("./styles/shared-styles.js")
 @JavaScript("./src/svg-pan-zoom.min.js")
+@JavaScript("./src/tex-svg-full.js")
 @PageTitle("Typicalc")
-public class MainViewImpl extends AppLayout implements MainView, HasErrorParameter<NotFoundException> {
+@Route(TypeInferenceView.ROUTE + "/:term")
+public class MainViewImpl extends AppLayout
+        implements MainView, BeforeEnterObserver, HasErrorParameter<NotFoundException> {
     private static final long serialVersionUID = -2411433187835906976L;
 
     private final UpperBar upperBar;
@@ -55,15 +56,12 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
     @Override
     public void displayError(ParseError error) {
         //TODO add error keys to bundle
-        final Notification errorNotification = new ErrorNotification(getTranslation("root." + error.toString()));
+        Notification errorNotification = new ErrorNotification(getTranslation("root." + error.toString()));
         errorNotification.open();
     }
 
     @Override
-    public int setErrorParameter(
-            BeforeEnterEvent event,
-            ErrorParameter<NotFoundException> parameter) {
-
+    public void beforeEnter(BeforeEnterEvent event) {
         if (event.getLocation().getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
             List<String> segments = event.getLocation().getSegments();
             String term = segments.get(segments.size() - 1);
@@ -73,11 +71,7 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
             upperBar.inferTerm(StringUtils.EMPTY);
         } else if (event.getLocation().getPath().equals(StringUtils.EMPTY)) {
             setContent(new StartPageView());
-        } else {
-            setContent(new NotFoundView());
-            return HttpServletResponse.SC_NOT_FOUND;
         }
-        return HttpServletResponse.SC_OK;
     }
 
 
@@ -88,5 +82,12 @@ public class MainViewImpl extends AppLayout implements MainView, HasErrorParamet
 
     private String decodeURL(String encodedUrl) {
         return java.net.URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8);
+    }
+
+    @Override
+    public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter) {
+        setContent(new NotFoundView());
+        // TODO: actually return a real 404 response (not 200)
+        return HttpServletResponse.SC_NOT_FOUND;
     }
 }
