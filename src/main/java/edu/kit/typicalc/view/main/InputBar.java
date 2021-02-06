@@ -1,6 +1,7 @@
 package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.Key;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -81,7 +82,10 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     protected void inferTerm(String term) {
         inputField.setValue(term);
-        inferTypeButton.click();
+        // for some reason the Vaadin "click" does not work
+        //inferTypeButton.click();
+        UI.getCurrent().getPage().executeJs(
+                String.format("document.getElementById('%s').click()", INFER_BUTTON_ID));
     }
 
     private void onInputFieldValueChange() {
@@ -93,6 +97,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
 
         if (currentInput.length() < MAX_INPUT_LENGTH) {
+            UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
             callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
         } else {
             final Notification errorNotification = new ErrorNotification(getTranslation("root.overlongInput"));

@@ -63,9 +63,6 @@ public class TypeInferenceResult {
             }
         }
         return typeVar;
-        // TODO: correct?
-//        throw new IllegalStateException("MGU has to contain substitution for original type variable: "
-//                + typeVar.toString());
     }
 
     /**
