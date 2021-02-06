@@ -30,12 +30,14 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
         heading = new H3(getTranslation("root.inferenceRules"));
         ruleContainer = new VerticalLayout();
         ruleContainer.setId(RULE_CONTAINER_ID);
-        initRuleContainer();
         add(heading, ruleContainer);
         setId(DRAWER_CONTENT_ID);
     }
 
-    private void initRuleContainer() {
+    @Override
+    public void localeChange(LocaleChangeEvent event) {
+        heading.setText(getTranslation("root.inferenceRules"));
+        ruleContainer.removeAll();
         ruleContainer.add(new InferenceRuleField(getTranslation("root.absLatex"), "root.absRule"));
         ruleContainer.add(new InferenceRuleField(getTranslation("root.appLatex"), "root.appRule"));
         ruleContainer.add(new InferenceRuleField(getTranslation("root.varLatex"), "root.varRule"));
@@ -43,11 +45,5 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
         ruleContainer.add(new InferenceRuleField(getTranslation("root.letLatex"), "root.letRule"));
         ruleContainer.add(new InferenceRuleField(getTranslation("root.absLetLatex"), "root.absRuleLet"));
         ruleContainer.add(new InferenceRuleField(getTranslation("root.varLetLatex"), "root.varRuleLet"));
-
-    }
-
-    @Override
-    public void localeChange(LocaleChangeEvent event) {
-        heading.setText(getTranslation("root.inferenceRules"));
     }
 }
