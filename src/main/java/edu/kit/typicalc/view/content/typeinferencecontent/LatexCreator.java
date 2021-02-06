@@ -41,6 +41,12 @@ public class LatexCreator implements StepVisitor {
         this(typeInferer, true);
     }
 
+    /**
+     * Generate the pieces of LaTeX-code from the type inferer.
+     *
+     * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
+     * @param stepLabels turns step labels on (true) or off (false)
+     */
     protected LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
         this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
@@ -50,6 +56,8 @@ public class LatexCreator implements StepVisitor {
     }
 
     /**
+     * Returns the proof tree
+     *
      * @return the LaTeX-code for the proof tree
      */
     protected String getTree() {
@@ -57,21 +65,28 @@ public class LatexCreator implements StepVisitor {
     }
 
     /**
+     * Returns the LaTeX-code for constraints, unification, MGU and MGU
+     *
      * @return the LaTeX-code for constraints and unification
      */
     protected String[] getUnification() {
         List<String> result = new ArrayList<>(constraintsGenerator.getConstraints());
         result.addAll(generateUnification());
         typeInferer.getMGU().ifPresent(mgu -> result.add(generateMGU()));
+        // todo return final type
         return result.toArray(new String[0]);
     } // todo implement
 
     /**
-     * @return the packages needed for the LaTeX-code from getTree() and getUnification()to work
+     * Returns needed LaTeX packages
+     *
+     * @return the packages needed for the LaTeX-code from getTree() and getUnification() to work
      */
     protected String getLatexPackages() {
         return BUSSPROOFS;
     } // todo implement
+
+
 
     private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
         //todo sort entries?
@@ -197,7 +212,6 @@ public class LatexCreator implements StepVisitor {
     }
 
 
-    // todo use generateConstraint
     @Override
     public void visit(AbsStepDefault absD) {
         tree.insert(0, generateConclusion(absD, LABEL_ABS, UIC));
@@ -239,11 +253,11 @@ public class LatexCreator implements StepVisitor {
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
         String premiseRight = DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
                 + DOLLAR_SIGN + NEW_LINE;
-        String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + "\\begin{align}"
+        String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + ALIGN_BEGIN
                 + generateVarStepPremise(varL).replace(DOLLAR_SIGN, "")
-                + " \\\\ " // TODO: less magic strings, less replacement fixups
+                + SPACE + LATEX_NEW_LINE + SPACE // TODO: less replacement fixups
                 + premiseRight.replace(DOLLAR_SIGN, "")
-                + "\\end{align}" + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
+                + ALIGN_END + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, premiseLeft);
     }
 
