@@ -97,6 +97,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
 
         if (currentInput.length() < MAX_INPUT_LENGTH) {
+            UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
             callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
         } else {
             final Notification errorNotification = new ErrorNotification(getTranslation("root.overlongInput"));

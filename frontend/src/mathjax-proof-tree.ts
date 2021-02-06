@@ -171,9 +171,9 @@ class MathjaxProofTree extends MathjaxAdapter {
                     i += 1;
                 }
             }
-            // TODO: this does not work when using a permalink
-            const bbox = (svg.childNodes[1] as SVGGraphicsElement).getBBox();
-            svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+            // TODO: this does not scale the SVG correctly
+            //const bbox = (svg.childNodes[1] as SVGGraphicsElement).getBBox();
+            //svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
             if (counter >= 3) {
                 // should not be used on empty SVGs
                 // @ts-ignore
