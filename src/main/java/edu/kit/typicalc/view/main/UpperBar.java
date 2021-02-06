@@ -65,7 +65,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         helpIcon.addClickListener(event -> onHelpIconClick());
         helpIcon.setId(HELP_ICON_ID);
         this.rules = new DrawerToggle();
-        rules.setText(getTranslation("root.inferenceRules"));
 
         add(rules, viewTitle, inputBar, helpIcon);
         setId(UPPER_BAR_ID);

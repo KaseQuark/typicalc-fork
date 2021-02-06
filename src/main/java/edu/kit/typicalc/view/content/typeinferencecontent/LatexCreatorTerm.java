@@ -4,17 +4,30 @@ import edu.kit.typicalc.model.term.*;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
 
+/**
+ * Generates LaTeX code for lambda terms.
+ *
+ * @see LatexCreator
+ * @see LambdaTerm
+ */
 public class LatexCreatorTerm implements TermVisitor {
     // TODO: document
 
-    private final StringBuilder latex;
+    private final StringBuilder latex = new StringBuilder();
     private boolean needsParentheses = false;
 
+    /**
+     * Initialize a new latex creator object with a lambda term.
+     *
+     * @param lambdaTerm the term to convert into LaTeX
+     */
     protected LatexCreatorTerm(LambdaTerm lambdaTerm) {
-        this.latex = new StringBuilder();
         lambdaTerm.accept(this);
     }
 
+    /**
+     * @return the generated LaTeX code
+     */
     public String getLatex() {
         // remove most outer parentheses if they exist
 //        if (latex.indexOf(PAREN_LEFT) == 0 && latex.indexOf(PAREN_RIGHT) == latex.length() - 1) {

@@ -14,9 +14,9 @@ public class ErrorNotification extends Notification {
     private static final String NOTIFICATION_ID = "errorNotification";
 
     protected ErrorNotification(String errorMessage) {
-        final VerticalLayout container = new VerticalLayout();
-        final Span errorSpan = new Span(errorMessage);
-        final Button closeButton = new Button(getTranslation("root.close"), event -> this.close());
+        VerticalLayout container = new VerticalLayout();
+        Span errorSpan = new Span(errorMessage);
+        Button closeButton = new Button(getTranslation("root.close"), event -> this.close());
 
         container.add(errorSpan, closeButton);
         container.setAlignItems(FlexComponent.Alignment.CENTER);

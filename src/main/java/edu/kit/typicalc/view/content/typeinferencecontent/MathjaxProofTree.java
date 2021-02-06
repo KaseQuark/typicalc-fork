@@ -10,8 +10,8 @@ import com.vaadin.flow.component.template.Id;
 import edu.kit.typicalc.view.MathjaxAdapter;
 
 /**
- * Renders a tree from LaTeX using MathJax and allows for step-by-step-revealing for
- * proof trees that use the bussproofs package. Relies on MathjaxProofTreeJS to interact
+ * Renders a tree from LaTeX using MathJax and allows step-by-step revealing of
+ * proof trees that use the bussproofs package. Relies on MathjaxProofTreeTS to interact
  * with MathJax.
  */
 @Tag("tc-proof-tree")

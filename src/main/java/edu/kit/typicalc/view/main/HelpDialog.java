@@ -37,26 +37,27 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
      * Create a new HelpDialog.
      */
     protected HelpDialog() {
-        final HorizontalLayout headingLayout = new HorizontalLayout();
+        HorizontalLayout headingLayout = new HorizontalLayout();
         renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
-        heading = new H3(getTranslation("root.operatingHelp"));
+        heading = new H3();
         headingLayout.setId(HEADING_LAYOUT_ID);
         languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
         languageSelect.setTextRenderer(renderer);
-        languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setValue(UI.getCurrent().getLocale());
         languageSelect.addValueChangeListener(event -> UI.getCurrent().setLocale(event.getValue()));
         languageSelect.setId(LANGUAGE_SELECT_ID);
         headingLayout.add(heading, languageSelect);
 
-        final VerticalLayout contentLayout = new VerticalLayout();
+        VerticalLayout contentLayout = new VerticalLayout();
         //TODO inputSyntax wird im inputDialog behandelt --> hier anderer Content
-        inputSyntax = new H5(getTranslation("root.inputSyntax"));
+        inputSyntax = new H5();
         contentLayout.setId(CONTENT_LAYOUT_ID);
         contentLayout.add(inputSyntax);
         add(headingLayout, contentLayout);
+
+        localeChange(null);
     }
-    
+
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));

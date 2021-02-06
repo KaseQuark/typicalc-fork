@@ -1,5 +1,11 @@
 package edu.kit.typicalc.model.parser;
 
+/**
+ * Errors that can occur when parsing a lambda term.
+ *
+ * @see LambdaLexer
+ * @see LambdaParser
+ */
 public enum ParseError {
 
     /**
@@ -19,6 +25,12 @@ public enum ParseError {
 
     private Token cause = new Token(Token.TokenType.EOF, "", -1);
 
+    /**
+     * Attach a token to this error.
+     *
+     * @param cause the token that caused the error
+     * @return this object
+     */
     public ParseError withToken(Token cause) {
         this.cause = cause;
         return this;

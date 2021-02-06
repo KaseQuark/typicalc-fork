@@ -14,7 +14,12 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 
-public class LambdaParser {
+/**
+ * Parser for lambda terms.
+ *
+ * @see LambdaTerm
+ */
+public class LambdaParser { // TODO: document syntax above ^ ?
     /**
      * lexer to translate a String into tokens
      */
@@ -33,6 +38,7 @@ public class LambdaParser {
 
     /**
      * Constructs a parser with the specified String
+     *
      * @param term String to parse
      */
     public LambdaParser(String term) {
@@ -55,6 +61,7 @@ public class LambdaParser {
      * Checks that the token type of current token matches the token type given as parameter.
      * If successful, returns that token and advances to the next token.
      * Returns false otherwise.
+     *
      * @param type the token type to compare the current token type to
      */
     private Optional<ParseError> expect(TokenType type) {
@@ -69,7 +76,8 @@ public class LambdaParser {
 
     /**
      * Parses the String given in the constructor as a term.
-     * @return the term given by the String
+     *
+     * @return the term, or an error
      */
     public Result<LambdaTerm, ParseError> parse() {
         Result<LambdaTerm, ParseError> t = parseTerm(true);
@@ -85,6 +93,7 @@ public class LambdaParser {
 
     /**
      * Parses a term.
+     *
      * @return the term, or an error
      */
     private Result<LambdaTerm, ParseError> parseTerm(boolean next) {
@@ -135,6 +144,7 @@ public class LambdaParser {
 
     /**
      * Parses an application or constructs of higher precedence.
+     *
      * @return the term, or an error
      */
     private Result<LambdaTerm, ParseError> parseApplication() {
@@ -187,6 +197,7 @@ public class LambdaParser {
 
     /**
      * Parses an atom (variable or number) or a parenthesised expression.
+     *
      * @return the term
      */
     private Result<LambdaTerm, ParseError> parseAtom() {

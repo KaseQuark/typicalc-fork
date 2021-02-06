@@ -7,12 +7,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+/**
+ * This class configures some server properties related to HTTP.
+ */
 @Configuration
 public class TypicalcConfiguration implements WebMvcConfigurer {
     @Bean
     public TomcatContextCustomizer sameSiteCookiesConfig() {
         return context -> {
-            final Rfc6265CookieProcessor cookieProcessor = new Rfc6265CookieProcessor();
+            Rfc6265CookieProcessor cookieProcessor = new Rfc6265CookieProcessor();
             cookieProcessor.setSameSiteCookies(SameSiteCookies.STRICT.getValue());
             context.setCookieProcessor(cookieProcessor);
         };

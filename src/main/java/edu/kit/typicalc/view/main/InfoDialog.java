@@ -25,26 +25,24 @@ public class InfoDialog extends Dialog {
     private static final String GRAMMAR_ID = "inputSyntax";
     private static final String CLOSE_ICON_ID = "closeIcon";
 
-    private final H4 heading;
-
     /**
      * Creates new InfoDialog.
      */
     protected InfoDialog() {
-        heading = new H4(getTranslation("root.inputSyntax"));
+        H4 heading = new H4(getTranslation("root.inputSyntax"));
         HorizontalLayout infoHeader = new HorizontalLayout(heading);
         Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
         closeIcon.addClickListener(event -> this.close());
         closeIcon.setId(CLOSE_ICON_ID);
         infoHeader.setId(INFO_HEADER_ID);
         infoHeader.add(closeIcon);
-        
+
         VerticalLayout infoContent = createInfoContent();
         infoContent.setId(INFO_CONTENT_ID);
-  
+
         add(infoHeader, infoContent);
     }
-    
+
     private VerticalLayout createInfoContent() {
         Span termExplanation = new Span(getTranslation("root.termExplanation"));
         Paragraph termSyntax = new Paragraph();
@@ -58,4 +56,6 @@ public class InfoDialog extends Dialog {
         assSyntax.setId(GRAMMAR_ID);
         return new VerticalLayout(termExplanation, termSyntax, assExplanation, assSyntax);
     }
+
+    // local change observer is not needed, the dialog is created when it is opened
 }

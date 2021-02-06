@@ -8,10 +8,21 @@ import edu.kit.typicalc.model.type.TypeVisitor;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
 
+/**
+ * Generates LaTeX code for types.
+ *
+ * @see LatexCreator
+ * @see Type
+ */
 public class LatexCreatorType implements TypeVisitor {
     private final StringBuilder latex = new StringBuilder();
     private boolean needsParentheses = false;
 
+    /**
+     * Initialize a new latex creator with a type.
+     *
+     * @param type the type
+     */
     protected LatexCreatorType(Type type) {
         type.accept(this);
     }

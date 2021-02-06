@@ -1,6 +1,5 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
-
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.step.*;

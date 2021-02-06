@@ -31,6 +31,7 @@ public class Unification {
         steps.add(new UnificationStep(new Result<>(Collections.emptyList()), new ArrayList<>(constraints)));
         while (!constraints.isEmpty()) {
             Constraint c = constraints.removeFirst();
+            // calculate the result of this constraint
             Type a = c.getFirstType();
             Type b = c.getSecondType();
             Result<UnificationActions, UnificationError> actions = a.constrainEqualTo(b);
@@ -41,6 +42,7 @@ public class Unification {
             }
             UnificationActions thisStep = actions.unwrap();
             Optional<Substitution> substitution = thisStep.getSubstitution();
+            // apply substitution to remaining constraints
             if (substitution.isPresent()) {
                 Deque<Constraint> updateConstraints = new ArrayDeque<>();
                 for (Constraint constraint : constraints) {
@@ -54,6 +56,7 @@ public class Unification {
                 constraints = updateConstraints;
                 substitutions.add(substitution.get());
             }
+            // add new constraints to the queue
             constraints.addAll(thisStep.getConstraints());
             steps.add(new UnificationStep(new Result<>(new ArrayList<>(substitutions)), new ArrayList<>(constraints)));
         }

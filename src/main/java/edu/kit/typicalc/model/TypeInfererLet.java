@@ -13,8 +13,8 @@ import java.util.Map;
 import java.util.Optional;
 
 /**
- * Instances of this subclass of TypeInferer are used to execute the sub-inference starting in let steps.
- * They provide an extended constructor to make sure this sub-inference is consistent with the „outer“ inference.
+ * Instances of this implementation of TypeInfererInterface are used to execute the sub-inference starting in let steps.
+ * They provide an extended constructor to make sure this sub-inference is consistent with the "outer" inference.
  */
 public class TypeInfererLet implements TypeInfererInterface {
 
@@ -43,7 +43,7 @@ public class TypeInfererLet implements TypeInfererInterface {
 
         unification = Optional.of(new Unification(new ArrayDeque<>(tree.getConstraints())));
 
-        // cancel algorithm if term can't be typified
+        // cancel algorithm if term can't be typed
         if (unification.get().getSubstitutions().isError()) {
             typeInfResult = Optional.empty();
             return;
@@ -59,7 +59,7 @@ public class TypeInfererLet implements TypeInfererInterface {
      * C := { αi = σ(αi) | σ defined for αi }
      *
      * @return the constraints needed in the outer inference
-     * @throws IllegalStateException if the method is called despite missing mgu
+     * @throws IllegalStateException if the method is called despite missing MGU
      */
     public List<Constraint> getLetConstraints() {
         if (this.getMGU().isEmpty()) {

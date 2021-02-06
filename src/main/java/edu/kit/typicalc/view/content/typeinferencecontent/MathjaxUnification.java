@@ -9,8 +9,8 @@ import com.vaadin.flow.component.template.Id;
 import edu.kit.typicalc.view.MathjaxAdapter;
 
 /**
- * Renders the constraints and unification from LaTeX using MathJax and allows step-by-
- * step-revealing capabilities. Relies on MathjaxUnificationJS to interact with MathJax.
+ * Renders the constraints and unification (LaTeX, using MathJax) and allows step-by-
+ * step revealing. Relies on MathjaxUnificationTS to interact with MathJax.
  */
 @Tag("tc-unification")
 @JsModule("./src/mathjax-adapter.ts")
