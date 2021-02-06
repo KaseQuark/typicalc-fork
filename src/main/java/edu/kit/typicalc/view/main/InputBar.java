@@ -56,8 +56,21 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
-        inputField.setValueChangeMode(ValueChangeMode.EAGER);
-        inputField.addValueChangeListener(event -> onInputFieldValueChange());
+        inputField.setMaxLength(1000); // TODO: perhaps remove the error message? more than 1000 can't be entered now
+        inputField.setValueChangeMode(ValueChangeMode.EAGER); // TODO: this causes a lot of network traffic
+        // attach a listener that replaces \ with λ
+        // JavaScript is used because Vaadin does not have APIs for selectionStart/selectionEnd
+        UI.getCurrent().getPage().executeJs(
+                "document.getElementById('" + INPUT_FIELD_ID + "').addEventListener('keyup', e => {"
+                + "var area = e.target.shadowRoot.querySelector('input');"
+                + "if (area.value.indexOf('\\\\') >= 0) {"
+                + "    var start = area.selectionStart;"
+                + "    var end = area.selectionEnd;"
+                + "    var textBefore = area.value.substr(0, end);"
+                + "    area.value = area.value.replace('\\\\', 'λ');"
+                + "    area.selectionStart = start;"
+                + "    area.selectionEnd = end;"
+                + "}});");
         Button lambdaButton = new Button(getTranslation("root.lambda"), event -> onLambdaButtonClick());
         typeAssumptions = new Button(
                 getTranslation("root.typeAssumptions"),
@@ -88,11 +101,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
                 String.format("document.getElementById('%s').click()", INFER_BUTTON_ID));
     }
 
-    private void onInputFieldValueChange() {
-       inputField.getOptionalValue().ifPresent(value -> inputField
-               .setValue(value.replace("\\", getTranslation("root.lambda"))));
-    }
-
     private void onTypeInferButtonClick(Consumer<Pair<String, Map<String, String>>> callback) {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
 
@@ -100,7 +108,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
             UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
             callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
         } else {
-            final Notification errorNotification = new ErrorNotification(getTranslation("root.overlongInput"));
+            Notification errorNotification = new ErrorNotification(getTranslation("root.overlongInput"));
             errorNotification.open();
         }
     }
