@@ -88,9 +88,14 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
                 String.format("document.getElementById('%s').click()", INFER_BUTTON_ID));
     }
 
-    private void onInputFieldValueChange() {
-       inputField.getOptionalValue().ifPresent(value -> inputField
-               .setValue(value.replace("\\", getTranslation("root.lambda"))));
+   private void onInputFieldValueChange() {
+        if (inputField.getOptionalValue().isPresent() && inputField.getValue().contains("\\")) {
+            inputField.getElement().executeJs("return this.inputElement.selectionStart;")
+            .then(Integer.class, position -> {
+                inputField.setValue(inputField.getValue().replace("\\", getTranslation("root.lambda")));
+                inputField.getElement().executeJs("this.inputElement.setSelectionRange($0, $0);", position);
+            });
+        }
     }
 
     private void onTypeInferButtonClick(Consumer<Pair<String, Map<String, String>>> callback) {
