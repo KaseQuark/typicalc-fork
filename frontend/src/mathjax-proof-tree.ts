@@ -26,9 +26,10 @@ class MathjaxProofTree extends MathjaxAdapter {
 
     protected calculateSteps(): void {
         if (this.shadowRoot !== null) {
+            const root = this.shadowRoot;
             let semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
             // first, enumerate all of the steps
-            let nodeIterator = document.createNodeIterator(this.shadowRoot, NodeFilter.SHOW_ELEMENT);
+            let nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
             let steps = [];
             let a = null;
             let stepIdx = 0;
@@ -44,7 +45,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 }
             }
             // then fix some more mathjax layout issues
-            for (const step of this.shadowRoot.querySelectorAll<HTMLElement>('g[typicalc="step"]')) {
+            for (const step of root.querySelectorAll<HTMLElement>('g[typicalc="step"]')) {
                 const infRule = step.querySelector<HTMLElement>('g[semantics="bspr_inferenceRule:down"]');
                 if (infRule === null) {
                     continue;
@@ -78,7 +79,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 stepAbove.transform.baseVal[0].matrix.e -= dx;
             }
             // then create the steps
-            nodeIterator = document.createNodeIterator(this.shadowRoot, NodeFilter.SHOW_ELEMENT);
+            nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
             steps = [];
             stepIdx = 0;
             while (a = nodeIterator.nextNode() as HTMLElement) {
@@ -122,7 +123,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                     steps.push([a, above]);
                 }
             }
-            const svg = this.shadowRoot.querySelector<SVGElement>("svg")!;
+            const svg = root.querySelector<SVGElement>("svg")!;
             const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
             // start layout fixes in the innermost part of the SVG
             nodeIterator2.reverse();
@@ -170,9 +171,9 @@ class MathjaxProofTree extends MathjaxAdapter {
                     i += 1;
                 }
             }
-            const bbox = (svg.childNodes[1] as SVGGraphicsElement).getBBox();
-            // TODO: this does not work when using a permalink
-            svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+            // TODO: this does not scale the SVG correctly
+            //const bbox = (svg.childNodes[1] as SVGGraphicsElement).getBBox();
+            //svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
             if (counter >= 3) {
                 // should not be used on empty SVGs
                 // @ts-ignore

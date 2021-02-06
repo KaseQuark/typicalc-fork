@@ -19,31 +19,13 @@
 }
 
 #helpIcon {
-	margin-left: auto;
+	margin-left: 1em;
 	margin-right: 1em;
 }
 
-@media (max-width: 500px) {
-   	#inputBar {
-		margin: auto;
-	}
-
-	#viewTitle {
-		margin-right: 5em;
-	}
+#inputBar {
+	flex-grow: 1;
+	justify-content: end;
 }
-
-@media (min-width: 1000px) {
-    #inputBar {
-		margin-left: 15em;
-	}
-
-	#viewTitle {
-		margin-right: auto;
-	}
-}
-
-
-
 
 
