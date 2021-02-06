@@ -107,26 +107,26 @@ public class LatexCreator implements StepVisitor {
             }
             StringBuilder latex = new StringBuilder();
             latex.append(DOLLAR_SIGN);
-            latex.append("\\begin{align}");
+            latex.append(ALIGN_BEGIN);
             List<Substitution> substitutions = subs.unwrap();
             for (Substitution s : substitutions) {
                 latex.append(new LatexCreatorType(s.getVariable()).getLatex());
                 latex.append(SUBSTITUTION_SIGN);
                 latex.append(new LatexCreatorType(s.getType()).getLatex());
-                latex.append("\\\\");
+                latex.append(LATEX_NEW_LINE);
             }
             error.ifPresent(latex::append); // TODO: translation
             if (error.isPresent()) {
-                latex.append("\\\\");
+                latex.append(LATEX_NEW_LINE);
             }
             List<Constraint> constraints = step.getConstraints();
             for (Constraint c : constraints) {
                 latex.append(new LatexCreatorType(c.getFirstType()).getLatex());
                 latex.append(EQUALS);
                 latex.append(new LatexCreatorType(c.getSecondType()).getLatex());
-                latex.append("\\\\");
+                latex.append(LATEX_NEW_LINE);
             }
-            latex.append("\\end{align}");
+            latex.append(ALIGN_END);
             latex.append(DOLLAR_SIGN);
             steps.add(latex.toString());
         }
@@ -136,15 +136,19 @@ public class LatexCreator implements StepVisitor {
     private String generateMGU() {
         StringBuilder mguLatex = new StringBuilder();
         mguLatex.append(DOLLAR_SIGN);
+        mguLatex.append(ALIGN_BEGIN);
         mguLatex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
             mguLatex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
             mguLatex.append(SUBSTITUTION_SIGN);
             mguLatex.append(new LatexCreatorType(substitution.getType()).getLatex());
             mguLatex.append(COMMA);
+            mguLatex.append(LATEX_NEW_LINE);
+            mguLatex.append(NEW_LINE);
         }));
-        mguLatex.deleteCharAt(mguLatex.length() - 1);
+        mguLatex.delete(mguLatex.length() - 3, mguLatex.length());
         mguLatex.append(BRACKET_RIGHT);
+        mguLatex.append(ALIGN_END);
         mguLatex.append(DOLLAR_SIGN);
         return mguLatex.toString();
     }
