@@ -1,0 +1,13 @@
+#minusIcon {
+	color: #f30808;
+}
+
+#assDeleteButton {
+	align-self: flex-end;
+}
+
+#typeAssumptionField {
+	border: 1px solid grey;
+	padding: 0 5px 5px 5px;
+	border-radius: 4px;
+}

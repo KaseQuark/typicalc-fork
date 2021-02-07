@@ -1,0 +1,17 @@
+#assLayout {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+#assButtons {
+	display: flex;
+	justify-content: center;
+	width: 520px;
+}
+
+#assContainer {
+	border-radius: 4px;
+	overflow-y: auto;
+	height: 40vh;
+}

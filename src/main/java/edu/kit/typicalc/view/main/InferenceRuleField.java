@@ -54,8 +54,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
         VerticalLayout main = new VerticalLayout();
         main.setId(MAIN_ID);
         this.copyButton = new Button(getTranslation("root.copyLatex"), new Icon(VaadinIcon.CLIPBOARD));
-        MathjaxDisplay rule = new MathjaxDisplay(latex); //TODO scale, when method implemented
-        // TODO: scale to what exactly?
+        MathjaxDisplay rule = new MathjaxDisplay(latex);
         copyButton.addClickListener(event -> UI.getCurrent().getPage().executeJs("window.copyToClipboard($0)", latex));
         main.add(rule, copyButton);
         add(header, main);

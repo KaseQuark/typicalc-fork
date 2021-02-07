@@ -95,8 +95,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     protected void inferTerm(String term) {
         inputField.setValue(term);
-        // for some reason the Vaadin "click" does not work
-        //inferTypeButton.click();
         UI.getCurrent().getPage().executeJs(
                 String.format("document.getElementById('%s').click()", INFER_BUTTON_ID));
     }
