@@ -12,57 +12,52 @@ import java.util.Optional;
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
 
 public class LatexCreatorConstraints implements StepVisitor {
+
+    private static final String FIRST_PREFIX = "";
+
     private final List<String> constraints;
     private final TypeInfererInterface typeInferer;
     private final ConstraintSetIndexFactory constraintSetIndexFactory;
-    private final int constraintSetIndex;
+    private final String constraintSetIndex;
+    private final String prefix;
+    private String prevStep;
 
     protected LatexCreatorConstraints(TypeInfererInterface typeInferer) {
-        this(typeInferer, new ConstraintSetIndexFactory());
+        this(typeInferer, new ConstraintSetIndexFactory(), FIRST_PREFIX);
     }
 
     protected LatexCreatorConstraints(TypeInfererInterface typeInferer,
-                                   ConstraintSetIndexFactory constraintSetIndexFactory) {
-
+                                      ConstraintSetIndexFactory constraintSetIndexFactory,
+                                      String prefix) {
+        this.prefix = prefix;
+        this.prevStep = "";
         this.constraintSetIndexFactory = constraintSetIndexFactory;
         this.constraintSetIndex = constraintSetIndexFactory.nextConstraintSetIndex();
         this.typeInferer = typeInferer;
         constraints = new ArrayList<>();
-        constraints.add(PHANTOM_X);
+        if (FIRST_PREFIX.equals(prefix)) {
+            constraints.add(DOLLAR_SIGN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT + DOLLAR_SIGN);
+        }
+
         typeInferer.getFirstInferenceStep().accept(this);
     }
 
     protected List<String> getEverything() {
-        List<String> result = new ArrayList<>(this.getConstraints());
+        List<String> result = new ArrayList<>(constraints);
         result.addAll(generateUnification());
         typeInferer.getMGU().ifPresent(mgu -> result.add(generateMGU()));
         // todo return final type
         return result;
     }
 
-    protected List<String> getConstraints() {
-        List<String> temp = new ArrayList<>(constraints);
-        temp.replaceAll(current -> {
-            String index = constraintSetIndex == 0 ? ""
-                    :  UNDERSCORE + CURLY_LEFT + LET + UNDERSCORE + CURLY_LEFT + constraintSetIndex
-                    + CURLY_RIGHT + CURLY_RIGHT;
-
-            return DOLLAR_SIGN + CONSTRAINT_SET + index + EQUALS + LATEX_CURLY_LEFT + current
-                    + LATEX_CURLY_RIGHT + DOLLAR_SIGN;
-        });
-        return temp;
-    }
-
     protected void addConstraint(InferenceStep step) {
         String firstType = new LatexCreatorType(step.getConstraint().getFirstType()).getLatex();
         String secondType = new LatexCreatorType(step.getConstraint().getSecondType()).getLatex();
         String currentConstraint = firstType + SPACE + EQUALS + SPACE + secondType;
-        String previousConstraints = constraints.get(constraints.size() - 1);
-        if (constraints.size() > 1) {
-            constraints.add(previousConstraints + COMMA + currentConstraint);
-        } else {
-            constraints.add(currentConstraint);
-        }
+        prevStep = prevStep.equals("") ? currentConstraint : prevStep + COMMA + currentConstraint;
+        currentConstraint = prefix + DOLLAR_SIGN + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
+                + prevStep + LATEX_CURLY_RIGHT + DOLLAR_SIGN;
+        constraints.add(currentConstraint);
     }
 
     @Override
@@ -101,8 +96,10 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     @Override
     public void visit(LetStepDefault letD) {
-        new LatexCreatorConstraints(letD.getTypeInferer(), constraintSetIndexFactory).getEverything();
         addConstraint(letD);
+        LatexCreatorConstraints subCreator = new LatexCreatorConstraints(letD.getTypeInferer(),
+                constraintSetIndexFactory, constraints.get(constraints.size() - 1));
+        constraints.addAll(subCreator.getEverything());
         letD.getPremise().accept(this);
     }
 

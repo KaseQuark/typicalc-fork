@@ -1,5 +1,10 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.CURLY_LEFT;
+import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.CURLY_RIGHT;
+import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.LET;
+import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.UNDERSCORE;
+
 /**
  * A constraint set index factory is used to create consecutive indices for multiple (let-) constraint sets
  * that might be created during the inference of one lambda term.
@@ -21,7 +26,15 @@ public class ConstraintSetIndexFactory {
      *
      * @return the next constraint set index
      */
-    public int nextConstraintSetIndex() {
-        return nextConstraintSetIndex++;
+    public String nextConstraintSetIndex() {
+        String index = nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX
+                ? ""
+                :  nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX + 1
+                    ? UNDERSCORE + CURLY_LEFT + LET + CURLY_RIGHT
+                    : UNDERSCORE + CURLY_LEFT + LET + UNDERSCORE
+                        + CURLY_LEFT + nextConstraintSetIndex + CURLY_RIGHT + CURLY_RIGHT;
+
+        nextConstraintSetIndex++;
+        return index;
     }
 }
