@@ -2,6 +2,7 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
@@ -30,7 +31,6 @@ public class TypeInferenceView extends VerticalLayout
     private MathjaxProofTree tree;
     private final transient LatexCreator lc;
     private final Div content;
-    private final ShareDialog shareDialog;
 
     public TypeInferenceView(TypeInfererInterface typeInferer) {
         setId(ID);
@@ -46,10 +46,6 @@ public class TypeInferenceView extends VerticalLayout
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
         setContent();
-        shareDialog = new ShareDialog(getTranslation("root.domain")
-                + ROUTE + "/"
-                + typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
-                lc.getLatexPackages(), lc.getTree());
     }
 
     private void setContent() {
@@ -61,7 +57,9 @@ public class TypeInferenceView extends VerticalLayout
 
     @Override
     public void shareButton() {
-        shareDialog.open();
+        UI.getCurrent().getPage().executeJs("return decodeURI(window.location.href)").then(url ->
+            new ShareDialog(url.asString(), lc.getLatexPackages(), lc.getTree()).open()
+        );
     }
 
     private void refreshElements(int currentStep) {

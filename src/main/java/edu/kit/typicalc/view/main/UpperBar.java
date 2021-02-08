@@ -41,7 +41,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private final Button rules;
 
     private final transient MainViewListener presenter;
-    private final transient Consumer<String> setTermInURL;
+    private final transient Consumer<Pair<String, Map<String, String>>> setTermInURL;
 
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
@@ -51,7 +51,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param setTermInURL function to set the term into the URL
      */
     protected UpperBar(MainViewListener presenter, Consumer<Component> setContent,
-                       Consumer<String> setTermInURL) {
+                       Consumer<Pair<String, Map<String, String>>> setTermInURL) {
 
         this.presenter = presenter;
         this.setTermInURL = setTermInURL;
@@ -78,7 +78,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param termAndAssumptions the lambda term to be type-inferred and the type assumptions to use
      */
     protected void typeInfer(Pair<String, Map<String, String>> termAndAssumptions) {
-        setTermInURL.accept(termAndAssumptions.getLeft()); // TODO: include types?
+        setTermInURL.accept(termAndAssumptions);
         presenter.typeInferLambdaString(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
     }
 
@@ -87,9 +87,11 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
      * string as the argument.
      *
      * @param term the provided string
+     * @param typeAssumptions type assumptions to use
      */
-    protected void inferTerm(String term) {
+    protected void inferTerm(String term, Map<String, String> typeAssumptions) {
         inputBar.inferTerm(term);
+        inputBar.setTypeAssumptions(typeAssumptions);
     }
 
     private void routeToStartPage(Consumer<Component> setContent) {

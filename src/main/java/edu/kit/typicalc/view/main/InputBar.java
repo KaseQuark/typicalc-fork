@@ -38,7 +38,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final short MAX_INPUT_LENGTH = 1000;
 
     private final TextField inputField;
-    private final TypeAssumptionsArea typeAssumptionsArea;
+    private TypeAssumptionsArea typeAssumptionsArea;
     private final Button inferTypeButton;
     private final Button typeAssumptions;
 
@@ -94,6 +94,10 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     protected void inferTerm(String term) {
         inputField.setValue(term);
         UI.getCurrent().getPage().executeJs("document.getElementById($0).click()", INFER_BUTTON_ID);
+    }
+
+    protected void setTypeAssumptions(Map<String, String> typeAssumptions) {
+        typeAssumptionsArea = new TypeAssumptionsArea(typeAssumptions);
     }
 
     private void onTypeInferButtonClick(Consumer<Pair<String, Map<String, String>>> callback) {

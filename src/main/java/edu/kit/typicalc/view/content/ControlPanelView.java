@@ -2,9 +2,9 @@ package edu.kit.typicalc.view.content;
 
 public interface ControlPanelView {
     /**
-     * Provides user with a way to share contents shown in the view, e.g. the URL orLaTeX-code.
+     * Provides user with a way to share contents shown in the view (the URL and LaTeX code).
      */
-    void shareButton();
+    default void shareButton() { }
 
     /**
      * Go to the first step.

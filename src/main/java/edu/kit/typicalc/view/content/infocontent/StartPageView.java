@@ -10,7 +10,6 @@ import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxProofTree;
 import edu.kit.typicalc.view.content.typeinferencecontent.MathjaxUnification;
-import edu.kit.typicalc.view.content.typeinferencecontent.ShareDialog;
 import edu.kit.typicalc.view.main.MainViewImpl;
 
 @Route(value = "", layout = MainViewImpl.class)
@@ -50,11 +49,6 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
         controlPanel.setEnabledNextStep(false);
         controlPanel.setEnabledPreviousStep(false);
         controlPanel.setEnabledShareButton(false);
-    }
-
-    @Override
-    public void shareButton() {
-        new ShareDialog("currentURL", "latexPkgs", "\\LaTeX").open(); // TODO
     }
 
     private int currentStep = 0;

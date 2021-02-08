@@ -13,10 +13,14 @@ import edu.kit.typicalc.presenter.Presenter;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
 
 import javax.servlet.http.HttpServletResponse;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Contains all the displayed components and builds the applications user interface (UI).
@@ -63,21 +67,39 @@ public class MainViewImpl extends AppLayout
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
         if (event.getLocation().getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
-            List<String> segments = event.getLocation().getSegments();
+            Location url = event.getLocation();
+            List<String> segments = url.getSegments();
             String term = segments.get(segments.size() - 1);
-            upperBar.inferTerm(decodeURL(term));
+            Map<String, String> types = url.getQueryParameters().getParameters().entrySet().stream().map(entry ->
+                    Pair.of(entry.getKey(), entry.getValue().get(0))
+            ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+            upperBar.inferTerm(decodeURL(term), types);
         } else if (event.getLocation().getPath().equals(TypeInferenceView.ROUTE)) {
             setContent(new StartPageView());
-            upperBar.inferTerm(StringUtils.EMPTY);
+            upperBar.inferTerm(StringUtils.EMPTY, Collections.emptyMap());
         } else if (event.getLocation().getPath().equals(StringUtils.EMPTY)) {
             setContent(new StartPageView());
         }
     }
 
 
-    private void setTermInURL(String lambdaTerm) {
+    private void setTermInURL(Pair<String, Map<String, String>> lambdaTermAndAssumptions) {
+        String lambdaTerm = lambdaTermAndAssumptions.getLeft();
+        StringBuilder types = new StringBuilder();
+        for (Map.Entry<String, String> type : lambdaTermAndAssumptions.getRight().entrySet()) {
+            if (types.length() > 0) {
+                types.append('&');
+            }
+            types.append(type.getKey());
+            types.append('=');
+            types.append(type.getValue());
+        }
+        String typeAssumptions = "";
+        if (types.length() > 0) {
+            typeAssumptions = "?" + types.toString();
+        }
         UI.getCurrent().getPage().getHistory().replaceState(null,
-                new Location(TypeInferenceView.ROUTE + "/" + lambdaTerm));
+                new Location(TypeInferenceView.ROUTE + "/" + lambdaTerm + typeAssumptions));
     }
 
     private String decodeURL(String encodedUrl) {

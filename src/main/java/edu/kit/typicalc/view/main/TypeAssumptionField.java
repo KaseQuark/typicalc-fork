@@ -28,6 +28,12 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
     private final TextField variableInputField;
     private final TextField typeInputField;
 
+    protected TypeAssumptionField(Consumer<TypeAssumptionField> deleteSelf, String variable, String type) {
+        this(deleteSelf);
+        variableInputField.setValue(variable);
+        typeInputField.setValue(type);
+    }
+
     protected TypeAssumptionField(Consumer<TypeAssumptionField> deleteSelf) {
         variableInputField = new TextField();
         variableInputField.setLabel(getTranslation("root.variable"));
