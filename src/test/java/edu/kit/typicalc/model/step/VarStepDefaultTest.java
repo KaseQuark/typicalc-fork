@@ -44,7 +44,7 @@ class VarStepDefaultTest {
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(new EmptyStep(), step1);
-        assertNotEquals(step1, null);
+        assertNotEquals(null, step1);
         assertNotEquals(step1, step3);
         assertNotEquals(step1, step4);
         assertNotEquals(step1, step5);

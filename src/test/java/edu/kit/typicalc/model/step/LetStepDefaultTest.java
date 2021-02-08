@@ -2,7 +2,6 @@ package edu.kit.typicalc.model.step;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.Constraint;
-import edu.kit.typicalc.model.TypeVariableFactory;
 import edu.kit.typicalc.model.term.IntegerTerm;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.NamedType;
@@ -48,7 +47,7 @@ class LetStepDefaultTest {
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(new EmptyStep(), step1);
-        assertNotEquals(step1, null);
+        assertNotEquals(null, step1);
         assertNotEquals(step1, step3);
         assertNotEquals(step1, step4);
         assertNotEquals(step1, step5);
