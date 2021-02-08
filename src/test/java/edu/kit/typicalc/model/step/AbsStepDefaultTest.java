@@ -42,7 +42,8 @@ class AbsStepDefaultTest {
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
-        assertNotEquals(step1, premise);
+        assertNotEquals(new EmptyStep(), step1);
+        assertNotEquals(step1, null);
         assertNotEquals(step1, step3);
 
     }

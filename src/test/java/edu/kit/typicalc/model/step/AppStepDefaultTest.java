@@ -41,11 +41,16 @@ class AppStepDefaultTest {
         AppStepDefault step1 = new AppStepDefault(premise1, premise2, conclusion, constraint);
         AppStepDefault step2 = new AppStepDefault(premise1, premise2, conclusion, constraint);
         AppStepDefault step3 = new AppStepDefault(premise1, premise2, conclusion, null);
+        AppStepDefault step4 = new AppStepDefault(premise1, null, conclusion, constraint);
+        AppStepDefault step5 = new AppStepDefault(null, premise2, conclusion, constraint);
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
-        assertNotEquals(step1, premise1);
+        assertNotEquals(new EmptyStep(), step1);
+        assertNotEquals(step1, null);
         assertNotEquals(step1, step3);
+        assertNotEquals(step1, step4);
+        assertNotEquals(step1, step5);
 
     }
     @Test

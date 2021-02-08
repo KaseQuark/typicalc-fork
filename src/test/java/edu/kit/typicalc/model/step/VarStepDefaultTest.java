@@ -14,7 +14,7 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class AbsStepWithLetTest {
+class VarStepDefaultTest {
     static InferenceStep premise = null;
     static Conclusion conclusion = null;
     static Constraint constraint = null;
@@ -32,25 +32,28 @@ class AbsStepWithLetTest {
         NamedType type1 = new NamedType("a");
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
-        premise = new ConstStepDefault(conclusion, constraint);
     }
     @Test
     void equalsTest() {
-        AbsStepWithLet step1 = new AbsStepWithLet(premise, conclusion, constraint);
-        AbsStepWithLet step2 = new AbsStepWithLet(premise, conclusion, constraint);
-        AbsStepWithLet step3 = new AbsStepWithLet(premise, conclusion, null);
+        VarStepDefault step1 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
+        VarStepDefault step2 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
+        VarStepDefault step3 = new VarStepDefault(typeAbstraction, namedType, conclusion, null);
+        VarStepDefault step4 = new VarStepDefault(null, namedType, conclusion, constraint);
+        VarStepDefault step5 = new VarStepDefault(typeAbstraction, null, conclusion, constraint);
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(new EmptyStep(), step1);
         assertNotEquals(step1, null);
         assertNotEquals(step1, step3);
+        assertNotEquals(step1, step4);
+        assertNotEquals(step1, step5);
 
     }
     @Test
     void hashCodeTest() {
-        AbsStepWithLet step1 = new AbsStepWithLet(premise, conclusion, constraint);
-        AbsStepWithLet step2 = new AbsStepWithLet(premise, conclusion, constraint);
+        VarStepDefault step1 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
+        VarStepDefault step2 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
 
         assertEquals(step1.hashCode(), step2.hashCode());
     }
@@ -58,8 +61,8 @@ class AbsStepWithLetTest {
     @Test
     void acceptTest() {
         TestStepVisitor testStepVisitor = new TestStepVisitor();
-        AbsStepWithLet step = new AbsStepWithLet(premise, conclusion, constraint);
+        VarStepDefault step = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
         step.accept(testStepVisitor);
-        assertEquals("AbsLet", testStepVisitor.visited);
+        assertEquals("VarDef", testStepVisitor.visited);
     }
 }
