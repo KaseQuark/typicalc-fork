@@ -17,35 +17,34 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 public class TypeAssumptionField extends HorizontalLayout implements LocaleChangeObserver {
 
     private static final long serialVersionUID = -81579298585584658L;
-    
+
     /*
      * IDs for the imported .css-file
      */
     private static final String MINUS_ICON_ID = "minusIcon";
     private static final String ASS_DELETE_BUTTON_ID = "assDeleteButton";
     private static final String ASSUMPTIONS_FIELD_ID = "typeAssumptionField";
-    
-    private final Button deleteButton;
+
     private final TextField variableInputField;
     private final TextField typeInputField;
-    
-    protected TypeAssumptionField(final Consumer<TypeAssumptionField> deleteSelf) {
+
+    protected TypeAssumptionField(Consumer<TypeAssumptionField> deleteSelf) {
         variableInputField = new TextField();
         variableInputField.setLabel(getTranslation("root.variable"));
         typeInputField = new TextField();
         typeInputField.setLabel(getTranslation("root.type"));
         Icon minusIcon = new Icon(VaadinIcon.MINUS_CIRCLE);
         minusIcon.setId(MINUS_ICON_ID);
-        deleteButton = new Button(minusIcon, event -> deleteSelf.accept(this));
+        Button deleteButton = new Button(minusIcon, event -> deleteSelf.accept(this));
         deleteButton.setId(ASS_DELETE_BUTTON_ID);
         add(variableInputField, typeInputField, deleteButton);
         setId(ASSUMPTIONS_FIELD_ID);
     }
-    
+
     protected String getVariable() {
         return variableInputField.getOptionalValue().orElse(StringUtils.EMPTY);
     }
-    
+
     protected String getType() {
         return typeInputField.getOptionalValue().orElse(StringUtils.EMPTY);
     }
@@ -55,5 +54,5 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         variableInputField.setLabel(getTranslation("root.variable"));
         typeInputField.setLabel(getTranslation("root.type"));
     }
-    
+
 }

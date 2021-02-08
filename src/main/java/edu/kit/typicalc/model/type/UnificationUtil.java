@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Utility class to avoid unification logic duplication in type methods.
+ * Utility class to avoid unification logic duplication in type methods (constrainEqualTo*).
  *
  * @see Type
  */
@@ -50,7 +50,7 @@ final class UnificationUtil {
     }
 
     static Result<UnificationActions, UnificationError> namedNamed(NamedType a, NamedType b) {
-        if (a != b) {
+        if (!a.equals(b)) {
             return new Result<>(null, UnificationError.DIFFERENT_TYPES);
         } else {
             return new Result<>(new UnificationActions());
