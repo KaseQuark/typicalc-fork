@@ -96,6 +96,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         UI.getCurrent().getPage().executeJs("document.getElementById($0).click()", INFER_BUTTON_ID);
     }
 
+    /**
+     * Sets the type assumptions displayed in the type assumptions area.
+     * 
+     * @param typeAssumptions the type assumptions as a map
+     */
     protected void setTypeAssumptions(Map<String, String> typeAssumptions) {
         typeAssumptionsArea = new TypeAssumptionsArea(typeAssumptions);
     }

@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Dialog which allows the user to create and delete type assumptions.
+ * The current type assumptions are stored after closing the dialog.
+ */
 @CssImport("./styles/view/main/type-assumptions-area.css")
 public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver {
 
@@ -37,6 +41,11 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
 
     private final List<TypeAssumptionField> fields = new ArrayList<>();
 
+    /**
+     * Creates a new TypeAssumptionsArea with initial type assumptions.
+     * 
+     * @param types map containing the values for the initial type assumptions
+     */
     protected TypeAssumptionsArea(Map<String, String> types) {
         heading = new H3(getTranslation("root.typeAssumptions"));
 
@@ -70,6 +79,9 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         add(layout);
     }
 
+    /**
+     * Creates a new TypeAssumptionsArea.
+     */
     protected TypeAssumptionsArea() {
         this(new HashMap<>());
     }
@@ -88,6 +100,11 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         fields.clear();
     }
 
+    /**
+     * Returns the current type assumptions.
+     * 
+     * @return the current type assumptions as mappings from a variable to a type
+     */
     protected Map<String, String> getTypeAssumptions() {
         return fields.stream()
                 .collect(Collectors.toMap(TypeAssumptionField::getVariable, TypeAssumptionField::getType));
