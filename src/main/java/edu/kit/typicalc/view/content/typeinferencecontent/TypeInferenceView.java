@@ -12,6 +12,8 @@ import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 
+import java.util.List;
+
 @PageTitle("TypeInferenceView")
 @CssImport("./styles/view/type-inference.css")
 public class TypeInferenceView extends VerticalLayout
@@ -23,6 +25,8 @@ public class TypeInferenceView extends VerticalLayout
     private static final String SCROLLER_ID = "scroller";
     private static final String CONTENT_ID = "content";
     private static final String ID = "type-inference-view";
+
+    private final List<Integer> treeNumbers;
 
     private int currentStep = 0;
 
@@ -45,6 +49,7 @@ public class TypeInferenceView extends VerticalLayout
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
+        treeNumbers = lc.getTreeNumbers();
         setContent();
     }
 
@@ -62,38 +67,38 @@ public class TypeInferenceView extends VerticalLayout
         );
     }
 
-    private void refreshElements(int currentStep) {
+    private void refreshElements() {
         unification.showStep(currentStep);
-        tree.showStep(currentStep < tree.getStepCount() ? currentStep : tree.getStepCount() - 1);
+        tree.showStep(treeNumbers.get(currentStep));
     }
 
     @Override
     public void firstStepButton() {
         currentStep = currentStep > tree.getStepCount()  && tree.getStepCount() > 0 ? tree.getStepCount() - 1 : 0;
-        refreshElements(currentStep);
+        refreshElements();
     }
 
     @Override
     public void lastStepButton() {
         currentStep = currentStep < tree.getStepCount() - 1 ? tree.getStepCount() - 1 : unification.getStepCount() - 1;
-        refreshElements(currentStep);
+        refreshElements();
     }
 
     @Override
     public void nextStepButton() {
         currentStep = currentStep < unification.getStepCount() - 1 ? currentStep + 1 : currentStep;
-        refreshElements(currentStep);
+        refreshElements();
     }
 
     @Override
     public void previousStepButton() {
         currentStep = currentStep > 0 ? currentStep - 1 : currentStep;
-        refreshElements(currentStep);
+        refreshElements();
     }
 
     @Override
     public void onComponentEvent(AttachEvent attachEvent) {
         currentStep = 0;
-        refreshElements(currentStep);
+        refreshElements();
     }
 }

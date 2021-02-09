@@ -18,25 +18,29 @@ public class LatexCreatorConstraints implements StepVisitor {
     private final List<String> constraints;
     private final TypeInfererInterface typeInferer;
     private final ConstraintSetIndexFactory constraintSetIndexFactory;
+    private final TreeNumberGenerator numberGenerator;
     private final String constraintSetIndex;
     private final String prefix;
     private String prevStep;
 
     protected LatexCreatorConstraints(TypeInfererInterface typeInferer) {
-        this(typeInferer, new ConstraintSetIndexFactory(), FIRST_PREFIX);
+        this(typeInferer, new ConstraintSetIndexFactory(), new TreeNumberGenerator(), FIRST_PREFIX);
     }
 
     private LatexCreatorConstraints(TypeInfererInterface typeInferer,
                                       ConstraintSetIndexFactory constraintSetIndexFactory,
+                                      TreeNumberGenerator numberGenerator,
                                       String prefix) {
         this.prefix = prefix;
         this.prevStep = "";
         this.constraintSetIndexFactory = constraintSetIndexFactory;
+        this.numberGenerator = numberGenerator;
         this.constraintSetIndex = constraintSetIndexFactory.nextConstraintSetIndex();
         this.typeInferer = typeInferer;
         constraints = new ArrayList<>();
         if (FIRST_PREFIX.equals(prefix)) {
             constraints.add(CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT);
+            numberGenerator.incrementPush();
         }
 
         typeInferer.getFirstInferenceStep().accept(this);
@@ -44,13 +48,23 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     protected List<String> getEverything() {
         List<String> result = new ArrayList<>(constraints);
-        result.addAll(generateUnification());
-        typeInferer.getMGU().ifPresent(mgu -> result.add(generateMGU()));
-        // todo return final type
+        generateUnification().forEach(step -> {
+            result.add(step);
+            numberGenerator.push();
+        });
+        typeInferer.getMGU().ifPresent(mgu -> {
+            result.add(generateMGU());
+            numberGenerator.push();
+        });
+        // todo return final type, dont forget numberGenerator.push();
         if (FIRST_PREFIX.equals(prefix)) {
             result.replaceAll(content -> ALIGN_BEGIN + content + ALIGN_END);
         }
         return result;
+    }
+
+    protected List<Integer> getTreeNumbers() {
+        return numberGenerator.getNumbers();
     }
 
     private String createSingleConstraint(Constraint constraint) {
@@ -65,6 +79,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         currentConstraint = prefix + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
                 + prevStep + LATEX_CURLY_RIGHT;
         constraints.add(currentConstraint);
+        numberGenerator.incrementPush();
     }
 
     @Override
@@ -105,7 +120,8 @@ public class LatexCreatorConstraints implements StepVisitor {
     public void visit(LetStepDefault letD) {
         addConstraint(letD);
         LatexCreatorConstraints subCreator = new LatexCreatorConstraints(letD.getTypeInferer(),
-                constraintSetIndexFactory, constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE);
+                constraintSetIndexFactory, numberGenerator,
+                constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE);
         constraints.addAll(subCreator.getEverything());
 
         // adds one step in which all let constraints are added to 'outer' constraint set
@@ -114,6 +130,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         letConstraints = prefix + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
                 + prevStep + LATEX_CURLY_RIGHT;
         constraints.add(letConstraints);
+        numberGenerator.push();
 
         letD.getPremise().accept(this);
     }
