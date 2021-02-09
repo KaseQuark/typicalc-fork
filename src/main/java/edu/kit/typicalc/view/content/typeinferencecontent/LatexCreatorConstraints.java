@@ -26,7 +26,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         this(typeInferer, new ConstraintSetIndexFactory(), FIRST_PREFIX);
     }
 
-    protected LatexCreatorConstraints(TypeInfererInterface typeInferer,
+    private LatexCreatorConstraints(TypeInfererInterface typeInferer,
                                       ConstraintSetIndexFactory constraintSetIndexFactory,
                                       String prefix) {
         this.prefix = prefix;
@@ -53,10 +53,14 @@ public class LatexCreatorConstraints implements StepVisitor {
         return result;
     }
 
-    protected void addConstraint(InferenceStep step) {
-        String firstType = new LatexCreatorType(step.getConstraint().getFirstType()).getLatex();
-        String secondType = new LatexCreatorType(step.getConstraint().getSecondType()).getLatex();
-        String currentConstraint = firstType + SPACE + EQUALS + SPACE + secondType;
+    private String createSingleConstraint(Constraint constraint) {
+        String firstType = new LatexCreatorType(constraint.getFirstType()).getLatex();
+        String secondType = new LatexCreatorType(constraint.getSecondType()).getLatex();
+        return firstType + SPACE + EQUALS + SPACE + secondType;
+    }
+
+    private void addConstraint(InferenceStep step) {
+        String currentConstraint = createSingleConstraint(step.getConstraint());
         prevStep = prevStep.equals("") ? currentConstraint : prevStep + COMMA + currentConstraint;
         currentConstraint = prefix + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
                 + prevStep + LATEX_CURLY_RIGHT;
@@ -103,7 +107,24 @@ public class LatexCreatorConstraints implements StepVisitor {
         LatexCreatorConstraints subCreator = new LatexCreatorConstraints(letD.getTypeInferer(),
                 constraintSetIndexFactory, constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE);
         constraints.addAll(subCreator.getEverything());
+
+        // adds one step in which all let constraints are added to 'outer' constraint set
+        String letConstraints = createLetConstraints(letD.getTypeInferer().getLetConstraints());
+        prevStep = prevStep.equals("") ? letConstraints : prevStep + COMMA + letConstraints;
+        letConstraints = prefix + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
+                + prevStep + LATEX_CURLY_RIGHT;
+        constraints.add(letConstraints);
+
         letD.getPremise().accept(this);
+    }
+
+    private String createLetConstraints(List<Constraint> letConstraints) {
+        StringBuilder result = new StringBuilder();
+        letConstraints.forEach(constraint -> result.append(createSingleConstraint(constraint)).append(COMMA));
+        if (!letConstraints.isEmpty()) {
+            result.deleteCharAt(result.length() - 1);
+        }
+        return result.toString();
     }
 
     @Override
