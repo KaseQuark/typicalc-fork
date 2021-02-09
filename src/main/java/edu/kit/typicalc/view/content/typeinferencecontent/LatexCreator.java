@@ -6,6 +6,7 @@ import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
+import java.util.List;
 import java.util.Map;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
@@ -21,6 +22,7 @@ public class LatexCreator implements StepVisitor {
     private final TypeInfererInterface typeInferer;
     private final StringBuilder tree;
     private final boolean stepLabels;
+    private final LatexCreatorConstraints constraintsCreator;
 
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
@@ -42,6 +44,7 @@ public class LatexCreator implements StepVisitor {
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
         typeInferer.getFirstInferenceStep().accept(this);
+        this.constraintsCreator = new LatexCreatorConstraints(typeInferer);
     }
 
     /**
@@ -54,12 +57,16 @@ public class LatexCreator implements StepVisitor {
     }
 
     /**
-     * Returns the LaTeX-code for constraints, unification, MGU and MGU
+     * Returns the LaTeX-code for constraints, unification, MGU and final type
      *
      * @return the LaTeX-code for constraints and unification
      */
     protected String[] getUnification() {
-        return new LatexCreatorConstraints(typeInferer).getEverything().toArray(new String[0]);
+        return constraintsCreator.getEverything().toArray(new String[0]);
+    }
+
+    protected List<Integer> getTreeNumbers() {
+        return constraintsCreator.getTreeNumbers();
     }
 
     /**
