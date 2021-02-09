@@ -36,7 +36,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         this.typeInferer = typeInferer;
         constraints = new ArrayList<>();
         if (FIRST_PREFIX.equals(prefix)) {
-            constraints.add(DOLLAR_SIGN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT + DOLLAR_SIGN);
+            constraints.add(CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT);
         }
 
         typeInferer.getFirstInferenceStep().accept(this);
@@ -47,6 +47,9 @@ public class LatexCreatorConstraints implements StepVisitor {
         result.addAll(generateUnification());
         typeInferer.getMGU().ifPresent(mgu -> result.add(generateMGU()));
         // todo return final type
+        if (FIRST_PREFIX.equals(prefix)) {
+            result.replaceAll(content -> ALIGN_BEGIN + content + ALIGN_END);
+        }
         return result;
     }
 
@@ -55,8 +58,8 @@ public class LatexCreatorConstraints implements StepVisitor {
         String secondType = new LatexCreatorType(step.getConstraint().getSecondType()).getLatex();
         String currentConstraint = firstType + SPACE + EQUALS + SPACE + secondType;
         prevStep = prevStep.equals("") ? currentConstraint : prevStep + COMMA + currentConstraint;
-        currentConstraint = prefix + DOLLAR_SIGN + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
-                + prevStep + LATEX_CURLY_RIGHT + DOLLAR_SIGN;
+        currentConstraint = prefix + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
+                + prevStep + LATEX_CURLY_RIGHT;
         constraints.add(currentConstraint);
     }
 
@@ -98,7 +101,7 @@ public class LatexCreatorConstraints implements StepVisitor {
     public void visit(LetStepDefault letD) {
         addConstraint(letD);
         LatexCreatorConstraints subCreator = new LatexCreatorConstraints(letD.getTypeInferer(),
-                constraintSetIndexFactory, constraints.get(constraints.size() - 1));
+                constraintSetIndexFactory, constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE);
         constraints.addAll(subCreator.getEverything());
         letD.getPremise().accept(this);
     }
@@ -122,11 +125,11 @@ public class LatexCreatorConstraints implements StepVisitor {
                 subs = step.getSubstitutions(); // TODO: what if first step fails?
             }
             StringBuilder latex = new StringBuilder();
-            latex.append(DOLLAR_SIGN);
-            latex.append(ALIGN_BEGIN);
+            latex.append(prefix);
             List<Substitution> substitutions = subs.unwrap();
             for (Substitution s : substitutions) {
                 latex.append(new LatexCreatorType(s.getVariable()).getLatex());
+                latex.append(AMPERSAND);
                 latex.append(SUBSTITUTION_SIGN);
                 latex.append(new LatexCreatorType(s.getType()).getLatex());
                 latex.append(LATEX_NEW_LINE);
@@ -138,12 +141,11 @@ public class LatexCreatorConstraints implements StepVisitor {
             List<Constraint> unificationConstraints = step.getConstraints();
             for (Constraint c : unificationConstraints) {
                 latex.append(new LatexCreatorType(c.getFirstType()).getLatex());
+                latex.append(AMPERSAND);
                 latex.append(EQUALS);
                 latex.append(new LatexCreatorType(c.getSecondType()).getLatex());
                 latex.append(LATEX_NEW_LINE);
             }
-            latex.append(ALIGN_END);
-            latex.append(DOLLAR_SIGN);
             steps.add(latex.toString());
         }
         return steps;
@@ -151,22 +153,20 @@ public class LatexCreatorConstraints implements StepVisitor {
 
 
     private String generateMGU() {
-        StringBuilder mguLatex = new StringBuilder();
-        mguLatex.append(DOLLAR_SIGN);
-        mguLatex.append(ALIGN_BEGIN);
-        mguLatex.append(BRACKET_LEFT);
+        StringBuilder latex = new StringBuilder();
+        latex.append(prefix);
+        latex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
-            mguLatex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
-            mguLatex.append(SUBSTITUTION_SIGN);
-            mguLatex.append(new LatexCreatorType(substitution.getType()).getLatex());
-            mguLatex.append(COMMA);
-            mguLatex.append(LATEX_NEW_LINE);
-            mguLatex.append(NEW_LINE);
+            latex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
+            latex.append(AMPERSAND);
+            latex.append(SUBSTITUTION_SIGN);
+            latex.append(new LatexCreatorType(substitution.getType()).getLatex());
+            latex.append(COMMA);
+            latex.append(LATEX_NEW_LINE);
+            latex.append(NEW_LINE);
         }));
-        mguLatex.delete(mguLatex.length() - 3, mguLatex.length());
-        mguLatex.append(BRACKET_RIGHT);
-        mguLatex.append(ALIGN_END);
-        mguLatex.append(DOLLAR_SIGN);
-        return mguLatex.toString();
+        latex.delete(latex.length() - (COMMA + LATEX_NEW_LINE + NEW_LINE).length(), latex.length());
+        latex.append(BRACKET_RIGHT);
+        return latex.toString();
     }
 }
