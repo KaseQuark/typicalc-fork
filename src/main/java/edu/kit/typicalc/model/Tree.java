@@ -63,10 +63,10 @@ public class Tree implements TermVisitorTree {
 
         this.stepFactory = lambdaTerm.hasLet() || partOfLetTerm ? new StepFactoryWithLet() : new StepFactoryDefault();
 
+        this.failedSubInference = false;
+
         this.firstTypeVariable = typeVarFactory.nextTypeVariable();
         this.firstInferenceStep = lambdaTerm.accept(this, typeAssumptions, firstTypeVariable);
-
-        this.failedSubInference = false;
     }
 
     /**

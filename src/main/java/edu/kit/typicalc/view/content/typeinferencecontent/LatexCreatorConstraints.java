@@ -48,17 +48,19 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     protected List<String> getEverything() {
         List<String> result = new ArrayList<>(constraints);
-        generateUnification().forEach(step -> {
-            result.add(step);
-            numberGenerator.push();
-        });
-        typeInferer.getMGU().ifPresent(mgu -> {
-            result.add(generateMGU());
-            numberGenerator.push();
-            result.add(generateMGU() + LATEX_NEW_LINE + new LatexCreatorType(typeInferer.getType().get()).getLatex());
-            numberGenerator.push();
-        });
-        // todo add some helpful text for the user
+        if (typeInferer.getUnificationSteps().isPresent()) {
+            generateUnification().forEach(step -> {
+                result.add(step);
+                numberGenerator.push();
+            });
+            typeInferer.getMGU().ifPresent(mgu -> {
+                result.add(generateMGU());
+                numberGenerator.push();
+                result.add(generateMGU() + LATEX_NEW_LINE + new LatexCreatorType(typeInferer.getType().get()).getLatex());
+                numberGenerator.push();
+            });
+            // todo add some helpful text for the user
+        }
         if (FIRST_PREFIX.equals(prefix)) {
             result.replaceAll(content -> ALIGN_BEGIN + content + ALIGN_END);
         }
@@ -126,6 +128,10 @@ public class LatexCreatorConstraints implements StepVisitor {
                 constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE);
         constraints.addAll(subCreator.getEverything());
 
+        // cancels constraint creation if sub inference failed
+        if (letD.getTypeInferer().getMGU().isEmpty()) {
+            return;
+        }
         // adds one step in which all let constraints are added to 'outer' constraint set
         String letConstraints = createLetConstraints(letD.getTypeInferer().getLetConstraints());
         prevStep = prevStep.equals("") ? letConstraints : prevStep + COMMA + letConstraints;

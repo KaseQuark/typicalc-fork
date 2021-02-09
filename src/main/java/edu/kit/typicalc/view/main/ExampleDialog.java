@@ -23,7 +23,8 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
 
     private static final List<String> EXAMPLES =
             List.of("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)",
-                    "(λx.λy.y (x y)) (λz. λa. z g a)", "let f = λx. let g = λy. y in g x in f 3");
+                    "(λx.λy.y (x y)) (λz. λa. z g a)", "let f = λx. let g = λy. y in g x in f 3",
+                    "let f = λx. let g = λy.5 5 in g x in f 3");
     private final Paragraph instruction;
 
     /**
