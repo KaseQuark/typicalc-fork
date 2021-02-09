@@ -55,8 +55,10 @@ public class LatexCreatorConstraints implements StepVisitor {
         typeInferer.getMGU().ifPresent(mgu -> {
             result.add(generateMGU());
             numberGenerator.push();
+            result.add(generateMGU() + LATEX_NEW_LINE + new LatexCreatorType(typeInferer.getType().get()).getLatex());
+            numberGenerator.push();
         });
-        // todo return final type, dont forget numberGenerator.push();
+        // todo add some helpful text for the user
         if (FIRST_PREFIX.equals(prefix)) {
             result.replaceAll(content -> ALIGN_BEGIN + content + ALIGN_END);
         }
