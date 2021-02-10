@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -17,13 +18,13 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
  * Contains components which allow the user to enter a lambda term and start the type inference algorithm.
  */
 @CssImport("./styles/view/main/input-bar.css")
+@JsModule("./src/lambda-button-listener.js")
 public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -6099700300418752958L;
 
@@ -34,7 +35,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String INPUT_BAR_ID = "inputBar";
     private static final String INFER_BUTTON_ID = "inferButton";
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";
-
+    private static final String LAMBDA_BUTTON_ID = "lambdaButton";
+    
     private static final short MAX_INPUT_LENGTH = 1000;
 
     private final TextField inputField;
@@ -69,11 +71,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
                 + "    area.selectionStart = start;"
                 + "    area.selectionEnd = end;"
                 + "}});");
-        Button lambdaButton = new Button(getTranslation("root.lambda"), event -> onLambdaButtonClick());
+        Button lambdaButton = new Button(getTranslation("root.lambda"));
+        lambdaButton.setId(LAMBDA_BUTTON_ID);
+        UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
         typeAssumptions = new Button(
                 getTranslation("root.typeAssumptions"),
                 event -> onTypeAssumptionsButton()
-        ); // TODO
+        );
         typeAssumptionsArea = new TypeAssumptionsArea();
         Button exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
@@ -115,15 +119,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
             Notification errorNotification = new ErrorNotification(getTranslation("root.overlongInput"));
             errorNotification.open();
         }
-    }
-
-    private void onLambdaButtonClick() {
-        StringBuilder inputBuilder = new StringBuilder();
-        Optional<String> currentInput = inputField.getOptionalValue();
-        currentInput.ifPresent(inputBuilder::append);
-        inputBuilder.append(getTranslation("root.lambda"));
-        inputField.setValue(inputBuilder.toString());
-        inputField.focus();
     }
 
     private void onTypeAssumptionsButton() {
