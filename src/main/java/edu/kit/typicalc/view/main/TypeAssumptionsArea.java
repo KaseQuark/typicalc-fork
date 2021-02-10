@@ -101,13 +101,15 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     }
 
     /**
-     * Returns the current type assumptions.
+     * Returns the current type assumptions. If multiple type assumptions contain the same variable only the
+     * oldest type assumption is returned. All other type assumptions are being ignored.
      * 
      * @return the current type assumptions as mappings from a variable to a type
      */
     protected Map<String, String> getTypeAssumptions() {
         return fields.stream()
-                .collect(Collectors.toMap(TypeAssumptionField::getVariable, TypeAssumptionField::getType));
+                .collect(Collectors.toMap(TypeAssumptionField::getVariable, TypeAssumptionField::getType,
+                        (existing, replacement) -> existing));
     }
 
     @Override
