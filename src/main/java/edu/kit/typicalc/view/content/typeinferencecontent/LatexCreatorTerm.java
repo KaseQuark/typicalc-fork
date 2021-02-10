@@ -67,7 +67,7 @@ public class LatexCreatorTerm implements TermVisitor {
 
     @Override
     public void visit(VarTerm varTerm) {
-        latex.append(TEXTTT);
+        latex.append(MONO_TEXT);
         latex.append(CURLY_LEFT);
         latex.append(varTerm.getName());
         latex.append(CURLY_RIGHT);
@@ -76,7 +76,7 @@ public class LatexCreatorTerm implements TermVisitor {
 
     @Override
     public void visit(IntegerTerm intTerm) {
-        latex.append(TEXTTT);
+        latex.append(MONO_TEXT);
         latex.append(CURLY_LEFT);
         latex.append(intTerm.getValue());
         latex.append(CURLY_RIGHT);
@@ -85,7 +85,7 @@ public class LatexCreatorTerm implements TermVisitor {
 
     @Override
     public void visit(BooleanTerm boolTerm) {
-        latex.append(TEXTTT);
+        latex.append(MONO_TEXT);
         latex.append(CURLY_LEFT);
         latex.append(boolTerm.getValue());
         latex.append(CURLY_RIGHT);
@@ -94,9 +94,9 @@ public class LatexCreatorTerm implements TermVisitor {
 
     @Override
     public void visit(LetTerm letTerm) {
-        latex.append(TEXTTT)
+        latex.append(MONO_TEXT)
                 .append(CURLY_LEFT)
-                .append(TEXTBF)
+                .append(BOLD_TEXT)
                 .append(CURLY_LEFT)
                 .append(LET)
                 .append(CURLY_RIGHT)
@@ -106,9 +106,9 @@ public class LatexCreatorTerm implements TermVisitor {
         latex.append(EQUALS);
         letTerm.getVariableDefinition().accept(this);
         latex.append(LATEX_SPACE)
-                .append(TEXTTT)
+                .append(MONO_TEXT)
                 .append(CURLY_LEFT)
-                .append(TEXTBF)
+                .append(BOLD_TEXT)
                 .append(CURLY_LEFT)
                 .append(IN)
                 .append(CURLY_RIGHT)

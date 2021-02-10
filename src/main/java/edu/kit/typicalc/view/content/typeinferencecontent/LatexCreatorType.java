@@ -33,7 +33,7 @@ public class LatexCreatorType implements TypeVisitor {
 
     @Override
     public void visit(NamedType named) {
-        latex.append(TEXTTT);
+        latex.append(MONO_TEXT);
         latex.append(CURLY_LEFT);
         latex.append(named.getName());
         latex.append(CURLY_RIGHT);

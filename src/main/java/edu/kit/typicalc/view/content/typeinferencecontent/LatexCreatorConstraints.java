@@ -181,16 +181,32 @@ public class LatexCreatorConstraints implements StepVisitor {
                 latex.append(new LatexCreatorType(s.getType()).getLatex());
                 latex.append(LATEX_NEW_LINE);
             }
+            boolean markError = error.isPresent();
             error.ifPresent(latex::append); // TODO: translation
             if (error.isPresent()) {
                 latex.append(LATEX_NEW_LINE);
             }
             List<Constraint> unificationConstraints = step.getConstraints();
             for (Constraint c : unificationConstraints) {
+                if (markError) {
+                    latex.append(COLOR_RED);
+                    latex.append(CURLY_LEFT);
+                }
                 latex.append(new LatexCreatorType(c.getFirstType()).getLatex());
+                if (markError) {
+                    latex.append(CURLY_RIGHT);
+                }
                 latex.append(AMPERSAND);
                 latex.append(EQUALS);
+                if (markError) {
+                    latex.append(COLOR_RED);
+                    latex.append(CURLY_LEFT);
+                }
                 latex.append(new LatexCreatorType(c.getSecondType()).getLatex());
+                if (markError) {
+                    latex.append(CURLY_RIGHT);
+                    markError = false; // only highlight one constraint
+                }
                 latex.append(LATEX_NEW_LINE);
             }
             steps.add(latex.toString());

@@ -4,9 +4,9 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
     return elem.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 window.MathJax = {
-    loader: {load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/textmacros', '[tex]/unicode']},
+    loader: {load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/colorv2', '[tex]/textmacros', '[tex]/unicode']},
     tex: {
-        packages: {'[+]': ['ams', 'bussproofs', 'textmacros', 'unicode']},
+        packages: {'[+]': ['ams', 'bussproofs', 'color', 'textmacros', 'unicode']},
         inlineMath: [['$', '$'], ['\\(', '\\)']]
     },
     svg: {
