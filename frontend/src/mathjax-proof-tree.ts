@@ -163,13 +163,15 @@ class MathjaxProofTree extends MathjaxAdapter {
                         }
                         parentNode = parentNode.childNodes[2] as SVGGraphicsElement;
                         const rule = node.querySelector<SVGGraphicsElement>('g [semantics="bspr_inferenceRule:down"]')!;
-                        // this selector should be checked again when updating MathJax
-                        const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0] as SVGGraphicsElement;
-                        // @ts-ignore
-                        let w = -parentNode.getTransformToElement(term).e;
-                        w += term.getBBox().width;
-                        w += padding;
-                        parentNode.setAttribute("x2", w.toString());
+                        if (rule !== null) {
+                            // this selector should be checked again when updating MathJax
+                            const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0] as SVGGraphicsElement;
+                            // @ts-ignore
+                            let w = -parentNode.getTransformToElement(term).e;
+                            w += term.getBBox().width;
+                            w += padding;
+                            parentNode.setAttribute("x2", w.toString());
+                        }
                     }
                     i += 1;
                 }
