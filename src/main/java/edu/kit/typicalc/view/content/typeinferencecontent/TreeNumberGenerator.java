@@ -1,6 +1,7 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class TreeNumberGenerator {
@@ -22,6 +23,6 @@ public class TreeNumberGenerator {
     }
 
     protected List<Integer> getNumbers() {
-        return numbers;
+        return Collections.unmodifiableList(numbers);
     }
 }
