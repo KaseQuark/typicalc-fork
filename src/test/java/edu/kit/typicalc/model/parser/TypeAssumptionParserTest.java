@@ -174,4 +174,22 @@ class TypeAssumptionParserTest {
                         )
                 )), assumption.getValue());
     }
+
+    @Test
+    void longFunction() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        HashMap<String, String> assumptions = new HashMap<>();
+        assumptions.put("fun", "(a -> b -> c) -> d");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
+        assertEquals(1, types.size());
+        Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
+        assertEquals(new VarTerm("fun"), assumption.getKey());
+        assertEquals(new TypeAbstraction(
+                new FunctionType(
+                new FunctionType(new NamedType("a"), new FunctionType(new NamedType("b"), new NamedType("c"))),
+                new NamedType("d")
+                )), assumption.getValue());
+    }
 }

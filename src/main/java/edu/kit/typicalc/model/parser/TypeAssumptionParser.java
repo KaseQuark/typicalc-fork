@@ -12,10 +12,12 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class TypeAssumptionParser {
+/**
+ * Parser for type assumptions.
+ */
+public class TypeAssumptionParser { // TODO: document type syntax? or refer to other documents
 
-    private static final String TYPE_VARIABLE_PATTERN = "t(\\d+)";
-    private static final int GRPUP_CONTAINING_INDEX = 1;
+    private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
 
     public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> oldAssumptions) {
         Map<VarTerm, TypeAbstraction> typeAssumptions = new HashMap<>();
@@ -61,10 +63,9 @@ public class TypeAssumptionParser {
                 }
                 break;
             case VARIABLE:
-                Pattern typeVariablePattern = Pattern.compile(TYPE_VARIABLE_PATTERN);
-                Matcher typeVariableMatcher = typeVariablePattern.matcher(t.getText());
+                Matcher typeVariableMatcher = TYPE_VARIABLE_PATTERN.matcher(t.getText());
                 if (typeVariableMatcher.matches()) {
-                    int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(GRPUP_CONTAINING_INDEX));
+                    int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(1));
                     type = new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
                 } else {
                     type = new NamedType(t.getText());
@@ -100,7 +101,7 @@ public class TypeAssumptionParser {
             type = new FunctionType(type, nextType.unwrap().getLeft());
             removedParens += nextType.unwrap().getRight();
             parenCount -= nextType.unwrap().getRight();
-            if (parenCount < 0) {
+            if (parenCount <= 0) {
                 return new Result<>(new ImmutablePair<>(type, removedParens));
             }
         }
