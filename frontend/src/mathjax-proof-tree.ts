@@ -26,6 +26,7 @@ class MathjaxProofTree extends MathjaxAdapter {
 
     protected calculateSteps(): void {
         if (this.shadowRoot !== null) {
+            console.time('stepCalculation');
             const root = this.shadowRoot;
             const semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
             // first, enumerate all of the steps
@@ -125,64 +126,130 @@ class MathjaxProofTree extends MathjaxAdapter {
             // MathJax layout of bussproofs is sometimes wrong:
             // https://github.com/mathjax/MathJax/issues/2270
             // https://github.com/mathjax/MathJax/issues/2626
-            // the following algorithm fixes it by iterating over "rows" in the SVG created by MathJax
+            // we fix it in two phases:
+            // 1. fix overlapping by iterating over "rows" in the SVG created by MathJax
             // in each row, the elements are arranged to not overlap
+            // 2. place inference conclusions under the center of their line
             const svg = root.querySelector<SVGElement>("svg")!;
-            const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
-            // start layout fixes in the innermost part of the SVG
-            nodeIterator2.reverse();
-            const padding = 300;
+            // @ts-ignore
+            svg.viewBox.baseVal.width = Math.min(100000, svg.viewBox.baseVal.width);
             let counter = 0;
-            for (const row of nodeIterator2) {
-                counter++;
-                let left = null;
-                let i = 0;
-                for (const rawNode of row.childNodes) {
-                    const node = rawNode as SVGGraphicsElement;
-                    if (i === 1 || i === 3) {
-                        i += 1;
-                        continue;
-                    }
-                    const bbox = node.getBBox();
-                    // @ts-ignore
-                    const mat = node.transform.baseVal[0];
-                    if (mat !== undefined) {
-                        bbox.x += mat.matrix.e;
-                    }
-                    // move box, and add padding between inference steps
-                    if (left == null) {
-                        left = bbox.x + bbox.width;
-                    } else {
-                        mat.matrix.e -= bbox.x - left - padding;
-                        left = bbox.x + mat.matrix.e + bbox.width;
-                    }
-                    if (i == 2) {
-                        let parentNode = node.parentNode as SVGGraphicsElement;
-                        while (parentNode.getAttribute("semantics") !== "bspr_inferenceRule:down") {
-                            parentNode = parentNode.parentNode as SVGGraphicsElement;
-                        }
-                        parentNode = parentNode.childNodes[2] as SVGGraphicsElement;
-                        const rule = node.querySelector<SVGGraphicsElement>('g [semantics="bspr_inferenceRule:down"]')!;
-                        if (rule !== null) {
-                            // this selector should be checked again when updating MathJax
-                            const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0] as SVGGraphicsElement;
-                            // @ts-ignore
-                            let w = -parentNode.getTransformToElement(term).e;
-                            w += term.getBBox().width;
-                            w += padding;
-                            parentNode.setAttribute("x2", w.toString());
-                        }
-                    }
-                    i += 1;
+            let oldWidth = NaN;
+            let newWidth = (svg.childNodes[1] as SVGGraphicsElement).getBBox().width;
+            // rendering LaTeX often requires multiple passes over the input..
+            let iterations = 0;
+            let extraIterations = 1;
+            while (isNaN(oldWidth) || Math.abs(oldWidth - newWidth) > 5000 || extraIterations > 0) {
+                if (!(isNaN(oldWidth) || Math.abs(oldWidth - newWidth) > 5000)) {
+                    extraIterations--;
                 }
+                iterations++;
+                oldWidth = newWidth;
+                const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
+                // start layout fixes in the innermost part of the SVG
+                nodeIterator2.reverse();
+                const padding = 300;
+                counter = 0;
+                for (const row of nodeIterator2) {
+                    counter++;
+                    let left = null;
+                    let i = 0;
+                    for (const rawNode of row.childNodes) {
+                        const node = rawNode as SVGGraphicsElement;
+                        if (i === 1 || i === 3) {
+                            i += 1;
+                            continue;
+                        }
+                        const bbox = node.getBBox();
+                        // @ts-ignore
+                        const mat = node.transform.baseVal[0];
+                        if (mat !== undefined) {
+                            bbox.x += mat.matrix.e;
+                        }
+                        // move box, and add padding between inference steps
+                        if (left == null) {
+                            left = bbox.x + bbox.width;
+                        } else {
+                            mat.matrix.e -= bbox.x - left - padding;
+                            left = bbox.x + mat.matrix.e + bbox.width;
+                        }
+                        if (i == 2) {
+                            let parentNode = node.parentNode as SVGGraphicsElement;
+                            while (parentNode.getAttribute("semantics") !== "bspr_inferenceRule:down") {
+                                parentNode = parentNode.parentNode as SVGGraphicsElement;
+                            }
+                            parentNode = parentNode.childNodes[2] as SVGGraphicsElement;
+                            const rule = node.querySelector<SVGGraphicsElement>('g [semantics="bspr_inferenceRule:down"]')!;
+                            if (rule !== null) {
+                                // this selector should be checked again when updating MathJax
+                                const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0] as SVGGraphicsElement;
+                                // @ts-ignore
+                                let w = -parentNode.getTransformToElement(term).e;
+                                w += term.getBBox().width;
+                                w += padding;
+                                parentNode.setAttribute("x2", w.toString());
+                            }
+                        }
+                        i += 1;
+                    }
+                }
+                const nodeIterator1 = [...svg.querySelectorAll<SVGGraphicsElement>('g[semantics="bspr_inferenceRule:down"]')];
+                // start layout fixes in the innermost part of the SVG
+                nodeIterator1.reverse();
+                for (const rule of nodeIterator1) {
+                    const conclusion = (rule.childNodes[1] as HTMLElement).querySelector<SVGGraphicsElement>('g[data-mml-node="mstyle"]')!;
+                    const conclusionBox = conclusion.getBBox();
+                    const line = rule.childNodes[2] as SVGGraphicsElement;
+                    const bbox = line.getBBox();
+                    // @ts-ignore
+                    const offset2 = line.getTransformToElement(conclusion);
+                    let dx = bbox.width / 2 + offset2.e - conclusionBox.width / 2;
+                    dx += Number(line.getAttribute("x1"));
+                    // @ts-ignore
+                    let table = rule.parentNode as SVGGraphicsElement;
+                    while (table.getAttribute("semantics") !== "bspr_inferenceRule:down") {
+                        table = table.parentNode as SVGGraphicsElement;
+                        if (table.tagName.toLowerCase() === "svg") {
+                            break;
+                        }
+                    }
+                    // @ts-ignore
+                    conclusion.transform.baseVal[0].matrix.e += dx;
+                    if (table.tagName.toLowerCase() === "svg") {
+                        break; // last step
+                    }
+                    const lineBelow = table.childNodes[2] as SVGGraphicsElement;
+                    if (lineBelow) {
+                        const x = Number(lineBelow.getAttribute("x1"));
+                        const x2 = Number(lineBelow.getAttribute("x2"));
+                        lineBelow.setAttribute("x1", String(x + dx));
+                        lineBelow.setAttribute("x2", String(x2 + dx));
+                    }
+                    // @ts-ignore
+                    const label = table.parentNode.childNodes[1] as SVGGraphicsElement;
+                    if (label && label.transform) {
+                        // @ts-ignore
+                        label.transform.baseVal[0].matrix.e += dx;
+                    }
+                }
+                newWidth = (svg.childNodes[1] as SVGGraphicsElement).getBBox().width;
             }
-            // TODO: this does not scale the SVG correctly
-            //const bbox = (svg.childNodes[1] as SVGGraphicsElement).getBBox();
-            //svg.setAttribute("viewBox", bbox.x + " " + bbox.y + " " + bbox.width + " " + bbox.height);
+            // @ts-ignore
+            const conclusion0 = svg.querySelector('g[semantics="bspr_inferenceRule:down"]').childNodes[1].childNodes[0].childNodes[0].childNodes[1] as SVGGraphicsElement;
+            const conclusionWidth = conclusion0.getBBox().width;
+            // @ts-ignore
+            const svgWidth = svg.viewBox.baseVal.width;
+            // @ts-ignore
+            const offset = (svg.childNodes[1] as SVGGraphicsElement).getTransformToElement(conclusion0);
+            // @ts-ignore
+            (svg.childNodes[1] as SVGGraphicsElement).transform.baseVal[0].matrix.e += offset.e + svgWidth / 2 - conclusionWidth / 2;
+            console.timeEnd('stepCalculation');
+            console.log("Iterations: " + iterations);
+
             if (counter >= 3) {
                 // should not be used on empty SVGs
                 // @ts-ignore
-                window.svgPanZoomFun(svg);
+                window.svgPanZoomFun(svg, { fit: false });
             }
             this.steps = steps;
             this.showStep(0);
