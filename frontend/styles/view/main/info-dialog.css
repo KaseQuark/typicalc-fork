@@ -1,7 +1,6 @@
 #infoHeader {
 	display: flex;
 	position: relative;
-	width: 30vw;
 	align-items: center;
 	justify-content: center;
 }
