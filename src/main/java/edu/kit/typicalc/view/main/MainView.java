@@ -25,7 +25,17 @@ public interface MainView {
      */
     void displayError(ParseError error);
     
+    /**
+     * Provides an interface for the view to interact with the model. 
+     */
     interface MainViewListener {
+        
+        /**
+         * Provides the user input to the model and provide the result to the main view.
+         * 
+         * @param lambdaTerm the lambda term to type-infer
+         * @param typeAssumptions type assumptions to use during the calculation
+         */
         void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions);
     }
 }

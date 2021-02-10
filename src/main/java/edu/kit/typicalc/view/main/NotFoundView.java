@@ -10,6 +10,10 @@ import com.vaadin.flow.router.ParentLayout;
  */
 @ParentLayout(MainViewImpl.class)
 public class NotFoundView extends VerticalLayout {
+    
+    /**
+     * Creates a new NotFoundView.
+     */
     public NotFoundView() {
         H1 error404 = new H1("404 - Not found");
         H2 suggestion = new H2("Try \"/infer/<term>\" or type your favourite term into the input field");

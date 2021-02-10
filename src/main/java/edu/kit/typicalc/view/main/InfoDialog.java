@@ -56,6 +56,4 @@ public class InfoDialog extends Dialog {
         assSyntax.setId(GRAMMAR_ID);
         return new VerticalLayout(termExplanation, termSyntax, assExplanation, assSyntax);
     }
-
-    // local change observer is not needed, the dialog is created when it is opened
 }

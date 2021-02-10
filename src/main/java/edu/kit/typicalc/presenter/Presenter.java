@@ -26,11 +26,6 @@ public class Presenter implements MainViewListener {
         this.view = view;
     }
 
-    /**
-     * Provides the user input to the model and provide the result to the main view.
-     * @param lambdaTerm the lambda term to type-infer
-     * @param typeAssumptions type assumptions to use during the calculation
-     */
     @Override
     public void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions) {
         Result<TypeInfererInterface, ParseError> result = model.getTypeInferer(lambdaTerm, typeAssumptions);

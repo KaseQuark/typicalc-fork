@@ -7,12 +7,20 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+/**
+ * The notification being displayed on invalid input.
+ */
 public class ErrorNotification extends Notification {
 
     private static final long serialVersionUID = 239587L;
 
     private static final String NOTIFICATION_ID = "errorNotification";
 
+    /**
+     * Creates a new ErrorNotification with a specific error message.
+     * 
+     * @param errorMessage the error message
+     */
     protected ErrorNotification(String errorMessage) {
         VerticalLayout container = new VerticalLayout();
         Span errorSpan = new Span(errorMessage);
