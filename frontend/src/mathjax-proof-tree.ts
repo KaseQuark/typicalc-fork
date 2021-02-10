@@ -1,13 +1,28 @@
 import {MathjaxAdapter} from "./mathjax-adapter";
-import {TemplateResult} from "lit-html";
+
+declare let window: {
+    svgPanZoomFun: (svg: SVGElement, options: { fit: boolean }) => void;
+}
+// these attributes and functions are supported by major browsers, but TS does not know about them
+declare global {
+    interface SVGElement {
+        viewBox: SVGAnimatedRect;
+    }
+    interface SVGGraphicsElement {
+        getTransformToElement: (other: SVGGraphicsElement) => SVGMatrix;
+    }
+    interface SVGTransformList {
+        [index: number]: SVGTransform;
+    }
+}
+
+interface ProofTreeServer {
+    setStepCount: (count: number) => void;
+}
 
 class MathjaxProofTree extends MathjaxAdapter {
-    private steps: any[] = [];
-
-    render(): TemplateResult {
-        return super.render();
-    }
-
+    private steps: [SVGElement, SVGElement[]][] = [];
+    private $server: ProofTreeServer | undefined;
 
     protected showStep(n: number): void {
         for (let current = 0; current < this.steps.length; current++) {
@@ -25,19 +40,20 @@ class MathjaxProofTree extends MathjaxAdapter {
     }
 
     protected calculateSteps(): void {
+        const semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
+        const inferenceRuleSelector = 'g[semantics="bspr_inferenceRule:down"]';
+        const labelSelector = 'g[semantics="bspr_prooflabel:left"]';
+        const stepSelector = 'g[typicalc="step"]';
+        // space between inference premises
+        const padding = 300;
+
         if (this.shadowRoot !== null) {
             console.time('stepCalculation');
             const root = this.shadowRoot;
-            const semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
             // first, enumerate all of the steps
-            let nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
-            let a = null;
             let stepIdx = 0;
-            while (a = nodeIterator.nextNode() as HTMLElement) {
-                let semantics = a.getAttribute("semantics");
-                if (semantics == null || a.nodeName !== "g") {
-                    continue;
-                }
+            for (const a of root.querySelectorAll<SVGElement>("g[semantics]")) {
+                let semantics = a.getAttribute("semantics")!;
                 if (semanticsMatch(semantics)) {
                     a.setAttribute("typicalc", "step");
                     a.setAttribute("id", "step" + stepIdx);
@@ -45,79 +61,68 @@ class MathjaxProofTree extends MathjaxAdapter {
                 }
             }
             // then fix some mathjax layout issues
-            for (const step of root.querySelectorAll<HTMLElement>('g[typicalc="step"]')) {
-                const infRule = step.querySelector<HTMLElement>('g[semantics="bspr_inferenceRule:down"]');
-                if (infRule === null) {
+            for (const step of root.querySelectorAll<SVGElement>(stepSelector)) {
+                const infRule = step.querySelector<SVGElement>(inferenceRuleSelector);
+                if (infRule === null || infRule.children.length != 3) {
                     continue;
                 }
-                if (infRule.childNodes.length != 3) {
+                const stepAbove = infRule.children[0] as SVGGraphicsElement;
+                const infRuleAbove = stepAbove.querySelector<HTMLElement>(inferenceRuleSelector)!;
+                if (infRuleAbove === null || infRuleAbove.children.length != 3) {
                     continue;
                 }
-                const stepAbove = infRule.childNodes[0] as HTMLElement & SVGGraphicsElement;
-                const infRuleAbove = stepAbove.querySelector<HTMLElement>('g[semantics="bspr_inferenceRule:down"]')!;
-                if (infRuleAbove === null || infRuleAbove.childNodes.length != 3) {
-                    continue;
-                }
-                let termAbove = infRuleAbove.childNodes[1] as SVGGraphicsElement;
+                let termAbove = infRuleAbove.children[1] as SVGGraphicsElement;
                 let dx = termAbove.getBBox().x;
                 termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
-                while (true) {
-                    if ((termAbove.parentNode! as HTMLElement).getAttribute("semantics") === "bspr_inferenceRule:down") {
-                        break;
-                    }
+                while (termAbove.parentElement!.getAttribute("semantics") !== "bspr_inferenceRule:down") {
                     if (termAbove.transform.baseVal !== null) {
                         if (termAbove.transform.baseVal.numberOfItems !== 1) {
                             termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
                             continue;
                         }
-                        // @ts-ignore
                         dx += termAbove.transform.baseVal[0].matrix.e;
                         termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
                     }
                 }
-                // @ts-ignore
                 stepAbove.transform.baseVal[0].matrix.e -= dx;
             }
             // then create the steps
-            nodeIterator = document.createNodeIterator(root, NodeFilter.SHOW_ELEMENT);
-            let steps = [];
+            let steps: [SVGElement, SVGElement[]][] = [];
             stepIdx = 0;
-            while (a = nodeIterator.nextNode() as HTMLElement) {
-                let semantics = a.getAttribute("semantics");
-                if (semantics == null || a.nodeName !== "g") {
-                    continue;
-                }
+            for (const a of root.querySelectorAll<SVGElement>("g[semantics]")) {
+                let semantics = a.getAttribute("semantics")!;
                 if (semanticsMatch(semantics)) {
                     const id = "step" + stepIdx;
+                    const idSelector = `#${id} `;
                     stepIdx++;
 
                     // find the next one/two steps above this one
-                    const aboveStep1 = a.querySelector<HTMLElement>("#" + id + ' g[typicalc="step"]');
+                    const aboveStep1 = a.querySelector<SVGElement>(idSelector + stepSelector);
                     let above = [];
                     if (aboveStep1 != null) {
-                        const parent = aboveStep1.parentNode!.parentNode! as HTMLElement;
+                        const parent = aboveStep1.parentElement!.parentElement!;
                         parent.setAttribute("id", "typicalc-selector");
-                        for (const node of parent.querySelectorAll('#typicalc-selector > g > g[typicalc="step"]')) {
-                            above.push(node as HTMLElement);
+                        for (const node of parent.querySelectorAll<SVGElement>('#typicalc-selector > g > ' + stepSelector)) {
+                            above.push(node);
                         }
                         parent.removeAttribute("id");
                     }
-                    const rule = a.querySelector("#" + id + ' g[semantics="bspr_inferenceRule:down"]');
+                    const rule = a.querySelector(idSelector + inferenceRuleSelector);
                     if (rule !== null) {
                         let i = 0;
-                        for (const node of rule.childNodes) {
+                        for (const node of rule.children) {
                             if (i !== 1) {
-                                above.push(node);
+                                above.push(node as SVGElement);
                             }
                             i += 1;
                         }
                     }
-                    const label = a.querySelector("#" + id + ' g[semantics="bspr_prooflabel:left"]');
-                    if (label !== null) {
-                        const labelElement = label as HTMLElement;
-                        above.push(labelElement);
+                    const label = a.querySelector<SVGElement>(idSelector + labelSelector);
+                    if (label) {
+                        above.push(label);
                     }
                     if (stepIdx === 1) {
+                        // initial step should not show premises
                         steps.push([a, []]);
                     }
                     steps.push([a, above]);
@@ -131,11 +136,10 @@ class MathjaxProofTree extends MathjaxAdapter {
             // in each row, the elements are arranged to not overlap
             // 2. place inference conclusions under the center of their line
             const svg = root.querySelector<SVGElement>("svg")!;
-            // @ts-ignore
             svg.viewBox.baseVal.width = Math.min(100000, svg.viewBox.baseVal.width);
             let counter = 0;
             let oldWidth = NaN;
-            let newWidth = (svg.childNodes[1] as SVGGraphicsElement).getBBox().width;
+            let newWidth = (svg.children[1] as SVGGraphicsElement).getBBox().width;
             // rendering LaTeX often requires multiple passes over the input..
             let iterations = 0;
             let extraIterations = 1;
@@ -148,42 +152,42 @@ class MathjaxProofTree extends MathjaxAdapter {
                 const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
                 // start layout fixes in the innermost part of the SVG
                 nodeIterator2.reverse();
-                const padding = 300;
                 counter = 0;
                 for (const row of nodeIterator2) {
                     counter++;
                     let left = null;
                     let i = 0;
-                    for (const rawNode of row.childNodes) {
+                    for (const rawNode of row.children) {
                         const node = rawNode as SVGGraphicsElement;
                         if (i === 1 || i === 3) {
                             i += 1;
-                            continue;
+                            continue; // spacing node
                         }
                         const bbox = node.getBBox();
-                        // @ts-ignore
                         const mat = node.transform.baseVal[0];
-                        if (mat !== undefined) {
+                        if (mat) {
                             bbox.x += mat.matrix.e;
                         }
                         // move box, and add padding between inference steps
                         if (left == null) {
+                            // first box
                             left = bbox.x + bbox.width;
                         } else {
+                            // this box has some elements left of it
+                            // -> move to free space after other elements
                             mat.matrix.e -= bbox.x - left - padding;
                             left = bbox.x + mat.matrix.e + bbox.width;
                         }
                         if (i == 2) {
-                            let parentNode = node.parentNode as SVGGraphicsElement;
+                            let parentNode = node.parentNode! as SVGGraphicsElement;
                             while (parentNode.getAttribute("semantics") !== "bspr_inferenceRule:down") {
-                                parentNode = parentNode.parentNode as SVGGraphicsElement;
+                                parentNode = parentNode.parentNode! as SVGGraphicsElement;
                             }
-                            parentNode = parentNode.childNodes[2] as SVGGraphicsElement;
-                            const rule = node.querySelector<SVGGraphicsElement>('g [semantics="bspr_inferenceRule:down"]')!;
-                            if (rule !== null) {
+                            parentNode = parentNode.children[2] as SVGGraphicsElement;
+                            const rule = node.querySelector<SVGGraphicsElement>(inferenceRuleSelector);
+                            if (rule) {
                                 // this selector should be checked again when updating MathJax
-                                const term = rule.childNodes[1].childNodes[0].childNodes[0].childNodes[1].childNodes[0] as SVGGraphicsElement;
-                                // @ts-ignore
+                                const term = rule.children[1].children[0].children[0].children[1].children[0] as SVGGraphicsElement;
                                 let w = -parentNode.getTransformToElement(term).e;
                                 w += term.getBBox().width;
                                 w += padding;
@@ -193,68 +197,57 @@ class MathjaxProofTree extends MathjaxAdapter {
                         i += 1;
                     }
                 }
-                const nodeIterator1 = [...svg.querySelectorAll<SVGGraphicsElement>('g[semantics="bspr_inferenceRule:down"]')];
+                const nodeIterator1 = [...svg.querySelectorAll<SVGGraphicsElement>(inferenceRuleSelector)];
                 // start layout fixes in the innermost part of the SVG
                 nodeIterator1.reverse();
                 for (const rule of nodeIterator1) {
-                    const conclusion = (rule.childNodes[1] as HTMLElement).querySelector<SVGGraphicsElement>('g[data-mml-node="mstyle"]')!;
+                    const conclusion = rule.children[1].querySelector<SVGGraphicsElement>('g[data-mml-node="mstyle"]')!;
                     const conclusionBox = conclusion.getBBox();
-                    const line = rule.childNodes[2] as SVGGraphicsElement;
+                    const line = rule.children[2] as SVGGraphicsElement;
                     const bbox = line.getBBox();
-                    // @ts-ignore
                     const offset2 = line.getTransformToElement(conclusion);
                     let dx = bbox.width / 2 + offset2.e - conclusionBox.width / 2;
                     dx += Number(line.getAttribute("x1"));
-                    // @ts-ignore
                     let table = rule.parentNode as SVGGraphicsElement;
                     while (table.getAttribute("semantics") !== "bspr_inferenceRule:down") {
                         table = table.parentNode as SVGGraphicsElement;
-                        if (table.tagName.toLowerCase() === "svg") {
+                        if (table === svg) {
                             break;
                         }
                     }
-                    // @ts-ignore
                     conclusion.transform.baseVal[0].matrix.e += dx;
-                    if (table.tagName.toLowerCase() === "svg") {
+                    if (table === svg) {
                         break; // last step
                     }
-                    const lineBelow = table.childNodes[2] as SVGGraphicsElement;
+                    const lineBelow = table.children[2] as SVGGraphicsElement;
                     if (lineBelow) {
-                        const x = Number(lineBelow.getAttribute("x1"));
+                        const x1 = Number(lineBelow.getAttribute("x1"));
                         const x2 = Number(lineBelow.getAttribute("x2"));
-                        lineBelow.setAttribute("x1", String(x + dx));
+                        lineBelow.setAttribute("x1", String(x1 + dx));
                         lineBelow.setAttribute("x2", String(x2 + dx));
                     }
-                    // @ts-ignore
-                    const label = table.parentNode.childNodes[1] as SVGGraphicsElement;
+                    const label = table.parentElement!.children[1] as SVGGraphicsElement;
                     if (label && label.transform) {
-                        // @ts-ignore
                         label.transform.baseVal[0].matrix.e += dx;
                     }
                 }
-                newWidth = (svg.childNodes[1] as SVGGraphicsElement).getBBox().width;
+                newWidth = (svg.children[1] as SVGGraphicsElement).getBBox().width;
             }
-            // @ts-ignore
-            const conclusion0 = svg.querySelector('g[semantics="bspr_inferenceRule:down"]').childNodes[1].childNodes[0].childNodes[0].childNodes[1] as SVGGraphicsElement;
+            const conclusion0 = svg.querySelector<SVGElement>(inferenceRuleSelector)!.children[1].children[0].children[0].children[1] as SVGGraphicsElement;
             const conclusionWidth = conclusion0.getBBox().width;
-            // @ts-ignore
             const svgWidth = svg.viewBox.baseVal.width;
-            // @ts-ignore
-            const offset = (svg.childNodes[1] as SVGGraphicsElement).getTransformToElement(conclusion0);
-            // @ts-ignore
-            (svg.childNodes[1] as SVGGraphicsElement).transform.baseVal[0].matrix.e += offset.e + svgWidth / 2 - conclusionWidth / 2;
+            const offset = (svg.children[1] as SVGGraphicsElement).getTransformToElement(conclusion0);
+            (svg.children[1] as SVGGraphicsElement).transform.baseVal[0].matrix.e += offset.e + svgWidth / 2 - conclusionWidth / 2;
             console.timeEnd('stepCalculation');
             console.log("Iterations: " + iterations);
 
             if (counter >= 3) {
                 // should not be used on empty SVGs
-                // @ts-ignore
                 window.svgPanZoomFun(svg, { fit: false });
             }
             this.steps = steps;
             this.showStep(0);
-            // @ts-ignore
-            this.$server.setStepCount(steps.length);
+            this.$server!.setStepCount(steps.length);
         }
     }
 }

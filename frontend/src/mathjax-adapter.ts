@@ -2,15 +2,15 @@ import {LitElement, html} from 'lit-element';
 import {TemplateResult} from "lit-html";
 declare let window: {
     MathJax: {
-        typesetShadow: (arg0: ShadowRoot | null, arg1: () => void) => void,
+        typesetShadow: (shadowRoot: ShadowRoot, callback: () => void) => void,
         isInitialized: boolean,
-    } | undefined;
-    addEventListener: (arg0: string, arg1: () => void) => void;
+    };
+    addEventListener: (event: string, listener: () => void) => void;
 };
 
 export abstract class MathjaxAdapter extends LitElement {
-    private execTypeset(shadowRoot: ShadowRoot | null) {
-        if (window.MathJax !== undefined) {
+    private execTypeset(shadowRoot: ShadowRoot) {
+        if (window.MathJax) {
             window.MathJax.typesetShadow(shadowRoot, () => this.calculateSteps());
         }
     }
@@ -18,9 +18,9 @@ export abstract class MathjaxAdapter extends LitElement {
     protected requestTypeset() {
         this.updateComplete.then(() => {
             if (window.MathJax === undefined || !window.MathJax.isInitialized) {
-                window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot));
+                window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot!));
             } else {
-                this.execTypeset(this.shadowRoot);
+                this.execTypeset(this.shadowRoot!);
             }
         });
     }
