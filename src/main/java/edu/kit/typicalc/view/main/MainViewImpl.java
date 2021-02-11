@@ -109,7 +109,6 @@ public class MainViewImpl extends AppLayout
     @Override
     public int setErrorParameter(BeforeEnterEvent event, ErrorParameter<NotFoundException> parameter) {
         setContent(new NotFoundView());
-        // TODO: actually return a real 404 response (not 200)
         return HttpServletResponse.SC_NOT_FOUND;
     }
 }

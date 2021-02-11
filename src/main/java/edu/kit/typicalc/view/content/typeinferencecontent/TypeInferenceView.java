@@ -48,7 +48,6 @@ public class TypeInferenceView extends VerticalLayout
         Scroller scroller = new Scroller(content);
         scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
-        scroller.getStyle().set("margin", "0px");
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
         treeNumbers = lc.getTreeNumbers();
