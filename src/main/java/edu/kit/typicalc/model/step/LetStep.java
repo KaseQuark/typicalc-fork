@@ -41,7 +41,7 @@ public abstract class LetStep extends InferenceStep {
         return premise;
     }
 
-    /**typeInferer.equals(letStep.typeInferer)
+    /**
      * Returns the TypeInferer for the premise which needs its own type Inference.
      * @return typeInferer the type inferer of the sub-inference
      */
