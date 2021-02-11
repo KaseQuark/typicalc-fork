@@ -1,19 +1,10 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.step.*;
-import edu.kit.typicalc.model.term.AbsTerm;
-import edu.kit.typicalc.model.term.AppTerm;
-import edu.kit.typicalc.model.term.ConstTerm;
-import edu.kit.typicalc.model.term.LambdaTerm;
-import edu.kit.typicalc.model.term.LetTerm;
-import edu.kit.typicalc.model.term.TermVisitorTree;
-import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.*;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Models the proof tree formed when the type of a lambda term is inferred.
@@ -126,7 +117,7 @@ public class Tree implements TermVisitorTree {
 
     @Override
     public InferenceStep visit(AbsTerm absTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
-        Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new HashMap<>(typeAssumptions);
+        Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new LinkedHashMap<>(typeAssumptions);
         Type assType = typeVarFactory.nextTypeVariable();
         TypeAbstraction assAbs = new TypeAbstraction(assType);
         extendedTypeAssumptions.put(absTerm.getVariable(), assAbs);
@@ -152,7 +143,7 @@ public class Tree implements TermVisitorTree {
         InferenceStep premise;
 
         if (typeInfererLet.getType().isPresent()) {
-            Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new HashMap<>(typeAssumptions);
+            Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new LinkedHashMap<>(typeAssumptions);
             extendedTypeAssumptions.replaceAll((key, value) -> {
                 Type newType = value.getInnerType();
                 for (Substitution substitution : typeInfererLet.getMGU().orElseThrow(IllegalStateException::new)) {

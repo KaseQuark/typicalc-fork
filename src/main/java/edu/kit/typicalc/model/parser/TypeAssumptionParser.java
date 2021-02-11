@@ -7,7 +7,7 @@ import edu.kit.typicalc.util.Result;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,7 +20,7 @@ public class TypeAssumptionParser { // TODO: document type syntax? or refer to o
     private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
 
     public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> oldAssumptions) {
-        Map<VarTerm, TypeAbstraction> typeAssumptions = new HashMap<>();
+        Map<VarTerm, TypeAbstraction> typeAssumptions = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : oldAssumptions.entrySet()) {
             VarTerm var = new VarTerm(entry.getKey());
             Result<TypeAbstraction, ParseError> typeAbs = parseType(entry.getValue());
