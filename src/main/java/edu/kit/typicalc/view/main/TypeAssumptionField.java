@@ -1,9 +1,5 @@
 package edu.kit.typicalc.view.main;
 
-import java.util.function.Consumer;
-
-import org.apache.commons.lang3.StringUtils;
-
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.icon.Icon;
@@ -12,6 +8,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import org.apache.commons.lang3.StringUtils;
+
+import java.util.function.Consumer;
 
 /**
  * Represents a single type assumption. Each TypeAssumptionField is displayed in the TypeAssumptionsArea. 
@@ -56,7 +55,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         variableInputField.setLabel(getTranslation("root.variable"));
         typeInputField = new TextField();
         typeInputField.setLabel(getTranslation("root.type"));
-        Icon minusIcon = new Icon(VaadinIcon.MINUS_CIRCLE);
+        Icon minusIcon = new Icon(VaadinIcon.TRASH);
         minusIcon.setId(MINUS_ICON_ID);
         Button deleteButton = new Button(minusIcon, event -> deleteSelf.accept(this));
         deleteButton.setId(ASS_DELETE_BUTTON_ID);
