@@ -34,7 +34,6 @@ public class Application extends SpringBootServletInitializer
             // https://github.com/vaadin/flow/issues/8942
             String url = request.getPathInfo();
             if (!url.equals("/") && !ROUTE_PATTERN.matcher(url).matches()) {
-                response.setHeader("X-ME", "test");
                 response.setStatus(404);
             }
             return false;
