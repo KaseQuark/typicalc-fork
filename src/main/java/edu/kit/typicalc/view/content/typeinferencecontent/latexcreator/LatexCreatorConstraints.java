@@ -75,7 +75,7 @@ public class LatexCreatorConstraints implements StepVisitor {
     private String createSingleConstraint(Constraint constraint) {
         String firstType = new LatexCreatorType(constraint.getFirstType()).getLatex();
         String secondType = new LatexCreatorType(constraint.getSecondType()).getLatex();
-        return firstType + SPACE + EQUALS + SPACE + secondType;
+        return firstType + EQUALS + secondType;
     }
 
     private void addConstraint(InferenceStep step) {
