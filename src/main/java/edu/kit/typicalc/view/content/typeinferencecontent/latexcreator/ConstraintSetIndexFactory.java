@@ -26,7 +26,7 @@ public class ConstraintSetIndexFactory {
      *
      * @return the next constraint set index
      */
-    public String nextConstraintSetIndex() {
+    protected String nextConstraintSetIndex() {
         String index = nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX
                 ? ""
                 :  nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX + 1
