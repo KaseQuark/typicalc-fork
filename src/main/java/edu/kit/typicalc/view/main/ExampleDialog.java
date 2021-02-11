@@ -47,8 +47,6 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
         }
         add(layout);
         setId(EXAMPLE_DIALOG_ID);
-
-        localeChange(null); // initialize text content
     }
 
     @Override

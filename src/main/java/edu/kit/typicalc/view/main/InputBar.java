@@ -85,8 +85,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
         add(infoIcon, typeAssumptions, lambdaButton, inputField, exampleButton, inferTypeButton);
         setId(INPUT_BAR_ID);
-
-        localeChange(null);
     }
 
     /**

@@ -60,8 +60,6 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         deleteButton.setId(ASS_DELETE_BUTTON_ID);
         add(variableInputField, typeInputField, deleteButton);
         setId(ASSUMPTIONS_FIELD_ID);
-
-        localeChange(null);
     }
 
     /**

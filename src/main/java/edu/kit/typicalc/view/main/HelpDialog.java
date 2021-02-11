@@ -1,7 +1,5 @@
 package edu.kit.typicalc.view.main;
 
-import java.util.Locale;
-
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -13,6 +11,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+
+import java.util.Locale;
 
 /**
  * Contains information on how to use the application.
@@ -54,8 +54,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         contentLayout.setId(CONTENT_LAYOUT_ID);
         contentLayout.add(inputSyntax);
         add(headingLayout, contentLayout);
-
-        localeChange(null);
     }
 
     @Override

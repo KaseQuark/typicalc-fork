@@ -78,8 +78,6 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         layout.add(heading, buttons, assumptionContainer);
         layout.setPadding(false);
         add(layout);
-
-        localeChange(null);
     }
 
     /**

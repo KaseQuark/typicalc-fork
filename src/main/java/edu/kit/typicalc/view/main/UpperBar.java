@@ -70,8 +70,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true); //TODO remove magic string
         setSpacing(false);
-
-        localeChange(null);
     }
 
     /**

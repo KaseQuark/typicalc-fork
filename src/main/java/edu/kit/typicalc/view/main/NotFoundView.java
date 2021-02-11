@@ -23,8 +23,6 @@ public class NotFoundView extends VerticalLayout implements LocaleChangeObserver
         suggestion = new H2();
         add(error404, suggestion); // todo make beautiful
         setAlignItems(Alignment.CENTER);
-
-        localeChange(null);
     }
 
     @Override

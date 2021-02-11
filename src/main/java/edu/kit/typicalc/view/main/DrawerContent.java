@@ -32,8 +32,6 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
         ruleContainer.setId(RULE_CONTAINER_ID);
         add(heading, ruleContainer);
         setId(DRAWER_CONTENT_ID);
-
-        localeChange(null);
     }
 
     @Override
