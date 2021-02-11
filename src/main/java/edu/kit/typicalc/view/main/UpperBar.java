@@ -70,6 +70,8 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true); //TODO remove magic string
         setSpacing(false);
+
+        localeChange(null);
     }
 
     /**
@@ -83,15 +85,15 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     /**
-     * Calls the inferTerm method in {@link edu.kit.typicalc.view.main.InputBar} with the provided
+     * Calls the inferTerm method in {@link InputBar} with the provided
      * string as the argument.
      *
      * @param term the provided string
      * @param typeAssumptions type assumptions to use
      */
     protected void inferTerm(String term, Map<String, String> typeAssumptions) {
-        inputBar.inferTerm(term);
         inputBar.setTypeAssumptions(typeAssumptions);
+        inputBar.inferTerm(term);
     }
 
     private void routeToStartPage(Consumer<Component> setContent) {

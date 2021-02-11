@@ -24,7 +24,7 @@ public class MathjaxDisplay extends LitTemplate implements MathjaxAdapter {
      * @param latex the LaTeX string to render with MathJax
      */
     public MathjaxDisplay(String latex) {
-        content.add(latex);
+        content.setText(latex);
     }
 
     @Override

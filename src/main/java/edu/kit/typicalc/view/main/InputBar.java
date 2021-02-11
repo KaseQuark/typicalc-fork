@@ -36,7 +36,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String INFER_BUTTON_ID = "inferButton";
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";
     private static final String LAMBDA_BUTTON_ID = "lambdaButton";
-    
+
     private static final short MAX_INPUT_LENGTH = 1000;
 
     private final TextField inputField;
@@ -74,20 +74,19 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         Button lambdaButton = new Button(getTranslation("root.lambda"));
         lambdaButton.setId(LAMBDA_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
-        typeAssumptions = new Button(
-                getTranslation("root.typeAssumptions"),
-                event -> onTypeAssumptionsButton()
-        );
+        typeAssumptions = new Button("", event -> onTypeAssumptionsButton());
         typeAssumptionsArea = new TypeAssumptionsArea();
         Button exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
-        inferTypeButton = new Button(getTranslation("root.typeInfer"), event -> onTypeInferButtonClick(callback));
+        inferTypeButton = new Button("", event -> onTypeInferButtonClick(callback));
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         inferTypeButton.setId(INFER_BUTTON_ID);
 
         add(infoIcon, typeAssumptions, lambdaButton, inputField, exampleButton, inferTypeButton);
         setId(INPUT_BAR_ID);
+
+        localeChange(null);
     }
 
     /**
@@ -102,7 +101,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     /**
      * Sets the type assumptions displayed in the type assumptions area.
-     * 
+     *
      * @param typeAssumptions the type assumptions as a map
      */
     protected void setTypeAssumptions(Map<String, String> typeAssumptions) {

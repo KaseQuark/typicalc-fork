@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -43,20 +44,20 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
 
     /**
      * Creates a new TypeAssumptionsArea with initial type assumptions.
-     * 
+     *
      * @param types map containing the values for the initial type assumptions
      */
     protected TypeAssumptionsArea(Map<String, String> types) {
-        heading = new H3(getTranslation("root.typeAssumptions"));
+        heading = new H3("");
 
         VerticalLayout layout = new VerticalLayout();
         layout.setId(ASS_LAYOUT_ID);
         HorizontalLayout buttons = new HorizontalLayout();
         buttons.setId(ASS_BUTTONS_ID);
-        addAssumption = new Button(getTranslation("root.addAssumption"), new Icon(VaadinIcon.PLUS_CIRCLE));
+        addAssumption = new Button("", new Icon(VaadinIcon.PLUS_CIRCLE));
         addAssumption.setIconAfterText(true);
         addAssumption.addClickListener(event -> onAddAssumptionClicked());
-        deleteAll = new Button(getTranslation("root.deleteAll"), new Icon(VaadinIcon.TRASH));
+        deleteAll = new Button("", new Icon(VaadinIcon.TRASH));
         deleteAll.addClickListener(event -> onDeleteAllClick());
         deleteAll.setIconAfterText(true);
         deleteAll.addThemeVariants(ButtonVariant.LUMO_ERROR);
@@ -77,6 +78,8 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         layout.add(heading, buttons, assumptionContainer);
         layout.setPadding(false);
         add(layout);
+
+        localeChange(null);
     }
 
     /**
@@ -101,15 +104,16 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     }
 
     /**
-     * Returns the current type assumptions. If multiple type assumptions contain the same variable only the
-     * oldest type assumption is returned. All other type assumptions are being ignored.
-     * 
+     * Returns the current type assumptions.
+     * If multiple type assumptions define the same variable only the first type assumption is returned.
+     * The map is sorted by the variable names.
+     *
      * @return the current type assumptions as mappings from a variable to a type
      */
     protected Map<String, String> getTypeAssumptions() {
         return fields.stream()
                 .collect(Collectors.toMap(TypeAssumptionField::getVariable, TypeAssumptionField::getType,
-                        (existing, replacement) -> existing));
+                        (existing, replacement) -> existing, TreeMap::new));
     }
 
     @Override

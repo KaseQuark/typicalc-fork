@@ -13,7 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.function.Consumer;
 
 /**
- * Represents a single type assumption. Each TypeAssumptionField is displayed in the TypeAssumptionsArea. 
+ * Represents a single type assumption input component.
+ * Each TypeAssumptionField is displayed in the TypeAssumptionsArea.
  */
 @CssImport("./styles/view/main/type-assumption-field.css")
 public class TypeAssumptionField extends HorizontalLayout implements LocaleChangeObserver {
@@ -31,9 +32,9 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
     private final TextField typeInputField;
 
     /**
-     * Creates a new TypeAssumptionField with initial values and a Consumer-object to remove this
-     * type assumption from the {@link edu.kit.typicalc.view.main.TypeAssumptionsArea}.
-     * 
+     * Creates a new TypeAssumptionField with initial values and a callback to remove this
+     * type assumption from the {@link TypeAssumptionsArea}.
+     *
      * @param deleteSelf deletes this object from the TypeAssumptionsArea
      * @param variable variable of the type assumption
      * @param type type of the type assumption
@@ -46,26 +47,26 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
 
     /**
      * Creates a new TypeAssumptionField with a Consumer-object to remove this
-     * type assumption from the {@link edu.kit.typicalc.view.main.TypeAssumptionsArea}.
-     * 
+     * type assumption from the {@link TypeAssumptionsArea}.
+     *
      * @param deleteSelf deletes this object from the TypeAssumptionsArea
      */
     protected TypeAssumptionField(Consumer<TypeAssumptionField> deleteSelf) {
         variableInputField = new TextField();
-        variableInputField.setLabel(getTranslation("root.variable"));
         typeInputField = new TextField();
-        typeInputField.setLabel(getTranslation("root.type"));
         Icon minusIcon = new Icon(VaadinIcon.TRASH);
         minusIcon.setId(MINUS_ICON_ID);
         Button deleteButton = new Button(minusIcon, event -> deleteSelf.accept(this));
         deleteButton.setId(ASS_DELETE_BUTTON_ID);
         add(variableInputField, typeInputField, deleteButton);
         setId(ASSUMPTIONS_FIELD_ID);
+
+        localeChange(null);
     }
 
     /**
      * Gets the variable of the type assumption.
-     * 
+     *
      * @return the variable of the type assumption
      */
     protected String getVariable() {
@@ -74,7 +75,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
 
     /**
      * Gets the type of the type assumption.
-     * 
+     *
      * @return the type of the type assumption
      */
     protected String getType() {

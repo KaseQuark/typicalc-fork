@@ -3,21 +3,33 @@ package edu.kit.typicalc.view.main;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.ParentLayout;
 
 /**
  * This is the view used when an unknown URL is requested by the user.
  */
 @ParentLayout(MainViewImpl.class)
-public class NotFoundView extends VerticalLayout {
-    
+public class NotFoundView extends VerticalLayout implements LocaleChangeObserver {
+    private final H1 error404;
+    private final H2 suggestion;
+
     /**
-     * Creates a new NotFoundView.
+     * Initializes a new NotFoundView with an error message.
      */
     public NotFoundView() {
-        H1 error404 = new H1("404 - Not found");
-        H2 suggestion = new H2("Try \"/infer/<term>\" or type your favourite term into the input field");
+        error404 = new H1();
+        suggestion = new H2();
         add(error404, suggestion); // todo make beautiful
         setAlignItems(Alignment.CENTER);
+
+        localeChange(null);
+    }
+
+    @Override
+    public void localeChange(LocaleChangeEvent event) {
+        error404.setText(getTranslation("root.title404"));
+        suggestion.setText(getTranslation("root.message404"));
     }
 }

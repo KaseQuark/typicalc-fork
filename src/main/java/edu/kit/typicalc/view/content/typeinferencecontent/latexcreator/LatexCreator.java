@@ -12,14 +12,12 @@ import java.util.Map;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
 /**
- * Generates LaTeX-code from a TypeInfererInterface object. Two mostly independent pie-
- * ces of code are generated, one for the constraints/unification and one for the proof tree.
- * The LaTeX-code is created in a form, that it can be rendered by MathJax, so it must
- * only use packages and commands that MathJax supports. The LaTeX code is also usable
- * outside of MathJax, in a normal .tex document.
+ * Generates LaTeX code from a TypeInfererInterface object. Two mostly independent pieces
+ * of code are generated: one for the constraints/unification and one for the proof tree.
+ * The LaTeX code can be rendered by MathJax, so it must only use packages and commands that MathJax supports.
+ * The LaTeX code is also usable outside of MathJax, in a normal LaTeX document.
  */
 public class LatexCreator implements StepVisitor {
-    private final TypeInfererInterface typeInferer;
     private final StringBuilder tree;
     private final boolean stepLabels;
     private final LatexCreatorConstraints constraintsCreator;
@@ -40,7 +38,6 @@ public class LatexCreator implements StepVisitor {
      * @param stepLabels turns step labels on (true) or off (false)
      */
     public LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
-        this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
         typeInferer.getFirstInferenceStep().accept(this);
@@ -81,7 +78,6 @@ public class LatexCreator implements StepVisitor {
 
 
     private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
-        //todo sort entries?
         if (typeAssumptions.isEmpty()) {
             return "";
         } else {
