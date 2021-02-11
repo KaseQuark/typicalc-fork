@@ -8,8 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-// todo javadoc
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
+
+// todo javadoc
 
 public class LatexCreatorConstraints implements StepVisitor {
 
@@ -162,7 +163,7 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     private List<String> generateUnification(String constraintSets) {
         List<String> steps = new ArrayList<>();
-        // TODO: check if unification is present
+
         List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps()
                 .orElseThrow(IllegalStateException::new);
         for (UnificationStep step : unificationSteps) {
@@ -175,6 +176,12 @@ public class LatexCreatorConstraints implements StepVisitor {
             }
             StringBuilder latex = new StringBuilder();
             latex.append(constraintSets);
+            latex.append(SIGMA);
+            latex.append(constraintSetIndex);
+            latex.append("" + COLON + EQUALS + MGU + PAREN_LEFT + CONSTRAINT_SET);
+            latex.append(constraintSetIndex);
+            latex.append("" + PAREN_RIGHT + EQUALS);
+
             List<Substitution> substitutions = subs.unwrap();
             for (Substitution s : substitutions) {
                 latex.append(new LatexCreatorType(s.getVariable()).getLatex());
