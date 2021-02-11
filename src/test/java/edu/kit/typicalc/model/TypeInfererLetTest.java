@@ -6,6 +6,7 @@ import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.model.type.TypeVariable;
 import edu.kit.typicalc.model.type.TypeVariableKind;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
@@ -44,5 +45,10 @@ class TypeInfererLetTest {
         List<Constraint> expectedLetConstraints
                 = new ArrayList<>(Collections.singletonList(new Constraint(variable2, generated1)));
         assertEquals(expectedLetConstraints, typeInfererLet.getLetConstraints());
+    }
+
+    @Test
+    void equalsTest() {
+        EqualsVerifier.forClass(TypeInfererLet.class).usingGetClass().verify();
     }
 }

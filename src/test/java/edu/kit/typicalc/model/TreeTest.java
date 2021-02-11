@@ -3,12 +3,15 @@ package edu.kit.typicalc.model;
 import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.*;
+import nl.jqno.equalsverifier.EqualsVerifier;
+import nl.jqno.equalsverifier.Warning;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TreeTest {
 
@@ -163,5 +166,13 @@ class TreeTest {
         constraints.add(new Constraint(variable2, generated1));
         constraints.add(varRightConstraint);
         assertEquals(constraints, tree.getConstraints());
+    }
+
+    @Test
+    void equalsTest() {
+        EqualsVerifier.forClass(Tree.class).usingGetClass()
+                .withIgnoredFields("typeVarFactory", "stepFactory")
+                .suppress(Warning.NONFINAL_FIELDS)
+                .verify();
     }
 }
