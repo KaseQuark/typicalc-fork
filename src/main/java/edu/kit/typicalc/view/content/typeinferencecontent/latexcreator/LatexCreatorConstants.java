@@ -62,6 +62,8 @@ public final class LatexCreatorConstants {
     protected static final String TREE_END = "\\end{prooftree}";
     protected static final String ALIGN_BEGIN = "\\begin{align*}";
     protected static final String ALIGN_END = "\\end{align*}";
+    protected static final String SPLIT_BEGIN = "\\begin{split}";
+    protected static final String SPLIT_END = "\\end{split}";
 
     protected static final String BUSSPROOFS = "\\usepackage{bussproofs}";
 }

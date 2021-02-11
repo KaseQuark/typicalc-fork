@@ -40,7 +40,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         this.typeInferer = typeInferer;
         constraints = new ArrayList<>();
         if (FIRST_PREFIX.equals(prefix)) {
-            constraints.add(CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT);
+            constraints.add(AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT);
             numberGenerator.incrementPush();
         }
 
@@ -84,7 +84,7 @@ public class LatexCreatorConstraints implements StepVisitor {
     private void addConstraint(InferenceStep step) {
         String currentConstraint = createSingleConstraint(step.getConstraint());
         prevStep = prevStep.equals("") ? currentConstraint : prevStep + COMMA + currentConstraint;
-        currentConstraint = prefix + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
+        currentConstraint = prefix + AMPERSAND + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
                 + prevStep + LATEX_CURLY_RIGHT;
         constraints.add(currentConstraint);
         numberGenerator.incrementPush();
@@ -139,7 +139,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         // adds one step in which all let constraints are added to 'outer' constraint set
         String letConstraints = createLetConstraints(letD.getTypeInferer().getLetConstraints());
         prevStep = prevStep.equals("") ? letConstraints : prevStep + COMMA + letConstraints;
-        letConstraints = prefix + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
+        letConstraints = prefix + AMPERSAND + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
                 + prevStep + LATEX_CURLY_RIGHT;
         constraints.add(letConstraints);
         numberGenerator.push();
@@ -176,7 +176,7 @@ public class LatexCreatorConstraints implements StepVisitor {
             }
             StringBuilder latex = new StringBuilder();
             latex.append(constraintSets);
-            latex.append(SIGMA);
+            latex.append(AMPERSAND + SPLIT_BEGIN + SIGMA);
             latex.append(constraintSetIndex);
             latex.append("" + COLON + EQUALS + MGU + PAREN_LEFT + CONSTRAINT_SET);
             latex.append(constraintSetIndex);
@@ -193,24 +193,23 @@ public class LatexCreatorConstraints implements StepVisitor {
                 latex.append(UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT);
             }
             for (int i = unificationConstraints.size() - 1; i >= 0; i--) {
-                if (markError) {
+                if (markError && i == 0) {
                     latex.append(COLOR_RED);
                     latex.append(CURLY_LEFT);
                 }
+                latex.append(AMPERSAND);
                 latex.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType()).getLatex());
-                if (markError) {
+                if (markError && i == 0) {
                     latex.append(CURLY_RIGHT);
                 }
-                latex.append(AMPERSAND);
                 latex.append(EQUALS);
-                if (markError) {
+                if (markError && i == 0) {
                     latex.append(COLOR_RED);
                     latex.append(CURLY_LEFT);
                 }
                 latex.append(new LatexCreatorType(unificationConstraints.get(i).getSecondType()).getLatex());
-                if (markError) {
+                if (markError && i == 0) {
                     latex.append(CURLY_RIGHT);
-                    markError = false; // only highlight one constraint
                 }
                 if (i > 0) {
                     latex.append(COMMA);
@@ -218,6 +217,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                 }
             }
             if (!unificationConstraints.isEmpty()) {
+                // todo somehow this gets colored red too when an error occurs
                 latex.append(PAREN_RIGHT + LATEX_CURLY_RIGHT + LATEX_NEW_LINE);
             }
 
@@ -227,13 +227,14 @@ public class LatexCreatorConstraints implements StepVisitor {
                     latex.append(CIRC);
                 }
                 latex.append(BRACKET_LEFT);
-                latex.append(new LatexCreatorType(substitutions.get(i).getVariable()).getLatex());
                 latex.append(AMPERSAND);
+                latex.append(new LatexCreatorType(substitutions.get(i).getVariable()).getLatex());
                 latex.append(SUBSTITUTION_SIGN);
                 latex.append(new LatexCreatorType(substitutions.get(i).getType()).getLatex());
                 latex.append(BRACKET_RIGHT);
                 latex.append(LATEX_NEW_LINE);
             }
+            latex.append(SPLIT_END);
             steps.add(latex.toString());
         }
         return steps;
@@ -247,7 +248,6 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
             latex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
-            latex.append(AMPERSAND);
             latex.append(SUBSTITUTION_SIGN);
             latex.append(new LatexCreatorType(substitution.getType()).getLatex());
             latex.append(COMMA);
