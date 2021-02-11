@@ -1,4 +1,4 @@
-package edu.kit.typicalc.view.content.typeinferencecontent;
+package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 public final class LatexCreatorConstants {
     private LatexCreatorConstants() {

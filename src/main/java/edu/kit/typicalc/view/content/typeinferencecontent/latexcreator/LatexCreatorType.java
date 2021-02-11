@@ -1,4 +1,4 @@
-package edu.kit.typicalc.view.content.typeinferencecontent;
+package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import edu.kit.typicalc.model.type.FunctionType;
 import edu.kit.typicalc.model.type.NamedType;
@@ -6,7 +6,7 @@ import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
 import edu.kit.typicalc.model.type.TypeVisitor;
 
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
 /**
  * Generates LaTeX code for types.

@@ -145,6 +145,6 @@ mjx-container {\
     }
 };
 // disable MathJax context menu
-window.addEventListener("contextmenu", function (event) {
-    event.stopPropagation();
-}, true);
+// window.addEventListener("contextmenu", function (event) {
+//     event.stopPropagation();
+// }, true);

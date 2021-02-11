@@ -11,6 +11,7 @@ import com.vaadin.flow.router.PageTitle;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
 
 import java.util.List;
 
@@ -47,7 +48,6 @@ public class TypeInferenceView extends VerticalLayout
         Scroller scroller = new Scroller(content);
         scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
-//        setPadding(false);
         scroller.getStyle().set("margin", "0px");
         setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
@@ -56,7 +56,7 @@ public class TypeInferenceView extends VerticalLayout
     }
 
     private void setContent() {
-        // todo implement correctly
+        // todo maybe swap
         unification = new MathjaxUnification(lc.getUnification());
         tree = new MathjaxProofTree(lc.getTree());
         content.add(unification, tree);

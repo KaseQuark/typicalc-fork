@@ -1,4 +1,4 @@
-package edu.kit.typicalc.view.content.typeinferencecontent;
+package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import edu.kit.typicalc.model.*;
 import edu.kit.typicalc.model.step.*;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Optional;
 
 // todo javadoc
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
 public class LatexCreatorConstraints implements StepVisitor {
 

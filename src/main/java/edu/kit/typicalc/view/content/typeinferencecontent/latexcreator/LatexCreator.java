@@ -1,4 +1,4 @@
-package edu.kit.typicalc.view.content.typeinferencecontent;
+package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
@@ -9,7 +9,7 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 import java.util.List;
 import java.util.Map;
 
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
 /**
  * Generates LaTeX-code from a TypeInfererInterface object. Two mostly independent pie-
@@ -29,7 +29,7 @@ public class LatexCreator implements StepVisitor {
      *
      * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
      */
-    protected LatexCreator(TypeInfererInterface typeInferer) {
+    public LatexCreator(TypeInfererInterface typeInferer) {
         this(typeInferer, true);
     }
 
@@ -39,7 +39,7 @@ public class LatexCreator implements StepVisitor {
      * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
      * @param stepLabels turns step labels on (true) or off (false)
      */
-    protected LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
+    public LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
         this.typeInferer = typeInferer;
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
@@ -52,7 +52,7 @@ public class LatexCreator implements StepVisitor {
      *
      * @return the LaTeX-code for the proof tree
      */
-    protected String getTree() {
+    public String getTree() {
         return TREE_BEGIN + NEW_LINE + tree.toString() + TREE_END;
     }
 
@@ -61,11 +61,11 @@ public class LatexCreator implements StepVisitor {
      *
      * @return the LaTeX-code for constraints and unification
      */
-    protected String[] getUnification() {
+    public String[] getUnification() {
         return constraintsCreator.getEverything().toArray(new String[0]);
     }
 
-    protected List<Integer> getTreeNumbers() {
+    public List<Integer> getTreeNumbers() {
         return constraintsCreator.getTreeNumbers();
     }
 
@@ -74,7 +74,7 @@ public class LatexCreator implements StepVisitor {
      *
      * @return the packages needed for the LaTeX-code from getTree() and getUnification() to work
      */
-    protected String getLatexPackages() {
+    public String getLatexPackages() {
         return BUSSPROOFS;
     } // todo implement
 

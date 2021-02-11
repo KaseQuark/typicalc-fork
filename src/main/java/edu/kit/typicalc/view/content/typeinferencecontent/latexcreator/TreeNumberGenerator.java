@@ -1,4 +1,4 @@
-package edu.kit.typicalc.view.content.typeinferencecontent;
+package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import java.util.ArrayList;
 import java.util.Collections;

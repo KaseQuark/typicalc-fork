@@ -1,8 +1,8 @@
-package edu.kit.typicalc.view.content.typeinferencecontent;
+package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import edu.kit.typicalc.model.term.*;
 
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.*;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
 /**
  * Generates LaTeX code for lambda terms.

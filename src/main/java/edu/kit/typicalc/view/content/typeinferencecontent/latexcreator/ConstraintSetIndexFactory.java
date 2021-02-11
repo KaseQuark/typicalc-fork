@@ -1,9 +1,9 @@
-package edu.kit.typicalc.view.content.typeinferencecontent;
+package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.CURLY_LEFT;
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.CURLY_RIGHT;
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.LET;
-import static edu.kit.typicalc.view.content.typeinferencecontent.LatexCreatorConstants.UNDERSCORE;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.CURLY_LEFT;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.CURLY_RIGHT;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.LET;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.UNDERSCORE;
 
 /**
  * A constraint set index factory is used to create consecutive indices for multiple (let-) constraint sets
