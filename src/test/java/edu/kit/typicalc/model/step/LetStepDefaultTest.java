@@ -9,10 +9,11 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class LetStepDefaultTest {
     static InferenceStep premise = null;
@@ -23,7 +24,7 @@ class LetStepDefaultTest {
     static TestTypeInfererLet typeInferer = null;
     @BeforeAll
     static void setUp() {
-        Map<VarTerm, TypeAbstraction> map = new HashMap<>();
+        Map<VarTerm, TypeAbstraction> map = new LinkedHashMap<>();
         VarTerm term = new VarTerm("test");
         namedType = new NamedType("testType");
         typeAbstraction = new TypeAbstraction(namedType);

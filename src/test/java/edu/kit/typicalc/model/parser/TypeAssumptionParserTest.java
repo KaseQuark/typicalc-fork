@@ -5,7 +5,7 @@ import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static edu.kit.typicalc.model.type.NamedType.BOOLEAN;
@@ -17,7 +17,7 @@ class TypeAssumptionParserTest {
     @Test
     void simpleType() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("a", "int");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
@@ -31,7 +31,7 @@ class TypeAssumptionParserTest {
     @Test
     void typeVariablesOneDigitIndex() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("x", "t1");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
@@ -41,7 +41,7 @@ class TypeAssumptionParserTest {
         assertEquals(new VarTerm("x"), assumption.getKey());
         assertEquals(new TypeAbstraction(new TypeVariable(TypeVariableKind.USER_INPUT, 1)), assumption.getValue());
 
-        HashMap<String, String> assumptions2 = new HashMap<>();
+        Map<String, String> assumptions2 = new LinkedHashMap<>();
         assumptions2.put("x", "t001");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type2 = parser.parse(assumptions2);
         assertTrue(type.isOk());
@@ -55,7 +55,7 @@ class TypeAssumptionParserTest {
     @Test
     void typeVariablesMultipleDigitIndex() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("x", "t123456");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
@@ -69,7 +69,7 @@ class TypeAssumptionParserTest {
     @Test
     void namedTypeStartingWithT() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("x", "tau1");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
@@ -83,7 +83,7 @@ class TypeAssumptionParserTest {
     @Test
     void functionType() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("id", "int -> int");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
@@ -93,7 +93,7 @@ class TypeAssumptionParserTest {
         assertEquals(new VarTerm("id"), assumption.getKey());
         assertEquals(new TypeAbstraction(new FunctionType(INT, INT)), assumption.getValue());
 
-        HashMap<String, String> assumptions2 = new HashMap<>();
+        Map<String, String> assumptions2 = new LinkedHashMap<>();
         assumptions2.put("f", "int -> int -> int");
         type = parser.parse(assumptions2);
         if (type.isError()) {
@@ -115,7 +115,7 @@ class TypeAssumptionParserTest {
     @Test
     void functionTypeWithVariables() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("fun", "t0 -> t0");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
@@ -130,7 +130,7 @@ class TypeAssumptionParserTest {
     @Test
     void complicatedTypes() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("id", "(int -> int) -> (boolean -> boolean)");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         if (type.isError()) {
@@ -148,7 +148,7 @@ class TypeAssumptionParserTest {
                         new FunctionType(BOOLEAN, BOOLEAN)
                 )), assumption.getValue());
         parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions2 = new HashMap<>();
+        Map<String, String> assumptions2 = new LinkedHashMap<>();
         assumptions2.put("id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
         type = parser.parse(assumptions2);
         if (type.isError()) {
@@ -178,7 +178,7 @@ class TypeAssumptionParserTest {
     @Test
     void longFunction() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        HashMap<String, String> assumptions = new HashMap<>();
+        Map<String, String> assumptions = new LinkedHashMap<>();
         assumptions.put("fun", "(a -> b -> c) -> d");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());

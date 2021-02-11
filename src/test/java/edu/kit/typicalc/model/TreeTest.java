@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class TreeTest {
 
-    private static final Map<VarTerm, TypeAbstraction> TYPE_ASSUMPTIONS = new HashMap<>();
+    private static final Map<VarTerm, TypeAbstraction> TYPE_ASSUMPTIONS = new LinkedHashMap<>();
     private static final ConstTerm CONST = new IntegerTerm(10);
     private static final VarTerm VAR = new VarTerm("var");
     private static final AbsTerm ABS = new AbsTerm(VAR, VAR);
@@ -46,7 +46,7 @@ class TreeTest {
 
     @Test
     void missingTypeAssumptionForVar() {
-        Map<VarTerm, TypeAbstraction> ass = new HashMap<>();
+        Map<VarTerm, TypeAbstraction> ass = new LinkedHashMap<>();
         assertThrows(IllegalStateException.class, () -> {
                 new Tree(ass, VAR);
         });
@@ -87,7 +87,7 @@ class TreeTest {
 
         Tree tree = new Tree(TYPE_ASSUMPTIONS, ABS);
 
-        Map<VarTerm, TypeAbstraction> varTypeAss = new HashMap<>(TYPE_ASSUMPTIONS);
+        Map<VarTerm, TypeAbstraction> varTypeAss = new LinkedHashMap<>(TYPE_ASSUMPTIONS);
         varTypeAss.put(VAR, new TypeAbstraction(variable2));
         Conclusion varConclusion = new Conclusion(varTypeAss, VAR, variable3);
         Constraint varConstraint = new Constraint(variable2, variable3);

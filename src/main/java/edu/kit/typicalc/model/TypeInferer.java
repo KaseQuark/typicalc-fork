@@ -7,12 +7,7 @@ import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.model.type.TypeVariableKind;
 
-import java.util.ArrayDeque;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * The type inferer is responsible for the whole type inference of a given lambda term, taking
@@ -64,7 +59,7 @@ public class TypeInferer implements TypeInfererInterface {
         TypeVariableFactory typeVarFactory = new TypeVariableFactory(TypeVariableKind.GENERATED_TYPE_ASSUMPTION);
         Set<VarTerm> freeVariables = lambdaTerm.getFreeVariables();
 
-        Map<VarTerm, TypeAbstraction> generatedTypeAss = new HashMap<>();
+        Map<VarTerm, TypeAbstraction> generatedTypeAss = new LinkedHashMap<>();
         for (VarTerm varTerm : freeVariables) {
             generatedTypeAss.put(varTerm, new TypeAbstraction(typeVarFactory.nextTypeVariable()));
         }

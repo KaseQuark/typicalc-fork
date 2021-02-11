@@ -9,14 +9,14 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ConclusionTest {
 
-    private static final Map<VarTerm, TypeAbstraction> TYPE_ASSUMPTIONS = new HashMap<>();
+    private static final Map<VarTerm, TypeAbstraction> TYPE_ASSUMPTIONS = new LinkedHashMap<>();
     private static final LambdaTerm LAMBDA_TERM = new VarTerm("var");
     private static final Type TYPE = new NamedType("type");
 
