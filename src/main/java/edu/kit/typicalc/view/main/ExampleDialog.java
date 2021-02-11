@@ -2,7 +2,7 @@ package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -25,7 +25,7 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
             List.of("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "(λx.x x) (λx.x x)",
                     "(λx.λy.y (x y)) (λz. λa. z g a)", "let f = λx. let g = λy. y in g x in f 3",
                     "let f = λx. let g = λy.5 5 in g x in f 3");
-    private final Paragraph instruction;
+    private final H3 instruction;
 
     /**
      * Creates a new ExampleDialog with a callback method that will receive the selected example.
@@ -34,7 +34,7 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
      */
     protected ExampleDialog(Consumer<String> callback) {
         VerticalLayout layout = new VerticalLayout();
-        instruction = new Paragraph();
+        instruction = new H3();
         layout.add(instruction);
         for (String term : EXAMPLES) {
             Button button = new Button(term);
