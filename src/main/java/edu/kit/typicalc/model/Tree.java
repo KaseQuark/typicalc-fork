@@ -103,13 +103,13 @@ public class Tree implements TermVisitorTree {
     public InferenceStep visit(AppTerm appTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         Type leftType = typeVarFactory.nextTypeVariable();
         Type rightType = typeVarFactory.nextTypeVariable();
-        InferenceStep leftPremise = appTerm.getFunction().accept(this, typeAssumptions, leftType);
-
-        InferenceStep rightPremise = appTerm.getParameter().accept(this, typeAssumptions, rightType);
 
         Type function = new FunctionType(rightType, conclusionType);
         Constraint newConstraint = new Constraint(leftType, function);
         constraints.add(newConstraint);
+
+        InferenceStep leftPremise = appTerm.getFunction().accept(this, typeAssumptions, leftType);
+        InferenceStep rightPremise = appTerm.getParameter().accept(this, typeAssumptions, rightType);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, appTerm, conclusionType);
         return stepFactory.createAppStep(leftPremise, rightPremise, conclusion, newConstraint);
@@ -123,11 +123,12 @@ public class Tree implements TermVisitorTree {
         extendedTypeAssumptions.put(absTerm.getVariable(), assAbs);
 
         Type premiseType = typeVarFactory.nextTypeVariable();
-        InferenceStep premise = absTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
 
         Type function = new FunctionType(assType, premiseType);
         Constraint newConstraint = new Constraint(conclusionType, function);
         constraints.add(newConstraint);
+
+        InferenceStep premise = absTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, absTerm, conclusionType);
         return stepFactory.createAbsStep(premise, conclusion, newConstraint);
@@ -159,10 +160,10 @@ public class Tree implements TermVisitorTree {
                     typeInfererLet.getType().orElseThrow(IllegalStateException::new), extendedTypeAssumptions);
             extendedTypeAssumptions.put(letTerm.getVariable(), newTypeAbstraction);
 
-            premise = letTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
-
             constraints.add(newConstraint);
             constraints.addAll(typeInfererLet.getLetConstraints());
+
+            premise = letTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
         } else {
             premise = new EmptyStep();
             failedSubInference = true;
@@ -195,5 +196,23 @@ public class Tree implements TermVisitorTree {
 
         Conclusion conclusion = new Conclusion(typeAssumptions, varTerm, conclusionType);
         return stepFactory.createVarStep(premiseAbs, instantiation, conclusion, newConstraint);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Tree tree = (Tree) o;
+        return failedSubInference == tree.failedSubInference && firstTypeVariable.equals(tree.firstTypeVariable)
+                && firstInferenceStep.equals(tree.firstInferenceStep) && constraints.equals(tree.constraints);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(firstTypeVariable, firstInferenceStep, constraints, failedSubInference);
     }
 }

@@ -6,6 +6,7 @@ import edu.kit.typicalc.model.type.TypeVariable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Models the final result of the type inference with the most general unifier (mgu) and
@@ -84,5 +85,22 @@ public class TypeInferenceResult {
      */
     protected Type getType() {
         return finalType;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeInferenceResult that = (TypeInferenceResult) o;
+        return mgu.equals(that.mgu) && finalType.equals(that.finalType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(mgu, finalType);
     }
 }
