@@ -14,6 +14,9 @@ public class TreeNumberGenerator {
     }
 
     protected void push() {
+        if (current < 0) {
+            throw new IllegalStateException("The first step must add a step to the tree");
+        }
         numbers.add(current);
     }
 
