@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LatexCreatorConstraintsTest {
     private static final String EMPTY_CONSTRAINT_SET =
-            ALIGN_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT + ALIGN_END;
+            ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT + ALIGN_END;
 
     private final Model model = new ModelImpl();
     private TypeInfererInterface typeInferer;
@@ -25,7 +25,7 @@ class LatexCreatorConstraintsTest {
         List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
 
         List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
+                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
                         + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT + ALIGN_END);
 
         for (int i = 0; i < actual.size(); i++) {
@@ -40,7 +40,7 @@ class LatexCreatorConstraintsTest {
         List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
 
         List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
+                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
                         + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}"
                         + LATEX_CURLY_RIGHT + ALIGN_END);
 
@@ -56,7 +56,7 @@ class LatexCreatorConstraintsTest {
         List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
 
         List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{2}" + EQUALS
+                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{2}" + EQUALS
                         + TREE_VARIABLE + "_{3}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{1}"
                         + LATEX_CURLY_RIGHT + ALIGN_END);
 
@@ -72,7 +72,7 @@ class LatexCreatorConstraintsTest {
         List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
 
         List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
+                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
                         + MONO_TEXT + "{int}" + LATEX_CURLY_RIGHT + ALIGN_END);
 
         for (int i = 0; i < actual.size(); i++) {
