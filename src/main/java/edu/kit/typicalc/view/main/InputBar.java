@@ -57,7 +57,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
-        inputField.setMaxLength(MAX_INPUT_LENGTH); // TODO: perhaps remove the error message? more than 1000 can't be entered now
+        inputField.setMaxLength(MAX_INPUT_LENGTH);
+        // TODO: perhaps remove the error message? more than 1000 can't be entered now
         // attach a listener that replaces \ with λ
         // JavaScript is used because Vaadin does not have APIs for selectionStart/selectionEnd
         // and this will be much faster than a bunch of network round trips per character entered!
