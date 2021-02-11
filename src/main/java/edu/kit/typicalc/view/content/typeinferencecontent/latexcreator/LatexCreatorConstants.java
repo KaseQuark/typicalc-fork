@@ -8,6 +8,7 @@ public final class LatexCreatorConstants {
     protected static final String LET = "let";
     protected static final String IN = "in";
     protected static final String MGU = "mgu";
+    protected static final String UNIFY = "unify";
     protected static final String CONSTRAINT_SET = "C";
 
     protected static final String DOLLAR_SIGN = "$";
@@ -40,9 +41,9 @@ public final class LatexCreatorConstants {
     protected static final String GENERATED_ASSUMPTION_VARIABLE = "\\beta";
     protected static final String USER_VARIABLE = "\\tau";
     protected static final String SIGMA = "\\sigma";
-    protected static final String GAMMA = "\\Gamma";
 
     protected static final String LATEX_NEW_LINE = "\\\\";
+    protected static final String CIRC = "\\circ";
     protected static final String PHANTOM_X = "\\phantom{x}";
     protected static final String SUBSTITUTION_SIGN = "\\mathrel{\\unicode{x21E8}}";
     protected static final String COLOR_RED = "\\color{#f00}";

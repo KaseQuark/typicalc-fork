@@ -182,26 +182,22 @@ public class LatexCreatorConstraints implements StepVisitor {
             latex.append(constraintSetIndex);
             latex.append("" + PAREN_RIGHT + EQUALS);
 
-            List<Substitution> substitutions = subs.unwrap();
-            for (Substitution s : substitutions) {
-                latex.append(new LatexCreatorType(s.getVariable()).getLatex());
-                latex.append(AMPERSAND);
-                latex.append(SUBSTITUTION_SIGN);
-                latex.append(new LatexCreatorType(s.getType()).getLatex());
-                latex.append(LATEX_NEW_LINE);
-            }
+
             boolean markError = error.isPresent();
             error.ifPresent(latex::append); // TODO: translation
             if (error.isPresent()) {
                 latex.append(LATEX_NEW_LINE);
             }
             List<Constraint> unificationConstraints = step.getConstraints();
-            for (Constraint c : unificationConstraints) {
+            if (!unificationConstraints.isEmpty()) {
+                latex.append(UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT);
+            }
+            for (int i = unificationConstraints.size() - 1; i >= 0; i--) {
                 if (markError) {
                     latex.append(COLOR_RED);
                     latex.append(CURLY_LEFT);
                 }
-                latex.append(new LatexCreatorType(c.getFirstType()).getLatex());
+                latex.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType()).getLatex());
                 if (markError) {
                     latex.append(CURLY_RIGHT);
                 }
@@ -211,11 +207,31 @@ public class LatexCreatorConstraints implements StepVisitor {
                     latex.append(COLOR_RED);
                     latex.append(CURLY_LEFT);
                 }
-                latex.append(new LatexCreatorType(c.getSecondType()).getLatex());
+                latex.append(new LatexCreatorType(unificationConstraints.get(i).getSecondType()).getLatex());
                 if (markError) {
                     latex.append(CURLY_RIGHT);
                     markError = false; // only highlight one constraint
                 }
+                if (i > 0) {
+                    latex.append(COMMA);
+                    latex.append(LATEX_NEW_LINE);
+                }
+            }
+            if (!unificationConstraints.isEmpty()) {
+                latex.append(PAREN_RIGHT + LATEX_CURLY_RIGHT + LATEX_NEW_LINE);
+            }
+
+            List<Substitution> substitutions = subs.unwrap();
+            for (int i = substitutions.size() - 1; i >= 0; i--) {
+                if (!unificationConstraints.isEmpty() || i != substitutions.size() - 1) {
+                    latex.append(CIRC);
+                }
+                latex.append(BRACKET_LEFT);
+                latex.append(new LatexCreatorType(substitutions.get(i).getVariable()).getLatex());
+                latex.append(AMPERSAND);
+                latex.append(SUBSTITUTION_SIGN);
+                latex.append(new LatexCreatorType(substitutions.get(i).getType()).getLatex());
+                latex.append(BRACKET_RIGHT);
                 latex.append(LATEX_NEW_LINE);
             }
             steps.add(latex.toString());
