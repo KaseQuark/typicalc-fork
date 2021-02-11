@@ -76,13 +76,15 @@ public class TypeInferenceView extends VerticalLayout
 
     @Override
     public void firstStepButton() {
-        currentStep = currentStep > tree.getStepCount()  && tree.getStepCount() > 0 ? tree.getStepCount() - 1 : 0;
+        int treeEnd = treeNumbers.indexOf(tree.getStepCount() - 1);
+        currentStep = currentStep > treeEnd && tree.getStepCount() > 0 ? treeEnd : 0;
         refreshElements();
     }
 
     @Override
     public void lastStepButton() {
-        currentStep = currentStep < tree.getStepCount() - 1 ? tree.getStepCount() - 1 : unification.getStepCount() - 1;
+        int treeEnd = treeNumbers.indexOf(tree.getStepCount() - 1);
+        currentStep = currentStep < treeEnd ? treeEnd : unification.getStepCount() - 1;
         refreshElements();
     }
 
