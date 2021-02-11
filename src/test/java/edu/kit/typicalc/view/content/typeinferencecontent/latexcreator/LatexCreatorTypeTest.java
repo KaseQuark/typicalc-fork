@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LatexCreatorTypeTest {
 
-    private Model model = new ModelImpl();
+    private final Model model = new ModelImpl();
     private TypeInfererInterface typeInferer;
 
     @Test
