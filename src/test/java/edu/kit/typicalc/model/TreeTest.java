@@ -8,8 +8,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TreeTest {
 
@@ -74,9 +73,9 @@ class TreeTest {
         assertEquals(expectedStep, tree.getFirstInferenceStep());
 
         List<Constraint> constraints = new ArrayList<>();
+        constraints.add(appConstraint);
         constraints.add(varLeftConstraint);
         constraints.add(varRightConstraint);
-        constraints.add(appConstraint);
         assertEquals(constraints, tree.getConstraints());
     }
 
@@ -101,8 +100,8 @@ class TreeTest {
         assertEquals(expectedStep, tree.getFirstInferenceStep());
 
         List<Constraint> constraints = new ArrayList<>();
-        constraints.add(varConstraint);
         constraints.add(absConstraint);
+        constraints.add(varConstraint);
         assertEquals(constraints, tree.getConstraints());
     }
 
@@ -124,5 +123,45 @@ class TreeTest {
         InferenceStep expectedStep = new VarStepDefault(TYPE_ABS, TYPE, conclusion, constraint);
         assertEquals(expectedStep, tree.getFirstInferenceStep());
         assertEquals(Collections.singletonList(constraint), tree.getConstraints());
+    }
+
+    @Test
+    void visitLet() {
+        VarTerm x = new VarTerm("x");
+        VarTerm f = new VarTerm("f");
+        TypeVariable generated1 = new TypeVariable(TypeVariableKind.GENERATED_TYPE_ASSUMPTION, 1);
+        TypeVariable variable2 = new TypeVariable(TypeVariableKind.TREE, 2);
+        TypeVariable variable3 = new TypeVariable(TypeVariableKind.TREE, 3);
+        TypeAbstraction generated1Abs = new TypeAbstraction(generated1);
+
+        Map<VarTerm, TypeAbstraction> typeAssumptions = new LinkedHashMap<>();
+        typeAssumptions.put(x, generated1Abs);
+
+        LetTerm letTerm = new LetTerm(f, x, f);
+        Tree tree = new Tree(typeAssumptions, letTerm);
+
+        TypeVariableFactory refFac = new TypeVariableFactory(TypeVariableKind.TREE);
+        refFac.nextTypeVariable();
+        TypeInfererLet typeInfererLet = new TypeInfererLet(x, typeAssumptions, refFac);
+
+
+        Map<VarTerm, TypeAbstraction> varRightTypeAss = new LinkedHashMap<>(typeAssumptions);
+        varRightTypeAss.put(f, generated1Abs);
+        Conclusion varRightConclusion = new Conclusion(varRightTypeAss, f, variable3);
+        Constraint varRightConstraint = new Constraint(variable3, generated1);
+        InferenceStep varRightStep = new VarStepWithLet(generated1Abs, generated1,
+                varRightConclusion, varRightConstraint);
+
+        Conclusion conclusion = new Conclusion(typeAssumptions, letTerm, tree.getFirstTypeVariable());
+        Constraint letConstraint = new Constraint(tree.getFirstTypeVariable(), variable3);
+        InferenceStep expectedStep = new LetStepDefault(conclusion, letConstraint, varRightStep, typeInfererLet);
+
+        assertEquals(expectedStep, tree.getFirstInferenceStep());
+
+        List<Constraint> constraints = new ArrayList<>();
+        constraints.add(letConstraint);
+        constraints.add(new Constraint(variable2, generated1));
+        constraints.add(varRightConstraint);
+        assertEquals(constraints, tree.getConstraints());
     }
 }

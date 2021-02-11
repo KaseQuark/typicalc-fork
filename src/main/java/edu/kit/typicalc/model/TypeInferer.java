@@ -87,4 +87,21 @@ public class TypeInferer implements TypeInfererInterface {
     public Optional<Type> getType() {
         return typeInfResult.map(TypeInferenceResult::getType);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeInferer that = (TypeInferer) o;
+        return tree.equals(that.tree) && unification.equals(that.unification) && typeInfResult.equals(that.typeInfResult);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tree, unification, typeInfResult);
+    }
 }

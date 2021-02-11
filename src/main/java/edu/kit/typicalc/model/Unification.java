@@ -4,12 +4,7 @@ import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.UnificationActions;
 import edu.kit.typicalc.util.Result;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Models the unification of a type inference with its individual steps.
@@ -82,4 +77,20 @@ public class Unification {
         return substitutionsResult;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Unification that = (Unification) o;
+        return steps.equals(that.steps) && substitutionsResult.equals(that.substitutionsResult);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(steps, substitutionsResult);
+    }
 }

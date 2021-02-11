@@ -6,11 +6,7 @@ import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Instances of this implementation of TypeInfererInterface are used to execute the sub-inference starting in let steps.
@@ -91,5 +87,22 @@ public class TypeInfererLet implements TypeInfererInterface {
     @Override
     public Optional<Type> getType() {
         return typeInfResult.map(TypeInferenceResult::getType);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        TypeInfererLet that = (TypeInfererLet) o;
+        return tree.equals(that.tree) && unification.equals(that.unification) && typeInfResult.equals(that.typeInfResult);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(tree, unification, typeInfResult);
     }
 }
