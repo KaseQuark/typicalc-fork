@@ -52,7 +52,9 @@ public class Unification {
                 substitutions.add(substitution.get());
             }
             // add new constraints to the queue
-            constraints.addAll(thisStep.getConstraints());
+            for (Constraint constraint : thisStep.getConstraints()) {
+                constraints.addFirst(constraint);
+            }
             steps.add(new UnificationStep(new Result<>(new ArrayList<>(substitutions)), new ArrayList<>(constraints)));
         }
 
