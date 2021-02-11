@@ -10,7 +10,7 @@ window.MathJax = {
         inlineMath: [['$', '$'], ['\\(', '\\)']]
     },
     svg: {
-        displayAlign: "left" // TODO: does not actually work
+        displayAlign: "left"
     },
     startup: {
         ready: () => {

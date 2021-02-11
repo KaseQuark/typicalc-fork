@@ -57,7 +57,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField = new TextField();
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
-        inputField.setMaxLength(1000); // TODO: perhaps remove the error message? more than 1000 can't be entered now
+        inputField.setMaxLength(MAX_INPUT_LENGTH); // TODO: perhaps remove the error message? more than 1000 can't be entered now
         // attach a listener that replaces \ with λ
         // JavaScript is used because Vaadin does not have APIs for selectionStart/selectionEnd
         // and this will be much faster than a bunch of network round trips per character entered!
@@ -109,7 +109,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private void onTypeInferButtonClick(Consumer<Pair<String, Map<String, String>>> callback) {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
 
-        if (currentInput.length() < MAX_INPUT_LENGTH) {
+        if (currentInput.length() <= MAX_INPUT_LENGTH) {
             UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
             callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
         } else {
