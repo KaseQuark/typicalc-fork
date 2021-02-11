@@ -97,7 +97,8 @@ public class TypeInferer implements TypeInfererInterface {
             return false;
         }
         TypeInferer that = (TypeInferer) o;
-        return tree.equals(that.tree) && unification.equals(that.unification) && typeInfResult.equals(that.typeInfResult);
+        return tree.equals(that.tree) && unification.equals(that.unification)
+                && typeInfResult.equals(that.typeInfResult);
     }
 
     @Override

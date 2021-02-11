@@ -25,7 +25,8 @@ class LatexCreatorTypeTest {
     @Test
     void generatedTypeTest() {
         typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
-        assertEquals(GENERATED_ASSUMPTION_VARIABLE + "_{1}", new LatexCreatorType(typeInferer.getType().get()).getLatex());
+        assertEquals(GENERATED_ASSUMPTION_VARIABLE + "_{1}",
+                new LatexCreatorType(typeInferer.getType().get()).getLatex());
     }
 
     @Test
