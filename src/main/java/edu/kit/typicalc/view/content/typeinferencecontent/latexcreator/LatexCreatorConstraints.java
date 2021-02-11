@@ -48,15 +48,17 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     protected List<String> getEverything() {
         List<String> result = new ArrayList<>(constraints);
+
+        String constraintSets = constraints.get(constraints.size() - 1) + LATEX_NEW_LINE;
         if (typeInferer.getUnificationSteps().isPresent()) {
-            generateUnification().forEach(step -> {
+            generateUnification(constraintSets).forEach(step -> {
                 result.add(step);
                 numberGenerator.push();
             });
             typeInferer.getMGU().ifPresent(mgu -> {
-                result.add(generateMGU());
+                result.add(generateMGU(constraintSets));
                 numberGenerator.push();
-                result.add(generateMGU() + LATEX_NEW_LINE
+                result.add(generateMGU(constraintSets) + LATEX_NEW_LINE
                             + new LatexCreatorType(typeInferer.getType().get()).getLatex());
                 numberGenerator.push();
             });
@@ -158,7 +160,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         // empty steps dont have constraints associated with them
     }
 
-    private List<String> generateUnification() {
+    private List<String> generateUnification(String constraintSets) {
         List<String> steps = new ArrayList<>();
         // TODO: check if unification is present
         List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps()
@@ -172,7 +174,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                 subs = step.getSubstitutions(); // TODO: what if first step fails?
             }
             StringBuilder latex = new StringBuilder();
-            latex.append(prefix);
+            latex.append(constraintSets);
             List<Substitution> substitutions = subs.unwrap();
             for (Substitution s : substitutions) {
                 latex.append(new LatexCreatorType(s.getVariable()).getLatex());
@@ -215,9 +217,10 @@ public class LatexCreatorConstraints implements StepVisitor {
     }
 
 
-    private String generateMGU() {
+    private String generateMGU(String constraintSets) {
         StringBuilder latex = new StringBuilder();
-        latex.append(prefix);
+        latex.append(constraintSets);
+        latex.append(SPACE);
         latex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
             latex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
