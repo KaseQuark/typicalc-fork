@@ -4,6 +4,7 @@ import edu.kit.typicalc.model.type.FunctionType;
 import edu.kit.typicalc.model.type.Type;
 import edu.kit.typicalc.model.type.TypeVariable;
 import edu.kit.typicalc.model.type.TypeVariableKind;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -70,5 +71,10 @@ class TypeInferenceResultTest {
 
         Type expectedType = new FunctionType(A_2, new FunctionType(new FunctionType(A_2, A_5), A_5));
         assertEquals(expectedType, result.getType());
+    }
+
+    @Test
+    void equalsTest() {
+        EqualsVerifier.forClass(TypeInferenceResult.class).usingGetClass().verify();
     }
 }

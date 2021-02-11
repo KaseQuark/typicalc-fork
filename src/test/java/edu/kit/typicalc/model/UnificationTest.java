@@ -4,6 +4,7 @@ import edu.kit.typicalc.model.type.FunctionType;
 import edu.kit.typicalc.model.type.TypeVariable;
 import edu.kit.typicalc.model.type.TypeVariableKind;
 import edu.kit.typicalc.util.Result;
+import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayDeque;
@@ -100,5 +101,10 @@ class UnificationTest {
         assertEquals(new UnificationStep(new Result<>(null,
                 UnificationError.INFINITE_TYPE
         ), new ArrayList<>()), steps.get(1));
+    }
+
+    @Test
+    void equalsTest() {
+        EqualsVerifier.forClass(Unification.class).usingGetClass().verify();
     }
 }
