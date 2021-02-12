@@ -37,8 +37,8 @@ class LatexCreatorConstraintsTest {
         List<String> expected = List.of(EMPTY_CONSTRAINT_SET,
                 ALIGN_BEGIN + constraintSet + ALIGN_END,
                 ALIGN_BEGIN + constraintSet + MGU_START + EQUALS + UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT + AMPERSAND
-                        + TREE_VARIABLE + "_{1}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + PAREN_RIGHT
-                        + LATEX_CURLY_RIGHT + SPLIT_END + ALIGN_END,
+                        + TREE_VARIABLE + "_{1}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT
+                        + PAREN_RIGHT + SPLIT_END + ALIGN_END,
                 ALIGN_BEGIN + constraintSet + MGU_START + mgu + ALIGN_END,
                 ALIGN_BEGIN + constraintSet + MGU_START + mgu + ALIGN_END,
                 ALIGN_BEGIN + constraintSet + MGU_START + mgu + LATEX_NEW_LINE + AMPERSAND + SIGMA + PAREN_LEFT
@@ -82,8 +82,8 @@ class LatexCreatorConstraintsTest {
                 ALIGN_BEGIN + constraintSet2 + ALIGN_END,
                 ALIGN_BEGIN + constraintSet2 + unify1 + COMMA + LATEX_NEW_LINE + AMPERSAND + TREE_VARIABLE + "_{1}"
                         + EQUALS + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}"
-                        + PAREN_RIGHT + LATEX_CURLY_RIGHT + SPLIT_END + ALIGN_END,
-                ALIGN_BEGIN + constraintSet2 + unify1 + PAREN_RIGHT + LATEX_CURLY_RIGHT + subs2 + SPLIT_END + ALIGN_END,
+                        + LATEX_CURLY_RIGHT + PAREN_RIGHT + SPLIT_END + ALIGN_END,
+                ALIGN_BEGIN + constraintSet2 + unify1 + LATEX_CURLY_RIGHT + PAREN_RIGHT + subs2 + SPLIT_END + ALIGN_END,
                 ALIGN_BEGIN + constraintSet2 + MGU_START + EQUALS + BRACKET_LEFT + AMPERSAND + TREE_VARIABLE + "_{3}"
                         + SUBSTITUTION_SIGN + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + BRACKET_RIGHT + subs2 + SPLIT_END
                         + ALIGN_END,

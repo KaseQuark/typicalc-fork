@@ -234,7 +234,7 @@ public class LatexCreatorConstraints implements StepVisitor {
             }
             if (!unificationConstraints.isEmpty()) {
                 // todo somehow this gets colored red too when an error occurs
-                latex.append(PAREN_RIGHT + LATEX_CURLY_RIGHT + LATEX_NEW_LINE);
+                latex.append(LATEX_CURLY_RIGHT + PAREN_RIGHT + LATEX_NEW_LINE);
             }
 
             List<Substitution> substitutions = subs.unwrap();
