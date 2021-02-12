@@ -189,10 +189,6 @@ public class LatexCreatorConstraints implements StepVisitor {
             latex.append(generateUnificationName());
 
             boolean markError = error.isPresent();
-            error.ifPresent(latex::append); // TODO: translation
-            if (error.isPresent()) {
-                latex.append(LATEX_NEW_LINE);
-            }
             List<Constraint> unificationConstraints = step.getConstraints();
             if (!unificationConstraints.isEmpty()) {
                 latex.append(UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT);
@@ -240,6 +236,10 @@ public class LatexCreatorConstraints implements StepVisitor {
                 latex.append(LATEX_NEW_LINE);
             }
             latex.append(SPLIT_END);
+            if (error.isPresent()) {
+                latex.append(LATEX_NEW_LINE + AMPERSAND);
+            }
+            error.ifPresent(latex::append); // TODO: translation
             steps.add(latex.toString());
         }
         return steps;
