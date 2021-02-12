@@ -2,12 +2,14 @@ package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
+import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
@@ -28,22 +30,25 @@ public class LatexCreator implements StepVisitor {
      * Generate the pieces of LaTeX-code from the type inferer.
      *
      * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
+     * @param translationProvider translation text provider for {@link UnificationError}
      */
-    public LatexCreator(TypeInfererInterface typeInferer) {
-        this(typeInferer, true);
+    public LatexCreator(TypeInfererInterface typeInferer, Function<UnificationError, String> translationProvider) {
+        this(typeInferer, true, translationProvider);
     }
 
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
      *
-     * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
-     * @param stepLabels turns step labels on (true) or off (false)
+     * @param typeInferer theTypeInfererInterface to create the LaTeX code from
+     * @param stepLabels turns step labels on or off
+     * @param translationProvider translation text provider for {@link UnificationError}
      */
-    public LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels) {
+    public LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels,
+                        Function<UnificationError, String> translationProvider) {
         this.tree = new StringBuilder();
         this.stepLabels = stepLabels;
         typeInferer.getFirstInferenceStep().accept(this);
-        this.constraintsCreator = new LatexCreatorConstraints(typeInferer);
+        this.constraintsCreator = new LatexCreatorConstraints(typeInferer, translationProvider);
     }
 
     /**

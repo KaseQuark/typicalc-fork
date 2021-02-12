@@ -25,7 +25,7 @@ class LatexCreatorConstraintsTest {
     @Test
     void singleVarDefaultConstraintTest() {
         typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
-        List<String> actual = new LatexCreatorConstraints(typeInferer).getEverything();
+        List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
         String constraintSet = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
                 + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT;
@@ -55,7 +55,7 @@ class LatexCreatorConstraintsTest {
     @Test
     void singleAbsDefaultConstraintTest() {
         typeInferer = model.getTypeInferer("λx.y", new HashMap<>()).unwrap();
-        List<String> actual = new LatexCreatorConstraints(typeInferer).getEverything();
+        List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
         String constraintSet1 = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
                 + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}" + LATEX_CURLY_RIGHT;
@@ -102,7 +102,7 @@ class LatexCreatorConstraintsTest {
     @Test
     void singleAppConstraintTest() {
         typeInferer = model.getTypeInferer("x y", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
+        List<String> expected = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
         List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
                 ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{2}" + EQUALS
@@ -118,7 +118,7 @@ class LatexCreatorConstraintsTest {
     @Test
     void singleConstConstraintTest() {
         typeInferer = model.getTypeInferer("5", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
+        List<String> expected = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
         List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
                 ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS

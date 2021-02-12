@@ -14,6 +14,7 @@ import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
 
 import java.util.List;
+import java.util.Locale;
 
 @PageTitle("TypeInferenceView")
 @CssImport("./styles/view/type-inference.css")
@@ -41,7 +42,10 @@ public class TypeInferenceView extends VerticalLayout
         setId(ID);
         setSizeFull();
         addAttachListener(this);
-        lc = new LatexCreator(typeInferer);
+        // TODO: document new translation function
+        // TODO: is Function<UnificationError, String> too limiting?
+        lc = new LatexCreator(typeInferer,
+                error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
         content = new Div();
         content.setId(CONTENT_ID);
         ControlPanel controlPanel = new ControlPanel(this, this);
