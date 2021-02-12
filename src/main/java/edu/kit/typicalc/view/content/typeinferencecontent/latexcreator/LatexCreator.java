@@ -127,8 +127,8 @@ public class LatexCreator implements StepVisitor {
         String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions());
         String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm()).getLatex();
         String type = generateTypeAbstraction(var.getTypeAbsInPremise());
-        return PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
-                + PAREN_RIGHT + EQUALS + type;
+        return DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
+                + PAREN_RIGHT + EQUALS + type + DOLLAR_SIGN;
     }
 
     private String generateTypeAbstraction(TypeAbstraction abs) {
@@ -178,8 +178,7 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(VarStepDefault varD) {
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
-        tree.insert(0, AXC + CURLY_LEFT + DOLLAR_SIGN + generateVarStepPremise(varD)
-                + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE);
+        tree.insert(0, AXC + CURLY_LEFT + generateVarStepPremise(varD) + CURLY_RIGHT + NEW_LINE);
     }
 
     @Override
@@ -190,9 +189,9 @@ public class LatexCreator implements StepVisitor {
         String premiseRight = DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
                 + DOLLAR_SIGN + NEW_LINE;
         String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + ALIGN_BEGIN
-                + generateVarStepPremise(varL)
-                + SPACE + LATEX_NEW_LINE + SPACE
-                + premiseRight
+                + generateVarStepPremise(varL).replace(DOLLAR_SIGN, "")
+                + SPACE + LATEX_NEW_LINE + SPACE // todo less replacement fixups
+                + premiseRight.replace(DOLLAR_SIGN, "")
                 + ALIGN_END + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, premiseLeft);
     }
