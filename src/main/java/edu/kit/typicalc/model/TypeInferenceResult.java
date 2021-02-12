@@ -78,7 +78,7 @@ public class TypeInferenceResult {
 
     /**
      * Returns the type that is the result of the type inference. It is obtained by applying
-     * the mgu to the type variable the type inference result was given in its construstor.
+     * the mgu to the type variable the type inference result was given in its constructor.
      * If no valid type can be found for the lambda term to type-infer, null is returned.
      *
      * @return the final type of the lambda term, null if there is no valid type

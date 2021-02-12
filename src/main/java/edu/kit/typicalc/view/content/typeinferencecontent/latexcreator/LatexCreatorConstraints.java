@@ -59,8 +59,7 @@ public class LatexCreatorConstraints implements StepVisitor {
             typeInferer.getMGU().ifPresent(mgu -> {
                 result.add(generateMGU(constraintSets));
                 numberGenerator.push();
-                result.add(generateMGU(constraintSets) + LATEX_NEW_LINE
-                            + new LatexCreatorType(typeInferer.getType().get()).getLatex());
+                result.add(generateMGU(constraintSets) + LATEX_NEW_LINE + generateFinalType());
                 numberGenerator.push();
             });
             // todo add some helpful text for the user
@@ -161,6 +160,16 @@ public class LatexCreatorConstraints implements StepVisitor {
         // empty steps dont have constraints associated with them
     }
 
+    private StringBuilder generateUnificationName() {
+        StringBuilder latex = new StringBuilder();
+        latex.append(SIGMA);
+        latex.append(constraintSetIndex);
+        latex.append("" + COLON + EQUALS + MGU + PAREN_LEFT + CONSTRAINT_SET);
+        latex.append(constraintSetIndex);
+        latex.append("" + PAREN_RIGHT + EQUALS);
+        return latex;
+    }
+
     private List<String> generateUnification(String constraintSets) {
         List<String> steps = new ArrayList<>();
 
@@ -176,12 +185,8 @@ public class LatexCreatorConstraints implements StepVisitor {
             }
             StringBuilder latex = new StringBuilder();
             latex.append(constraintSets);
-            latex.append(AMPERSAND + SPLIT_BEGIN + SIGMA);
-            latex.append(constraintSetIndex);
-            latex.append("" + COLON + EQUALS + MGU + PAREN_LEFT + CONSTRAINT_SET);
-            latex.append(constraintSetIndex);
-            latex.append("" + PAREN_RIGHT + EQUALS);
-
+            latex.append(AMPERSAND + SPLIT_BEGIN);
+            latex.append(generateUnificationName());
 
             boolean markError = error.isPresent();
             error.ifPresent(latex::append); // TODO: translation
@@ -244,18 +249,33 @@ public class LatexCreatorConstraints implements StepVisitor {
     private String generateMGU(String constraintSets) {
         StringBuilder latex = new StringBuilder();
         latex.append(constraintSets);
+        latex.append(AMPERSAND + SPLIT_BEGIN);
+        latex.append(generateUnificationName());
         latex.append(SPACE);
         latex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
+            latex.append(AMPERSAND);
             latex.append(new LatexCreatorType(substitution.getVariable()).getLatex());
             latex.append(SUBSTITUTION_SIGN);
             latex.append(new LatexCreatorType(substitution.getType()).getLatex());
             latex.append(COMMA);
             latex.append(LATEX_NEW_LINE);
-            latex.append(NEW_LINE);
         }));
-        latex.delete(latex.length() - (COMMA + LATEX_NEW_LINE + NEW_LINE).length(), latex.length());
+        latex.delete(latex.length() - (COMMA + LATEX_NEW_LINE).length(), latex.length());
         latex.append(BRACKET_RIGHT);
+        latex.append(SPLIT_END);
+        return latex.toString();
+    }
+
+    private String generateFinalType() {
+        StringBuilder latex = new StringBuilder();
+        latex.append(AMPERSAND);
+        latex.append(SIGMA);
+        latex.append(constraintSetIndex);
+        latex.append(PAREN_LEFT);
+        latex.append(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType()).getLatex());
+        latex.append("" + PAREN_RIGHT + EQUALS);
+        latex.append(new LatexCreatorType(typeInferer.getType().get()).getLatex());
         return latex.toString();
     }
 }
