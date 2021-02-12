@@ -31,7 +31,8 @@ class UnificationTest {
         Unification u = new Unification(constraints);
         List<UnificationStep> steps = u.getUnificationSteps();
         assertEquals(2, steps.size());
-        assertEquals(new UnificationStep(new Result<>(new ArrayList<>()), new ArrayList<>(initialConstraints)), steps.get(0));
+        assertEquals(new UnificationStep(new Result<>(new ArrayList<>()),
+                new ArrayList<>(initialConstraints)), steps.get(0));
         List<Substitution> substitutions = new ArrayList<>(List.of(new Substitution(a, new FunctionType(b, c))));
         assertEquals(new UnificationStep(new Result<>(
                 substitutions
@@ -52,7 +53,8 @@ class UnificationTest {
         Unification u = new Unification(constraints);
         List<UnificationStep> steps = u.getUnificationSteps();
         assertEquals(6, steps.size());
-        assertEquals(new UnificationStep(new Result<>(new ArrayList<>()), new ArrayList<>(initialConstraints)), steps.get(0));
+        assertEquals(new UnificationStep(new Result<>(new ArrayList<>()),
+                new ArrayList<>(initialConstraints)), steps.get(0));
 
         initialConstraints.removeFirst();
         List<Substitution> substitutions = new ArrayList<>(List.of(new Substitution(a, new FunctionType(b, c))));
@@ -97,7 +99,8 @@ class UnificationTest {
         Unification u = new Unification(constraints);
         List<UnificationStep> steps = u.getUnificationSteps();
         assertEquals(2, steps.size());
-        assertEquals(new UnificationStep(new Result<>(new ArrayList<>()), new ArrayList<>(initialConstraints)), steps.get(0));
+        assertEquals(new UnificationStep(new Result<>(new ArrayList<>()),
+                new ArrayList<>(initialConstraints)), steps.get(0));
         assertEquals(new UnificationStep(new Result<>(null,
                 UnificationError.INFINITE_TYPE
         ), new ArrayList<>()), steps.get(1));

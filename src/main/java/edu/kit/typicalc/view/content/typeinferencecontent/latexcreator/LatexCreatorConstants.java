@@ -1,5 +1,8 @@
 package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
+/**
+ * Provides a list of constants needed for the creation of the LaTeX code.
+ */
 public final class LatexCreatorConstants {
     private LatexCreatorConstants() {
     }

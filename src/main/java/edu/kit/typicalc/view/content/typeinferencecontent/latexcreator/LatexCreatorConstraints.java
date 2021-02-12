@@ -10,8 +10,10 @@ import java.util.Optional;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
-// todo javadoc
-
+/**
+ * Generates the LaTeX code needed for the MathjaxUnification element, namely the constraints, the unification,
+ * the MGU and the final type.
+ */
 public class LatexCreatorConstraints implements StepVisitor {
 
     private static final String FIRST_PREFIX = "";
@@ -24,6 +26,12 @@ public class LatexCreatorConstraints implements StepVisitor {
     private final String prefix;
     private String prevStep;
 
+    /**
+     * Initializes the LatexCreatorConstraints with the right values calculates the strings
+     * that will be returned in getEverything().
+     *
+     * @param typeInferer the source for the generation of the LaTeX code
+     */
     protected LatexCreatorConstraints(TypeInfererInterface typeInferer) {
         this(typeInferer, new ConstraintSetIndexFactory(), new TreeNumberGenerator(), FIRST_PREFIX);
     }
@@ -47,6 +55,12 @@ public class LatexCreatorConstraints implements StepVisitor {
         typeInferer.getFirstInferenceStep().accept(this);
     }
 
+    /**
+     * Returns a list of strings, each of the strings represents one step in the collecting of constraints,
+     * the unification, the mgu and the final type.
+     *
+     * @return steps for the MathjaxUnification element to display
+     */
     protected List<String> getEverything() {
         List<String> result = new ArrayList<>(constraints);
 
@@ -70,6 +84,14 @@ public class LatexCreatorConstraints implements StepVisitor {
         return result;
     }
 
+    /**
+     * Returns a list of numbers that describe in which step the tree should be, fitting to the current step of
+     * the unification. The list is always the same length as the list provided by getEverything().
+     * The index stands for the step the unification is in, the Integer at that index stands for the step that the
+     * tree should be in (at that point).
+     *
+     * @return a list describing in which step the tree should be
+     */
     protected List<Integer> getTreeNumbers() {
         return numberGenerator.getNumbers();
     }
@@ -157,7 +179,7 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     @Override
     public void visit(EmptyStep empty) {
-        // empty steps dont have constraints associated with them
+        // empty steps don't have constraints associated with them
     }
 
     private StringBuilder generateUnificationName() {

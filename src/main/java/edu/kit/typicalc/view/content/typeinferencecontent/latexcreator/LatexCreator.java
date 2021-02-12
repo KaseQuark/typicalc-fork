@@ -16,6 +16,8 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  * of code are generated: one for the constraints/unification and one for the proof tree.
  * The LaTeX code can be rendered by MathJax, so it must only use packages and commands that MathJax supports.
  * The LaTeX code is also usable outside of MathJax, in a normal LaTeX document.
+ *
+ * @see InferenceStep
  */
 public class LatexCreator implements StepVisitor {
     private final StringBuilder tree;
@@ -62,6 +64,11 @@ public class LatexCreator implements StepVisitor {
         return constraintsCreator.getEverything().toArray(new String[0]);
     }
 
+    /**
+     * Returns a list of numbers which correlate to the steps should be in during certain steps of the unification.
+     *
+     * @return a list of step indices
+     */
     public List<Integer> getTreeNumbers() {
         return constraintsCreator.getTreeNumbers();
     }

@@ -29,7 +29,7 @@ public class LatexCreatorTerm implements TermVisitor {
      * @return the generated LaTeX code
      */
     public String getLatex() {
-        // remove most outer parentheses if they exist, untested
+        // todo remove most outer parentheses if they exist, untested
 //        long count = latex.chars().filter(ch -> ch == PAREN_LEFT).count();
 //        if (latex.indexOf(String.valueOf(PAREN_LEFT)) == 0
 //                && latex.indexOf(String.valueOf(PAREN_RIGHT)) == latex.length() - 1
