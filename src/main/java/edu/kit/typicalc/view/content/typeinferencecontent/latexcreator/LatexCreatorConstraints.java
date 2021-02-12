@@ -250,6 +250,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                 latex.append(BRACKET_RIGHT);
                 latex.append(LATEX_NEW_LINE);
             }
+            latex.delete(latex.length() - LATEX_NEW_LINE.length(), latex.length());
             latex.append(SPLIT_END);
             if (error.isPresent()) {
                 latex.append(LATEX_NEW_LINE + AMPERSAND);
@@ -266,7 +267,6 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(constraintSets);
         latex.append(AMPERSAND + SPLIT_BEGIN);
         latex.append(generateUnificationName());
-        latex.append(SPACE);
         latex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
             latex.append(AMPERSAND);

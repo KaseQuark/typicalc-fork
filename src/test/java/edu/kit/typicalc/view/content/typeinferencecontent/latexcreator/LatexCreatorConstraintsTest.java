@@ -24,10 +24,27 @@ class LatexCreatorConstraintsTest {
         typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
         List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
 
-        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
-                        + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT + ALIGN_END);
+        String constraintSet = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
+                + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT;
 
+        String mguStart = LATEX_NEW_LINE + AMPERSAND + SPLIT_BEGIN + SIGMA + COLON + EQUALS + MGU + PAREN_LEFT
+                + CONSTRAINT_SET + PAREN_RIGHT;
+
+        String mgu = "" + EQUALS + BRACKET_LEFT + AMPERSAND + TREE_VARIABLE + "_{1}"
+                + SUBSTITUTION_SIGN + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + BRACKET_RIGHT + SPLIT_END;
+
+        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
+                ALIGN_BEGIN + constraintSet + ALIGN_END,
+                ALIGN_BEGIN + constraintSet + mguStart + EQUALS + UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT + AMPERSAND
+                        + TREE_VARIABLE + "_{1}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + PAREN_RIGHT
+                        + LATEX_CURLY_RIGHT + SPLIT_END + ALIGN_END,
+                ALIGN_BEGIN + constraintSet + mguStart + mgu + ALIGN_END,
+                ALIGN_BEGIN + constraintSet + mguStart + mgu + ALIGN_END,
+                ALIGN_BEGIN + constraintSet + mguStart + mgu + LATEX_NEW_LINE + AMPERSAND + SIGMA + PAREN_LEFT
+                        + TREE_VARIABLE + "_{1}" + PAREN_RIGHT + EQUALS + GENERATED_ASSUMPTION_VARIABLE
+                        + "_{1}" + ALIGN_END);
+
+        assertEquals(actual.size(), expected.size());
         for (int i = 0; i < actual.size(); i++) {
             assertEquals(actual.get(i), expected.get(i));
         }
