@@ -200,14 +200,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                     latex.append(CURLY_LEFT);
                 }
                 latex.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType()).getLatex());
-                if (markError && i == 0) {
-                    latex.append(CURLY_RIGHT);
-                }
                 latex.append(EQUALS);
-                if (markError && i == 0) {
-                    latex.append(COLOR_RED);
-                    latex.append(CURLY_LEFT);
-                }
                 latex.append(new LatexCreatorType(unificationConstraints.get(i).getSecondType()).getLatex());
                 if (markError && i == 0) {
                     latex.append(CURLY_RIGHT);
