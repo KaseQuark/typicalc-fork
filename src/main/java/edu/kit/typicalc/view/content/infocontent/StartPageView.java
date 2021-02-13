@@ -17,6 +17,9 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 @JsModule("./src/mathjax-setup.js")
 public class StartPageView extends VerticalLayout implements ControlPanelView {
 
+    private static final String ID = "start-page";
+    private static final String SCROLLER_ID = "start-page-scroller";
+
     private final Div content;
     private final ControlPanel controlPanel;
     MathjaxProofTree tree;
@@ -24,14 +27,12 @@ public class StartPageView extends VerticalLayout implements ControlPanelView {
 
     public StartPageView() {
         // todo implement correctly
-        setId("start-page");
-        setSizeFull();
+        setId(ID);
         content = new Div();
         controlPanel = new ControlPanel(this, this);
         Scroller scroller = new Scroller(content);
-        scroller.setSizeFull();
+        scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
-        setAlignItems(Alignment.CENTER);
         add(scroller, controlPanel);
         disableControlPanel();
         createContent();

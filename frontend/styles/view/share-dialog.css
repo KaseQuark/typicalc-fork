@@ -1,0 +1,11 @@
+#share-dialog {
+	width: 80%;
+}
+#share-dialog-layout {
+	align-items: start;
+	width: 100%;
+	height: 100%;
+}
+.share-dialog-field {
+	width: 100%;
+}

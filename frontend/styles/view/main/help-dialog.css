@@ -1,6 +1,11 @@
+vaadin-dialog-overlay {
+	width: 1000px;
+	height: 600px;
+}
+
 #contentLayout {
-	padding-left: 0px;
-	padding-right: 0px;
+	padding-left: 0;
+	padding-right: 0;
 }
 
 #headingLayout {
@@ -14,4 +19,9 @@
 #languageSelect {
 	position: absolute;
 	right: 0;
+}
+
+.help-field {
+	justify-content: center;
+	align-items: center;
 }

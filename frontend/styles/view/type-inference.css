@@ -1,3 +1,14 @@
+#type-inference-view {
+    width: 100%;
+    height: 100%;
+    padding: 0 0 1em;
+    align-items: center;
+}
+
+#type-inference-view::before {
+    margin: 0 !important;
+}
+
 #scroller {
     width: 100%;
     height: 100%;
@@ -7,6 +18,8 @@
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding: 10px;
+    box-sizing: border-box;
 }
 
 tc-proof-tree {

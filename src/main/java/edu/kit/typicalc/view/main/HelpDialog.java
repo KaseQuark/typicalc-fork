@@ -33,7 +33,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
 
     private final H3 heading;
-    private Accordion content;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
 
@@ -53,14 +52,12 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         headingLayout.add(heading, languageSelect);
 
         VerticalLayout contentLayout = new VerticalLayout();
-        content = createHelpContent();
+        Accordion content = createHelpContent();
         contentLayout.add(content);
         contentLayout.setId(CONTENT_LAYOUT_ID);
         add(headingLayout, contentLayout);
-        setWidth("1000px"); // cannot set width per css
-        setHeight("600px"); // choose according to Accordion height
     }
-    
+
     private Accordion createHelpContent() {
         Accordion acc = new Accordion();
         acc.add(new HelpContentField("root.drawer", new DrawerToggle(), "root.helpDrawer"));
@@ -76,9 +73,8 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
                 new Button(new Icon(VaadinIcon.ANGLE_RIGHT)), "root.helpNextStepButton"));
         acc.add(new HelpContentField("root.lastStepButton",
                 new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT)), "root.helpLastStepButton"));
-        acc.add(new HelpContentField("root.shareButton", 
+        acc.add(new HelpContentField("root.shareButton",
                 new Button(new Icon(VaadinIcon.CONNECT)), "root.helpShareButton"));
-        acc.setWidthFull();
         return acc;
     }
 
@@ -87,5 +83,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         heading.setText(getTranslation("root.operatingHelp"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
+        // TODO update help texts
     }
 }
