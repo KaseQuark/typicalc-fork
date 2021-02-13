@@ -1,9 +1,9 @@
 #contentLayout {
-	height: 80vh;
+	padding-right: 0px;
 }
 
 #headingLayout {
-	width: 80vw;
+	width: 100%;
 	display: flex;
 	position: relative;
 	align-items: center;

@@ -2,10 +2,17 @@ package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.accordion.Accordion;
+import com.vaadin.flow.component.accordion.AccordionPanel;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
+import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -29,7 +36,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
 
     private final H3 heading;
-    private final H5 inputSyntax;
+    private Accordion content;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
 
@@ -49,17 +56,41 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         headingLayout.add(heading, languageSelect);
 
         VerticalLayout contentLayout = new VerticalLayout();
-        //TODO inputSyntax wird im inputDialog behandelt --> hier anderer Content
-        inputSyntax = new H5();
+        content = createHelpContent();
+        contentLayout.add(content);
         contentLayout.setId(CONTENT_LAYOUT_ID);
-        contentLayout.add(inputSyntax);
         add(headingLayout, contentLayout);
+        setWidth("1000px"); // cannot set width per css
+        setHeight("400px"); // choose according to Accordion height
+    }
+    
+    private Accordion createHelpContent() {
+        // nur beispielhaft als Vorschlag, wie Hilfe-Dialog aussehen könnte
+        Accordion acc = new Accordion();
+        HorizontalLayout drawerAccContent = new HorizontalLayout(new DrawerToggle(), 
+                new Paragraph(getTranslation("root.helpDrawer")));
+        drawerAccContent.setAlignItems(Alignment.CENTER);
+        drawerAccContent.setJustifyContentMode(JustifyContentMode.CENTER);
+        AccordionPanel drawerAcc = new AccordionPanel("Drawer", drawerAccContent);
+        drawerAcc.addThemeVariants(DetailsVariant.FILLED);
+        
+        HorizontalLayout exampleDialogAccContent = 
+                new HorizontalLayout(new Button(getTranslation("root.examplebutton")),
+                new Paragraph(getTranslation("root.helpExample")));
+        exampleDialogAccContent.setAlignItems(Alignment.CENTER);
+        exampleDialogAccContent.setJustifyContentMode(JustifyContentMode.CENTER);
+        AccordionPanel exampleAcc = new AccordionPanel("Beispiele", exampleDialogAccContent);
+        exampleAcc.addThemeVariants(DetailsVariant.FILLED);
+        
+        acc.add(drawerAcc);
+        acc.add(exampleAcc);
+        acc.setWidthFull();
+        return acc;
     }
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
-        inputSyntax.setText(getTranslation("root.inputSyntax"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
     }
