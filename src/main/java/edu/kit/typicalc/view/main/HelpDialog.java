@@ -3,16 +3,13 @@ package edu.kit.typicalc.view.main;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
-import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.Alignment;
-import com.vaadin.flow.component.orderedlayout.FlexComponent.JustifyContentMode;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -61,29 +58,26 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         contentLayout.setId(CONTENT_LAYOUT_ID);
         add(headingLayout, contentLayout);
         setWidth("1000px"); // cannot set width per css
-        setHeight("400px"); // choose according to Accordion height
+        setHeight("600px"); // choose according to Accordion height
     }
     
     private Accordion createHelpContent() {
-        // nur beispielhaft als Vorschlag, wie Hilfe-Dialog aussehen könnte
         Accordion acc = new Accordion();
-        HorizontalLayout drawerAccContent = new HorizontalLayout(new DrawerToggle(), 
-                new Paragraph(getTranslation("root.helpDrawer")));
-        drawerAccContent.setAlignItems(Alignment.CENTER);
-        drawerAccContent.setJustifyContentMode(JustifyContentMode.CENTER);
-        AccordionPanel drawerAcc = new AccordionPanel("Drawer", drawerAccContent);
-        drawerAcc.addThemeVariants(DetailsVariant.FILLED);
-        
-        HorizontalLayout exampleDialogAccContent = 
-                new HorizontalLayout(new Button(getTranslation("root.examplebutton")),
-                new Paragraph(getTranslation("root.helpExample")));
-        exampleDialogAccContent.setAlignItems(Alignment.CENTER);
-        exampleDialogAccContent.setJustifyContentMode(JustifyContentMode.CENTER);
-        AccordionPanel exampleAcc = new AccordionPanel("Beispiele", exampleDialogAccContent);
-        exampleAcc.addThemeVariants(DetailsVariant.FILLED);
-        
-        acc.add(drawerAcc);
-        acc.add(exampleAcc);
+        acc.add(new HelpContentField("root.drawer", new DrawerToggle(), "root.helpDrawer"));
+        acc.add(new HelpContentField("root.example",
+                new Button(getTranslation("root.examplebutton")), "root.helpExample"));
+        acc.add(new HelpContentField("root.inputField", "root.helpInputField"));
+        acc.add(new HelpContentField("root.typeAssumptions", "root.helpTypeAssumptions"));
+        acc.add(new HelpContentField("root.firstStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT)), "root.helpFirstStepButton"));
+        acc.add(new HelpContentField("root.previousStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_LEFT)), "root.helpPreviousStepButton"));
+        acc.add(new HelpContentField("root.nextStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_RIGHT)), "root.helpNextStepButton"));
+        acc.add(new HelpContentField("root.lastStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT)), "root.helpLastStepButton"));
+        acc.add(new HelpContentField("root.shareButton", 
+                new Button(new Icon(VaadinIcon.CONNECT)), "root.helpShareButton"));
         acc.setWidthFull();
         return acc;
     }
