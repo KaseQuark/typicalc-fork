@@ -94,6 +94,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         });
         assumptionContainer.add(assumption);
         fields.add(assumption);
+        assumption.focus();
     }
 
     private void onDeleteAllClick() {

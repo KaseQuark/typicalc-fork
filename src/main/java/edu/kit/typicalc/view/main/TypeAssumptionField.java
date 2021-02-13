@@ -63,6 +63,13 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
     }
 
     /**
+     * Focus the variable field of this element.
+     */
+    protected void focus() {
+        variableInputField.focus();
+    }
+
+    /**
      * Gets the variable of the type assumption.
      *
      * @return the variable of the type assumption
