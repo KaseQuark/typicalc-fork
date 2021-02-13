@@ -41,6 +41,7 @@ public class TypeInferenceView extends VerticalLayout
     public TypeInferenceView(TypeInfererInterface typeInferer) {
         setId(ID);
         setSizeFull();
+        setPadding(false);
         addAttachListener(this);
         // TODO: document new translation function
         // TODO: is Function<UnificationError, String> too limiting?
@@ -48,6 +49,7 @@ public class TypeInferenceView extends VerticalLayout
                 error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
         content = new Div();
         content.setId(CONTENT_ID);
+        content.getStyle().set("padding", "10px");
         ControlPanel controlPanel = new ControlPanel(this, this);
         Scroller scroller = new Scroller(content);
         scroller.setId(SCROLLER_ID);
