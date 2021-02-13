@@ -56,9 +56,8 @@ public class TypeAssumptionParser { // TODO: document type syntax? or refer to o
                     return type2;
                 }
                 type = type2.unwrap().getLeft();
-                parenCount -= type2.unwrap().getRight() - 1;
                 removedParens += type2.unwrap().getRight() - 1;
-                if (parenCount < 0) {
+                if (parenCount - removedParens < 0) {
                     return new Result<>(new ImmutablePair<>(type, removedParens));
                 }
                 break;
@@ -81,9 +80,8 @@ public class TypeAssumptionParser { // TODO: document type syntax? or refer to o
             }
             t = token.unwrap();
             if (t.getType() == TokenType.RIGHT_PARENTHESIS) {
-                parenCount -= 1;
                 removedParens += 1;
-                if (parenCount <= 0) {
+                if (parenCount - removedParens <= 0) {
                     return new Result<>(new ImmutablePair<>(type, removedParens));
                 }
                 continue;
@@ -100,8 +98,7 @@ public class TypeAssumptionParser { // TODO: document type syntax? or refer to o
             }
             type = new FunctionType(type, nextType.unwrap().getLeft());
             removedParens += nextType.unwrap().getRight();
-            parenCount -= nextType.unwrap().getRight();
-            if (parenCount <= 0) {
+            if (parenCount - removedParens <= 0) {
                 return new Result<>(new ImmutablePair<>(type, removedParens));
             }
         }

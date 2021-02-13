@@ -5,6 +5,7 @@ import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -164,10 +165,10 @@ class TypeAssumptionParserTest {
         assertEquals(new VarTerm("id"), assumption.getKey());
         assertEquals(new TypeAbstraction(
                 new FunctionType(
-                new FunctionType(
-                        new FunctionType(INT, INT),
-                        new FunctionType(BOOLEAN, BOOLEAN)
-                ),
+                        new FunctionType(
+                                new FunctionType(INT, INT),
+                                new FunctionType(BOOLEAN, BOOLEAN)
+                        ),
                         new FunctionType(
                                 new FunctionType(int2, boolean2),
                                 new FunctionType(boolean2, int2)
@@ -188,8 +189,37 @@ class TypeAssumptionParserTest {
         assertEquals(new VarTerm("fun"), assumption.getKey());
         assertEquals(new TypeAbstraction(
                 new FunctionType(
-                new FunctionType(new NamedType("a"), new FunctionType(new NamedType("b"), new NamedType("c"))),
-                new NamedType("d")
+                        new FunctionType(new NamedType("a"), new FunctionType(new NamedType("b"), new NamedType("c"))),
+                        new NamedType("d")
                 )), assumption.getValue());
+    }
+
+    @Test
+    void variousTypes() {
+        Type x = new NamedType("x");
+        Type xx = new FunctionType(x, x);
+        Type xxx = new FunctionType(x, xx);
+        Type xxxx = new FunctionType(x, xxx);
+        Type xxxxx = new FunctionType(xx, xxx);
+        Type xxxxxx = new FunctionType(xxx, xxx);
+        Map<String, TypeAbstraction> tests = new HashMap<>();
+        tests.put("x", new TypeAbstraction(x));
+        tests.put("x -> x", new TypeAbstraction(xx));
+        tests.put("x -> (x)", new TypeAbstraction(xx));
+        tests.put("x -> ((x))", new TypeAbstraction(xx));
+        tests.put("x -> x -> x", new TypeAbstraction(xxx));
+        tests.put("x -> (x -> x)", new TypeAbstraction(xxx));
+        tests.put("x -> x -> x -> x", new TypeAbstraction(xxxx));
+        tests.put("x -> (x -> x -> x)", new TypeAbstraction(xxxx));
+        tests.put("x -> (x -> (x -> x))", new TypeAbstraction(xxxx));
+        tests.put("x -> (x -> (x -> (x)))", new TypeAbstraction(xxxx));
+        tests.put("(x -> x) -> (x -> (x -> (x)))", new TypeAbstraction(xxxxx));
+        tests.put("((x) -> ((x)) -> (x)) -> (x -> (x -> (x)))", new TypeAbstraction(xxxxxx));
+        for (Map.Entry<String, TypeAbstraction> entry : tests.entrySet()) {
+            TypeAssumptionParser parser = new TypeAssumptionParser();
+            Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(Map.of("type1", entry.getKey()));
+            assertTrue(type.isOk());
+            assertEquals(entry.getValue(), type.unwrap().get(new VarTerm("type1")));
+        }
     }
 }
