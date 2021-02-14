@@ -1,8 +1,3 @@
-vaadin-dialog-overlay {
-	width: 1000px;
-	height: 600px;
-}
-
 #contentLayout {
 	padding-left: 0;
 	padding-right: 0;
@@ -19,6 +14,10 @@ vaadin-dialog-overlay {
 #languageSelect {
 	position: absolute;
 	right: 0;
+}
+
+#accordion {
+	width: 100%;
 }
 
 .help-field {
