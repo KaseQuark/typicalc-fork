@@ -31,6 +31,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String HEADING_LAYOUT_ID = "headingLayout";
     private static final String CONTENT_LAYOUT_ID = "contentLayout";
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
+    private static final String ACCORDION_ID = "accordion";
 
     private final H3 heading;
     private final Select<Locale> languageSelect;
@@ -53,6 +54,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 
         VerticalLayout contentLayout = new VerticalLayout();
         Accordion content = createHelpContent();
+        content.setId(ACCORDION_ID);
         contentLayout.add(content);
         contentLayout.setId(CONTENT_LAYOUT_ID);
         add(headingLayout, contentLayout);

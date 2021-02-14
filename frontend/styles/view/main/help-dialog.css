@@ -2,6 +2,7 @@
 	width: 1000px !important;
 	padding-left: 0;
 	padding-right: 0;
+	height: 500px;
 }
 
 #headingLayout {
@@ -15,6 +16,10 @@
 #languageSelect {
 	position: absolute;
 	right: 0;
+}
+
+#accordion {
+	width: 100%;
 }
 
 .help-field {
