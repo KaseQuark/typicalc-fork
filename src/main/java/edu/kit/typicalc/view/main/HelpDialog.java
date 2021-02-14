@@ -21,7 +21,6 @@ import java.util.Locale;
 /**
  * Contains information on how to use the application.
  */
-@CssImport(value = "./styles/view/main/help-dialog-vaadin.css", themeFor = "vaadin-dialog-overlay")
 @CssImport("./styles/view/main/help-dialog.css")
 public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final long serialVersionUID = 4470277770276296164L;
