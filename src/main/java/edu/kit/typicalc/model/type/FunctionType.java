@@ -82,7 +82,7 @@ public class FunctionType extends Type {
      */
     @Override
     public Result<UnificationActions, UnificationError> constrainEqualToFunction(FunctionType type) {
-        return UnificationUtil.functionFunction(this, type);
+        return UnificationUtil.functionFunction(type, this);
     }
 
     /**
