@@ -3,12 +3,7 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.TypeVariableFactory;
 import edu.kit.typicalc.model.term.VarTerm;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Models a type abstraction with its type and the type variables bound by the for-all
@@ -17,7 +12,7 @@ import java.util.Set;
 public class TypeAbstraction {
 
     private final Type type;
-    private final Set<TypeVariable> quantifiedVariables;
+    private final SortedSet<TypeVariable> quantifiedVariables;
     /**
      * Initializes a new type abstraction with its type and the type variables bound by
      * the for-all quantifier.
@@ -26,7 +21,7 @@ public class TypeAbstraction {
      */
     public TypeAbstraction(Type type, Set<TypeVariable> quantifiedVariables) {
         this.type = type;
-        this.quantifiedVariables = quantifiedVariables;
+        this.quantifiedVariables = new TreeSet<>(quantifiedVariables);
     }
 
     /**
@@ -36,7 +31,7 @@ public class TypeAbstraction {
      */
     public TypeAbstraction(Type type) {
         this.type = type;
-        this.quantifiedVariables = Collections.emptySet();
+        this.quantifiedVariables = new TreeSet<>();
     }
 
     /**
@@ -50,7 +45,7 @@ public class TypeAbstraction {
         this.type = type;
         Set<TypeVariable> varsToBeQuantified = type.getFreeTypeVariables();
         typeAssumptions.forEach((var, abs) -> varsToBeQuantified.removeAll(abs.getFreeTypeVariables()));
-        this.quantifiedVariables = varsToBeQuantified;
+        this.quantifiedVariables = new TreeSet<>(varsToBeQuantified);
     }
 
     /**
