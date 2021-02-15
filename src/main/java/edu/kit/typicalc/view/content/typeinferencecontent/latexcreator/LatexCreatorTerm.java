@@ -11,7 +11,6 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  * @see LambdaTerm
  */
 public class LatexCreatorTerm implements TermVisitor {
-    // TODO: document
 
     private final StringBuilder latex = new StringBuilder();
     private boolean needsParentheses = false;
@@ -29,14 +28,13 @@ public class LatexCreatorTerm implements TermVisitor {
      * @return the generated LaTeX code
      */
     public String getLatex() {
-        // todo remove most outer parentheses if they exist, untested
-//        long count = latex.chars().filter(ch -> ch == PAREN_LEFT).count();
-//        if (latex.indexOf(String.valueOf(PAREN_LEFT)) == 0
-//                && latex.indexOf(String.valueOf(PAREN_RIGHT)) == latex.length() - 1
-//                && count == 1) {
-//            latex.deleteCharAt(latex.length() - 1);
-//            latex.deleteCharAt(0);
-//        }
+        long count = latex.chars().filter(ch -> ch == PAREN_LEFT).count();
+        if (latex.indexOf(String.valueOf(PAREN_LEFT)) == 0
+                && latex.indexOf(String.valueOf(PAREN_RIGHT)) == latex.length() - 1
+                && count == 1) {
+            latex.deleteCharAt(latex.length() - 1);
+            latex.deleteCharAt(0);
+        }
         return latex.toString();
     }
 
