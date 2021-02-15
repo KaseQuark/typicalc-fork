@@ -18,8 +18,8 @@ class LatexCreatorTermTest {
     @Test
     void absTest() {
         typeInferer = model.getTypeInferer("λx.y", new HashMap<>()).unwrap();
-        assertEquals(PAREN_LEFT + LAMBDA + SPACE + MONO_TEXT + "{x}" + DOT_SIGN
-                        + LATEX_SPACE + MONO_TEXT + "{y}" + PAREN_RIGHT,
+        assertEquals(LAMBDA + SPACE + MONO_TEXT + "{x}" + DOT_SIGN
+                        + LATEX_SPACE + MONO_TEXT + "{y}",
                 new LatexCreatorTerm(typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm()).getLatex());
     }
 
