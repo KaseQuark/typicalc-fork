@@ -21,7 +21,6 @@ class LatexCreatorConstraintsTest {
     private final Model model = new ModelImpl();
     private TypeInfererInterface typeInferer;
 
-    // todo tests should test all of getEverything, not only the first 2 parts
     @Test
     void singleVarDefaultConstraintTest() {
         typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
@@ -95,37 +94,6 @@ class LatexCreatorConstraintsTest {
         assertEquals(expected.size(), actual.size());
         for (int i = 0; i < expected.size(); i++) {
             assertEquals(expected.get(i), actual.get(i));
-        }
-    }
-
-
-    @Test
-    void singleAppConstraintTest() {
-        typeInferer = model.getTypeInferer("x y", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
-
-        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{2}" + EQUALS
-                        + TREE_VARIABLE + "_{3}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{1}"
-                        + LATEX_CURLY_RIGHT + ALIGN_END);
-
-        for (int i = 0; i < actual.size(); i++) {
-            assertEquals(actual.get(i), expected.get(i));
-        }
-    }
-
-
-    @Test
-    void singleConstConstraintTest() {
-        typeInferer = model.getTypeInferer("5", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
-
-        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
-                        + MONO_TEXT + "{int}" + LATEX_CURLY_RIGHT + ALIGN_END);
-
-        for (int i = 0; i < actual.size(); i++) {
-            assertEquals(actual.get(i), expected.get(i));
         }
     }
 }
