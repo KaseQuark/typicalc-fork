@@ -10,5 +10,4 @@ public interface MathjaxAdapter {
     int getStepCount();
 
     void showStep(int n);
-    // TODO: document removal of scaling method
 }
