@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class TypeInfererLetTest {
 
     @Test
-    void createTypeInfererLet() {
+    void inferX() {
         VarTerm x = new VarTerm("x");
         TypeVariable generated1 = new TypeVariable(TypeVariableKind.GENERATED_TYPE_ASSUMPTION, 1);
         TypeVariable variable2 = new TypeVariable(TypeVariableKind.TREE, 2);

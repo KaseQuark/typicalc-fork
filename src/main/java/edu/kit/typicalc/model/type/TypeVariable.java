@@ -3,15 +3,12 @@ package edu.kit.typicalc.model.type;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.util.Result;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Models a type variable
  */
-public class TypeVariable extends Type {
+public class TypeVariable extends Type implements Comparable<TypeVariable> {
 
     private final TypeVariableKind kind;
     private final int index;
@@ -146,5 +143,12 @@ public class TypeVariable extends Type {
     @Override
     public int hashCode() {
         return Objects.hash(kind, index);
+    }
+
+    @Override
+    public int compareTo(TypeVariable var) {
+        return Comparator.comparing(TypeVariable::getKind)
+                .thenComparing(TypeVariable::getIndex)
+                .compare(this, var);
     }
 }
