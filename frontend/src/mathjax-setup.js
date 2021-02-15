@@ -4,7 +4,7 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
     return elem.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 window.MathJax = {
-    loader: {load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/colorv2', '[tex]/textmacros', '[tex]/unicode']},
+    loader: {load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/color', '[tex]/textmacros', '[tex]/unicode']},
     tex: {
         packages: {'[+]': ['ams', 'bussproofs', 'color', 'textmacros', 'unicode']},
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -145,6 +145,6 @@ mjx-container {\
     }
 };
 // disable MathJax context menu
-// window.addEventListener("contextmenu", function (event) {
-//     event.stopPropagation();
-// }, true);
+window.addEventListener("contextmenu", function (event) {
+    event.stopPropagation();
+}, true);

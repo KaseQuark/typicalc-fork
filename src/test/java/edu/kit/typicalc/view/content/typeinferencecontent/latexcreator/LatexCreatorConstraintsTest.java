@@ -15,38 +15,38 @@ class LatexCreatorConstraintsTest {
     private static final String EMPTY_CONSTRAINT_SET =
             ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT + ALIGN_END;
 
+    private static final String MGU_START = LATEX_NEW_LINE + AMPERSAND + SPLIT_BEGIN + SIGMA + COLON + EQUALS + MGU + PAREN_LEFT
+            + CONSTRAINT_SET + PAREN_RIGHT;
+
     private final Model model = new ModelImpl();
     private TypeInfererInterface typeInferer;
 
-    // todo tests should test all of getEverything, not only the first 2 parts
     @Test
     void singleVarDefaultConstraintTest() {
         typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
+        List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
         String constraintSet = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
                 + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT;
 
-        String mguStart = LATEX_NEW_LINE + AMPERSAND + SPLIT_BEGIN + SIGMA + COLON + EQUALS + MGU + PAREN_LEFT
-                + CONSTRAINT_SET + PAREN_RIGHT;
 
         String mgu = "" + EQUALS + BRACKET_LEFT + AMPERSAND + TREE_VARIABLE + "_{1}"
                 + SUBSTITUTION_SIGN + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + BRACKET_RIGHT + SPLIT_END;
 
-        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
+        List<String> expected = List.of(EMPTY_CONSTRAINT_SET,
                 ALIGN_BEGIN + constraintSet + ALIGN_END,
-                ALIGN_BEGIN + constraintSet + mguStart + EQUALS + UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT + AMPERSAND
-                        + TREE_VARIABLE + "_{1}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + PAREN_RIGHT
-                        + LATEX_CURLY_RIGHT + SPLIT_END + ALIGN_END,
-                ALIGN_BEGIN + constraintSet + mguStart + mgu + ALIGN_END,
-                ALIGN_BEGIN + constraintSet + mguStart + mgu + ALIGN_END,
-                ALIGN_BEGIN + constraintSet + mguStart + mgu + LATEX_NEW_LINE + AMPERSAND + SIGMA + PAREN_LEFT
+                ALIGN_BEGIN + constraintSet + MGU_START + EQUALS + UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT + AMPERSAND
+                        + TREE_VARIABLE + "_{1}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT
+                        + PAREN_RIGHT + SPLIT_END + ALIGN_END,
+                ALIGN_BEGIN + constraintSet + MGU_START + mgu + ALIGN_END,
+                ALIGN_BEGIN + constraintSet + MGU_START + mgu + ALIGN_END,
+                ALIGN_BEGIN + constraintSet + MGU_START + mgu + LATEX_NEW_LINE + AMPERSAND + SIGMA + PAREN_LEFT
                         + TREE_VARIABLE + "_{1}" + PAREN_RIGHT + EQUALS + GENERATED_ASSUMPTION_VARIABLE
                         + "_{1}" + ALIGN_END);
 
-        assertEquals(actual.size(), expected.size());
-        for (int i = 0; i < actual.size(); i++) {
-            assertEquals(actual.get(i), expected.get(i));
+        assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            assertEquals(expected.get(i), actual.get(i));
         }
     }
 
@@ -54,46 +54,46 @@ class LatexCreatorConstraintsTest {
     @Test
     void singleAbsDefaultConstraintTest() {
         typeInferer = model.getTypeInferer("λx.y", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
+        List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
-        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
-                        + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}"
-                        + LATEX_CURLY_RIGHT + ALIGN_END);
+        String constraintSet1 = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
+                + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}" + LATEX_CURLY_RIGHT;
 
-        for (int i = 0; i < actual.size(); i++) {
-            assertEquals(actual.get(i), expected.get(i));
-        }
-    }
+        String constraintSet2 = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
+                + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}" + COMMA + TREE_VARIABLE
+                + "_{3}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT;
 
+        String unify1 = MGU_START + EQUALS + UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT + AMPERSAND
+                + TREE_VARIABLE + "_{3}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}";
 
-    @Test
-    void singleAppConstraintTest() {
-        typeInferer = model.getTypeInferer("x y", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
+        String subs2 = LATEX_NEW_LINE + CIRC
+                + BRACKET_LEFT + AMPERSAND + TREE_VARIABLE + "_{1}" + SUBSTITUTION_SIGN + TREE_VARIABLE
+                + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}" + BRACKET_RIGHT;
 
-        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{2}" + EQUALS
-                        + TREE_VARIABLE + "_{3}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{1}"
-                        + LATEX_CURLY_RIGHT + ALIGN_END);
+        String mgu = constraintSet2 + MGU_START + EQUALS + BRACKET_LEFT + AMPERSAND + TREE_VARIABLE + "_{1}"
+                + SUBSTITUTION_SIGN + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE
+                + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + COMMA + LATEX_NEW_LINE + AMPERSAND + TREE_VARIABLE
+                + "_{3}" + SUBSTITUTION_SIGN + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + BRACKET_RIGHT
+                + SPLIT_END;
 
-        for (int i = 0; i < actual.size(); i++) {
-            assertEquals(actual.get(i), expected.get(i));
-        }
-    }
+        List<String> expected = List.of(EMPTY_CONSTRAINT_SET,
+                ALIGN_BEGIN + constraintSet1 + ALIGN_END,
+                ALIGN_BEGIN + constraintSet2 + ALIGN_END,
+                ALIGN_BEGIN + constraintSet2 + unify1 + COMMA + LATEX_NEW_LINE + AMPERSAND + TREE_VARIABLE + "_{1}"
+                        + EQUALS + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}"
+                        + LATEX_CURLY_RIGHT + PAREN_RIGHT + SPLIT_END + ALIGN_END,
+                ALIGN_BEGIN + constraintSet2 + unify1 + LATEX_CURLY_RIGHT + PAREN_RIGHT + subs2 + SPLIT_END + ALIGN_END,
+                ALIGN_BEGIN + constraintSet2 + MGU_START + EQUALS + BRACKET_LEFT + AMPERSAND + TREE_VARIABLE + "_{3}"
+                        + SUBSTITUTION_SIGN + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + BRACKET_RIGHT + subs2 + SPLIT_END
+                        + ALIGN_END,
+                ALIGN_BEGIN + mgu + ALIGN_END,
+                ALIGN_BEGIN + mgu + LATEX_NEW_LINE + AMPERSAND + SIGMA + PAREN_LEFT + TREE_VARIABLE + "_{1}"
+                        + PAREN_RIGHT + EQUALS + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE
+                        + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + ALIGN_END);
 
-
-    @Test
-    void singleConstConstraintTest() {
-        typeInferer = model.getTypeInferer("5", new HashMap<>()).unwrap();
-        List<String> expected = new LatexCreatorConstraints(typeInferer).getEverything();
-
-        List<String> actual = List.of(EMPTY_CONSTRAINT_SET,
-                ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
-                        + MONO_TEXT + "{int}" + LATEX_CURLY_RIGHT + ALIGN_END);
-
-        for (int i = 0; i < actual.size(); i++) {
-            assertEquals(actual.get(i), expected.get(i));
+        assertEquals(expected.size(), actual.size());
+        for (int i = 0; i < expected.size(); i++) {
+            assertEquals(expected.get(i), actual.get(i));
         }
     }
 }

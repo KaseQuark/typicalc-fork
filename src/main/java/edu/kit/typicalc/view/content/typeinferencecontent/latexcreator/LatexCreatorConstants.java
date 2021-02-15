@@ -1,7 +1,9 @@
 package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 /**
- * Provides a list of constants needed for the creation of the LaTeX code.
+ * Provides a number of constants needed for the creation of LaTeX code in
+ * {@link LatexCreator}, {@link LatexCreatorConstraints}, {@link LatexCreatorTerm} and
+ * {@link LatexCreatorType}.
  */
 public final class LatexCreatorConstants {
     private LatexCreatorConstants() {
@@ -47,7 +49,6 @@ public final class LatexCreatorConstants {
 
     protected static final String LATEX_NEW_LINE = "\\\\";
     protected static final String CIRC = "\\circ";
-    protected static final String PHANTOM_X = "\\phantom{x}";
     protected static final String SUBSTITUTION_SIGN = "\\mathrel{\\unicode{x21E8}}";
     protected static final String COLOR_RED = "\\color{#f00}";
     protected static final String LAMBDA = "\\lambda";

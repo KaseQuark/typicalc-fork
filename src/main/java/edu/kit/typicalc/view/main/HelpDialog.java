@@ -2,10 +2,14 @@ package edu.kit.typicalc.view.main;
 
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.accordion.Accordion;
+import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.H5;
+import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -27,9 +31,9 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String HEADING_LAYOUT_ID = "headingLayout";
     private static final String CONTENT_LAYOUT_ID = "contentLayout";
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
+    private static final String ACCORDION_ID = "accordion";
 
     private final H3 heading;
-    private final H5 inputSyntax;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
 
@@ -49,17 +53,36 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         headingLayout.add(heading, languageSelect);
 
         VerticalLayout contentLayout = new VerticalLayout();
-        //TODO inputSyntax wird im inputDialog behandelt --> hier anderer Content
-        inputSyntax = new H5();
+        Accordion content = createHelpContent();
+        content.setId(ACCORDION_ID);
+        contentLayout.add(content);
         contentLayout.setId(CONTENT_LAYOUT_ID);
-        contentLayout.add(inputSyntax);
         add(headingLayout, contentLayout);
+    }
+
+    private Accordion createHelpContent() {
+        Accordion acc = new Accordion();
+        acc.add(new HelpContentField("root.drawer", new DrawerToggle(), "root.helpDrawer"));
+        acc.add(new HelpContentField("root.example",
+                new Button(getTranslation("root.examplebutton")), "root.helpExample"));
+        acc.add(new HelpContentField("root.inputField", "root.helpInputField"));
+        acc.add(new HelpContentField("root.typeAssumptions", "root.helpTypeAssumptions"));
+        acc.add(new HelpContentField("root.firstStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT)), "root.helpFirstStepButton"));
+        acc.add(new HelpContentField("root.previousStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_LEFT)), "root.helpPreviousStepButton"));
+        acc.add(new HelpContentField("root.nextStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_RIGHT)), "root.helpNextStepButton"));
+        acc.add(new HelpContentField("root.lastStepButton",
+                new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT)), "root.helpLastStepButton"));
+        acc.add(new HelpContentField("root.shareButton",
+                new Button(new Icon(VaadinIcon.CONNECT)), "root.helpShareButton"));
+        return acc;
     }
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
-        inputSyntax.setText(getTranslation("root.inputSyntax"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
     }

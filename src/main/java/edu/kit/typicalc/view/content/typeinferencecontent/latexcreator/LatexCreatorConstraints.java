@@ -7,6 +7,7 @@ import edu.kit.typicalc.util.Result;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
@@ -25,27 +26,34 @@ public class LatexCreatorConstraints implements StepVisitor {
     private final String constraintSetIndex;
     private final String prefix;
     private String prevStep;
+    private final Function<UnificationError, String> translationProvider;
 
     /**
      * Initializes the LatexCreatorConstraints with the right values calculates the strings
      * that will be returned in getEverything().
      *
      * @param typeInferer the source for the generation of the LaTeX code
+     * @param translationProvider translation text provider for {@link UnificationError}
      */
-    protected LatexCreatorConstraints(TypeInfererInterface typeInferer) {
-        this(typeInferer, new ConstraintSetIndexFactory(), new TreeNumberGenerator(), FIRST_PREFIX);
+    protected LatexCreatorConstraints(TypeInfererInterface typeInferer,
+                                      Function<UnificationError, String> translationProvider) {
+        this(typeInferer,
+                new ConstraintSetIndexFactory(), new TreeNumberGenerator(),
+                FIRST_PREFIX, translationProvider);
     }
 
     private LatexCreatorConstraints(TypeInfererInterface typeInferer,
                                       ConstraintSetIndexFactory constraintSetIndexFactory,
                                       TreeNumberGenerator numberGenerator,
-                                      String prefix) {
+                                      String prefix,
+                                      Function<UnificationError, String> translationProvider) {
         this.prefix = prefix;
         this.prevStep = "";
         this.constraintSetIndexFactory = constraintSetIndexFactory;
         this.numberGenerator = numberGenerator;
         this.constraintSetIndex = constraintSetIndexFactory.nextConstraintSetIndex();
         this.typeInferer = typeInferer;
+        this.translationProvider = translationProvider;
         constraints = new ArrayList<>();
         if (FIRST_PREFIX.equals(prefix)) {
             constraints.add(AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT);
@@ -150,7 +158,8 @@ public class LatexCreatorConstraints implements StepVisitor {
         addConstraint(letD);
         LatexCreatorConstraints subCreator = new LatexCreatorConstraints(letD.getTypeInferer(),
                 constraintSetIndexFactory, numberGenerator,
-                constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE);
+                constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE,
+                translationProvider);
         constraints.addAll(subCreator.getEverything());
 
         // cancels constraint creation if sub inference failed
@@ -218,8 +227,8 @@ public class LatexCreatorConstraints implements StepVisitor {
             for (int i = unificationConstraints.size() - 1; i >= 0; i--) {
                 latex.append(AMPERSAND);
                 if (markError && i == 0) {
-                    latex.append(COLOR_RED);
                     latex.append(CURLY_LEFT);
+                    latex.append(COLOR_RED);
                 }
                 latex.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType()).getLatex());
                 latex.append(EQUALS);
@@ -233,8 +242,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                 }
             }
             if (!unificationConstraints.isEmpty()) {
-                // todo somehow this gets colored red too when an error occurs
-                latex.append(PAREN_RIGHT + LATEX_CURLY_RIGHT + LATEX_NEW_LINE);
+                latex.append(LATEX_CURLY_RIGHT + PAREN_RIGHT + LATEX_NEW_LINE);
             }
 
             List<Substitution> substitutions = subs.unwrap();
@@ -254,8 +262,8 @@ public class LatexCreatorConstraints implements StepVisitor {
             latex.append(SPLIT_END);
             if (error.isPresent()) {
                 latex.append(LATEX_NEW_LINE + AMPERSAND);
+                latex.append(translationProvider.apply(error.get()));
             }
-            error.ifPresent(latex::append); // TODO: translation
             steps.add(latex.toString());
         }
         return steps;

@@ -3,15 +3,12 @@ package edu.kit.typicalc.view.main;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.DrawerToggle;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.i18n.LocaleChangeEvent;
-import com.vaadin.flow.i18n.LocaleChangeObserver;
 import com.vaadin.flow.router.Location;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
@@ -26,7 +23,7 @@ import java.util.function.Consumer;
  * Contains all the components constantly shown in the upper part of the webpage.
  */
 @CssImport("./styles/view/main/upper-bar.css")
-public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
+public class UpperBar extends HorizontalLayout {
     private static final long serialVersionUID = -7344967027514015830L;
 
     /*
@@ -38,7 +35,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String UPPER_BAR_ID = "header";
 
     private final InputBar inputBar;
-    private final Button rules;
 
     private final transient MainViewListener presenter;
     private final transient Consumer<Pair<String, Map<String, String>>> setTermInURL;
@@ -64,9 +60,8 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         Icon helpIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
         helpIcon.addClickListener(event -> onHelpIconClick());
         helpIcon.setId(HELP_ICON_ID);
-        this.rules = new DrawerToggle();
 
-        add(rules, viewTitle, inputBar, helpIcon);
+        add(new DrawerToggle(), viewTitle, inputBar, helpIcon);
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true); //TODO remove magic string
         setSpacing(false);
@@ -102,10 +97,5 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private void onHelpIconClick() {
         Dialog helpDialog = new HelpDialog();
         helpDialog.open();
-    }
-
-    @Override
-    public void localeChange(LocaleChangeEvent event) {
-       rules.setText(getTranslation("root.inferenceRules"));
     }
 }

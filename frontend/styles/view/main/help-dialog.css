@@ -1,9 +1,12 @@
 #contentLayout {
-	height: 80vh;
+	width: 1000px !important;
+	padding-left: 0;
+	padding-right: 0;
+	height: 500px;
 }
 
 #headingLayout {
-	width: 80vw;
+	width: 100%;
 	display: flex;
 	position: relative;
 	align-items: center;
@@ -13,4 +16,13 @@
 #languageSelect {
 	position: absolute;
 	right: 0;
+}
+
+#accordion {
+	width: 100%;
+}
+
+.help-field {
+	justify-content: center;
+	align-items: center;
 }
