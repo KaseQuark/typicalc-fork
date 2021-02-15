@@ -15,8 +15,8 @@ class LatexCreatorConstraintsTest {
     private static final String EMPTY_CONSTRAINT_SET =
             ALIGN_BEGIN + AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT + ALIGN_END;
 
-    private static final String MGU_START = LATEX_NEW_LINE + AMPERSAND + SPLIT_BEGIN + SIGMA + COLON + EQUALS + MGU + PAREN_LEFT
-            + CONSTRAINT_SET + PAREN_RIGHT;
+    private static final String MGU_START = LATEX_NEW_LINE + AMPERSAND + SPLIT_BEGIN + SIGMA + COLON + EQUALS + MGU
+            + PAREN_LEFT + CONSTRAINT_SET + PAREN_RIGHT;
 
     private final Model model = new ModelImpl();
     private TypeInfererInterface typeInferer;
