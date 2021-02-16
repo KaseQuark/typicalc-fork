@@ -9,10 +9,8 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import com.vaadin.flow.router.Location;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
@@ -63,7 +61,7 @@ public class UpperBar extends HorizontalLayout {
 
         add(new DrawerToggle(), viewTitle, inputBar, helpIcon);
         setId(UPPER_BAR_ID);
-        getThemeList().set("dark", true); //TODO remove magic string
+        getThemeList().set("dark", true);
         setSpacing(false);
     }
 
@@ -91,7 +89,8 @@ public class UpperBar extends HorizontalLayout {
 
     private void routeToStartPage(Consumer<Component> setContent) {
         setContent.accept(new StartPageView());
-        UI.getCurrent().getPage().getHistory().replaceState(null, new Location(StringUtils.EMPTY));
+        UI.getCurrent().getPage().setTitle(MainViewImpl.PAGE_TITLE);
+        UI.getCurrent().getPage().executeJs("history.pushState(null, '', $0)", "/");
     }
 
     private void onHelpIconClick() {

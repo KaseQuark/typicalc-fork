@@ -32,11 +32,12 @@ import java.util.stream.Collectors;
 @CssImport(value = "./styles/view/main/app-layout.css", themeFor = "vaadin-app-layout")
 @JavaScript("./src/svg-pan-zoom.min.js")
 @JavaScript("./src/tex-svg-full.js")
-@PageTitle("Typicalc")
 @Route(TypeInferenceView.ROUTE + "/:term")
 public class MainViewImpl extends AppLayout
         implements MainView, BeforeEnterObserver, HasErrorParameter<NotFoundException> {
     private static final long serialVersionUID = -2411433187835906976L;
+
+    public static final String PAGE_TITLE = "Typicalc";
 
     private final UpperBar upperBar;
 
