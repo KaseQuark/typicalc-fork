@@ -5,6 +5,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
@@ -32,10 +33,12 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String CONTENT_LAYOUT_ID = "contentLayout";
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
     private static final String ACCORDION_ID = "accordion";
+    private static final String TYPE_BUTTON_COPY_ID = "typeButtonCopy";
 
     private final H3 heading;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
+    private final Button typeButtonCopy;
 
     /**
      * Create a new HelpDialog.
@@ -53,6 +56,9 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         headingLayout.add(heading, languageSelect);
 
         VerticalLayout contentLayout = new VerticalLayout();
+        typeButtonCopy = new Button(getTranslation("root.typeInfer"));
+        typeButtonCopy.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        typeButtonCopy.setId(TYPE_BUTTON_COPY_ID);
         Accordion content = createHelpContent();
         content.setId(ACCORDION_ID);
         contentLayout.add(content);
@@ -67,6 +73,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
                 new Button(getTranslation("root.examplebutton")), "root.helpExample"));
         acc.add(new HelpContentField("root.inputField", "root.helpInputField"));
         acc.add(new HelpContentField("root.typeAssumptions", "root.helpTypeAssumptions"));
+        acc.add(new HelpContentField("root.typeInferButton", typeButtonCopy, "root.helpTypeInferButton"));
         acc.add(new HelpContentField("root.firstStepButton",
                 new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT)), "root.helpFirstStepButton"));
         acc.add(new HelpContentField("root.previousStepButton",
@@ -84,6 +91,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
+        typeButtonCopy.setText(getTranslation("root.typeInfer"));
         languageSelect.setTextRenderer(renderer);
     }
 }

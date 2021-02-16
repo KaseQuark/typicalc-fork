@@ -2,7 +2,7 @@
 	width: 1000px !important;
 	padding-left: 0;
 	padding-right: 0;
-	height: 500px;
+	height: 525px;
 }
 
 #headingLayout {
@@ -20,6 +20,10 @@
 
 #accordion {
 	width: 100%;
+}
+
+#typeButtonCopy {
+	min-width: 110px;
 }
 
 .help-field {
