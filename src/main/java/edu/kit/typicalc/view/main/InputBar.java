@@ -9,7 +9,6 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -58,7 +57,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
         inputField.setMaxLength(MAX_INPUT_LENGTH);
-        // TODO: perhaps remove the error message? more than 1000 can't be entered now
         // attach a listener that replaces \ with λ
         // JavaScript is used because Vaadin does not have APIs for selectionStart/selectionEnd
         // and this will be much faster than a bunch of network round trips per character entered!
@@ -110,13 +108,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private void onTypeInferButtonClick(Consumer<Pair<String, Map<String, String>>> callback) {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
 
-        if (currentInput.length() <= MAX_INPUT_LENGTH) {
-            UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
-            callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
-        } else {
-            Notification errorNotification = new ErrorNotification(getTranslation("root.overlongInput"));
-            errorNotification.open();
-        }
+        UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
+        callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
     }
 
     private void onTypeAssumptionsButton() {

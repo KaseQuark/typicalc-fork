@@ -60,8 +60,7 @@ public class MainViewImpl extends AppLayout
 
     @Override
     public void displayError(ParseError error) {
-        //TODO add error keys to bundle
-        Notification errorNotification = new ErrorNotification(getTranslation("root." + error.toString()));
+        Notification errorNotification = new ErrorNotification(error);
         errorNotification.open();
     }
 
