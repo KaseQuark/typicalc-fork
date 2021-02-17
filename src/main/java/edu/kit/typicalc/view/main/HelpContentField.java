@@ -8,6 +8,10 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
+/**
+ * This class provides the layout for an AccordionPanel with either text or a button and text as its content.
+ * These panels are used for the Accordion in the {@link edu.kit.typicalc.view.main.HelpDialog}.
+ */
 public class HelpContentField extends AccordionPanel implements LocaleChangeObserver {
     private static final String CLASSNAME = "help-field";
 
@@ -17,6 +21,12 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
     private final String contentKey;
     private final Paragraph content;
 
+    /**
+     * Create a HelpContentField with keys for the strings of the summary and the content of this AccordionPanel.
+     * 
+     * @param summaryKey the key for the string of the summary
+     * @param contentKey the key for the string of the content
+     */
     protected HelpContentField(String summaryKey, String contentKey) {
         this.summaryKey = summaryKey;
         this.contentKey = contentKey;
@@ -26,6 +36,14 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
         addThemeVariants(DetailsVariant.FILLED);
     }
 
+    /**
+     * Create a HelpContentField with a button and keys for the string of the summary and the content of this
+     * AccordionPanel.
+     * 
+     * @param summaryKey the key for the string of the summary
+     * @param button the button
+     * @param contentKey the key for the string of the content
+     */
     protected HelpContentField(String summaryKey, Button button, String contentKey) {
         this(summaryKey, contentKey);
         HorizontalLayout layout = new HorizontalLayout(button, content);

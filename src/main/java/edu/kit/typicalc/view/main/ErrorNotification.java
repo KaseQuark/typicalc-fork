@@ -28,7 +28,7 @@ public class ErrorNotification extends Notification {
     /**
      * Creates a new ErrorNotification with a specific error.
      *
-     * @param error the error
+     * @param error the occurred error
      */
     protected ErrorNotification(ParseError error) {
         VerticalLayout container = new VerticalLayout();

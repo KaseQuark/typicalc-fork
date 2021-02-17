@@ -7,7 +7,6 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
-import java.util.List;
 import java.util.function.Consumer;
 
 /**
@@ -21,11 +20,6 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
 
     private static final String EXAMPLE_DIALOG_ID = "exampleDialog";
 
-    private static final List<String> EXAMPLES =
-            List.of("λx.x", "λx.λy.y x", "λx.λy.y (x x)", "let f = λx. g y y in f 3", "let k = λx.λy. x in k a (k b c)",
-                    "(λx.x x) (λx.x x)",
-                    "(λx.λy.y (x y)) (λz. λa. z g a)", "let f = λx. let g = λy. y in g x in f 3",
-                    "let f = λx. let g = λy.5 5 in g x in f 3");
     private final H3 instruction;
 
     /**
@@ -34,10 +28,11 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
      * @param callback function to handle the selected lambda term
      */
     protected ExampleDialog(Consumer<String> callback) {
+        String[] examples = getTranslation("root.exampleTerms").split(",");
         VerticalLayout layout = new VerticalLayout();
         instruction = new H3();
         layout.add(instruction);
-        for (String term : EXAMPLES) {
+        for (String term : examples) {
             Button button = new Button(term);
             button.addClickListener(click -> {
         	callback.accept(term);
