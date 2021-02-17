@@ -14,7 +14,6 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 @CssImport("./styles/view/share-dialog.css")
 public class ShareDialog extends Dialog implements LocaleChangeObserver {
 
-    private static final String ID = "share-dialog";
     private static final String LAYOUT_ID = "share-dialog-layout";
     private static final String FIELD_CLASS = "share-dialog-field";
 
@@ -31,7 +30,6 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      * @param latexCode LaTeX code for users to copy into their own LaTeX document(s)
      */
     public ShareDialog(String url, String latexPackages, String latexCode) {
-        setId(ID);
         VerticalLayout layout = new VerticalLayout();
         layout.setId(LAYOUT_ID);
         add(layout);
