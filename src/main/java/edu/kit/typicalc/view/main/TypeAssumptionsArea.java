@@ -40,6 +40,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     private final VerticalLayout assumptionContainer;
     private final Button addAssumption;
     private final Button deleteAll;
+    private final Button saveAssumptions;
 
     private final List<TypeAssumptionField> fields = new ArrayList<>();
 
@@ -62,7 +63,9 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         deleteAll.addClickListener(event -> onDeleteAllClick());
         deleteAll.setIconAfterText(true);
         deleteAll.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        buttons.add(addAssumption, deleteAll);
+        saveAssumptions = new Button(getTranslation("root.save"), event -> this.close());
+        saveAssumptions.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        buttons.add(addAssumption, deleteAll, saveAssumptions);
 
         assumptionContainer = new VerticalLayout();
         assumptionContainer.setId(ASS_CONTAINER_ID);
@@ -77,8 +80,8 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         }
 
         layout.add(heading, buttons, assumptionContainer);
-        layout.setPadding(false);
         add(layout);
+        setCloseOnOutsideClick(false);
     }
 
     /**
@@ -123,5 +126,6 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         heading.setText(getTranslation("root.typeAssumptions"));
         addAssumption.setText(getTranslation("root.addAssumption"));
         deleteAll.setText(getTranslation("root.deleteAll"));
+        saveAssumptions.setText(getTranslation("root.save"));
     }
 }
