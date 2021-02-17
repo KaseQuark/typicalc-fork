@@ -7,7 +7,6 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.router.PageTitle;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
@@ -16,7 +15,6 @@ import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCrea
 import java.util.List;
 import java.util.Locale;
 
-@PageTitle("TypeInferenceView")
 @CssImport("./styles/view/type-inference.css")
 public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent> {

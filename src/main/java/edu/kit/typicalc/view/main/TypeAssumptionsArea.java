@@ -11,6 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,7 +82,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     }
 
     /**
-     * Creates a new TypeAssumptionsArea.
+     * Creates a new empty TypeAssumptionsArea.
      */
     protected TypeAssumptionsArea() {
         this(new HashMap<>());
@@ -111,7 +112,9 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
      */
     protected Map<String, String> getTypeAssumptions() {
         return fields.stream()
-                .collect(Collectors.toMap(TypeAssumptionField::getVariable, TypeAssumptionField::getType,
+                .map(field -> Pair.of(field.getVariable(), field.getType()))
+                .filter(pair -> !pair.getLeft().isEmpty()) // ignore empty input fields
+                .collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
                         (existing, replacement) -> existing, TreeMap::new));
     }
 
