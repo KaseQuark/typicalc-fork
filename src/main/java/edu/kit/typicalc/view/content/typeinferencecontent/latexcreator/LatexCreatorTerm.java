@@ -13,7 +13,13 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
 public class LatexCreatorTerm implements TermVisitor {
 
     private final StringBuilder latex = new StringBuilder();
-    private boolean needsParentheses = false;
+    private enum ParenthesesNeeded {
+        NEVER,
+        SOMETIMES,
+        ALWAYS
+    }
+
+    private ParenthesesNeeded needsParentheses;
 
     /**
      * Initialize a new latex creator object with a lambda term.
@@ -28,42 +34,50 @@ public class LatexCreatorTerm implements TermVisitor {
      * @return the generated LaTeX code
      */
     public String getLatex() {
-        long count = latex.chars().filter(ch -> ch == PAREN_LEFT).count();
-        if (latex.indexOf(String.valueOf(PAREN_LEFT)) == 0
-                && latex.indexOf(String.valueOf(PAREN_RIGHT)) == latex.length() - 1
-                && count == 1) {
-            latex.deleteCharAt(latex.length() - 1);
-            latex.deleteCharAt(0);
-        }
+//        long count = latex.chars().filter(ch -> ch == PAREN_LEFT).count();
+//        if (latex.indexOf(String.valueOf(PAREN_LEFT)) == 0
+//                && latex.indexOf(String.valueOf(PAREN_RIGHT)) == latex.length() - 1
+//                && count == 1) {
+//            latex.deleteCharAt(latex.length() - 1);
+//            latex.deleteCharAt(0);
+//        }
         return latex.toString();
     }
 
     @Override
     public void visit(AppTerm appTerm) {
-        appTerm.getFunction().accept(this);
-        latex.append(LATEX_SPACE);
+        int index;
         latex.append(PAREN_LEFT);
-        int index = latex.length() - 1;
-        appTerm.getParameter().accept(this);
-        if (needsParentheses) {
+        index = latex.length() - 1;
+        appTerm.getFunction().accept(this);
+        if (needsParentheses == ParenthesesNeeded.ALWAYS) {
             latex.append(PAREN_RIGHT);
         } else {
             latex.deleteCharAt(index);
         }
-        needsParentheses = true;
+
+        latex.append(LATEX_SPACE);
+
+        latex.append(PAREN_LEFT);
+        index = latex.length() - 1;
+        appTerm.getParameter().accept(this);
+        if (needsParentheses == ParenthesesNeeded.SOMETIMES || needsParentheses == ParenthesesNeeded.ALWAYS) {
+            latex.append(PAREN_RIGHT);
+        } else {
+            latex.deleteCharAt(index);
+        }
+        needsParentheses = ParenthesesNeeded.SOMETIMES;
     }
 
     @Override
     public void visit(AbsTerm absTerm) {
-        latex.append(PAREN_LEFT);
         latex.append(LAMBDA);
         latex.append(SPACE);
         absTerm.getVariable().accept(this);
         latex.append(DOT_SIGN);
         latex.append(LATEX_SPACE);
         absTerm.getInner().accept(this);
-        latex.append(PAREN_RIGHT);
-        needsParentheses = false;
+        needsParentheses = ParenthesesNeeded.ALWAYS;
     }
 
     @Override
@@ -72,7 +86,7 @@ public class LatexCreatorTerm implements TermVisitor {
         latex.append(CURLY_LEFT);
         latex.append(varTerm.getName());
         latex.append(CURLY_RIGHT);
-        needsParentheses = false;
+        needsParentheses = ParenthesesNeeded.NEVER;
     }
 
     @Override
@@ -81,7 +95,7 @@ public class LatexCreatorTerm implements TermVisitor {
         latex.append(CURLY_LEFT);
         latex.append(intTerm.getValue());
         latex.append(CURLY_RIGHT);
-        needsParentheses = false;
+        needsParentheses = ParenthesesNeeded.NEVER;
     }
 
     @Override
@@ -90,7 +104,7 @@ public class LatexCreatorTerm implements TermVisitor {
         latex.append(CURLY_LEFT);
         latex.append(boolTerm.getValue());
         latex.append(CURLY_RIGHT);
-        needsParentheses = false;
+        needsParentheses = ParenthesesNeeded.NEVER;
     }
 
     @Override
@@ -116,6 +130,6 @@ public class LatexCreatorTerm implements TermVisitor {
                 .append(CURLY_RIGHT)
                 .append(LATEX_SPACE);
         letTerm.getInner().accept(this);
-        needsParentheses = true;
+        needsParentheses = ParenthesesNeeded.ALWAYS;
     }
 }
