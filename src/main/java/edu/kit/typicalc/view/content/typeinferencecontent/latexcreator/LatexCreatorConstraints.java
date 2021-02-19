@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.AssumptionGeneratorUtil.typeAssumptionsToLatex;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
 /**
@@ -87,6 +88,13 @@ public class LatexCreatorConstraints implements StepVisitor {
         }
         if (FIRST_PREFIX.equals(prefix)) {
             result.replaceAll(content -> ALIGN_BEGIN + content + ALIGN_END);
+        } else {
+            // add the new type assumptions only during a let sub inference where
+            // the unification was successful
+            typeInferer.getMGU().ifPresent(mgu -> {
+                result.add(generateNewTypeAssumptions(result.get(result.size() - 1)));
+                numberGenerator.push();
+            });
         }
         return result;
     }
@@ -298,6 +306,20 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType()).getLatex());
         latex.append("" + PAREN_RIGHT + EQUALS);
         latex.append(new LatexCreatorType(typeInferer.getType().get()).getLatex());
+        return latex.toString();
+    }
+
+    // generates the TypeAssumptions for the right sub tree of a let step
+    private String generateNewTypeAssumptions(String subPrefix) {
+        StringBuilder latex = new StringBuilder();
+        latex.append(subPrefix);
+        latex.append(LATEX_NEW_LINE + AMPERSAND);
+        latex.append("Neue Typumgebung:");
+        latex.append(SIGMA);
+        latex.append(constraintSetIndex);
+        latex.append(PAREN_LEFT);
+        latex.append(typeAssumptionsToLatex(typeInferer.getFirstInferenceStep().getConclusion().getTypeAssumptions()));
+        latex.append(PAREN_RIGHT);
         return latex.toString();
     }
 }

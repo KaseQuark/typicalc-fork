@@ -4,13 +4,12 @@ import edu.kit.typicalc.model.Conclusion;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.UnificationError;
 import edu.kit.typicalc.model.step.*;
-import edu.kit.typicalc.model.term.VarTerm;
-import edu.kit.typicalc.model.type.TypeAbstraction;
 
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
 
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.AssumptionGeneratorUtil.generateTypeAbstraction;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.AssumptionGeneratorUtil.typeAssumptionsToLatex;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 
 /**
@@ -88,26 +87,6 @@ public class LatexCreator implements StepVisitor {
     }
 
 
-
-    private String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
-        if (typeAssumptions.isEmpty()) {
-            return "";
-        } else {
-            StringBuilder assumptions = new StringBuilder();
-            typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
-                String termLatex = new LatexCreatorTerm(varTerm).getLatex();
-                String abstraction = generateTypeAbstraction(typeAbstraction);
-                assumptions.append(termLatex)
-                        .append(COLON)
-                        .append(abstraction)
-                        .append(COMMA);
-            }));
-            assumptions.deleteCharAt(assumptions.length() - 1);
-            return assumptions.toString();
-        }
-    }
-
-
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
         String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
@@ -134,21 +113,6 @@ public class LatexCreator implements StepVisitor {
         String type = generateTypeAbstraction(var.getTypeAbsInPremise());
         return DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
                 + PAREN_RIGHT + EQUALS + type + DOLLAR_SIGN;
-    }
-
-    private String generateTypeAbstraction(TypeAbstraction abs) {
-        StringBuilder abstraction = new StringBuilder();
-        if (abs.hasQuantifiedVariables()) {
-            abstraction.append(FOR_ALL);
-            abs.getQuantifiedVariables().forEach(typeVariable -> {
-                String variableTex = new LatexCreatorType(typeVariable).getLatex();
-                abstraction.append(variableTex).append(COMMA);
-            });
-            abstraction.deleteCharAt(abstraction.length() - 1);
-            abstraction.append(DOT_SIGN);
-        }
-        abstraction.append(new LatexCreatorType(abs.getInnerType()).getLatex());
-        return abstraction.toString();
     }
 
 
