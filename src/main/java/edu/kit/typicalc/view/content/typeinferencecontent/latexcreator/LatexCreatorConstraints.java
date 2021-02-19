@@ -328,12 +328,17 @@ public class LatexCreatorConstraints implements StepVisitor {
     // generates the TypeAssumptions for the right sub tree of a let step
     private String generateNewTypeAssumptions(String subPrefix) {
         InferenceStep step = typeInferer.getFirstInferenceStep();
+        String typeAssumptions = typeAssumptionsToLatex(step.getConclusion().getTypeAssumptions());
+        if ("".equals(typeAssumptions)) {
+            typeAssumptions = "\\emptyset";
+        }
+
         StringBuilder latex = new StringBuilder();
         latex.append(subPrefix);
         latex.append(LATEX_NEW_LINE + AMPERSAND + GAMMA + APOSTROPHE + EQUALS + SIGMA);
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
-        latex.append(typeAssumptionsToLatex(step.getConclusion().getTypeAssumptions()));
+        latex.append(typeAssumptions);
         latex.append("" + PAREN_RIGHT + COMMA + LATEX_SPACE);
         latex.append(new LatexCreatorTerm(letVariable.orElseThrow(IllegalStateException::new)).getLatex());
         latex.append("" + COLON + TYPE_ABSTRACTION + PAREN_LEFT + SIGMA);
@@ -343,7 +348,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append("" + PAREN_RIGHT + COMMA + SIGMA);
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
-        latex.append(typeAssumptionsToLatex(step.getConclusion().getTypeAssumptions()));
+        latex.append(typeAssumptions);
         latex.append("" + PAREN_RIGHT + PAREN_RIGHT + EQUALS);
         latex.append(typeAssumptionsToLatex(newTypeAssumption.orElseThrow(IllegalSelectorException::new)));
         return latex.toString();

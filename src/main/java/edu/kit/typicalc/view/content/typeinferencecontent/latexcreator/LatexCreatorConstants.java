@@ -54,6 +54,7 @@ public final class LatexCreatorConstants {
     protected static final String CIRC = "\\circ";
     protected static final String SUBSTITUTION_SIGN = "\\mathrel{\\unicode{x21E8}}";
     protected static final String COLOR_RED = "\\color{#f00}";
+    protected static final String EMPTY_SET = "";
     protected static final String LAMBDA = "\\lambda";
     protected static final String LATEX_SPACE = "\\ ";
     protected static final String LATEX_CURLY_LEFT = "\\{";
