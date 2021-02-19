@@ -1,0 +1,42 @@
+#startPage-Heading {
+	margin-top: 50px;
+	margin-bottom: 10px;
+	font-size: 50px;
+}
+
+#horizontalLine {
+	align-self: center;
+	width: 50%;
+	min-height: 1px;
+}
+
+#introduction {
+	width: 50%;
+}
+
+#linkContainer {
+	width: 50%;
+	margin-top: 0;
+}
+
+#slideProgress {
+	width: 50%;
+	margin-top: 30px;
+	margin-bottom: 0;
+}
+
+#controlPanel {
+	margin-top: 10px;
+}
+
+#startPage {
+	padding: 0;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+}
+
+#slideShow {
+	height: 500px;
+}

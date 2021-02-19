@@ -37,6 +37,7 @@ dependencies:
   '@vaadin/vaadin-text-field': 2.8.2
   '@vaadin/vaadin-time-picker': 2.4.0
   '@vaadin/vaadin-upload': 4.4.1
+  '@xpertsea/paper-slider': 3.0.0
   lit-element: 2.3.1
   open: 7.3.1
 devDependencies:
@@ -799,6 +800,13 @@ packages:
     dev: false
     resolution:
       integrity: sha512-5fFjvP0jQJZoXK6YzYeYcIDGJ5oEsdjr1L9VaYLw5yxNd4aRz4srMpwCwldeNG0A6Hvr9igbG7fCsBeiiCXd7A==
+  /@xpertsea/paper-slider/3.0.0:
+    dependencies:
+      '@polymer/iron-a11y-keys-behavior': 3.0.1
+      '@polymer/polymer': 3.2.0
+    dev: false
+    resolution:
+      integrity: sha512-r37ZUgavjGhNkEjSbhvsk3g9kXlkpOxkVw9JXdoEbvS8PzXQmL08pzRdAk2pqg44o/ttQOMiGwWmUpJM26fiJQ==
   /@xtuc/ieee754/1.2.0:
     dev: true
     resolution:
@@ -6160,6 +6168,7 @@ specifiers:
   '@vaadin/vaadin-text-field': 2.8.2
   '@vaadin/vaadin-time-picker': 2.4.0
   '@vaadin/vaadin-upload': 4.4.1
+  '@xpertsea/paper-slider': 3.0.0
   awesome-typescript-loader: 5.2.1
   chokidar: ^3.4.0
   compression-webpack-plugin: 4.0.1
