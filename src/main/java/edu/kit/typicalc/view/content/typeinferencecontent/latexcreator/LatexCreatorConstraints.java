@@ -84,7 +84,6 @@ public class LatexCreatorConstraints implements StepVisitor {
                 result.add(generateMGU(constraintSets) + LATEX_NEW_LINE + generateFinalType());
                 numberGenerator.push();
             });
-            // todo add some helpful text for the user
         }
         if (FIRST_PREFIX.equals(prefix)) {
             result.replaceAll(content -> ALIGN_BEGIN + content + ALIGN_END);
