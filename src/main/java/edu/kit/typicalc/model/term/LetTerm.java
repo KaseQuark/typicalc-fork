@@ -20,9 +20,10 @@ public class LetTerm extends LambdaTerm {
 
     /**
      * Initializes a new let term with its variable and two lambda terms.
-     * @param variable the variable of the let term
+     *
+     * @param variable   the variable of the let term
      * @param definition the lambda term assigned to the variable
-     * @param body the lambda term the variable may be used in
+     * @param body       the lambda term the variable may be used in
      */
     public LetTerm(VarTerm variable, LambdaTerm definition, LambdaTerm body) {
         this.variable = variable;

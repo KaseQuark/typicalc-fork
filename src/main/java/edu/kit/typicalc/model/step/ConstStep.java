@@ -9,6 +9,7 @@ import edu.kit.typicalc.model.Constraint;
 public abstract class ConstStep extends InferenceStep {
     /**
      * Initializes a new ConstStep with the given values.
+     *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
      */

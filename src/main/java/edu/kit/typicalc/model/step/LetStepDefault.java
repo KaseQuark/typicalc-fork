@@ -10,9 +10,10 @@ import edu.kit.typicalc.model.TypeInfererLet;
 public class LetStepDefault extends LetStep {
     /**
      * Initializes a new LetStep with the given values.
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint added in this step
-     * @param premise the right premise of this step
+     *
+     * @param conclusion  the conclusion of this step
+     * @param constraint  the constraint added in this step
+     * @param premise     the right premise of this step
      * @param typeInferer the typeInferer that performs the Type Inference for the premise
      *                    that needs its own type Inference.
      */
@@ -23,6 +24,7 @@ public class LetStepDefault extends LetStep {
 
     /**
      * Accepts a visitor.
+     *
      * @param stepVisitor the visitor that wants to visit this object
      */
     @Override

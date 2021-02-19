@@ -22,8 +22,8 @@ public class Conclusion {
      * Initializes a new Conclusion with the given type assumptions, lambda term and type.
      *
      * @param typeAssumptions the type assumptions used in the conclusion
-     * @param lambdaTerm the lambda term in the conclusion
-     * @param type the type assigned to the lambda term in the conclusion
+     * @param lambdaTerm      the lambda term in the conclusion
+     * @param type            the type assigned to the lambda term in the conclusion
      */
     public Conclusion(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm, Type type) {
         this.typeAssumptions = typeAssumptions;
@@ -32,6 +32,8 @@ public class Conclusion {
     }
 
     /**
+     * Returns the type assumptions used in the conclusion
+     *
      * @return the type assumptions used in the conclusion
      */
     public Map<VarTerm, TypeAbstraction> getTypeAssumptions() {
@@ -39,6 +41,8 @@ public class Conclusion {
     }
 
     /**
+     * Returns the lambda term in the conclusion
+     *
      * @return the lambda term in the conclusion
      */
     public LambdaTerm getLambdaTerm() {
@@ -46,6 +50,8 @@ public class Conclusion {
     }
 
     /**
+     * Returns the type assigned to the lambda term in the conclusion
+     *
      * @return the type assigned to the lambda term in the conclusion
      */
     public Type getType() {

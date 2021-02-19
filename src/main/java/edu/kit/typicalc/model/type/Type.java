@@ -12,6 +12,7 @@ import java.util.Set;
 public abstract class Type {
     /**
      * Checks whether some type occurs in this type.
+     *
      * @param x the type to look for
      * @return whether the specified type occurs in this type
      */
@@ -19,12 +20,14 @@ public abstract class Type {
 
     /**
      * Returns a set of all free type variables occurring in the type.
+     *
      * @return all free type variables
      */
     public abstract Set<TypeVariable> getFreeTypeVariables();
 
     /**
      * Substitutes a type Variable for a different type.
+     *
      * @param a the type to replace
      * @param b the type to insert
      * @return a Type that is created by replacing a with b
@@ -33,6 +36,7 @@ public abstract class Type {
 
     /**
      * Applies the given substitution to the type.
+     *
      * @param substitution the substitution to apply to the type
      * @return the substituted type
      */
@@ -42,6 +46,7 @@ public abstract class Type {
 
     /**
      * Accepts a visitor
+     *
      * @param typeVisitor the visitor that wants to visit this
      */
     public abstract void accept(TypeVisitor typeVisitor);
@@ -49,7 +54,8 @@ public abstract class Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with
      * another type.
-     * @param type  the other type
+     *
+     * @param type the other type
      * @return unification steps necessary, or an error if that is impossible
      */
     public abstract Result<UnificationActions, UnificationError> constrainEqualTo(Type type);
@@ -57,6 +63,7 @@ public abstract class Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * function type.
+     *
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -65,6 +72,7 @@ public abstract class Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * named type.
+     *
      * @param type the named type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -73,6 +81,7 @@ public abstract class Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * type variable.
+     *
      * @param type the type variable
      * @return the unification steps necessary, or an error if that is impossible
      */

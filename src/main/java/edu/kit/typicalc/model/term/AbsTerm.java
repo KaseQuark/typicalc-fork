@@ -19,7 +19,8 @@ public class AbsTerm extends LambdaTerm {
     /**
      * Initializes a new abstraction term with the variable bound
      * by the abstraction and the lambda term of the abstraction.
-     * @param var the variable bound by the abstraction
+     *
+     * @param var  the variable bound by the abstraction
      * @param body the lambda term of the abstraction
      */
     public AbsTerm(VarTerm var, LambdaTerm body) {
@@ -28,6 +29,8 @@ public class AbsTerm extends LambdaTerm {
     }
 
     /**
+     * Returns the variable of this abstraction
+     *
      * @return the variable of this abstraction
      */
     public VarTerm getVariable() {
@@ -35,6 +38,8 @@ public class AbsTerm extends LambdaTerm {
     }
 
     /**
+     * Returns the function body of this abstraction
+     *
      * @return the function body of this abstraction
      */
     public LambdaTerm getInner() {

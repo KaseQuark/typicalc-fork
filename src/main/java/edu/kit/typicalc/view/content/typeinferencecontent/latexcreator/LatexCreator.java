@@ -28,7 +28,7 @@ public class LatexCreator implements StepVisitor {
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
      *
-     * @param typeInferer theTypeInfererInterface to create the LaTeX-code from
+     * @param typeInferer         theTypeInfererInterface to create the LaTeX-code from
      * @param translationProvider translation text provider for {@link UnificationError}
      */
     public LatexCreator(TypeInfererInterface typeInferer, Function<UnificationError, String> translationProvider) {
@@ -38,8 +38,8 @@ public class LatexCreator implements StepVisitor {
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
      *
-     * @param typeInferer theTypeInfererInterface to create the LaTeX code from
-     * @param stepLabels turns step labels on or off
+     * @param typeInferer         theTypeInfererInterface to create the LaTeX code from
+     * @param stepLabels          turns step labels on or off
      * @param translationProvider translation text provider for {@link UnificationError}
      */
     public LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels,
@@ -51,7 +51,7 @@ public class LatexCreator implements StepVisitor {
     }
 
     /**
-     * Returns the proof tree
+     * Returns the proof tree.
      *
      * @return the LaTeX-code for the proof tree
      */
@@ -60,7 +60,7 @@ public class LatexCreator implements StepVisitor {
     }
 
     /**
-     * Returns the LaTeX-code for constraints, unification, MGU and final type
+     * Returns the LaTeX-code for constraints, unification, MGU and final type.
      *
      * @return the LaTeX-code for constraints and unification
      */

@@ -23,7 +23,7 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
 
     /**
      * Create a HelpContentField with keys for the strings of the summary and the content of this AccordionPanel.
-     * 
+     *
      * @param summaryKey the key for the string of the summary
      * @param contentKey the key for the string of the content
      */
@@ -39,9 +39,9 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
     /**
      * Create a HelpContentField with a button and keys for the string of the summary and the content of this
      * AccordionPanel.
-     * 
+     *
      * @param summaryKey the key for the string of the summary
-     * @param button the button
+     * @param button     the button
      * @param contentKey the key for the string of the content
      */
     protected HelpContentField(String summaryKey, Button button, String contentKey) {

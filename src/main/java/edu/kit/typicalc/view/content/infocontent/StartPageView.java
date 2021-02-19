@@ -29,7 +29,7 @@ import edu.kit.typicalc.view.main.MainViewImpl;
 public class StartPageView extends VerticalLayout implements ControlPanelView, LocaleChangeObserver {
 
     private static final long serialVersionUID = 2502750919087936406L;
-    
+
     private static final String HEADING_ID = "startPage-Heading";
     private static final String H_LINE_ID = "horizontalLine";
     private static final String INTRODUCTION_ID = "introduction";
@@ -40,14 +40,14 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
     private static final String SLIDE_SHOW_ID = "slideShow";
 
     private static final String DOT = ".";
-    
+
     private final ControlPanel controlPanel;
     private final Span introduction;
     private final Carousel slideShow;
     private final ProgressBar slideProgress;
     private final Text linkText;
     private final Anchor link;
-    
+
     /**
      * Fills the view with content.
      */
@@ -55,10 +55,10 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         controlPanel = new ControlPanel(this, this);
         controlPanel.setId(CONTROL_PANEL_ID);
         controlPanel.setEnabledShareButton(false);
-        
+
         slideShow = createSzenarioCarousel();
         slideShow.setId(SLIDE_SHOW_ID);
-        
+
         H1 heading = new H1(getTranslation("root.typicalc"));
         heading.setId(HEADING_ID);
         Hr line1 = new Hr();
@@ -67,16 +67,16 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         line2.setId(H_LINE_ID);
         introduction = new Span(getTranslation("root.slideExp"));
         introduction.setId(INTRODUCTION_ID);
-        
+
         linkText = new Text(getTranslation("root.linkText"));
         link = new Anchor(getTranslation("root.link"), getTranslation("root.here"));
         link.setTarget("_blank"); // opens new tab
         Span linkContainer = new Span(linkText, link, new Text(DOT));
         linkContainer.setId(LINK_CONTAINER_ID);
-        
+
         slideProgress = new ProgressBar(slideShow.getStartPosition(), slideShow.getSlides().length - 1);
         slideProgress.setId(SLIDE_PROGRESS_ID);
-        
+
         add(heading, line1, introduction, linkContainer, slideProgress, slideShow, line2, controlPanel);
         setId(START_PAGE_ID);
     }
@@ -90,11 +90,11 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         Slide slide6 = new ImageSlide(getTranslation("root.image6"), "root.text6");
         Slide slide7 = new ImageSlide(getTranslation("root.image7"), "root.text7");
         Slide slide8 = new ImageSlide(getTranslation("root.image8"), "root.text8");
-        
+
         return new Carousel(slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8).withoutNavigation()
                 .withoutSwipe();
     }
-    
+
     @Override
     public void firstStepButton() {
         slideShow.movePos(0);
@@ -116,10 +116,10 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
     @Override
     public void previousStepButton() {
         slideShow.movePrev();
-        slideProgress.setValue((slideProgress.getValue() - 1 + slideShow.getSlides().length) 
+        slideProgress.setValue((slideProgress.getValue() - 1 + slideShow.getSlides().length)
                 % slideShow.getSlides().length);
     }
-    
+
     @Override
     public void localeChange(LocaleChangeEvent event) {
         introduction.setText(getTranslation("root.slideExp"));

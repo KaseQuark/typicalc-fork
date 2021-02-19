@@ -58,19 +58,19 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
         inputField.setMaxLength(MAX_INPUT_LENGTH);
-        
+
         // attach a listener that replaces \ with λ
         // JavaScript is used because Vaadin does not have APIs for selectionStart/selectionEnd
         UI.getCurrent().getPage().executeJs(
                 "document.getElementById('" + INPUT_FIELD_ID + "').addEventListener('keyup', e => {"
-                + "var area = e.target.shadowRoot.querySelector('input');"
-                + "if (area.value.indexOf('\\\\') >= 0) {"
-                + "    var start = area.selectionStart;"
-                + "    var end = area.selectionEnd;"
-                + "    area.value = area.value.replace('\\\\', 'λ');"
-                + "    area.selectionStart = start;"
-                + "    area.selectionEnd = end;"
-                + "}});");
+                        + "var area = e.target.shadowRoot.querySelector('input');"
+                        + "if (area.value.indexOf('\\\\') >= 0) {"
+                        + "    var start = area.selectionStart;"
+                        + "    var end = area.selectionEnd;"
+                        + "    area.value = area.value.replace('\\\\', 'λ');"
+                        + "    area.selectionStart = start;"
+                        + "    area.selectionEnd = end;"
+                        + "}});");
         Button lambdaButton = new Button(getTranslation("root.lambda"));
         lambdaButton.setId(LAMBDA_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);

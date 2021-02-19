@@ -22,7 +22,7 @@ public class ControlPanel extends HorizontalLayout {
     /**
      * Sets up buttons with click-listeners that call the corresponding method in the view.
      *
-     * @param view the view that reacts to the button clicks
+     * @param view      the view that reacts to the button clicks
      * @param focusArea the component key shortcuts should work in
      */
     public ControlPanel(ControlPanelView view, Component focusArea) {

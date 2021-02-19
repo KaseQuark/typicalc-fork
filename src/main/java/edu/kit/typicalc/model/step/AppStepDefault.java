@@ -9,9 +9,10 @@ import edu.kit.typicalc.model.Constraint;
  */
 public class AppStepDefault extends AppStep {
     /**
-     *Initializes a new AbsStepWithLet with the given values.
-     * @param premise1 the first premise of this step
-     * @param premise2 the second premise of this step
+     * Initializes a new AbsStepWithLet with the given values.
+     *
+     * @param premise1   the first premise of this step
+     * @param premise2   the second premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint constraint that can be derived from this step
      */
@@ -22,6 +23,7 @@ public class AppStepDefault extends AppStep {
 
     /**
      * Accepts a visitor.
+     *
      * @param stepVisitor – the visitor that wants to visit this object
      */
     @Override

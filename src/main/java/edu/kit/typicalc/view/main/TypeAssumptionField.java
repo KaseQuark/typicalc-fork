@@ -36,8 +36,8 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
      * type assumption from the {@link TypeAssumptionsArea}.
      *
      * @param deleteSelf deletes this object from the TypeAssumptionsArea
-     * @param variable variable of the type assumption
-     * @param type type of the type assumption
+     * @param variable   variable of the type assumption
+     * @param type       type of the type assumption
      */
     protected TypeAssumptionField(Consumer<TypeAssumptionField> deleteSelf, String variable, String type) {
         this(deleteSelf);

@@ -17,6 +17,7 @@ public class Unification {
     /**
      * Initializes a new {@link Unification} for the given constraints.
      * The list of unification steps and the resulting substitutions are generated here.
+     *
      * @param constraints constraints to execute the unification for
      */
     protected Unification(Deque<Constraint> constraints) { // TODO: document List->Deque
@@ -62,6 +63,8 @@ public class Unification {
     }
 
     /**
+     * Returns list of the unification steps the unification performs.
+     *
      * @return list of the unification steps the unification performs.
      */
     protected List<UnificationStep> getUnificationSteps() {

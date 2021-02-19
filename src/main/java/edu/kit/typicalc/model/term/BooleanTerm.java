@@ -12,6 +12,7 @@ public class BooleanTerm extends ConstTerm {
 
     /**
      * Initializes a new boolean lambda term with the given value.
+     *
      * @param value true or false
      */
     public BooleanTerm(boolean value) {
@@ -20,6 +21,7 @@ public class BooleanTerm extends ConstTerm {
 
     /**
      * Returns the value of the boolean constant term.
+     *
      * @return the value of the term
      */
     public boolean getValue() {

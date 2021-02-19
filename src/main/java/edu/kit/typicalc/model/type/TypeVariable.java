@@ -16,7 +16,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     /**
      * Initializes a new TypeVariable with the given index.
      *
-     * @param kind the kind of type variable
+     * @param kind  the kind of type variable
      * @param index the index of this variable
      */
     public TypeVariable(TypeVariableKind kind, int index) {
@@ -26,6 +26,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
 
     /**
      * Returns the kind of the type variable.
+     *
      * @return the variable's kind
      */
     public TypeVariableKind getKind() {
@@ -34,6 +35,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
 
     /**
      * Returns the index of the type variable as an integer
+     *
      * @return the variable's index
      */
     public int getIndex() {
@@ -42,6 +44,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
 
     /**
      * Checks whether some type occurs in this type.
+     *
      * @param x the type to look for
      * @return whether the specified type is equal to this type
      */
@@ -57,6 +60,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
 
     /**
      * Substitutes a type variable for a different type.
+     *
      * @param a the type to replace
      * @param b the type to insert
      * @return itself, or b if a is equal to this object
@@ -64,7 +68,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     @Override
     public Type substitute(TypeVariable a, Type b) {
         if (this.equals(a)) {
-        return b;
+            return b;
         } else {
             return this;
         }
@@ -72,6 +76,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
 
     /**
      * Accepts a visitor.
+     *
      * @param typeVisitor the visitor that wants to visit this
      */
     public void accept(TypeVisitor typeVisitor) {
@@ -82,7 +87,8 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
      * Computes the necessary constraints (and substitution) to unify this type with
      * another. This method uses the constrainEqualToVariable method on the other
      * type.
-     * @param type  the other type
+     *
+     * @param type the other type
      * @return unification steps necessary, or an error if that is impossible
      */
     @Override
@@ -93,6 +99,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * function type.
+     *
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -104,6 +111,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * named type.
+     *
      * @param type the named type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -115,6 +123,7 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * type variable.
+     *
      * @param type the type variable
      * @return the unification steps necessary, or an error if that is impossible
      */

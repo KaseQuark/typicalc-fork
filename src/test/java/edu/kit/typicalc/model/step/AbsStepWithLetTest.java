@@ -35,6 +35,7 @@ class AbsStepWithLetTest {
         constraint = new Constraint(type1, type2);
         premise = new ConstStepDefault(conclusion, constraint);
     }
+
     @Test
     void equalsTest() {
         AbsStepWithLet step1 = new AbsStepWithLet(premise, conclusion, constraint);

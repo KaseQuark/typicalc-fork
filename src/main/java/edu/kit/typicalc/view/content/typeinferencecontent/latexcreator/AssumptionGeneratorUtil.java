@@ -8,8 +8,13 @@ import java.util.Map;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.DOT_SIGN;
 
+/**
+ * Util class for {@link LatexCreator} and {@link LatexCreatorConstraints} to generate LaTeX code from
+ * a Map representing type assumptions.
+ */
 public final class AssumptionGeneratorUtil {
-    private AssumptionGeneratorUtil() { }
+    private AssumptionGeneratorUtil() {
+    }
 
     protected static String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
         if (typeAssumptions.isEmpty()) {

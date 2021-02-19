@@ -9,7 +9,7 @@ package edu.kit.typicalc.model.parser;
 public enum ParseError {
 
     /**
-     *  the lambda term didn't meet the specified syntax
+     * the lambda term didn't meet the specified syntax
      */
     UNEXPECTED_TOKEN,
 

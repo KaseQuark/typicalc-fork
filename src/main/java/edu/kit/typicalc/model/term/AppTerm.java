@@ -15,7 +15,8 @@ public class AppTerm extends LambdaTerm {
 
     /**
      * Initializes a new application term with one lambda term for the function and one lambda term for the parameter.
-     * @param left the function
+     *
+     * @param left  the function
      * @param right the parameter
      */
     public AppTerm(LambdaTerm left, LambdaTerm right) {
@@ -24,6 +25,8 @@ public class AppTerm extends LambdaTerm {
     }
 
     /**
+     * Returns the function used in this application
+     *
      * @return the function used in this application
      */
     public LambdaTerm getFunction() {
@@ -31,6 +34,8 @@ public class AppTerm extends LambdaTerm {
     }
 
     /**
+     * Returns the parameter used in this application
+     *
      * @return the parameter used in this application
      */
     public LambdaTerm getParameter() {

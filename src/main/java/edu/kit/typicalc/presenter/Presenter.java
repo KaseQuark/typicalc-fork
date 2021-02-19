@@ -1,6 +1,7 @@
 package edu.kit.typicalc.presenter;
 
 import java.util.Map;
+
 import edu.kit.typicalc.model.Model;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
@@ -18,8 +19,9 @@ public class Presenter implements MainViewListener {
 
     /**
      * Initializes a new presenter object with the provided model and view.
+     *
      * @param model the implementation of the Model
-     * @param view the implementation of the MainView
+     * @param view  the implementation of the MainView
      */
     public Presenter(Model model, MainView view) {
         this.model = model;

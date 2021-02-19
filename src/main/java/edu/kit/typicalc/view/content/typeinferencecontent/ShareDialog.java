@@ -24,10 +24,11 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     /**
      * Sets up three GUI elements, one for each parameter. The content of each element is equal
      * to the String that is passed as corresponding parameter.
-     * @param url a permalink to share with other users
+     *
+     * @param url           a permalink to share with other users
      * @param latexPackages the needed LaTeX-packages to use the displayed mathematics
-     * in other LaTeX documents. Should be in the form „\\usepackage<package>“
-     * @param latexCode LaTeX code for users to copy into their own LaTeX document(s)
+     *                      in other LaTeX documents. Should be in the form „\\usepackage&ltpackage&gt“
+     * @param latexCode     LaTeX code for users to copy into their own LaTeX document(s)
      */
     public ShareDialog(String url, String latexPackages, String latexCode) {
         VerticalLayout layout = new VerticalLayout();

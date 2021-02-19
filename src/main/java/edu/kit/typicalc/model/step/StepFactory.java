@@ -12,7 +12,8 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 public interface StepFactory {
     /**
      * Creates an AbsStep.
-     * @param premise the premise of this step
+     *
+     * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created AbsStep
@@ -21,16 +22,19 @@ public interface StepFactory {
 
     /**
      * Creates an AppStep.
-     * @param premise1 the first premise of this step
-     * @param premise2 the second premise of this step
+     *
+     * @param premise1   the first premise of this step
+     * @param premise2   the second premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created AppStep
      */
     AppStep createAppStep(InferenceStep premise1, InferenceStep premise2,
-                                          Conclusion conclusion, Constraint constraint);
+                          Conclusion conclusion, Constraint constraint);
+
     /**
      * Creates an ConstStep.
+     *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created ConstStep
@@ -39,19 +43,22 @@ public interface StepFactory {
 
     /**
      * Creates a VarStep.
-     * @param typeAbstraction the type abstraction of this step
+     *
+     * @param typeAbstraction     the type abstraction of this step
      * @param instantiatedTypeAbs an instantiation of the type abstraction used in this step
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint that can be derived from this step
+     * @param conclusion          the conclusion of this step
+     * @param constraint          the constraint that can be derived from this step
      * @return the created AbsStep
      */
     VarStep createVarStep(TypeAbstraction typeAbstraction, Type instantiatedTypeAbs,
                           Conclusion conclusion, Constraint constraint);
+
     /**
      * Creates a LetStep.
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint that can be derived from this step
-     * @param premise the premise that doesn't need its own type inference
+     *
+     * @param conclusion  the conclusion of this step
+     * @param constraint  the constraint that can be derived from this step
+     * @param premise     the premise that doesn't need its own type inference
      * @param typeInferer the typeInferer for the premise that needs its own type inference
      * @return the created AppStep
      */

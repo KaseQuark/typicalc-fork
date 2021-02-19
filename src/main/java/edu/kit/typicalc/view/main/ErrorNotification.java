@@ -41,21 +41,21 @@ public class ErrorNotification extends Notification {
         setPosition(Position.MIDDLE);
         setId(NOTIFICATION_ID);
     }
-    
+
     private Details buildErrorMessage(ParseError error) {
         VerticalLayout additionalInformation = new VerticalLayout();
         additionalInformation.setId(ADDITIONAL_INFO_ID);
         Paragraph summary = new Paragraph(getTranslation("root." + error.toString()));
         summary.setId(ERROR_SUMMARY_ID);
         Details errorMessage = new Details(summary, additionalInformation);
-        
+
         if (error == ParseError.TOO_FEW_TOKENS) {
             additionalInformation.add(new Span(getTranslation("root.tooFewTokensHelp")));
         } else {
             additionalInformation.add(new Span(getTranslation("root.wrongCharacter") + error.getCause().getText()));
             additionalInformation.add(new Span(getTranslation("root.position") + error.getCause().getPos()));
         }
-        
+
         return errorMessage;
     }
 }

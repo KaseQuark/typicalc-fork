@@ -17,7 +17,7 @@ public class InputBarElement extends HorizontalLayoutElement {
     public void typeInfer() {
         $(ButtonElement.class).id("inferButton").click();
     }
-    
+
     /**
      * Set the current value of the inputField.
      * 
@@ -26,7 +26,7 @@ public class InputBarElement extends HorizontalLayoutElement {
     public void setCurrentValue(String value) {
         $(TextFieldElement.class).id("inputField").setValue(value);
     }
-    
+
     /**
      * Get the current value of the inputField.
      * 
@@ -35,7 +35,7 @@ public class InputBarElement extends HorizontalLayoutElement {
     public String getCurrentValue() {
         return $(TextFieldElement.class).id("inputField").getValue();
     }
-    
+
     /**
      * Open the example dialog.
      */

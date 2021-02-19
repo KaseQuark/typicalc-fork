@@ -15,7 +15,8 @@ import java.util.Optional;
  * @see Type
  */
 final class UnificationUtil {
-    private UnificationUtil() { }
+    private UnificationUtil() {
+    }
 
     static Result<UnificationActions, UnificationError> functionFunction(FunctionType a, FunctionType b) {
         return new Result<>(new UnificationActions(List.of(

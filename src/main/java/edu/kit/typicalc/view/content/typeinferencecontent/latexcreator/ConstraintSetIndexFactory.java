@@ -29,10 +29,10 @@ public class ConstraintSetIndexFactory {
     protected String nextConstraintSetIndex() {
         String index = nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX
                 ? ""
-                :  nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX + 1
-                    ? "" + UNDERSCORE + CURLY_LEFT + LET + CURLY_RIGHT
-                    : "" + UNDERSCORE + CURLY_LEFT + LET + UNDERSCORE
-                        + CURLY_LEFT + nextConstraintSetIndex + CURLY_RIGHT + CURLY_RIGHT;
+                : nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX + 1
+                ? "" + UNDERSCORE + CURLY_LEFT + LET + CURLY_RIGHT
+                : "" + UNDERSCORE + CURLY_LEFT + LET + UNDERSCORE
+                + CURLY_LEFT + nextConstraintSetIndex + CURLY_RIGHT + CURLY_RIGHT;
 
         nextConstraintSetIndex++;
         return index;

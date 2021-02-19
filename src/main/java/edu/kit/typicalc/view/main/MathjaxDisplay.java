@@ -18,6 +18,7 @@ public class MathjaxDisplay extends LitTemplate implements MathjaxAdapter {
 
     @Id("tc-content")
     private Div content;
+
     /**
      * Creates a new HTML element that renders the LaTeX code.
      *

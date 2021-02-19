@@ -10,7 +10,8 @@ import edu.kit.typicalc.model.Constraint;
 public class AbsStepDefault extends AbsStep {
     /**
      * Initializes a new AbsStepDefault with the given values.
-     * @param premise the premise of this step
+     *
+     * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
      */
@@ -20,6 +21,7 @@ public class AbsStepDefault extends AbsStep {
 
     /**
      * Accepts a visitor.
+     *
      * @param stepVisitor – the visitor that wants to visit this object
      */
     @Override

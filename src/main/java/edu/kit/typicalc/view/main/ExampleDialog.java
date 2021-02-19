@@ -12,7 +12,6 @@ import java.util.function.Consumer;
 /**
  * Contains all predefined examples as buttons.
  * Clicking on a button inserts the example string into the input field.
- *
  */
 public class ExampleDialog extends Dialog implements LocaleChangeObserver {
 
@@ -35,8 +34,8 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
         for (String term : examples) {
             Button button = new Button(term);
             button.addClickListener(click -> {
-        	callback.accept(term);
-        	this.close();
+                callback.accept(term);
+                this.close();
             });
             button.setId(term); // needed for integration test
             layout.add(button);

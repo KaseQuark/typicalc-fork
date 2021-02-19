@@ -15,6 +15,13 @@ import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCrea
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * The main user interface. It provides a way to show the proof tree, the constrains, the
+ * unification, the most general unifier and the final type of the lambda term to the user.
+ * Also provides a way for the user to interact with it, e.g. looking at everything step-by-step.
+ * In order to do this, this class uses {@link LatexCreator} tp create LaTeX-code from the
+ * {@link TypeInfererInterface} and MathJax to render the LaTeX to the user.
+ */
 @CssImport("./styles/view/type-inference.css")
 public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent> {
@@ -36,6 +43,12 @@ public class TypeInferenceView extends VerticalLayout
     private final transient LatexCreator lc;
     private final Div content;
 
+    /**
+     * Initializes the component. When initialization is complete, the first step of the type
+     * inference algorithm is shown to the user.
+     *
+     * @param typeInferer used to create LaTeX code from
+     */
     public TypeInferenceView(TypeInfererInterface typeInferer) {
         setId(ID);
         addAttachListener(this);
@@ -64,7 +77,7 @@ public class TypeInferenceView extends VerticalLayout
     @Override
     public void shareButton() {
         UI.getCurrent().getPage().executeJs("return decodeURI(window.location.href)").then(url ->
-            new ShareDialog(url.asString(), lc.getLatexPackages(), lc.getTree()).open()
+                new ShareDialog(url.asString(), lc.getLatexPackages(), lc.getTree()).open()
         );
     }
 
