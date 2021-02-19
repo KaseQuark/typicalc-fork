@@ -15,6 +15,7 @@ public final class LatexCreatorConstants {
     protected static final String MGU = "mgu";
     protected static final String UNIFY = "unify";
     protected static final String CONSTRAINT_SET = "C";
+    protected static final String TYPE_ABSTRACTION = "ta";
 
     protected static final String DOLLAR_SIGN = "$";
     protected static final char NEW_LINE = '\n';
@@ -58,6 +59,7 @@ public final class LatexCreatorConstants {
     protected static final String FOR_ALL = "\\forall";
     protected static final String MONO_TEXT = "\\texttt";
     protected static final String BOLD_TEXT = "\\textbf";
+    protected static final String TEXT = "\\text";
     protected static final String RIGHT_ARROW = "\\rightarrow";
     protected static final String INSTANTIATE_SIGN = "\\succeq";
     protected static final String LATEX_IN = "\\in";

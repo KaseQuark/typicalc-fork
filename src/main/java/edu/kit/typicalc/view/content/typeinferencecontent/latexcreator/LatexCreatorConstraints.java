@@ -2,10 +2,15 @@ package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import edu.kit.typicalc.model.*;
 import edu.kit.typicalc.model.step.*;
+import edu.kit.typicalc.model.term.LetTerm;
+import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.util.Result;
 
+import java.nio.channels.IllegalSelectorException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -26,6 +31,8 @@ public class LatexCreatorConstraints implements StepVisitor {
     private final TreeNumberGenerator numberGenerator;
     private final String constraintSetIndex;
     private final String prefix;
+    private final Optional<VarTerm> letVariable;
+    private final Optional<Map<VarTerm, TypeAbstraction>> newTypeAssumption;
     private String prevStep;
     private final Function<UnificationError, String> translationProvider;
 
@@ -40,15 +47,19 @@ public class LatexCreatorConstraints implements StepVisitor {
                                       Function<UnificationError, String> translationProvider) {
         this(typeInferer,
                 new ConstraintSetIndexFactory(), new TreeNumberGenerator(),
-                FIRST_PREFIX, translationProvider);
+                FIRST_PREFIX, Optional.empty(), Optional.empty(), translationProvider);
     }
 
     private LatexCreatorConstraints(TypeInfererInterface typeInferer,
                                       ConstraintSetIndexFactory constraintSetIndexFactory,
                                       TreeNumberGenerator numberGenerator,
                                       String prefix,
+                                      Optional<VarTerm> letVariable,
+                                      Optional<Map<VarTerm, TypeAbstraction>> newTypeAssumption,
                                       Function<UnificationError, String> translationProvider) {
         this.prefix = prefix;
+        this.letVariable = letVariable;
+        this.newTypeAssumption = newTypeAssumption;
         this.prevStep = "";
         this.constraintSetIndexFactory = constraintSetIndexFactory;
         this.numberGenerator = numberGenerator;
@@ -163,10 +174,15 @@ public class LatexCreatorConstraints implements StepVisitor {
     @Override
     public void visit(LetStepDefault letD) {
         addConstraint(letD);
+        LetTerm term = (LetTerm) letD.getConclusion().getLambdaTerm();
+        Optional<Map<VarTerm, TypeAbstraction>> newTypeAss = Optional.empty();
+        if (letD.getTypeInferer().getMGU().isPresent()) {
+            newTypeAss = Optional.of(letD.getPremise().getConclusion().getTypeAssumptions());
+        }
         LatexCreatorConstraints subCreator = new LatexCreatorConstraints(letD.getTypeInferer(),
                 constraintSetIndexFactory, numberGenerator,
-                constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE,
-                translationProvider);
+                constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE, Optional.of(term.getVariable()),
+                newTypeAss, translationProvider);
         constraints.addAll(subCreator.getEverything());
 
         // cancels constraint creation if sub inference failed
@@ -311,15 +327,27 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     // generates the TypeAssumptions for the right sub tree of a let step
     private String generateNewTypeAssumptions(String subPrefix) {
+        InferenceStep step = typeInferer.getFirstInferenceStep();
         StringBuilder latex = new StringBuilder();
         latex.append(subPrefix);
-        latex.append(LATEX_NEW_LINE + AMPERSAND);
-        latex.append("Neue Typumgebung:");
-        latex.append(SIGMA);
+        latex.append(LATEX_NEW_LINE + AMPERSAND + TEXT + CURLY_LEFT);
+        latex.append("Neue Typumgebung: ");
+        latex.append("" + CURLY_RIGHT + SIGMA);
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
-        latex.append(typeAssumptionsToLatex(typeInferer.getFirstInferenceStep().getConclusion().getTypeAssumptions()));
-        latex.append(PAREN_RIGHT);
+        latex.append(typeAssumptionsToLatex(step.getConclusion().getTypeAssumptions()));
+        latex.append("" + PAREN_RIGHT + COMMA + LATEX_SPACE);
+        latex.append(new LatexCreatorTerm(letVariable.orElseThrow(IllegalStateException::new)).getLatex());
+        latex.append("" + COLON + TYPE_ABSTRACTION + PAREN_LEFT + SIGMA);
+        latex.append(constraintSetIndex);
+        latex.append(PAREN_LEFT);
+        latex.append(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType()).getLatex());
+        latex.append("" + PAREN_RIGHT + COMMA + SIGMA);
+        latex.append(constraintSetIndex);
+        latex.append(PAREN_LEFT);
+        latex.append(typeAssumptionsToLatex(step.getConclusion().getTypeAssumptions()));
+        latex.append("" + PAREN_RIGHT + PAREN_RIGHT + EQUALS);
+        latex.append(typeAssumptionsToLatex(newTypeAssumption.orElseThrow(IllegalSelectorException::new)));
         return latex.toString();
     }
 }
