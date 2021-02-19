@@ -10,6 +10,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
+/**
+ * A Slide for the vaadin carousel-addon. This Slide consists of an image and a text.
+ */
 @CssImport("./styles/view/image-slide.css")
 public class ImageSlide extends Slide implements LocaleChangeObserver {
 
@@ -24,8 +27,13 @@ public class ImageSlide extends Slide implements LocaleChangeObserver {
     private Image image;
     private final String imagePathKey;
     
+    /**
+     * Create a new ImageSlide with a key for the path of the image and a key for the text.
+     * 
+     * @param imgPathKey key for the path of the image
+     * @param textKey key for the text
+     */
     public ImageSlide(String imgPathKey, String textKey) {
-        // move to css
         slideLayout = new VerticalLayout();
         this.imagePathKey = imgPathKey;
         image = new Image(getTranslation(imgPathKey), StringUtils.EMPTY);

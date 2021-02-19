@@ -19,6 +19,9 @@ import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.main.MainViewImpl;
 
+/**
+ * The starting page of the application. Presents an introduction to the user.
+ */
 @Route(value = "", layout = MainViewImpl.class)
 @PageTitle(MainViewImpl.PAGE_TITLE)
 @JsModule("./src/mathjax-setup.js")
@@ -45,6 +48,9 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
     private final Text linkText;
     private final Anchor link;
     
+    /**
+     * Fills the view with content.
+     */
     public StartPageView() {
         controlPanel = new ControlPanel(this, this);
         controlPanel.setId(CONTROL_PANEL_ID);
