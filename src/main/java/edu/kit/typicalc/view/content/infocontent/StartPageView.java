@@ -70,6 +70,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         
         linkText = new Text(getTranslation("root.linkText"));
         link = new Anchor(getTranslation("root.link"), getTranslation("root.here"));
+        link.setTarget("_blank"); // opens new tab
         Span linkContainer = new Span(linkText, link, new Text(DOT));
         linkContainer.setId(LINK_CONTAINER_ID);
         
