@@ -54,12 +54,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         infoIcon.addClickListener(event -> onInfoIconClick());
 
         inputField = new TextField();
+        inputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
         inputField.setMaxLength(MAX_INPUT_LENGTH);
+        
         // attach a listener that replaces \ with λ
         // JavaScript is used because Vaadin does not have APIs for selectionStart/selectionEnd
-        // and this will be much faster than a bunch of network round trips per character entered!
         UI.getCurrent().getPage().executeJs(
                 "document.getElementById('" + INPUT_FIELD_ID + "').addEventListener('keyup', e => {"
                 + "var area = e.target.shadowRoot.querySelector('input');"
@@ -132,6 +133,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
+        inputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
         inferTypeButton.setText(getTranslation("root.typeInfer"));
         typeAssumptions.setText(getTranslation("root.typeAssumptions"));
     }
