@@ -20,6 +20,7 @@ public final class LatexCreatorConstants {
     protected static final String DOLLAR_SIGN = "$";
     protected static final char NEW_LINE = '\n';
     protected static final char SPACE = ' ';
+    protected static final char APOSTROPHE = '\'';
     protected static final char AMPERSAND = '&';
     protected static final char EQUALS = '=';
     protected static final char COMMA = ',';
@@ -47,6 +48,7 @@ public final class LatexCreatorConstants {
     protected static final String GENERATED_ASSUMPTION_VARIABLE = "\\beta";
     protected static final String USER_VARIABLE = "\\tau";
     protected static final String SIGMA = "\\sigma";
+    protected static final String GAMMA = "\\Gamma";
 
     protected static final String LATEX_NEW_LINE = "\\\\";
     protected static final String CIRC = "\\circ";

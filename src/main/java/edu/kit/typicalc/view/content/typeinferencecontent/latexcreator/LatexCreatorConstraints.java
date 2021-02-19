@@ -330,9 +330,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         InferenceStep step = typeInferer.getFirstInferenceStep();
         StringBuilder latex = new StringBuilder();
         latex.append(subPrefix);
-        latex.append(LATEX_NEW_LINE + AMPERSAND + TEXT + CURLY_LEFT);
-        latex.append("Neue Typumgebung: ");
-        latex.append("" + CURLY_RIGHT + SIGMA);
+        latex.append(LATEX_NEW_LINE + AMPERSAND + GAMMA + APOSTROPHE + EQUALS + SIGMA);
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
         latex.append(typeAssumptionsToLatex(step.getConclusion().getTypeAssumptions()));
