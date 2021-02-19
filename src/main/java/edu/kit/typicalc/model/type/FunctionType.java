@@ -14,10 +14,12 @@ public class FunctionType extends Type {
 
     private final Type parameter;
     private final Type output;
+
     /**
      * Initializes a new FunctionType with the given parameter and output types.
+     *
      * @param parameter the type of this function’s parameter
-     * @param output the type of this function’s output
+     * @param output    the type of this function’s output
      */
     public FunctionType(Type parameter, Type output) {
         this.parameter = parameter;
@@ -26,6 +28,7 @@ public class FunctionType extends Type {
 
     /**
      * Checks whether some type occurs in the parameter or output of this function.
+     *
      * @param x the type to look for
      * @return whether the specified type occurs in this type
      */
@@ -43,7 +46,8 @@ public class FunctionType extends Type {
 
     /**
      * Substitutes a type variable for a different type.
-     * @param a  the type variable to replace
+     *
+     * @param a the type variable to replace
      * @param b the type to insert
      * @return a new FunctionType that is created by substituting a and b in the parameter
      * and output type
@@ -55,6 +59,7 @@ public class FunctionType extends Type {
 
     /**
      * Accepts a visitor.
+     *
      * @param typeVisitor the visitor that wants to visit this
      */
     @Override
@@ -66,7 +71,8 @@ public class FunctionType extends Type {
      * Computes the necessary constraints (and substitution) to unify this type with
      * another. This method uses the constrainEqualToFunction method on the other
      * type.
-     * @param type  the other type
+     *
+     * @param type the other type
      * @return unification steps necessary, or an error if that is impossible
      */
     @Override
@@ -77,6 +83,7 @@ public class FunctionType extends Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * function type.
+     *
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -88,6 +95,7 @@ public class FunctionType extends Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * named type.
+     *
      * @param type the named type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -99,6 +107,7 @@ public class FunctionType extends Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * type variable.
+     *
      * @param type the type variable
      * @return the unification steps necessary, or an error if that is impossible
      */
@@ -109,6 +118,7 @@ public class FunctionType extends Type {
 
     /**
      * Getter for output
+     *
      * @return output
      */
     public Type getOutput() {
@@ -117,6 +127,7 @@ public class FunctionType extends Type {
 
     /**
      * Getter for parameter
+     *
      * @return parameter
      */
     public Type getParameter() {

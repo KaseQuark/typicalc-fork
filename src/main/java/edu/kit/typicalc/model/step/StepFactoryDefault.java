@@ -13,7 +13,8 @@ public class StepFactoryDefault implements StepFactory {
 
     /**
      * Creates an AbsStepDefault.
-     * @param premise the premise of this step
+     *
+     * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created AbsStepDefault
@@ -25,20 +26,22 @@ public class StepFactoryDefault implements StepFactory {
 
     /**
      * Creates an AppStepDefault.
-     * @param premise1 the first premise of this step
-     * @param premise2 the second premise of this step
+     *
+     * @param premise1   the first premise of this step
+     * @param premise2   the second premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created AppStepDefault
      */
     @Override
     public AppStepDefault createAppStep(InferenceStep premise1, InferenceStep premise2,
-                                          Conclusion conclusion, Constraint constraint) {
+                                        Conclusion conclusion, Constraint constraint) {
         return new AppStepDefault(premise1, premise2, conclusion, constraint);
     }
 
     /**
      * Creates an ConstStepDefault.
+     *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created ConstStepDefault
@@ -50,10 +53,11 @@ public class StepFactoryDefault implements StepFactory {
 
     /**
      * Creates a VarStepDefault.
-     * @param typeAbstraction the type abstraction of this step
+     *
+     * @param typeAbstraction     the type abstraction of this step
      * @param instantiatedTypeAbs an instantiation of the type abstraction used in this step
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint that can be derived from this step
+     * @param conclusion          the conclusion of this step
+     * @param constraint          the constraint that can be derived from this step
      * @return the created AbsStepDefault
      */
     @Override
@@ -67,9 +71,10 @@ public class StepFactoryDefault implements StepFactory {
      * This method should never be called, as a StepFactoryDefault should only be used
      * for lambda terms without any let polymorphism and therefore should never have
      * to create a step where the let rule is applied.
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint that can be derived from this step
-     * @param premise the premise that doesn't need its own type inference
+     *
+     * @param conclusion  the conclusion of this step
+     * @param constraint  the constraint that can be derived from this step
+     * @param premise     the premise that doesn't need its own type inference
      * @param typeInferer the typeInferer for the premise that needs its own type inference
      * @return nothing
      */

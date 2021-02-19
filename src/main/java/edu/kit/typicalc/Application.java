@@ -14,9 +14,8 @@ import java.util.regex.Pattern;
 
 /**
  * The entry point of the Spring Boot application.
- *
+ * <p>
  * Use the * and some desktop browsers.
- *
  */
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer

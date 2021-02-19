@@ -40,9 +40,10 @@ public class Token {
 
     /**
      * Constructs a token.
+     *
      * @param type the token type
      * @param text text of this token in the source code
-     * @param pos position this token begins
+     * @param pos  position this token begins
      */
     public Token(TokenType type, String text, int pos) {
         this.type = type;
@@ -52,6 +53,7 @@ public class Token {
 
     /**
      * Returns the token type
+     *
      * @return token type
      */
     public TokenType getType() {
@@ -60,6 +62,7 @@ public class Token {
 
     /**
      * Returns the text of this token in the source code
+     *
      * @return text of this token in the source code
      */
     public String getText() {
@@ -68,6 +71,7 @@ public class Token {
 
     /**
      * Returns the position this token is in
+     *
      * @return position this token is in
      */
     public int getPos() {

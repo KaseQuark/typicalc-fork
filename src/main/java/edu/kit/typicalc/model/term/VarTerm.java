@@ -14,6 +14,7 @@ public class VarTerm extends LambdaTerm {
 
     /**
      * Initializes a new variable term with its name.
+     *
      * @param name the name of the variable
      */
     public VarTerm(String name) {
@@ -22,6 +23,8 @@ public class VarTerm extends LambdaTerm {
     }
 
     /**
+     * Returns the name of this variable
+     *
      * @return the name of this variable
      */
     public String getName() {

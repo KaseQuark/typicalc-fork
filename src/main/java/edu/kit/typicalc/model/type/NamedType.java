@@ -24,6 +24,7 @@ public class NamedType extends Type {
 
     /**
      * Initializes a new NamedType with the given name.
+     *
      * @param name the name of this type
      */
     public NamedType(String name) {
@@ -32,6 +33,7 @@ public class NamedType extends Type {
 
     /**
      * Returns the name of the named type.
+     *
      * @return the name of this type
      */
     public String getName() {
@@ -40,6 +42,7 @@ public class NamedType extends Type {
 
     /**
      * Checks whether some type occurs in this type.
+     *
      * @param x the type to look for
      * @return whether the specified type is equal to this type
      */
@@ -54,6 +57,7 @@ public class NamedType extends Type {
 
     /**
      * Substitutes a type variable for a different type.
+     *
      * @param a the type to replace
      * @param b the type to insert
      * @return itself, or b if a is equal to this object
@@ -65,6 +69,7 @@ public class NamedType extends Type {
 
     /**
      * Accepts a visitor.
+     *
      * @param typeVisitor the visitor that wants to visit this
      */
     @Override
@@ -76,7 +81,8 @@ public class NamedType extends Type {
      * Computes the necessary constraints (and substitution) to unify this type with
      * another. This method uses the constrainEqualToNamedType method on the other
      * type.
-     * @param type  the other type
+     *
+     * @param type the other type
      * @return unification steps necessary, or an error if that is impossible
      */
     @Override
@@ -87,6 +93,7 @@ public class NamedType extends Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * function type.
+     *
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -98,6 +105,7 @@ public class NamedType extends Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * named type.
+     *
      * @param type the named type
      * @return unification steps necessary, or an error if that is impossible
      */
@@ -109,6 +117,7 @@ public class NamedType extends Type {
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
      * type variable.
+     *
      * @param type the type variable
      * @return the unification steps necessary, or an error if that is impossible
      */

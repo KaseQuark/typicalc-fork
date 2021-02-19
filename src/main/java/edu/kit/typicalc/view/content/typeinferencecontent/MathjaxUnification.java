@@ -26,6 +26,7 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
     /**
      * Creates a new HTML element that renders the constraints and unification and
      * calculates the steps.
+     *
      * @param latex the LaTeX-String[] to render with MathJax
      */
     public MathjaxUnification(String[] latex) {

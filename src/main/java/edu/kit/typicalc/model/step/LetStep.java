@@ -8,7 +8,7 @@ import java.util.Objects;
 
 /**
  * Models one step of the inference tree where the let rule is applied. A let step contains an
- * additional instance of a type inferer that is responisble for the „sub-inference“ that takes
+ * additional instance of a type inferer that is responsible for the „sub-inference“ that takes
  * place when applying the let rule. This type inferer grants access to all the information
  * needed to visualize this sub-inference.
  * If the sub-inference fails due to a contradiction or an infinite type forming in its unification,
@@ -21,9 +21,10 @@ public abstract class LetStep extends InferenceStep {
 
     /**
      * Initializes a new LetStep with the given values.
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint added in this step
-     * @param premise the right premise of this step
+     *
+     * @param conclusion  the conclusion of this step
+     * @param constraint  the constraint added in this step
+     * @param premise     the right premise of this step
      * @param typeInferer the typeInferer that performs the Type Inference for the premise
      *                    that needs its own type Inference.
      */
@@ -32,9 +33,11 @@ public abstract class LetStep extends InferenceStep {
         this.premise = premise;
         this.typeInferer = typeInferer;
     }
+
     /**
-     * Returns the premise of the let step that doesn’t have its own sub-inference (the
+     * Returns the premise of the let step that doesn't have its own sub-inference (the
      * one usually placed right in the proof tree).
+     *
      * @return premise the right premise of this step
      */
     public InferenceStep getPremise() {
@@ -43,6 +46,7 @@ public abstract class LetStep extends InferenceStep {
 
     /**
      * Returns the TypeInferer for the premise which needs its own type Inference.
+     *
      * @return typeInferer the type inferer of the sub-inference
      */
     public TypeInfererLet getTypeInferer() {

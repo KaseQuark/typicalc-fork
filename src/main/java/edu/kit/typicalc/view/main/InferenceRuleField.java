@@ -39,7 +39,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
      * Initializes an InferenceRuleField with a key to get the name of the inference rule and the LaTeX-code
      * for its visual representation.
      *
-     * @param latex the LaTeX-code
+     * @param latex   the LaTeX-code
      * @param nameKey the key to get the name of the inference rule
      */
     protected InferenceRuleField(String latex, String nameKey) {

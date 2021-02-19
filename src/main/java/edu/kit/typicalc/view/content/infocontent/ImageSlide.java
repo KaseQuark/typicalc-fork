@@ -17,16 +17,16 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 public class ImageSlide extends Slide implements LocaleChangeObserver {
 
     private static final long serialVersionUID = 232255503611054445L;
-    
+
     private static final String SLIDE_LAYOUT_ID = "slideLayout";
     private static final String EXPLANATION_ID = "explanation";
-    
+
     private final Span explanation;
     private final String explanationKey;
-    
+
     /**
      * Create a new ImageSlide with the path of the image and a key for the text.
-     * 
+     *
      * @param imgPath the path of the image
      * @param textKey key for the text
      */
@@ -40,7 +40,7 @@ public class ImageSlide extends Slide implements LocaleChangeObserver {
         slideLayout.setId(SLIDE_LAYOUT_ID);
         add(slideLayout);
     }
-    
+
     @Override
     public void localeChange(LocaleChangeEvent event) {
         explanation.setText(getTranslation(explanationKey));

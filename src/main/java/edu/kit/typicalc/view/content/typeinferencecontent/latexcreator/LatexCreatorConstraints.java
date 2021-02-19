@@ -40,7 +40,7 @@ public class LatexCreatorConstraints implements StepVisitor {
      * Initializes the LatexCreatorConstraints with the right values calculates the strings
      * that will be returned in getEverything().
      *
-     * @param typeInferer the source for the generation of the LaTeX code
+     * @param typeInferer         the source for the generation of the LaTeX code
      * @param translationProvider translation text provider for {@link UnificationError}
      */
     protected LatexCreatorConstraints(TypeInfererInterface typeInferer,
@@ -51,12 +51,12 @@ public class LatexCreatorConstraints implements StepVisitor {
     }
 
     private LatexCreatorConstraints(TypeInfererInterface typeInferer,
-                                      ConstraintSetIndexFactory constraintSetIndexFactory,
-                                      TreeNumberGenerator numberGenerator,
-                                      String prefix,
-                                      Optional<VarTerm> letVariable,
-                                      Optional<Map<VarTerm, TypeAbstraction>> newTypeAssumption,
-                                      Function<UnificationError, String> translationProvider) {
+                                    ConstraintSetIndexFactory constraintSetIndexFactory,
+                                    TreeNumberGenerator numberGenerator,
+                                    String prefix,
+                                    Optional<VarTerm> letVariable,
+                                    Optional<Map<VarTerm, TypeAbstraction>> newTypeAssumption,
+                                    Function<UnificationError, String> translationProvider) {
         this.prefix = prefix;
         this.letVariable = letVariable;
         this.newTypeAssumption = newTypeAssumption;

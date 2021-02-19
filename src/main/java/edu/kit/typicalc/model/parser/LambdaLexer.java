@@ -13,7 +13,7 @@ import java.util.Deque;
  */
 public class LambdaLexer {
     /**
-     * The given term as a String
+     * the given term as a String
      */
     private final String term;
     /**
@@ -24,6 +24,7 @@ public class LambdaLexer {
 
     /**
      * Constructs a lexer that lexes the given term
+     *
      * @param term the term to lex
      */
     public LambdaLexer(String term) {
@@ -53,6 +54,7 @@ public class LambdaLexer {
 
     /**
      * Returns the next token and advances the lexer position.
+     *
      * @return the next token
      */
     public Result<Token, ParseError> nextToken() {
@@ -88,7 +90,7 @@ public class LambdaLexer {
                 } else {
                     return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
                 }
-            // bunch of single-character tokens
+                // bunch of single-character tokens
             case '.':
                 t = new Token(TokenType.DOT, ".", pos);
                 advance();

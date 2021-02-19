@@ -14,7 +14,8 @@ public abstract class AbsStep extends InferenceStep {
 
     /**
      * Initializes a new AbsStep with the given values.
-     * @param premise the premise of this step
+     *
+     * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
      */
@@ -25,6 +26,7 @@ public abstract class AbsStep extends InferenceStep {
 
     /**
      * Getter for the premise of this step.
+     *
      * @return premise the premise of this step
      */
     public InferenceStep getPremise() {

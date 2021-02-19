@@ -18,10 +18,11 @@ public class UnificationStep {
 
     /**
      * Initializes a new {@link UnificationStep} with the given lists of constraints and substitutions.
-     * 	When detected that this unification step leads to a contradiction or an infinite type,
-     * 	it should be passed a {@link UnificationError} instead of a list of substitutions.
+     * When detected that this unification step leads to a contradiction or an infinite type,
+     * it should be passed a {@link UnificationError} instead of a list of substitutions.
+     *
      * @param substitutions list of substitutions, or an error
-     * @param constraints the list of all constraints of the unification (in the state resulting from this step)
+     * @param constraints   the list of all constraints of the unification (in the state resulting from this step)
      */
     protected UnificationStep(Result<List<Substitution>, UnificationError> substitutions,
                               List<Constraint> constraints) {
@@ -41,6 +42,8 @@ public class UnificationStep {
     }
 
     /**
+     * Returns a list of all resulting constraints
+     *
      * @return a list of all resulting constraints
      */
     public List<Constraint> getConstraints() {

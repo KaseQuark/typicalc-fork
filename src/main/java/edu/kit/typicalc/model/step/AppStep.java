@@ -16,9 +16,10 @@ public abstract class AppStep extends InferenceStep {
     private final InferenceStep premise2;
 
     /**
-     Initializes a new AbsStepWithLet with the given values.
-     * @param premise1 the first premise of this step
-     * @param premise2 the second premise of this step
+     * Initializes a new AbsStepWithLet with the given values.
+     *
+     * @param premise1   the first premise of this step
+     * @param premise2   the second premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint constraint that can be derived from this step
      */
@@ -30,13 +31,16 @@ public abstract class AppStep extends InferenceStep {
 
     /**
      * Getter for the first premise of this Step.
+     *
      * @return premise1 the first premise of this Step.
      */
     public InferenceStep getPremise1() {
         return premise1;
     }
+
     /**
      * Getter for the second premise of this Step.
+     *
      * @return premise2 the second premise of this Step.
      */
     public InferenceStep getPremise2() {

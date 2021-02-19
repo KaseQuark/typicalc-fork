@@ -1,6 +1,6 @@
 /**
-  * The term package models the different kinds of lambda terms:
-  * application, abstraction, variable constant and let-polymorphism.
+ * The term package models the different kinds of lambda terms:
+ * application, abstraction, variable constant and let-polymorphism.
  */
 @NonNullFields
 @NonNullApi

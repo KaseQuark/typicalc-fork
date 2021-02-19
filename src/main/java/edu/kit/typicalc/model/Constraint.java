@@ -24,6 +24,8 @@ public class Constraint {
     }
 
     /**
+     * Returns the first type
+     *
      * @return the first type
      */
     public Type getFirstType() {
@@ -31,6 +33,8 @@ public class Constraint {
     }
 
     /**
+     * Returns the second type
+     *
      * @return the second type
      */
     public Type getSecondType() {

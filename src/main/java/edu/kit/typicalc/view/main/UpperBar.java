@@ -40,8 +40,8 @@ public class UpperBar extends HorizontalLayout {
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
      *
-     * @param presenter the listener used to communicate with the model
-     * @param setContent function to set the content of the application
+     * @param presenter    the listener used to communicate with the model
+     * @param setContent   function to set the content of the application
      * @param setTermInURL function to set the term into the URL
      */
     protected UpperBar(MainViewListener presenter, Consumer<Component> setContent,
@@ -79,7 +79,7 @@ public class UpperBar extends HorizontalLayout {
      * Calls the inferTerm method in {@link InputBar} with the provided
      * string as the argument.
      *
-     * @param term the provided string
+     * @param term            the provided string
      * @param typeAssumptions type assumptions to use
      */
     protected void inferTerm(String term, Map<String, String> typeAssumptions) {

@@ -26,6 +26,8 @@ public class Substitution {
     }
 
     /**
+     * Returns the type variable
+     *
      * @return the type variable
      */
     public TypeVariable getVariable() {
@@ -33,6 +35,8 @@ public class Substitution {
     }
 
     /**
+     * Returns the replacement type
+     *
      * @return the replacement type
      */
     public Type getType() {

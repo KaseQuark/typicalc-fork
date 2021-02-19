@@ -23,8 +23,8 @@ public class TypeInfererLet implements TypeInfererInterface {
      *
      * @param lambdaTerm      the lambda term to generate the tree for
      * @param typeAssumptions the type assumptions to consider when generating the tree
-     * @param typeVarFactory the type variable factory that should be used in this inference to guarantee consistency
-     *                       with the outer inference
+     * @param typeVarFactory  the type variable factory that should be used in this inference to guarantee consistency
+     *                        with the outer inference
      */
     protected TypeInfererLet(LambdaTerm lambdaTerm, Map<VarTerm, TypeAbstraction> typeAssumptions,
                              TypeVariableFactory typeVarFactory) {

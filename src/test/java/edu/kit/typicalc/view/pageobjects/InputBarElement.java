@@ -11,15 +11,15 @@ public class InputBarElement extends HorizontalLayoutElement {
     public void typeInfer() {
         $(ButtonElement.class).id("inferButton").click();
     }
-    
+
     public void setCurrentValue(String value) {
         $(TextFieldElement.class).id("inputField").setValue(value);
     }
-    
+
     public String getCurrentValue() {
         return $(TextFieldElement.class).id("inputField").getValue();
     }
-    
+
     public void openExampleDialog() {
         $(ButtonElement.class).id("exampleButton").click();
     }

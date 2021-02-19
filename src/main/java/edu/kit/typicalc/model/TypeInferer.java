@@ -28,7 +28,7 @@ public class TypeInferer implements TypeInfererInterface {
      * The inference step structure, unification steps, the most general unifier and the
      * final type are generated and calculated here.
      *
-     * @param lambdaTerm the lambda term to generate the tree for
+     * @param lambdaTerm      the lambda term to generate the tree for
      * @param typeAssumptions the type assumptions to consider when generating the tree
      */
     protected TypeInferer(LambdaTerm lambdaTerm, Map<VarTerm, TypeAbstraction> typeAssumptions) {

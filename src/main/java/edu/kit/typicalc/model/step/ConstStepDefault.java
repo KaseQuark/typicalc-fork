@@ -11,6 +11,7 @@ import edu.kit.typicalc.model.Constraint;
 public class ConstStepDefault extends ConstStep {
     /**
      * Initializes a new ConstStep with the given values.
+     *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
      */
@@ -20,6 +21,7 @@ public class ConstStepDefault extends ConstStep {
 
     /**
      * Accepts a visitor.
+     *
      * @param stepVisitor the visitor that wants to visit this object
      */
     @Override

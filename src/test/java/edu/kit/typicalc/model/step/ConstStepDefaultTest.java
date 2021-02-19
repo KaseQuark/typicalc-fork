@@ -20,6 +20,7 @@ class ConstStepDefaultTest {
     static Constraint constraint = null;
     static NamedType namedType = null;
     static TypeAbstraction typeAbstraction = null;
+
     @BeforeAll
     static void setUp() {
         Map<VarTerm, TypeAbstraction> map = new LinkedHashMap<>();
@@ -33,6 +34,7 @@ class ConstStepDefaultTest {
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
     }
+
     @Test
     void equalsTest() {
         ConstStepDefault step1 = new ConstStepDefault(conclusion, constraint);
@@ -45,6 +47,7 @@ class ConstStepDefaultTest {
         assertNotEquals(step1, step3);
 
     }
+
     @Test
     void hashCodeTest() {
         ConstStepDefault step1 = new ConstStepDefault(conclusion, constraint);

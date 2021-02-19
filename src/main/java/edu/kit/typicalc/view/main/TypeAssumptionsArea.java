@@ -69,7 +69,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
 
         assumptionContainer = new VerticalLayout();
         assumptionContainer.setId(ASS_CONTAINER_ID);
-        
+
         initializeWithAssumptions(types);
         layout.add(heading, buttons, assumptionContainer);
         add(layout);
@@ -82,7 +82,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     protected TypeAssumptionsArea() {
         this(new HashMap<>());
     }
-    
+
     private void initializeWithAssumptions(Map<String, String> types) {
         for (Map.Entry<String, String> param : types.entrySet()) {
             TypeAssumptionField assumption = new TypeAssumptionField(value -> {

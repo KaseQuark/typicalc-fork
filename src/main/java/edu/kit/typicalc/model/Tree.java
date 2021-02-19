@@ -28,8 +28,8 @@ public class Tree implements TermVisitorTree {
      * lambda term considering the given type assumptions. The inference step structure
      * and constraint list are generated here.
      *
-     * @param typeAssumptions  the type assumptions to consider when generating the tree
-     * @param lambdaTerm the lambda term to generate the tree for
+     * @param typeAssumptions the type assumptions to consider when generating the tree
+     * @param lambdaTerm      the lambda term to generate the tree for
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm) {
         this(typeAssumptions, lambdaTerm, new TypeVariableFactory(TypeVariableKind.TREE), false);
@@ -42,10 +42,10 @@ public class Tree implements TermVisitorTree {
      * variable names, a type variable factory is provided as a parameter. The inference
      * step structure and constraint list are generated here.
      *
-     * @param typeAssumptions the type assumptions to consider when generating the tree
-     * @param lambdaTerm the lambda term to generate the tree for
+     * @param typeAssumptions     the type assumptions to consider when generating the tree
+     * @param lambdaTerm          the lambda term to generate the tree for
      * @param typeVariableFactory the type variable factory to use
-     * @param partOfLetTerm indicates whether the tree is generated for a sub-inference that is part of a let term
+     * @param partOfLetTerm       indicates whether the tree is generated for a sub-inference that is part of a let term
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm,
                    TypeVariableFactory typeVariableFactory, boolean partOfLetTerm) {

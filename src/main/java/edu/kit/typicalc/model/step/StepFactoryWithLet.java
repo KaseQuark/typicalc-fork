@@ -13,7 +13,8 @@ public class StepFactoryWithLet implements StepFactory {
 
     /**
      * Creates an AbsStepWithLet.
-     * @param premise the premise of this step
+     *
+     * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created AbsStepWithLet
@@ -25,8 +26,9 @@ public class StepFactoryWithLet implements StepFactory {
 
     /**
      * Creates an AppStepDefault.
-     * @param premise1 the first premise of this step
-     * @param premise2 the second premise of this step
+     *
+     * @param premise1   the first premise of this step
+     * @param premise2   the second premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created AppStepDefault
@@ -39,6 +41,7 @@ public class StepFactoryWithLet implements StepFactory {
 
     /**
      * Creates an ConstStepDefault.
+     *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint that can be derived from this step
      * @return the created ConstStepDefault
@@ -50,10 +53,11 @@ public class StepFactoryWithLet implements StepFactory {
 
     /**
      * Creates a VarStepWithLet.
-     * @param typeAbstraction the type abstraction of this step
+     *
+     * @param typeAbstraction     the type abstraction of this step
      * @param instantiatedTypeAbs an instantiation of the type abstraction used in this step
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint that can be derived from this step
+     * @param conclusion          the conclusion of this step
+     * @param constraint          the constraint that can be derived from this step
      * @return the created VarStepWithLet
      */
     @Override
@@ -64,9 +68,10 @@ public class StepFactoryWithLet implements StepFactory {
 
     /**
      * Creates a LetStepDefault.
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint that can be derived from this step
-     * @param premise the premise that doesn't need its own type inference
+     *
+     * @param conclusion  the conclusion of this step
+     * @param constraint  the constraint that can be derived from this step
+     * @param premise     the premise that doesn't need its own type inference
      * @param typeInferer the typeInferer for the premise that needs its own type inference
      * @return the created LetStepDefault
      */

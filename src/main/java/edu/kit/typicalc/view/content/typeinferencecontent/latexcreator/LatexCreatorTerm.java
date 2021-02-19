@@ -13,6 +13,7 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
 public class LatexCreatorTerm implements TermVisitor {
 
     private final StringBuilder latex = new StringBuilder();
+
     private enum ParenthesesNeeded {
         NEVER,
         SOMETIMES,
@@ -31,16 +32,11 @@ public class LatexCreatorTerm implements TermVisitor {
     }
 
     /**
+     * Returns the generated LaTeX code
+     *
      * @return the generated LaTeX code
      */
     public String getLatex() {
-//        long count = latex.chars().filter(ch -> ch == PAREN_LEFT).count();
-//        if (latex.indexOf(String.valueOf(PAREN_LEFT)) == 0
-//                && latex.indexOf(String.valueOf(PAREN_RIGHT)) == latex.length() - 1
-//                && count == 1) {
-//            latex.deleteCharAt(latex.length() - 1);
-//            latex.deleteCharAt(0);
-//        }
         return latex.toString();
     }
 

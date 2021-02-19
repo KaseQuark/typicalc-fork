@@ -6,18 +6,21 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 
 import java.util.Map;
 
+/**
+ * Represents the visitor in the visitor pattern.
+ */
 public interface TermVisitorTree {
     /**
      * Returns an {@link edu.kit.typicalc.model.step.AppStep} suiting the given application (lambda term)
      * to type-infer and the type assumptions to consider.
      * Simultaneously assembles the tree's constraint list.
      *
-     * @param appTerm the application (lambda term) to build the inference step structure for,
-     * i.e. the lambda term in the conclusion of the returned inference step
+     * @param appTerm         the application (lambda term) to build the inference step structure for,
+     *                        i.e. the lambda term in the conclusion of the returned inference step
      * @param typeAssumptions the type assumptions to consider,
-     * i.e. the type assumptions in the conclusion of the returned inference step
-     * @param conclusionType the type that the lambda term in the conclusion
-     * of the returned inference step will be assigned
+     *                        i.e. the type assumptions in the conclusion of the returned inference step
+     * @param conclusionType  the type that the lambda term in the conclusion
+     *                        of the returned inference step will be assigned
      * @return an {@link edu.kit.typicalc.model.step.AppStep}
      */
     InferenceStep visit(AppTerm appTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
@@ -27,12 +30,12 @@ public interface TermVisitorTree {
      * to type-infer and the type assumptions to consider.
      * Simultaneously assembles the tree's constraint list.
      *
-     * @param absTerm the abstraction (lambda term) to build the inference step structure for,
-     * i.e. the lambda term in the conclusion of the returned inference step
+     * @param absTerm         the abstraction (lambda term) to build the inference step structure for,
+     *                        i.e. the lambda term in the conclusion of the returned inference step
      * @param typeAssumptions the type assumptions to consider,
-     * i.e. the type assumptions in the conclusion of the returned inference step
-     * @param conclusionType the type that the lambda term in the conclusion
-     * of the returned inference step will be assigned
+     *                        i.e. the type assumptions in the conclusion of the returned inference step
+     * @param conclusionType  the type that the lambda term in the conclusion
+     *                        of the returned inference step will be assigned
      * @return an {@link edu.kit.typicalc.model.step.AbsStep}
      */
     InferenceStep visit(AbsTerm absTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
@@ -42,12 +45,12 @@ public interface TermVisitorTree {
      * to type-infer and the type assumptions to consider.
      * Simultaneously assembles the tree's constraint list.
      *
-     * @param letTerm the let expression (lambda term) to build the inference step structure for,
-     * i.e. the lambda term in the conclusion of the returned inference step
+     * @param letTerm         the let expression (lambda term) to build the inference step structure for,
+     *                        i.e. the lambda term in the conclusion of the returned inference step
      * @param typeAssumptions the type assumptions to consider,
-     * i.e. the type assumptions in the conclusion of the returned inference step
-     * @param conclusionType the type that the lambda term in the conclusion
-     * of the returned inference step will be assigned
+     *                        i.e. the type assumptions in the conclusion of the returned inference step
+     * @param conclusionType  the type that the lambda term in the conclusion
+     *                        of the returned inference step will be assigned
      * @return an {@link edu.kit.typicalc.model.step.LetStep}
      */
     InferenceStep visit(LetTerm letTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
@@ -57,12 +60,12 @@ public interface TermVisitorTree {
      * to type-infer and the type assumptions to consider.
      * Simultaneously assembles the tree's constraint list.
      *
-     * @param constTerm the constant to build the inference step structure for,
-     * i.e. the lambda term in the conclusion of the returned inference step
+     * @param constTerm       the constant to build the inference step structure for,
+     *                        i.e. the lambda term in the conclusion of the returned inference step
      * @param typeAssumptions the type assumptions to consider,
-     * i.e. the type assumptions in the conclusion of the returned inference step
-     * @param conclusionType the type that the lambda term in the conclusion
-     * of the returned inference step will be assigned
+     *                        i.e. the type assumptions in the conclusion of the returned inference step
+     * @param conclusionType  the type that the lambda term in the conclusion
+     *                        of the returned inference step will be assigned
      * @return an {@link edu.kit.typicalc.model.step.ConstStep}
      */
     InferenceStep visit(ConstTerm constTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);
@@ -72,12 +75,12 @@ public interface TermVisitorTree {
      * to type-infer and the type assumptions to consider.
      * Simultaneously assembles the tree's constraint list.
      *
-     * @param varTerm the variable (lambda term) to build the inference step structure for,
-     * i.e. the lambda term in the conclusion of the returned inference step
+     * @param varTerm         the variable (lambda term) to build the inference step structure for,
+     *                        i.e. the lambda term in the conclusion of the returned inference step
      * @param typeAssumptions the type assumptions to consider,
-     * i.e. the type assumptions in the conclusion of the returned inference step
-     * @param conclusionType the type that the lambda term in the conclusion
-     * of the returned inference step will be assigned
+     *                        i.e. the type assumptions in the conclusion of the returned inference step
+     * @param conclusionType  the type that the lambda term in the conclusion
+     *                        of the returned inference step will be assigned
      * @return an {@link edu.kit.typicalc.model.step.VarStep}
      */
     InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType);

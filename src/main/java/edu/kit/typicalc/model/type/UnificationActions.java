@@ -16,7 +16,8 @@ public class UnificationActions {
 
     /**
      * Initializes this object using the provided constraints and substitution.
-     * @param constraints added constraints, if any
+     *
+     * @param constraints  added constraints, if any
      * @param substitution necessary substitution, if any
      */
     protected UnificationActions(Collection<Constraint> constraints, Optional<Substitution> substitution) {
@@ -34,13 +35,16 @@ public class UnificationActions {
 
     /**
      * Getter for constraints
+     *
      * @return the constraints stored in this object
      */
     public Collection<Constraint> getConstraints() {
         return constraints;
     }
+
     /**
      * Getter for substitution
+     *
      * @return the substitution stored in this object
      */
     public Optional<Substitution> getSubstitution() {

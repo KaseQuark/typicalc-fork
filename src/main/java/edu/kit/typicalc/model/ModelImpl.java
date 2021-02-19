@@ -16,13 +16,13 @@ import java.util.Map;
 public class ModelImpl implements Model {
 
     /**
-     *Parses the user input given as the lambdaTerm and typeAssumptions and creates
+     * Parses the user input given as the lambdaTerm and typeAssumptions and creates
      * a TypeInferer object.
-     * @param lambdaTerm the lambda term to type-infer
+     *
+     * @param lambdaTerm      the lambda term to type-infer
      * @param typeAssumptions the type assumptions to use
      * @return A TypeInferer object that has calculated the type Inference for the given Lambda Term
      * and type Assumptions
-     *
      */
     @Override
     public Result<TypeInfererInterface, ParseError> getTypeInferer(String lambdaTerm,
