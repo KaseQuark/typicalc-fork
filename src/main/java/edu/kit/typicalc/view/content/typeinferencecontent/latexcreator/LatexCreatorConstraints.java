@@ -330,7 +330,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         InferenceStep step = typeInferer.getFirstInferenceStep();
         String typeAssumptions = typeAssumptionsToLatex(step.getConclusion().getTypeAssumptions());
         if ("".equals(typeAssumptions)) {
-            typeAssumptions = "\\emptyset";
+            typeAssumptions = EMPTY_SET;
         }
 
         StringBuilder latex = new StringBuilder();
