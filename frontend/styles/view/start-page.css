@@ -26,7 +26,8 @@
 }
 
 #controlPanel {
-	margin-top: 10px;
+	margin-top: auto;
+	margin-bottom: 15px;
 }
 
 #startPage {
@@ -35,8 +36,11 @@
 	justify-content: center;
 	align-items: center;
 	overflow: hidden;
+	height: 100%;
+	width: 100%;
 }
 
 #slideShow {
 	height: 500px;
+	width: 100vw;
 }
