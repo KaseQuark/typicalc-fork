@@ -27,7 +27,8 @@ public class TypeInferenceResult {
      * @param substitutions the substitutions to generate the mgu and the final type
      * @param typeVar       the type variable belonging to the original lambda term
      * @throws IllegalStateException if the given list of substitutions contains two substitutions for the same
-     *                               type variable; or if the calculated mgu contains no substitution for the given type variable
+     *                               type variable; or if the calculated mgu contains no substitution for the given
+     *                               type variable
      */
     protected TypeInferenceResult(List<Substitution> substitutions, TypeVariable typeVar) {
         mgu = new ArrayList<>(substitutions);
