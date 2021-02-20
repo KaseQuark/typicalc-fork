@@ -156,6 +156,17 @@ class LambdaParserTest {
     }
 
     @Test
+    void complicatedIdentity() {
+        LambdaParser parser = new LambdaParser("(λx. x) (λx. x) λx. x");
+        Result<LambdaTerm, ParseError> term = parser.parse();
+        if (term.isError()) {
+            System.err.println(term.unwrapError());
+            System.err.println(term.unwrapError().getCause());
+        }
+        assertEquals(new AppTerm(new AppTerm(new AbsTerm(X, X), new AbsTerm(X, X)), new AbsTerm(X, X)), term.unwrap());
+    }
+
+    @Test
     void equality() {
         EqualsVerifier.forClass(Token.class).usingGetClass().verify();
     }

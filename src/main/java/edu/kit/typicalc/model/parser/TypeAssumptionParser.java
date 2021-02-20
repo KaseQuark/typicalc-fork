@@ -15,13 +15,19 @@ import java.util.regex.Pattern;
 /**
  * Parser for type assumptions.
  */
-public class TypeAssumptionParser { // TODO: document type syntax? or refer to other documents
+public class TypeAssumptionParser {
 
     private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
 
-    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> oldAssumptions) {
+    /**
+     * Parse the given type assumptions.
+     *
+     * @param assumptions the type assumptions
+     * @return if successful, a map of the type assumptions, otherwise an error
+     */
+    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> assumptions) {
         Map<VarTerm, TypeAbstraction> typeAssumptions = new LinkedHashMap<>();
-        for (Map.Entry<String, String> entry : oldAssumptions.entrySet()) {
+        for (Map.Entry<String, String> entry : assumptions.entrySet()) {
             VarTerm var = new VarTerm(entry.getKey());
             Result<TypeAbstraction, ParseError> typeAbs = parseType(entry.getValue());
             if (typeAbs.isError()) {
@@ -81,13 +87,19 @@ public class TypeAssumptionParser { // TODO: document type syntax? or refer to o
             t = token.unwrap();
             if (t.getType() == TokenType.RIGHT_PARENTHESIS) {
                 removedParens += 1;
-                if (parenCount - removedParens <= 0) {
+                if (parenCount - removedParens < 0) {
+                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
+                } else if (parenCount - removedParens == 0) {
                     return new Result<>(new ImmutablePair<>(type, removedParens));
                 }
                 continue;
             }
             if (t.getType() == TokenType.EOF) {
-                return new Result<>(new ImmutablePair<>(type, removedParens));
+                if (parenCount - removedParens > 0) {
+                    return new Result<>(null, ParseError.TOO_FEW_TOKENS);
+                } else {
+                    return new Result<>(new ImmutablePair<>(type, removedParens));
+                }
             }
             if (t.getType() != TokenType.ARROW) {
                 return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
@@ -98,7 +110,9 @@ public class TypeAssumptionParser { // TODO: document type syntax? or refer to o
             }
             type = new FunctionType(type, nextType.unwrap().getLeft());
             removedParens += nextType.unwrap().getRight();
-            if (parenCount - removedParens <= 0) {
+            if (parenCount - removedParens < 0) {
+                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
+            } else if (parenCount - removedParens == 0) {
                 return new Result<>(new ImmutablePair<>(type, removedParens));
             }
         }
