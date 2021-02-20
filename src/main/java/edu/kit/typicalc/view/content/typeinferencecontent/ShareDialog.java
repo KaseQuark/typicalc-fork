@@ -2,6 +2,7 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -20,6 +21,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     private final TextField urlField;
     private final TextField packageField;
     private final TextArea latexArea;
+    private final H3 heading;
 
     /**
      * Sets up three GUI elements, one for each parameter. The content of each element is equal
@@ -35,9 +37,10 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         layout.setId(LAYOUT_ID);
         add(layout);
 
-        urlField = new TextField(getTranslation("share.url.label"));
-        packageField = new TextField(getTranslation("share.packages.label"));
-        latexArea = new TextArea(getTranslation("share.latex.label"));
+        heading = new H3();
+        urlField = new TextField();
+        packageField = new TextField();
+        latexArea = new TextArea();
 
         urlField.setValue(url);
         urlField.setClassName(FIELD_CLASS);
@@ -46,12 +49,13 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         latexArea.setValue(latexCode);
         latexArea.setClassName(FIELD_CLASS);
 
-        layout.add(urlField, packageField, latexArea);
+        layout.add(heading, urlField, packageField, latexArea);
     }
 
 
     @Override
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
+        heading.setText(getTranslation("share.heading"));
         urlField.setLabel(getTranslation("share.url.label"));
         packageField.setLabel(getTranslation("share.packages.label"));
         latexArea.setLabel(getTranslation("share.latex.label"));
