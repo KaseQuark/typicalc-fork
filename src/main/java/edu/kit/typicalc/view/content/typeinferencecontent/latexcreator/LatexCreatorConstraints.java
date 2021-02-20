@@ -284,8 +284,9 @@ public class LatexCreatorConstraints implements StepVisitor {
             latex.delete(latex.length() - LATEX_NEW_LINE.length(), latex.length());
             latex.append(SPLIT_END);
             if (error.isPresent()) {
-                latex.append(LATEX_NEW_LINE + AMPERSAND);
+                latex.append(LATEX_NEW_LINE + LATEX_NEW_LINE + AMPERSAND + TEXT + CURLY_LEFT);
                 latex.append(translationProvider.apply(error.get()));
+                latex.append(CURLY_RIGHT);
             }
             steps.add(latex.toString());
         }
