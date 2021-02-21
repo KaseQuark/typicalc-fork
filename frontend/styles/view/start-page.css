@@ -6,21 +6,22 @@
 
 #horizontalLine {
 	align-self: center;
-	width: 50%;
+	width: 55em;
+	max-width: 100%;
 	min-height: 1px;
 }
 
-#introduction {
-	width: 50%;
+#textContainer {
+	max-width: 55em;
 }
 
 #linkContainer {
-	width: 50%;
-	margin-top: 0;
+	margin: 0;
 }
 
 #slideProgress {
-	width: 50%;
+	width: 55em;
+	max-width: 100%;
 	margin-top: 30px;
 	margin-bottom: 0;
 }
@@ -35,12 +36,10 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	overflow: hidden;
-	height: 100%;
 	width: 100%;
 }
 
 #slideShow {
 	height: 500px;
-	width: 100vw;
+	width: 100%;
 }

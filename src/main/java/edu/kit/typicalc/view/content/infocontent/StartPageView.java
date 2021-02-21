@@ -6,8 +6,10 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Anchor;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.html.Hr;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.progressbar.ProgressBar;
@@ -32,7 +34,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
 
     private static final String HEADING_ID = "startPage-Heading";
     private static final String H_LINE_ID = "horizontalLine";
-    private static final String INTRODUCTION_ID = "introduction";
+    private static final String TEXT_CONTAINER_ID = "textContainer";
     private static final String LINK_CONTAINER_ID = "linkContainer";
     private static final String SLIDE_PROGRESS_ID = "slideProgress";
     private static final String CONTROL_PANEL_ID = "controlPanel";
@@ -41,7 +43,6 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
 
     private static final String DOT = ".";
 
-    private final ControlPanel controlPanel;
     private final Span introduction;
     private final Carousel slideShow;
     private final ProgressBar slideProgress;
@@ -52,11 +53,11 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
      * Fills the view with content.
      */
     public StartPageView() {
-        controlPanel = new ControlPanel(this, this);
+        ControlPanel controlPanel = new ControlPanel(this, this);
         controlPanel.setId(CONTROL_PANEL_ID);
         controlPanel.setEnabledShareButton(false);
 
-        slideShow = createSzenarioCarousel();
+        slideShow = createScenarioCarousel();
         slideShow.setId(SLIDE_SHOW_ID);
 
         H1 heading = new H1(getTranslation("root.typicalc"));
@@ -65,23 +66,26 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         line1.setId(H_LINE_ID);
         Hr line2 = new Hr();
         line2.setId(H_LINE_ID);
-        introduction = new Span(getTranslation("root.slideExp"));
-        introduction.setId(INTRODUCTION_ID);
+        Div textContainer = new Div();
+        textContainer.setId(TEXT_CONTAINER_ID);
+        introduction = new Span();
 
         linkText = new Text(getTranslation("root.linkText"));
         link = new Anchor(getTranslation("root.link"), getTranslation("root.here"));
         link.setTarget("_blank"); // opens new tab
-        Span linkContainer = new Span(linkText, link, new Text(DOT));
+        Paragraph linkContainer = new Paragraph(linkText, link, new Text(DOT));
         linkContainer.setId(LINK_CONTAINER_ID);
+
+        textContainer.add(introduction, linkContainer);
 
         slideProgress = new ProgressBar(slideShow.getStartPosition(), slideShow.getSlides().length - 1);
         slideProgress.setId(SLIDE_PROGRESS_ID);
 
-        add(heading, line1, introduction, linkContainer, slideProgress, slideShow, line2, controlPanel);
+        add(heading, line1, textContainer, slideProgress, slideShow, line2, controlPanel);
         setId(START_PAGE_ID);
     }
 
-    private Carousel createSzenarioCarousel() {
+    private Carousel createScenarioCarousel() {
         Slide slide1 = new ImageSlide(getTranslation("root.image1"), "root.text1");
         Slide slide2 = new ImageSlide(getTranslation("root.image2"), "root.text2");
         Slide slide3 = new ImageSlide(getTranslation("root.image3"), "root.text3");
