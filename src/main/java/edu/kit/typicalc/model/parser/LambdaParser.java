@@ -19,7 +19,7 @@ import java.util.Set;
  *
  * @see LambdaTerm
  */
-public class LambdaParser { // TODO: document syntax above ^ ?
+public class LambdaParser {
     /**
      * lexer to translate a String into tokens
      */
@@ -152,10 +152,13 @@ public class LambdaParser { // TODO: document syntax above ^ ?
         if (left.isError()) {
             return left;
         }
-        while (ATOM_START_TOKENS.contains(token.getType()) || token.getType() == TokenType.LAMBDA) {
+        while (ATOM_START_TOKENS.contains(token.getType())
+                || token.getType() == TokenType.LAMBDA || token.getType() == TokenType.LET) {
             Result<LambdaTerm, ParseError> atom;
             if (token.getType() == TokenType.LAMBDA) {
                 atom = new Result<>(parseAbstraction());
+            } else if (token.getType() == TokenType.LET) {
+                atom = new Result<>(parseLet());
             } else {
                 atom = parseAtom();
             }

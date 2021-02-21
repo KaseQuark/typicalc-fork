@@ -10,6 +10,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class LambdaParserTest {
     private static final VarTerm X = new VarTerm("x");
+    private static final VarTerm Y = new VarTerm("y");
 
     @Test
     void varTerm() {
@@ -153,6 +154,23 @@ class LambdaParserTest {
             System.err.println(term.unwrapError().getCause());
         }
         assertEquals(new AppTerm(new AbsTerm(X, X), new AbsTerm(X, X)), term.unwrap());
+    }
+
+    @Test
+    void bugFoundByJohanna() {
+        // original term: (λx.λy.y (x y)) (λz. λa. z g a) let f = λx. let g = λy. y in g x in f 3
+        // reduced:
+        LambdaParser parser = new LambdaParser("(λx.x) let id = λy.y in id");
+        Result<LambdaTerm, ParseError> term = parser.parse();
+        if (term.isError()) {
+            System.err.println(term.unwrapError());
+            System.err.println(term.unwrapError().getCause());
+        }
+        assertEquals(new AppTerm(
+                new AbsTerm(X, X),
+                new LetTerm(new VarTerm("id"), new AbsTerm(Y, Y), new VarTerm("id"))
+                ),
+                term.unwrap());
     }
 
     @Test
