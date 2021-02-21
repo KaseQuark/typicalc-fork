@@ -10,7 +10,8 @@ import java.util.*;
 
 /**
  * Instances of this implementation of TypeInfererInterface are used to execute the sub-inference starting in let steps.
- * They provide an extended constructor to make sure this sub-inference is consistent with the "outer" inference.
+ * They provide an extended constructor (compared to the standard type inferer) to make sure this sub-inference
+ * is consistent with the "outer" inference.
  */
 public class TypeInfererLet implements TypeInfererInterface {
 
@@ -20,6 +21,8 @@ public class TypeInfererLet implements TypeInfererInterface {
 
     /**
      * Initializes a new TypeInfererLet for the given type assumptions, lambda term and type variable factory.
+     * The inference step structure, unification steps, the most general unifier and the
+     * final type are generated and calculated here.
      *
      * @param lambdaTerm      the lambda term to generate the tree for
      * @param typeAssumptions the type assumptions to consider when generating the tree
