@@ -60,4 +60,11 @@ public interface StepVisitor {
      * @param empty the empty step to visit
      */
     void visit(EmptyStep empty);
+
+    /**
+     * Visits a step containing only a conclusion.
+     *
+     * @param onlyConc the OnlyConclusionStep to visit
+     */
+    void visit(OnlyConclusionStep onlyConc);
 }

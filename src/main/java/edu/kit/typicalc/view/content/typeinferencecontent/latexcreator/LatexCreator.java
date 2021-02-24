@@ -177,4 +177,10 @@ public class LatexCreator implements StepVisitor {
         String step = AXC + CURLY_LEFT + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, step);
     }
+
+    @Override
+    public void visit(OnlyConclusionStep onlyConc) {
+        String step = AXC + CURLY_LEFT + conclusionToLatex(onlyConc.getConclusion()) + CURLY_RIGHT + NEW_LINE;
+        tree.insert(0, step);
+    }
 }

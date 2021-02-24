@@ -109,7 +109,16 @@ public class Tree implements TermVisitorTree {
         constraints.add(newConstraint);
 
         InferenceStep leftPremise = appTerm.getFunction().accept(this, typeAssumptions, leftType);
-        InferenceStep rightPremise = appTerm.getParameter().accept(this, typeAssumptions, rightType);
+
+        InferenceStep rightPremise;
+        // if left sub-tree contains a failing let sub-inference,
+        // cancel tree generation with a step only containing a conclusion
+        if (failedSubInference) {
+            Conclusion rightConclusion = new Conclusion(typeAssumptions, appTerm.getParameter(), rightType);
+            rightPremise = new OnlyConclusionStep(rightConclusion);
+        } else {
+            rightPremise = appTerm.getParameter().accept(this, typeAssumptions, rightType);
+        }
 
         Conclusion conclusion = new Conclusion(typeAssumptions, appTerm, conclusionType);
         return stepFactory.createAppStep(leftPremise, rightPremise, conclusion, newConstraint);

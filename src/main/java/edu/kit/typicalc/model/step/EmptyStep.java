@@ -20,7 +20,7 @@ public class EmptyStep extends InferenceStep {
         super(
                 new Conclusion(Collections.emptyMap(), new VarTerm(""), new NamedType("")),
                 new Constraint(new NamedType(""), new NamedType(""))
-        ); // TODO: better dummy parameters?
+        );
     }
 
     @Override

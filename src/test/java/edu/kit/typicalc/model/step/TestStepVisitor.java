@@ -41,4 +41,9 @@ public class TestStepVisitor implements StepVisitor {
     public void visit(EmptyStep empty) {
         visited = "empty";
     }
+
+    @Override
+    public void visit(OnlyConclusionStep onlyConc) {
+        visited = "onlyConclusion";
+    }
 }

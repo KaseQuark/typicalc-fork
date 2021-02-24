@@ -214,6 +214,11 @@ public class LatexCreatorConstraints implements StepVisitor {
         // empty steps don't have constraints associated with them
     }
 
+    @Override
+    public void visit(OnlyConclusionStep onlyConc) {
+        // steps containing only a conclusion don't have constraints associated with them
+    }
+
     private StringBuilder generateUnificationName() {
         StringBuilder latex = new StringBuilder();
         latex.append(SIGMA);
