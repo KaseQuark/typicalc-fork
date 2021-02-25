@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
  * the screen.
  */
 @CssImport("./styles/view/main/main-view.css")
+@CssImport("./styles/global.css")
 @CssImport(value = "./styles/view/main/app-layout.css", themeFor = "vaadin-app-layout")
 @JavaScript("./src/svg-pan-zoom.min.js")
 @JavaScript("./src/tex-svg-full.js")
