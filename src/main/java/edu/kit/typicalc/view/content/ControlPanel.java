@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
  * Provides a GUI in form of buttons for the user to navigate through steps.
  */
 public class ControlPanel extends HorizontalLayout {
+    public static final String ID = "control-panel";
 
     private final Button firstStep;
     private final Button lastStep;
@@ -26,6 +27,7 @@ public class ControlPanel extends HorizontalLayout {
      * @param focusArea the component key shortcuts should work in
      */
     public ControlPanel(ControlPanelView view, Component focusArea) {
+        setId(ID);
         firstStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT), evt -> view.firstStepButton());
         lastStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT), evt -> view.lastStepButton());
         nextStep = new Button(new Icon(VaadinIcon.ANGLE_RIGHT), evt -> view.nextStepButton());

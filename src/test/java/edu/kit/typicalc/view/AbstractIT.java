@@ -22,7 +22,13 @@ public abstract class AbstractIT extends TestBenchTestCase {
     @Before
     public void setUp() {
         setDriver(new FirefoxDriver());
-        getDriver().get("http://" + IPAddress.findSiteLocalAddress() + ":8080");
+        String ip;
+        if (System.getProperty("testbench.use127001") != null) {
+            ip = "127.0.0.1";
+        } else {
+            ip = IPAddress.findSiteLocalAddress();
+        }
+        getDriver().get("http://" + ip + ":8080");
     }
 
 }

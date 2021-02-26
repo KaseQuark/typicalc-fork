@@ -2,15 +2,15 @@ package edu.kit.typicalc.view;
 
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.commands.TestBenchCommandExecutor;
+import edu.kit.typicalc.view.pageobjects.ControlPanelElement;
+import edu.kit.typicalc.view.pageobjects.ExampleDialogElement;
 import edu.kit.typicalc.view.pageobjects.InputBarElement;
+import org.junit.Assert;
 import org.junit.Test;
-import org.openqa.selenium.HasCapabilities;
 
-import java.io.File;
 import java.io.IOException;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * This example contains usage examples of screenshot comparison feature.
@@ -30,7 +30,7 @@ public class ScreenshotIT extends AbstractIT {
 
         // Set a fixed viewport size so the screenshot is always the same
         // resolution
-        testBench().resizeViewPortTo(1000, 500);
+        testBench().resizeViewPortTo(1600, 800);
 
         // Define the directory for reference screenshots and for error files
         Parameters.setScreenshotReferenceDirectory("src/test/resources/screenshots");
@@ -42,8 +42,6 @@ public class ScreenshotIT extends AbstractIT {
         // Change this calculation after running the test once to see how errors
         // in screenshots are verified.
         // The output is placed in target/screenshot_errors
-
-        generateReferenceIfNotFound("initialView");
 
         // Compare screen with reference image with id "oneplustwo" from the
         // reference image directory. Reference image filenames also contain
@@ -73,40 +71,39 @@ public class ScreenshotIT extends AbstractIT {
                 testBench().compareScreen("identityView"));
     }
 
-    /**
-     * Generates a reference screenshot if no reference exists.
-     * <p>
-     * This method only exists for demonstration purposes. Normally you should
-     * perform this task manually after verifying that the screenshots look
-     * correct.
-     *
-     * @param referenceId the id of the reference image
-     * @throws IOException
-     */
-    private void generateReferenceIfNotFound(String referenceId)
-            throws IOException {
-        String refName = ((TestBenchCommandExecutor) testBench())
-                .getReferenceNameGenerator().generateName(referenceId,
-                        ((HasCapabilities) getDriver()).getCapabilities());
-        File referenceFile = new File(
-                Parameters.getScreenshotReferenceDirectory(), refName + ".png");
-        if (referenceFile.exists()) {
-            return;
-        }
+    @Test
+    public void chooseExample() throws IOException {
+        InputBarElement inputBar = $(InputBarElement.class).first();
+        inputBar.openExampleDialog();
 
-        if (!referenceFile.getParentFile().exists()) {
-            referenceFile.getParentFile().mkdirs();
-        }
+        ExampleDialogElement exampleDialog = $(ExampleDialogElement.class).waitForFirst();
+        String term = "λx.x";
+        exampleDialog.insertExample(term);
 
-        File errorFile = new File(Parameters.getScreenshotErrorDirectory(),
-                referenceFile.getName());
+        Assert.assertEquals(term, inputBar.getCurrentValue());
 
-        // Take a screenshot and move it to the reference location
-        testBench().compareScreen(referenceId);
-        errorFile.renameTo(referenceFile);
+        TestBenchCommandExecutor executor = getCommandExecutor();
+        executor.waitForVaadin();
 
-        System.out.println("Created new reference file in " + referenceFile);
+        // check that the example is copied to the input bar
+        // TODO: the blinking cursor could cause issues here
+        assertTrue("Screenshot comparison for 'chooseExample' (stage 1) failed",
+                testBench().compareScreen("chooseExample1"));
 
+        inputBar.typeInfer();
+        executor.waitForVaadin();
+        ControlPanelElement control = $(ControlPanelElement.class).waitForFirst();
+        control.lastStep();
+        executor.waitForVaadin();
+
+        // check that the example is inferred correctly
+        assertTrue("Screenshot comparison for 'chooseExample' (stage 2) failed",
+                testBench().compareScreen("chooseExample2"));
+
+        control.lastStep();
+        executor.waitForVaadin();
+        // check that the example is unified correctly
+        assertTrue("Screenshot comparison for 'chooseExample' (stage 3) failed",
+                testBench().compareScreen("chooseExample3"));
     }
-
 }
