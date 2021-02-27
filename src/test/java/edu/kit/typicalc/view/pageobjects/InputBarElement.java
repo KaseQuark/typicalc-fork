@@ -42,4 +42,12 @@ public class InputBarElement extends HorizontalLayoutElement {
     public void openExampleDialog() {
         $(ButtonElement.class).id("exampleButton").click();
     }
+    
+    /**
+     * Opens the type assumptions area.
+     */
+    public void openTypeAssumptionsArea() {
+        $(ButtonElement.class).first().click();
+    }
+    
 }

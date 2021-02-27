@@ -1,10 +1,15 @@
 package edu.kit.typicalc.view;
 
+import com.vaadin.flow.component.button.testbench.ButtonElement;
+import com.vaadin.flow.component.orderedlayout.testbench.HorizontalLayoutElement;
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.commands.TestBenchCommandExecutor;
+
 import edu.kit.typicalc.view.pageobjects.ControlPanelElement;
 import edu.kit.typicalc.view.pageobjects.ExampleDialogElement;
 import edu.kit.typicalc.view.pageobjects.InputBarElement;
+import edu.kit.typicalc.view.pageobjects.TypeAssumptionFieldElement;
+import edu.kit.typicalc.view.pageobjects.TypeAssumptionsAreaElement;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -105,5 +110,51 @@ public class ScreenshotIT extends AbstractIT {
         // check that the example is unified correctly
         assertTrue("Screenshot comparison for 'chooseExample' (stage 3) failed",
                 testBench().compareScreen("chooseExample3"));
+    }
+    
+    @Test
+    public void exportLatexWithAssumptions() throws IOException {
+        TestBenchCommandExecutor executor = getCommandExecutor();
+        
+        InputBarElement inputBar = $(InputBarElement.class).first();
+        String term = "λx. f x";
+        inputBar.setCurrentValue(term);
+        
+        // check if the correct term is entered
+        Assert.assertEquals(term, inputBar.getCurrentValue());
+        
+        inputBar.openTypeAssumptionsArea();
+        TypeAssumptionsAreaElement assumptionsArea = $(TypeAssumptionsAreaElement.class).waitForFirst();
+        assumptionsArea.addTypeAssumption();
+        executor.waitForVaadin();
+        TypeAssumptionFieldElement assumptionField =  assumptionsArea.getLastTypeAssumption();
+        
+        String variable = "f";
+        String type = "int -> y";
+        assumptionField.setVariable(variable);
+        assumptionField.setType(type);
+        assumptionsArea.$(HorizontalLayoutElement.class).first().$(ButtonElement.class).last().focus();
+        
+        executor.waitForVaadin();
+        // check if type assumption is added correctly
+        assertTrue("Screenshot comparison for 'exportLatexWithAssumptions' (stage 1) failed",
+                testBench().compareScreen("exportLatexWithAssumptions1"));
+        assumptionsArea.closeDialog();
+        
+        inputBar.typeInfer();
+        executor.waitForVaadin();
+        ControlPanelElement controlPanel = $(ControlPanelElement.class).waitForFirst();
+        controlPanel.lastStep();
+        executor.waitForVaadin();
+        
+        // check if the algorithm is processed correctly
+        assertTrue("Screenshot comparison for 'exportLatexWithAssumptions' (stage 2) failed",
+                testBench().compareScreen("exportLatexWithAssumptions2"));
+        
+        controlPanel.openShareDialog();
+        executor.waitForVaadin();
+        // check if the share dialog content is correct
+        assertTrue("Screenshot comparison for 'exportLatexWithAssumptions' (stage 3) failed",
+                testBench().compareScreen("exportLatexWithAssumptions3"));
     }
 }
