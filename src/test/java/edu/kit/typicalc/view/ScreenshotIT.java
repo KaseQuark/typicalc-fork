@@ -4,18 +4,14 @@ import com.vaadin.flow.component.button.testbench.ButtonElement;
 import com.vaadin.flow.component.orderedlayout.testbench.HorizontalLayoutElement;
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.commands.TestBenchCommandExecutor;
-
-import edu.kit.typicalc.view.pageobjects.ControlPanelElement;
-import edu.kit.typicalc.view.pageobjects.ExampleDialogElement;
-import edu.kit.typicalc.view.pageobjects.InputBarElement;
-import edu.kit.typicalc.view.pageobjects.TypeAssumptionFieldElement;
-import edu.kit.typicalc.view.pageobjects.TypeAssumptionsAreaElement;
+import edu.kit.typicalc.view.pageobjects.*;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This example contains usage examples of screenshot comparison feature.
@@ -24,6 +20,7 @@ import static org.junit.Assert.*;
 public class ScreenshotIT extends AbstractIT {
 
     private static final String IDENTITY_TERM = "λx.x";
+    private static final String LET_TERM = "let f = λx. g y y in f 3";
 
     /**
      * We'll want to perform some additional setup functions, so we override the
@@ -74,6 +71,42 @@ public class ScreenshotIT extends AbstractIT {
                         + Parameters.getScreenshotErrorDirectory()
                         + " for error images",
                 testBench().compareScreen("identityView"));
+    }
+
+    @Test
+    public void createPermalink() throws IOException {
+        InputBarElement inputBar = $(InputBarElement.class).first();
+        inputBar.setCurrentValue(LET_TERM);
+
+        assertEquals(LET_TERM, inputBar.getCurrentValue());
+
+        inputBar.typeInfer();
+        TestBenchCommandExecutor executor = getCommandExecutor();
+        executor.waitForVaadin();
+
+        assertTrue("Screenshot comparison for 'letView' failed, see "
+                        + Parameters.getScreenshotErrorDirectory()
+                        + " for error images",
+                testBench().compareScreen("letView"));
+
+        ControlPanelElement control = $(ControlPanelElement.class).waitForFirst();
+        control.openShareDialog();
+        executor.waitForVaadin();
+
+        assertTrue("Screenshot comparison for 'letShareDialog' failed, see "
+                        + Parameters.getScreenshotErrorDirectory()
+                        + " for error images",
+                testBench().compareScreen("letShareDialog"));
+
+        ShareDialogElement shareDialogElement = $(ShareDialogElement.class).waitForFirst();
+        String permalink = shareDialogElement.getPermalink();
+        getDriver().get(permalink);
+
+        assertTrue("Screenshot comparison for 'letView' from permalink failed, see "
+                        + Parameters.getScreenshotErrorDirectory()
+                        + " for error images",
+                testBench().compareScreen("letView"));
+        // TODO: jeden Schritt durchgehen?
     }
 
     @Test
