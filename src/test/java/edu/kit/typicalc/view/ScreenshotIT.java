@@ -157,4 +157,35 @@ public class ScreenshotIT extends AbstractIT {
         assertTrue("Screenshot comparison for 'exportLatexWithAssumptions' (stage 3) failed",
                 testBench().compareScreen("exportLatexWithAssumptions3"));
     }
+
+    @Test
+    public void testScenario1() throws IOException {
+        InputBarElement inputBar = $(InputBarElement.class).first();
+        String term = "λx. f x";
+        inputBar.setCurrentValue(term);
+
+        // check if the correct term is entered
+        Assert.assertEquals(term, inputBar.getCurrentValue());
+        inputBar.typeInfer();
+
+        ControlPanelElement controlPanelElement = $(ControlPanelElement.class).first();
+
+        assertTrue(testBench().compareScreen("testScenario1_step0"));
+        controlPanelElement.nextStep();
+        assertTrue(testBench().compareScreen("testScenario1_step1"));
+        controlPanelElement.nextStep();
+        assertTrue(testBench().compareScreen("testScenario1_step2"));
+        controlPanelElement.nextStep();
+        assertTrue(testBench().compareScreen("testScenario1_step3"));
+        controlPanelElement.nextStep();
+        assertTrue(testBench().compareScreen("testScenario1_step4"));
+        controlPanelElement.previousStep();
+        assertTrue(testBench().compareScreen("testScenario1_step3"));
+        controlPanelElement.previousStep();
+        assertTrue(testBench().compareScreen("testScenario1_step2"));
+        controlPanelElement.firstStep();
+        assertTrue(testBench().compareScreen("testScenario1_step0"));
+        controlPanelElement.lastStep();
+        assertTrue(testBench().compareScreen("testScenario1_step4gi"));
+    }
 }
