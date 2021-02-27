@@ -8,9 +8,11 @@ declare global {
     interface SVGElement {
         viewBox: SVGAnimatedRect;
     }
+
     interface SVGGraphicsElement {
         getTransformToElement: (other: SVGGraphicsElement) => SVGMatrix;
     }
+
     interface SVGTransformList {
         [index: number]: SVGTransform;
     }
@@ -59,32 +61,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                     a.setAttribute("id", "step" + stepIdx);
                     stepIdx++;
                 }
-            }
-            // then fix some mathjax layout issues
-            for (const step of root.querySelectorAll<SVGElement>(stepSelector)) {
-                const infRule = step.querySelector<SVGElement>(inferenceRuleSelector);
-                if (infRule === null || infRule.children.length != 3) {
-                    continue;
-                }
-                const stepAbove = infRule.children[0] as SVGGraphicsElement;
-                const infRuleAbove = stepAbove.querySelector<HTMLElement>(inferenceRuleSelector)!;
-                if (infRuleAbove === null || infRuleAbove.children.length != 3) {
-                    continue;
-                }
-                let termAbove = infRuleAbove.children[1] as SVGGraphicsElement;
-                let dx = termAbove.getBBox().x;
-                termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
-                while (termAbove.parentElement!.getAttribute("semantics") !== "bspr_inferenceRule:down") {
-                    if (termAbove.transform.baseVal !== null) {
-                        if (termAbove.transform.baseVal.numberOfItems !== 1) {
-                            termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
-                            continue;
-                        }
-                        dx += termAbove.transform.baseVal[0].matrix.e;
-                        termAbove = termAbove.parentElement as HTMLElement & SVGGraphicsElement;
-                    }
-                }
-                stepAbove.transform.baseVal[0].matrix.e -= dx;
             }
             // then create the steps
             let steps: [SVGElement, SVGElement[]][] = [];
@@ -137,24 +113,61 @@ class MathjaxProofTree extends MathjaxAdapter {
             // 2. place inference conclusions under the center of their line
             const svg = root.querySelector<SVGElement>("svg")!;
             svg.viewBox.baseVal.width = Math.min(100000, svg.viewBox.baseVal.width);
-            let counter = 0;
-            let oldWidth = NaN;
-            let newWidth = (svg.children[1] as SVGGraphicsElement).getBBox().width;
-            // rendering LaTeX often requires multiple passes over the input..
-            let iterations = 0;
-            let extraIterations = 1;
-            while (isNaN(oldWidth) || Math.abs(oldWidth - newWidth) > 5000 || extraIterations > 0) {
-                if (!(isNaN(oldWidth) || Math.abs(oldWidth - newWidth) > 5000)) {
-                    extraIterations--;
-                }
-                iterations++;
-                oldWidth = newWidth;
-                const nodeIterator2 = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']")];
-                // start layout fixes in the innermost part of the SVG
-                nodeIterator2.reverse();
-                counter = 0;
-                for (const row of nodeIterator2) {
-                    counter++;
+
+            const nodeIterator = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']," + inferenceRuleSelector)];
+            console.log(`working with ${nodeIterator.length} nodes`);
+            // start layout fixes in the innermost part of the SVG
+            nodeIterator.reverse();
+            for (const row of nodeIterator) {
+                const semantics = row.getAttribute("semantics");
+                if (semantics === "bspr_inferenceRule:down") {
+                    const conclusion = row.children[1].querySelector<SVGGraphicsElement>('g[data-mml-node="mstyle"]')!;
+                    const conclusionBox = conclusion.getBBox();
+                    const line = row.children[2] as SVGGraphicsElement;
+                    const bbox = line.getBBox();
+
+                    const offset2 = line.getTransformToElement(conclusion);
+                    let dx = bbox.width / 2 + offset2.e - conclusionBox.width / 2;
+                    dx += Number(line.getAttribute("x1"));
+                    let table = row.parentNode as SVGGraphicsElement;
+                    let prevNode;
+                    let magicNumber = 0;
+                    while (table.getAttribute("semantics") !== "bspr_inferenceRule:down") {
+                        prevNode = table;
+                        table = table.parentNode as SVGGraphicsElement;
+                        if (table.getAttribute("data-mml-node") === "mtr" && table.childNodes.length === 3) {
+                            for (let i = 0; i < table.childNodes.length; i++) {
+                                if (table.childNodes[i] === prevNode) {
+                                    magicNumber = i;
+                                }
+                            }
+                        }
+                        if (table === svg) {
+                            break;
+                        }
+                    }
+                    conclusion.transform.baseVal[0].matrix.e += dx;
+                    if (magicNumber !== 0) {
+                        continue;
+                    }
+                    if (table === svg) {
+                        break; // last step
+                    }
+                    const lineBelow = table.children[2] as SVGGraphicsElement;
+                    let lineStart = 0;
+                    if (lineBelow) {
+                        const offset1 = lineBelow.getTransformToElement(conclusion);
+                        lineStart = -offset1.e;
+                        const x1 = Number(lineBelow.getAttribute("x1"));
+                        const x2 = Number(lineBelow.getAttribute("x2"));
+                        lineBelow.setAttribute("x1", String(x1 + lineStart));
+                        lineBelow.setAttribute("x2", String(x2 + lineStart));
+                    }
+                    const label = table.parentElement!.children[1] as SVGGraphicsElement;
+                    if (label && label.transform) {
+                        label.transform.baseVal[0].matrix.e += lineStart;
+                    }
+                } else {
                     let left = null;
                     let i = 0;
                     for (const rawNode of row.children) {
@@ -197,41 +210,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                         i += 1;
                     }
                 }
-                const nodeIterator1 = [...svg.querySelectorAll<SVGGraphicsElement>(inferenceRuleSelector)];
-                // start layout fixes in the innermost part of the SVG
-                nodeIterator1.reverse();
-                for (const rule of nodeIterator1) {
-                    const conclusion = rule.children[1].querySelector<SVGGraphicsElement>('g[data-mml-node="mstyle"]')!;
-                    const conclusionBox = conclusion.getBBox();
-                    const line = rule.children[2] as SVGGraphicsElement;
-                    const bbox = line.getBBox();
-                    const offset2 = line.getTransformToElement(conclusion);
-                    let dx = bbox.width / 2 + offset2.e - conclusionBox.width / 2;
-                    dx += Number(line.getAttribute("x1"));
-                    let table = rule.parentNode as SVGGraphicsElement;
-                    while (table.getAttribute("semantics") !== "bspr_inferenceRule:down") {
-                        table = table.parentNode as SVGGraphicsElement;
-                        if (table === svg) {
-                            break;
-                        }
-                    }
-                    conclusion.transform.baseVal[0].matrix.e += dx;
-                    if (table === svg) {
-                        break; // last step
-                    }
-                    const lineBelow = table.children[2] as SVGGraphicsElement;
-                    if (lineBelow) {
-                        const x1 = Number(lineBelow.getAttribute("x1"));
-                        const x2 = Number(lineBelow.getAttribute("x2"));
-                        lineBelow.setAttribute("x1", String(x1 + dx));
-                        lineBelow.setAttribute("x2", String(x2 + dx));
-                    }
-                    const label = table.parentElement!.children[1] as SVGGraphicsElement;
-                    if (label && label.transform) {
-                        label.transform.baseVal[0].matrix.e += dx;
-                    }
-                }
-                newWidth = (svg.children[1] as SVGGraphicsElement).getBBox().width;
             }
             const conclusion0 = svg.querySelector<SVGElement>(inferenceRuleSelector)!.children[1].children[0].children[0].children[1] as SVGGraphicsElement;
             const conclusionWidth = conclusion0.getBBox().width;
@@ -239,9 +217,8 @@ class MathjaxProofTree extends MathjaxAdapter {
             const offset = (svg.children[1] as SVGGraphicsElement).getTransformToElement(conclusion0);
             (svg.children[1] as SVGGraphicsElement).transform.baseVal[0].matrix.e += offset.e + svgWidth / 2 - conclusionWidth / 2;
             console.timeEnd('stepCalculation');
-            console.log("Iterations: " + iterations);
 
-            if (counter >= 3) {
+            if (nodeIterator.length >= 3) {
                 // should not be used on empty SVGs
                 window.svgPanZoomFun(svg, { fit: false });
             }
