@@ -6,7 +6,19 @@ import com.vaadin.testbench.annotations.Attribute;
 
 @Attribute(name = "id", value = "control-panel")
 public class ControlPanelElement extends HorizontalLayoutElement {
-    
+
+    public void firstStep() {
+        $(ButtonElement.class).get(1).click();
+    }
+
+    public void previousStep() {
+        $(ButtonElement.class).get(2).click();
+    }
+
+    public void nextStep() {
+        $(ButtonElement.class).get(3).click();
+    }
+
     public void lastStep() {
         $(ButtonElement.class).get(4).click();
     }
