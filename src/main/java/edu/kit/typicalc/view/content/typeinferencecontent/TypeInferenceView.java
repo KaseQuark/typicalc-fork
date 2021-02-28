@@ -87,6 +87,19 @@ public class TypeInferenceView extends VerticalLayout
     private void refreshElements() {
         unification.showStep(currentStep);
         tree.showStep(treeNumbers.get(currentStep));
+
+        if (currentStep == 0) {
+            controlPanel.setEnabledFirstStep(false);
+            controlPanel.setEnabledPreviousStep(false);
+        } else if (currentStep == unification.getStepCount() - 1) {
+            controlPanel.setEnabledNextStep(false);
+            controlPanel.setEnabledLastStep(false);
+        } else {
+            controlPanel.setEnabledNextStep(true);
+            controlPanel.setEnabledLastStep(true);
+            controlPanel.setEnabledFirstStep(true);
+            controlPanel.setEnabledPreviousStep(true);
+        }
     }
 
     @Override
@@ -94,12 +107,6 @@ public class TypeInferenceView extends VerticalLayout
         int treeEnd = treeNumbers.indexOf(tree.getStepCount() - 1);
         currentStep = currentStep > treeEnd && tree.getStepCount() > 0 ? treeEnd : 0;
         refreshElements();
-        if (currentStep == 0) {
-            controlPanel.setEnabledFirstStep(false);
-            controlPanel.setEnabledPreviousStep(false);
-        }
-        controlPanel.setEnabledNextStep(true);
-        controlPanel.setEnabledLastStep(true);
     }
 
     @Override
@@ -107,12 +114,6 @@ public class TypeInferenceView extends VerticalLayout
         int treeEnd = treeNumbers.indexOf(tree.getStepCount() - 1);
         currentStep = currentStep < treeEnd ? treeEnd : unification.getStepCount() - 1;
         refreshElements();
-        if (currentStep == unification.getStepCount() - 1) {
-            controlPanel.setEnabledNextStep(false);
-            controlPanel.setEnabledLastStep(false);
-        }
-        controlPanel.setEnabledFirstStep(true);
-        controlPanel.setEnabledPreviousStep(true);
 
     }
 
@@ -120,24 +121,12 @@ public class TypeInferenceView extends VerticalLayout
     public void nextStepButton() {
         currentStep = currentStep < unification.getStepCount() - 1 ? currentStep + 1 : currentStep;
         refreshElements();
-        if (currentStep == unification.getStepCount() - 1) {
-            controlPanel.setEnabledNextStep(false);
-            controlPanel.setEnabledLastStep(false);
-        }
-        controlPanel.setEnabledFirstStep(true);
-        controlPanel.setEnabledPreviousStep(true);
     }
 
     @Override
     public void previousStepButton() {
         currentStep = currentStep > 0 ? currentStep - 1 : currentStep;
         refreshElements();
-        if (currentStep == 0) {
-            controlPanel.setEnabledFirstStep(false);
-            controlPanel.setEnabledPreviousStep(false);
-        }
-        controlPanel.setEnabledNextStep(true);
-        controlPanel.setEnabledLastStep(true);
     }
 
     @Override
