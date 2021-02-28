@@ -76,7 +76,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
         typeAssumptions = new Button("", event -> onTypeAssumptionsButton());
         typeAssumptionsArea = new TypeAssumptionsArea();
-        Button exampleButton = new Button(getTranslation("root.examplebutton"), event -> onExampleButtonClick());
+        Button exampleButton = new Button(VaadinIcon.PAPERCLIP.create(), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
         inferTypeButton = new Button("", event -> onTypeInferButtonClick(callback));
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);

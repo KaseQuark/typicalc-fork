@@ -34,11 +34,11 @@ public final class LatexCreatorConstants {
     protected static final char BRACKET_LEFT = '[';
     protected static final char BRACKET_RIGHT = ']';
 
-    protected static final String LABEL_ABS = "\\LeftLabel{\\rm A{\\small BS}}";
-    protected static final String LABEL_APP = "\\LeftLabel{\\rm A{\\small PP}}";
-    protected static final String LABEL_CONST = "\\LeftLabel{\\rm C{\\small ONST}}";
-    protected static final String LABEL_VAR = "\\LeftLabel{\\rm V{\\small AR}}";
-    protected static final String LABEL_LET = "\\LeftLabel{\\rm L{\\small ET}}";
+    protected static final String LABEL_ABS = "\\LeftLabel{\\textrm A{\\small BS}}";
+    protected static final String LABEL_APP = "\\LeftLabel{\\textrm A{\\small PP}}";
+    protected static final String LABEL_CONST = "\\LeftLabel{\\textrm C{\\small ONST}}";
+    protected static final String LABEL_VAR = "\\LeftLabel{\\textrm V{\\small AR}}";
+    protected static final String LABEL_LET = "\\LeftLabel{\\textrm L{\\small ET}}";
 
     protected static final String UIC = "\\UnaryInfC";
     protected static final String BIC = "\\BinaryInfC";
