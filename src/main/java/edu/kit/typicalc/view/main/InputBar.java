@@ -108,8 +108,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     private void onTypeInferButtonClick(Consumer<Pair<String, Map<String, String>>> callback) {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
+        inputField.blur();
 
-        UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
+        if ("".equals(currentInput)) {
+            UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc"));
+        } else {
+            UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
+        }
         callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
     }
 
