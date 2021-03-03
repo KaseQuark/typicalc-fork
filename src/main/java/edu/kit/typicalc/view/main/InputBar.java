@@ -67,7 +67,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
                         + "if (area.value.indexOf('\\\\') >= 0) {"
                         + "    var start = area.selectionStart;"
                         + "    var end = area.selectionEnd;"
-                        + "    area.value = area.value.replace('\\\\', 'λ');"
+                        + "    area.value = area.value.replaceAll('\\\\', 'λ');"
                         + "    area.selectionStart = start;"
                         + "    area.selectionEnd = end;"
                         + "}});");
