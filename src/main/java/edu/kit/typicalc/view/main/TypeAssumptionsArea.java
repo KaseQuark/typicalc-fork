@@ -73,6 +73,13 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         initializeWithAssumptions(types);
         layout.add(heading, buttons, assumptionContainer);
         add(layout);
+        // attach and trigger javascript event listener after reopening the dialog
+        addOpenedChangeListener(e -> {
+           if (e.isOpened()) { 
+                   fields.forEach(TypeAssumptionField::refresh); 
+               } 
+           } 
+        );
     }
 
     /**
