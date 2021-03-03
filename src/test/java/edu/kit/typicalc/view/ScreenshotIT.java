@@ -83,7 +83,7 @@ public class ScreenshotIT extends AbstractIT {
         inputBar.typeInfer();
         TestBenchCommandExecutor executor = getCommandExecutor();
         executor.waitForVaadin();
-
+        
         assertTrue("Screenshot comparison for 'letView' failed, see "
                         + Parameters.getScreenshotErrorDirectory()
                         + " for error images",
@@ -193,6 +193,8 @@ public class ScreenshotIT extends AbstractIT {
 
     @Test
     public void testScenario1() throws IOException {
+        TestBenchCommandExecutor executor = getCommandExecutor();
+        
         InputBarElement inputBar = $(InputBarElement.class).first();
         String term = "λx. f x";
         inputBar.setCurrentValue(term);
@@ -202,23 +204,31 @@ public class ScreenshotIT extends AbstractIT {
         inputBar.typeInfer();
 
         ControlPanelElement controlPanelElement = $(ControlPanelElement.class).first();
-
+        executor.waitForVaadin();
+        
         assertTrue(testBench().compareScreen("testScenario1_step0"));
         controlPanelElement.nextStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step1"));
         controlPanelElement.nextStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step2"));
         controlPanelElement.nextStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step3"));
         controlPanelElement.nextStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step4"));
         controlPanelElement.previousStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step3"));
         controlPanelElement.previousStep();
         assertTrue(testBench().compareScreen("testScenario1_step2"));
         controlPanelElement.firstStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step0"));
         controlPanelElement.lastStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step4gi"));
     }
 }

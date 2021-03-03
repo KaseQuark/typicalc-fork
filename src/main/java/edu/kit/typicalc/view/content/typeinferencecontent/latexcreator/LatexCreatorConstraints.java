@@ -8,9 +8,7 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.util.Result;
 
 import java.nio.channels.IllegalSelectorException;
-import java.util.ArrayDeque;
 import java.util.ArrayList;
-import java.util.Deque;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
