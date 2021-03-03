@@ -74,6 +74,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         minusIcon.setId(MINUS_ICON_ID);
         Button deleteButton = new Button(minusIcon, event -> deleteSelf.accept(this));
         deleteButton.setId(ASS_DELETE_BUTTON_ID);
+        deleteButton.setTabIndex(-1);
         add(variableInputField, typeInputField, deleteButton);
         setId(ASSUMPTIONS_FIELD_ID);
     }

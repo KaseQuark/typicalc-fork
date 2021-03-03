@@ -42,6 +42,7 @@ public class TypeInferenceView extends VerticalLayout
     private MathjaxProofTree tree;
     private final transient LatexCreator lc;
     private final Div content;
+    private ControlPanel controlPanel;
 
     /**
      * Initializes the component. When initialization is complete, the first step of the type
@@ -58,13 +59,15 @@ public class TypeInferenceView extends VerticalLayout
                 error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
         content = new Div();
         content.setId(CONTENT_ID);
-        ControlPanel controlPanel = new ControlPanel(this, this);
+        controlPanel = new ControlPanel(this, this);
         Scroller scroller = new Scroller(content);
         scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
         add(scroller, controlPanel);
         treeNumbers = lc.getTreeNumbers();
         setContent();
+        controlPanel.setEnabledFirstStep(false);
+        controlPanel.setEnabledPreviousStep(false);
     }
 
     private void setContent() {
@@ -84,6 +87,19 @@ public class TypeInferenceView extends VerticalLayout
     private void refreshElements() {
         unification.showStep(currentStep);
         tree.showStep(treeNumbers.get(currentStep));
+
+        if (currentStep == 0) {
+            controlPanel.setEnabledFirstStep(false);
+            controlPanel.setEnabledPreviousStep(false);
+        } else if (currentStep == unification.getStepCount() - 1) {
+            controlPanel.setEnabledNextStep(false);
+            controlPanel.setEnabledLastStep(false);
+        } else {
+            controlPanel.setEnabledNextStep(true);
+            controlPanel.setEnabledLastStep(true);
+            controlPanel.setEnabledFirstStep(true);
+            controlPanel.setEnabledPreviousStep(true);
+        }
     }
 
     @Override
@@ -98,6 +114,7 @@ public class TypeInferenceView extends VerticalLayout
         int treeEnd = treeNumbers.indexOf(tree.getStepCount() - 1);
         currentStep = currentStep < treeEnd ? treeEnd : unification.getStepCount() - 1;
         refreshElements();
+
     }
 
     @Override

@@ -1,3 +1,7 @@
 vaadin-button {
 	min-width: 0;
 }
+
+vaadin-button, iron-icon, vaadin-drawer-toggle {
+	cursor: pointer;
+}
