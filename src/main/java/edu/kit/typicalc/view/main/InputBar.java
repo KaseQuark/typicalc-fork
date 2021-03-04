@@ -123,11 +123,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onExampleButtonClick() {
-        Consumer<String> setValue = value -> {
-            inputField.setValue(value);
-            inputField.focus();
-        };
-        Dialog exampleDialog = new ExampleDialog(setValue);
+        Dialog exampleDialog = new ExampleDialog(this::inferTerm);
         exampleDialog.open();
     }
 
