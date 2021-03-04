@@ -53,7 +53,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
      * Fills the view with content.
      */
     public StartPageView() {
-        ControlPanel controlPanel = new ControlPanel(this, this);
+        ControlPanel controlPanel = new ControlPanel(this);
         controlPanel.setId(CONTROL_PANEL_ID);
         controlPanel.setEnabledShareButton(false);
 
