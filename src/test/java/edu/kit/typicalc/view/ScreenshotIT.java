@@ -223,6 +223,7 @@ public class ScreenshotIT extends AbstractIT {
         executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step3"));
         controlPanelElement.previousStep();
+        executor.waitForVaadin();
         assertTrue(testBench().compareScreen("testScenario1_step2"));
         controlPanelElement.firstStep();
         executor.waitForVaadin();

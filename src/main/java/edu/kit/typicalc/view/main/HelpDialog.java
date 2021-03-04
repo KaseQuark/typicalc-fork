@@ -51,7 +51,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
         languageSelect.setTextRenderer(renderer);
         languageSelect.setValue(UI.getCurrent().getLocale());
-        languageSelect.addValueChangeListener(event -> UI.getCurrent().setLocale(event.getValue()));
+        languageSelect.addValueChangeListener(event -> UI.getCurrent().getSession().setLocale(event.getValue()));
         languageSelect.setId(LANGUAGE_SELECT_ID);
         headingLayout.add(heading, languageSelect);
 
