@@ -39,7 +39,6 @@ class LatexCreatorConstraintsTest {
                         + TREE_VARIABLE + "_{1}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT
                         + PAREN_RIGHT + SPLIT_END + ALIGN_END,
                 ALIGN_BEGIN + constraintSet + MGU_START + mgu + ALIGN_END,
-                ALIGN_BEGIN + constraintSet + MGU_START + mgu + ALIGN_END,
                 ALIGN_BEGIN + constraintSet + MGU_START + mgu + LATEX_NEW_LINE + AMPERSAND + SIGMA + PAREN_LEFT
                         + TREE_VARIABLE + "_{1}" + PAREN_RIGHT + EQUALS + GENERATED_ASSUMPTION_VARIABLE
                         + "_{1}" + ALIGN_END);

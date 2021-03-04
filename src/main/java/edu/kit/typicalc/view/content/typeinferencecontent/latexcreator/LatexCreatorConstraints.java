@@ -91,8 +91,11 @@ public class LatexCreatorConstraints implements StepVisitor {
                 numberGenerator.push();
             });
             typeInferer.getMGU().ifPresent(mgu -> {
-                result.add(generateMGU(constraintSets));
-                numberGenerator.push();
+                // avoid superfluous step if unification only has one step (that equals the mgu)
+                if (typeInferer.getUnificationSteps().get().size() > 2) {
+                    result.add(generateMGU(constraintSets));
+                    numberGenerator.push();
+                }
                 result.add(generateMGU(constraintSets) + LATEX_NEW_LINE + generateFinalType());
                 numberGenerator.push();
             });
