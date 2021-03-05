@@ -3,6 +3,7 @@ package edu.kit.typicalc.view.content.errorcontent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
@@ -23,7 +24,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     private static final int NO_ADDITIONAL_INFO = -1;
 
     private final H3 heading;
-    private Component errorMessage;
+    private Div errorMessage;
     private final ParseError error;
 
     public ErrorView(ParseError error) {
@@ -31,7 +32,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         VerticalLayout container = new VerticalLayout();
         heading = new H3();
         heading.getStyle().set("color", "white");
-        errorMessage = buildErrorMessage(error);
+        errorMessage = new Div();
         container.add(heading, errorMessage);
         add(container, new InfoContent());
         container.setId(ERROR_CONTENT_ID);
@@ -60,6 +61,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
         heading.setText(getTranslation("error.heading"));
-        errorMessage = buildErrorMessage(error);
+        errorMessage.removeAll();
+        errorMessage.add(buildErrorMessage(error));
     }
 }
