@@ -20,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 /**
@@ -41,6 +42,7 @@ public class MainViewImpl extends AppLayout
     public static final String PAGE_TITLE = "Typicalc";
 
     private final UpperBar upperBar;
+    private transient Optional<TypeInferenceView> tiv = Optional.empty();
 
     /**
      * Creates a new MainViewImpl.
@@ -55,8 +57,8 @@ public class MainViewImpl extends AppLayout
 
     @Override
     public void setTypeInferenceView(TypeInfererInterface typeInferer) {
-        TypeInferenceView tiv = new TypeInferenceView(typeInferer);
-        setContent(tiv);
+        tiv = Optional.of(new TypeInferenceView(typeInferer));
+        setContent(tiv.get());
     }
 
     @Override
@@ -67,6 +69,7 @@ public class MainViewImpl extends AppLayout
 
     @Override
     public void beforeEnter(BeforeEnterEvent event) {
+        tiv = Optional.empty();
         if (event.getLocation().getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
             Location url = event.getLocation();
             List<String> segments = url.getSegments();
@@ -83,6 +86,11 @@ public class MainViewImpl extends AppLayout
         }
     }
 
+    @Override
+    protected void afterNavigation() {
+        // this method ensures that the content is visible after navigation
+        tiv.ifPresent(this::setContent);
+    }
 
     private void setTermInURL(Pair<String, Map<String, String>> lambdaTermAndAssumptions) {
         String lambdaTerm = lambdaTermAndAssumptions.getLeft();
@@ -99,7 +107,7 @@ public class MainViewImpl extends AppLayout
         if (types.length() > 0) {
             typeAssumptions = "?" + types.toString();
         }
-        UI.getCurrent().getPage().getHistory().replaceState(null,
+        UI.getCurrent().getPage().getHistory().pushState(null,
                 new Location(TypeInferenceView.ROUTE + "/" + lambdaTerm + typeAssumptions));
     }
 

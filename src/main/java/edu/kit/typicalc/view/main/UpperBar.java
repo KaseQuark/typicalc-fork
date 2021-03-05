@@ -62,25 +62,30 @@ public class UpperBar extends HorizontalLayout {
     }
 
     /**
-     * Starts the type inference algorithm by passing the required arguments to the MainViewListener.
+     * Starts the type inference algorithm by passing the required arguments to the MainViewListener
+     * and updating the URL.
      *
      * @param termAndAssumptions the lambda term to be type-inferred and the type assumptions to use
      */
     protected void typeInfer(Pair<String, Map<String, String>> termAndAssumptions) {
         setTermInURL.accept(termAndAssumptions);
-        presenter.typeInferLambdaString(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
+        startInfer(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
+    }
+
+    private void startInfer(String term, Map<String, String> typeAssumptions) {
+        presenter.typeInferLambdaString(term, typeAssumptions);
     }
 
     /**
-     * Calls the inferTerm method in {@link InputBar} with the provided
-     * string as the argument.
+     * Sets the lambda term and type assumptions in the InputBar and starts the inference.
      *
      * @param term            the provided string
      * @param typeAssumptions type assumptions to use
      */
     protected void inferTerm(String term, Map<String, String> typeAssumptions) {
         inputBar.setTypeAssumptions(typeAssumptions);
-        inputBar.inferTerm(term);
+        inputBar.setTerm(term);
+        startInfer(term, typeAssumptions);
     }
 
     private void onHelpIconClick() {

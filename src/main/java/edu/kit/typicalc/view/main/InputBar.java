@@ -38,6 +38,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
+    private final transient Consumer<Pair<String, Map<String, String>>> callback;
     private final TextField inputField;
     private TypeAssumptionsArea typeAssumptionsArea;
     private final Button inferTypeButton;
@@ -50,6 +51,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param callback Consumer to call the inferType()-method in UpperBar
      */
     protected InputBar(Consumer<Pair<String, Map<String, String>>> callback) {
+        this.callback = callback;
+
         Button infoIcon = new Button(new Icon(VaadinIcon.INFO_CIRCLE));
         infoIcon.addClickListener(event -> onInfoIconClick());
 
@@ -78,7 +81,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         typeAssumptionsArea = new TypeAssumptionsArea();
         Button exampleButton = new Button(VaadinIcon.PAPERCLIP.create(), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
-        inferTypeButton = new Button("", event -> onTypeInferButtonClick(callback));
+        inferTypeButton = new Button("", event -> onTypeInferButtonClick());
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         inferTypeButton.setId(INFER_BUTTON_ID);
@@ -88,13 +91,12 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     /**
-     * Sets the provided string as the value of the inputField and starts the type inference algorithm.
+     * Sets the provided string as the value of the inputField.
      *
      * @param term the provided string
      */
-    protected void inferTerm(String term) {
+    protected void setTerm(String term) {
         inputField.setValue(term);
-        UI.getCurrent().getPage().executeJs("document.getElementById($0).click()", INFER_BUTTON_ID);
     }
 
     /**
@@ -106,15 +108,10 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         typeAssumptionsArea = new TypeAssumptionsArea(typeAssumptions);
     }
 
-    private void onTypeInferButtonClick(Consumer<Pair<String, Map<String, String>>> callback) {
+    private void onTypeInferButtonClick() {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
         inputField.blur();
 
-        if ("".equals(currentInput)) {
-            UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc"));
-        } else {
-            UI.getCurrent().getPage().setTitle(getTranslation("root.typicalc") + " - " + currentInput);
-        }
         callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
     }
 
@@ -123,7 +120,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onExampleButtonClick() {
-        Dialog exampleDialog = new ExampleDialog(this::inferTerm);
+        Dialog exampleDialog = new ExampleDialog(this::setTerm);
         exampleDialog.open();
     }
 
