@@ -4,6 +4,7 @@ import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -19,6 +20,8 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
 
     private final String summaryKey;
     private final String contentKey;
+    private final HorizontalLayout summary;
+    private final Paragraph summaryText;
     private final Paragraph content;
 
     /**
@@ -30,8 +33,11 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
     protected HelpContentField(String summaryKey, String contentKey) {
         this.summaryKey = summaryKey;
         this.contentKey = contentKey;
-        this.content = new Paragraph(getTranslation(contentKey));
-        setSummaryText(getTranslation(summaryKey));
+        this.content = new Paragraph();
+        this.summaryText = new Paragraph();
+        this.summary = new HorizontalLayout(summaryText);
+        summary.setAlignItems(FlexComponent.Alignment.BASELINE);
+        setSummary(summary);
         setContent(content);
         addThemeVariants(DetailsVariant.FILLED);
     }
@@ -46,14 +52,14 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
      */
     protected HelpContentField(String summaryKey, Button button, String contentKey) {
         this(summaryKey, contentKey);
-        HorizontalLayout layout = new HorizontalLayout(button, content);
-        layout.setClassName(CLASSNAME);
-        setContent(layout);
+        summary.removeAll();
+        summary.add(button, summaryText);
+        setContent(content);
     }
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-        setSummaryText(getTranslation(summaryKey));
+        summaryText.setText(getTranslation(summaryKey));
         content.setText(getTranslation(contentKey));
     }
 
