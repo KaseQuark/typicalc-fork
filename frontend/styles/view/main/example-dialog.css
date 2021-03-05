@@ -1,15 +1,3 @@
-#share-dialog {
-	width: 80%;
-}
-#share-dialog-layout {
-	align-items: start;
-	min-width: 50em;
-	height: 100%;
-}
-.share-dialog-field {
-	width: 100%;
-}
-
 #headingLayout {
 	width: 100%;
 	display: flex;

@@ -34,6 +34,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
     private static final String ACCORDION_ID = "accordion";
     private static final String TYPE_BUTTON_COPY_ID = "typeButtonCopy";
+    private static final String CLOSE_ICON_ID = "closeIcon";
 
     private final H3 heading;
     private final Select<Locale> languageSelect;
@@ -48,12 +49,18 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
         heading = new H3();
         headingLayout.setId(HEADING_LAYOUT_ID);
+
         languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
         languageSelect.setTextRenderer(renderer);
         languageSelect.setValue(UI.getCurrent().getLocale());
         languageSelect.addValueChangeListener(event -> UI.getCurrent().getSession().setLocale(event.getValue()));
         languageSelect.setId(LANGUAGE_SELECT_ID);
-        headingLayout.add(heading, languageSelect);
+
+        Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
+        closeIcon.addClickListener(event -> this.close());
+        closeIcon.setId(CLOSE_ICON_ID);
+
+        headingLayout.add(heading, languageSelect, closeIcon);
 
         VerticalLayout contentLayout = new VerticalLayout();
         typeButtonCopy = new Button(getTranslation("root.typeInfer"));
