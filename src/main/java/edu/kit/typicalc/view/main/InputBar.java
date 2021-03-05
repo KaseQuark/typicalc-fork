@@ -108,10 +108,14 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         typeAssumptionsArea = new TypeAssumptionsArea(typeAssumptions);
     }
 
+    protected void setTermAndClickTypeInfer(String term) {
+        setTerm(term);
+        onTypeInferButtonClick();
+    }
+
     private void onTypeInferButtonClick() {
         String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
         inputField.blur();
-
         callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
     }
 
@@ -120,7 +124,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onExampleButtonClick() {
-        Dialog exampleDialog = new ExampleDialog(this::setTerm);
+        Dialog exampleDialog = new ExampleDialog(this::setTermAndClickTypeInfer);
         exampleDialog.open();
     }
 
