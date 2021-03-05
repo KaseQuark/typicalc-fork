@@ -4,11 +4,13 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.i18n.LocaleChangeObserver;
 
 /**
  * Provides a GUI in form of buttons for the user to navigate through steps.
  */
-public class ControlPanel extends HorizontalLayout {
+public class ControlPanel extends HorizontalLayout implements LocaleChangeObserver {
     public static final String ID = "control-panel";
 
     private final Button firstStep;
@@ -84,5 +86,14 @@ public class ControlPanel extends HorizontalLayout {
      */
     public void setEnabledShareButton(boolean setEnabled) {
         share.setEnabled(setEnabled);
+    }
+
+    @Override
+    public void localeChange(LocaleChangeEvent event) {
+        share.getElement().setAttribute("title", getTranslation("root.shareButtonTooltip"));
+        firstStep.getElement().setAttribute("title", getTranslation("root.firstStepTooltip"));
+        previousStep.getElement().setAttribute("title", getTranslation("root.previousStepTooltip"));
+        nextStep.getElement().setAttribute("title", getTranslation("root.nextStepTooltip"));
+        lastStep.getElement().setAttribute("title", getTranslation("root.lastStepTooltip"));
     }
 }

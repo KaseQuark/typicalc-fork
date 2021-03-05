@@ -9,6 +9,9 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
+import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.i18n.LocaleChangeObserver;
+
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -20,7 +23,9 @@ import java.util.function.Consumer;
  * Contains all the components constantly shown in the upper part of the webpage.
  */
 @CssImport("./styles/view/main/upper-bar.css")
-public class UpperBar extends HorizontalLayout {
+@CssImport(value = "./styles/view/button-hover.css", themeFor = "vaadin-button")
+@CssImport(value = "./styles/view/button-hover.css", themeFor = "vaadin-drawer-toggle")
+public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -7344967027514015830L;
 
     /*
@@ -32,7 +37,9 @@ public class UpperBar extends HorizontalLayout {
     private static final String UPPER_BAR_ID = "header";
 
     private final InputBar inputBar;
-
+    private final Button toggle;
+    private final Button helpButton;
+    
     private final transient MainViewListener presenter;
     private final transient Consumer<Pair<String, Map<String, String>>> setTermInURL;
 
@@ -47,15 +54,16 @@ public class UpperBar extends HorizontalLayout {
         this.presenter = presenter;
         this.setTermInURL = setTermInURL;
 
+        toggle = new DrawerToggle();
         H1 viewTitle = new H1(new Anchor("/", getTranslation("root.typicalc")));
         viewTitle.setId(VIEW_TITLE_ID);
         this.inputBar = new InputBar(this::typeInfer);
         inputBar.setId(INPUT_BAR_ID);
-        Button helpIcon = new Button(new Icon(VaadinIcon.QUESTION_CIRCLE));
-        helpIcon.addClickListener(event -> onHelpIconClick());
-        helpIcon.setId(HELP_ICON_ID);
+        helpButton = new Button(new Icon(VaadinIcon.QUESTION_CIRCLE));
+        helpButton.addClickListener(event -> onHelpIconClick());
+        helpButton.setId(HELP_ICON_ID);
 
-        add(new DrawerToggle(), viewTitle, inputBar, helpIcon);
+        add(toggle, viewTitle, inputBar, helpButton);
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true);
         setSpacing(false);
@@ -93,5 +101,11 @@ public class UpperBar extends HorizontalLayout {
     private void onHelpIconClick() {
         Dialog helpDialog = new HelpDialog();
         helpDialog.open();
+    }
+
+    @Override
+    public void localeChange(LocaleChangeEvent event) {
+        toggle.getElement().setAttribute("title", getTranslation("root.drawerToggleTooltip"));
+        helpButton.getElement().setAttribute("title", getTranslation("root.helpIconTooltip"));
     }
 }

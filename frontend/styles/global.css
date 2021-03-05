@@ -5,3 +5,7 @@ vaadin-button {
 vaadin-button, iron-icon, vaadin-drawer-toggle {
 	cursor: pointer;
 }
+
+#closeIcon:hover {
+	color: rgb(120, 120, 120);
+}

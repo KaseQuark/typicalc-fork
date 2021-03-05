@@ -35,12 +35,15 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String INFER_BUTTON_ID = "inferButton";
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";
     private static final String LAMBDA_BUTTON_ID = "lambdaButton";
+    private static final String ASS_BUTTON_ID = "assButton";
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
     private final transient Consumer<Pair<String, Map<String, String>>> callback;
+    private final Button infoIcon;
     private final TextField inputField;
     private TypeAssumptionsArea typeAssumptionsArea;
+    private final Button exampleButton;
     private final Button inferTypeButton;
     private final Button typeAssumptions;
 
@@ -53,7 +56,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     protected InputBar(Consumer<Pair<String, Map<String, String>>> callback) {
         this.callback = callback;
 
-        Button infoIcon = new Button(new Icon(VaadinIcon.INFO_CIRCLE));
+        infoIcon = new Button(new Icon(VaadinIcon.INFO_CIRCLE));
         infoIcon.addClickListener(event -> onInfoIconClick());
 
         inputField = new TextField();
@@ -78,8 +81,9 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         lambdaButton.setId(LAMBDA_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
         typeAssumptions = new Button("", event -> onTypeAssumptionsButton());
+        typeAssumptions.setId(ASS_BUTTON_ID);
         typeAssumptionsArea = new TypeAssumptionsArea();
-        Button exampleButton = new Button(VaadinIcon.PAPERCLIP.create(), event -> onExampleButtonClick());
+        exampleButton = new Button(VaadinIcon.PAPERCLIP.create(), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
         inferTypeButton = new Button("", event -> onTypeInferButtonClick());
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
@@ -138,5 +142,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
         inferTypeButton.setText(getTranslation("root.typeInfer"));
         typeAssumptions.setText(getTranslation("root.typeAssumptions"));
+        infoIcon.getElement().setAttribute("title", getTranslation("root.inputSyntax"));
+        exampleButton.getElement().setAttribute("title", getTranslation("root.exampleTooltip"));
     }
 }

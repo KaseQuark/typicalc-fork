@@ -25,7 +25,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     private static final String CLOSE_ICON_ID = "closeIcon";
 
     private final TextField urlField;
-    private final TextField packageField;
+    private final TextArea packageArea;
     private final TextArea latexArea;
     private final H3 heading;
 
@@ -34,11 +34,9 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      * to the String that is passed as corresponding parameter.
      *
      * @param url           a permalink to share with other users
-     * @param latexPackages the needed LaTeX-packages to use the displayed mathematics
-     *                      in other LaTeX documents. Should be in the form „\\usepackage&ltpackage&gt“
      * @param latexCode     LaTeX code for users to copy into their own LaTeX document(s)
      */
-    public ShareDialog(String url, String latexPackages, String latexCode) {
+    public ShareDialog(String url, String latexCode) {
         HorizontalLayout headingLayout = new HorizontalLayout();
         headingLayout.setId(HEADING_LAYOUT_ID);
 
@@ -55,17 +53,17 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         setId(SHARE_DIALOG_ID);
 
         urlField = new TextField();
-        packageField = new TextField();
+        packageArea = new TextArea();
         latexArea = new TextArea();
 
         urlField.setValue(url);
         urlField.setClassName(FIELD_CLASS);
-        packageField.setValue(latexPackages);
-        packageField.setClassName(FIELD_CLASS);
+        packageArea.setValue(getTranslation("share.neededPackages"));
+        packageArea.setClassName(FIELD_CLASS);
         latexArea.setValue(latexCode);
         latexArea.setClassName(FIELD_CLASS);
 
-        layout.add(urlField, packageField, latexArea);
+        layout.add(urlField, packageArea, latexArea);
 
         add(headingLayout, layout);
     }
@@ -75,7 +73,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
         heading.setText(getTranslation("share.heading"));
         urlField.setLabel(getTranslation("share.url.label"));
-        packageField.setLabel(getTranslation("share.packages.label"));
+        packageArea.setLabel(getTranslation("share.packages.label"));
         latexArea.setLabel(getTranslation("share.latex.label"));
     }
 }

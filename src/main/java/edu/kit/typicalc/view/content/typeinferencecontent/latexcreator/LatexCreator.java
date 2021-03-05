@@ -77,16 +77,6 @@ public class LatexCreator implements StepVisitor {
         return constraintsCreator.getTreeNumbers();
     }
 
-    /**
-     * Returns needed LaTeX packages
-     *
-     * @return the packages needed for the LaTeX-code from getTree() to work
-     */
-    public String getLatexPackages() {
-        return BUSSPROOFS;
-    }
-
-
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
         String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
@@ -155,8 +145,7 @@ public class LatexCreator implements StepVisitor {
         tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
-        String premiseRight = DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType
-                + DOLLAR_SIGN + NEW_LINE;
+        String premiseRight = DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType + DOLLAR_SIGN;
         String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + ALIGN_BEGIN
                 + generateVarStepPremise(varL).replace(DOLLAR_SIGN, "")
                 + SPACE + LATEX_NEW_LINE + SPACE // todo less replacement fixups
