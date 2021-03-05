@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.main;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.accordion.AccordionPanel;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.DetailsVariant;
@@ -55,6 +56,11 @@ public class HelpContentField extends AccordionPanel implements LocaleChangeObse
         summary.removeAll();
         summary.add(button, summaryText);
         setContent(content);
+    }
+
+    protected HelpContentField(String summaryKey, Component contentComponent) {
+        this(summaryKey, "");
+        setContent(contentComponent);
     }
 
     @Override

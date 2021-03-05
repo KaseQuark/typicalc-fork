@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.main;
 
+import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
@@ -7,6 +8,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -72,6 +74,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         acc.add(new HelpContentField("root.typeInferButton", "root.helpTypeInferButton"));
         acc.add(new HelpContentField("root.inputField", "root.helpInputField"));
         acc.add(new HelpContentField("root.typeAssumptions", "root.helpTypeAssumptions"));
+        acc.add(new HelpContentField("root.shortcuts", createShortcutComponent()));
         acc.add(new HelpContentField("root.drawer",
                 new Button(new Icon(VaadinIcon.MENU)), "root.helpDrawer"));
         acc.add(new HelpContentField("root.example",
@@ -87,6 +90,13 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         acc.add(new HelpContentField("root.shareButton",
                 new Button(new Icon(VaadinIcon.CONNECT)), "root.helpShareButton"));
         return acc;
+    }
+
+    private Component createShortcutComponent() {
+        VerticalLayout layout = new VerticalLayout();
+        layout.add(new Paragraph("CTRL + Left = First Step"));
+        layout.add(new Paragraph("Left = Previous Step")); // todo
+        return layout;
     }
 
     @Override
