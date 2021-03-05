@@ -69,7 +69,9 @@ public class UpperBar extends HorizontalLayout {
      */
     protected void typeInfer(Pair<String, Map<String, String>> termAndAssumptions) {
         setTermInURL.accept(termAndAssumptions);
-        startInfer(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
+        if (!"".equals(termAndAssumptions.getLeft())) {
+            startInfer(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
+        }
     }
 
     private void startInfer(String term, Map<String, String> typeAssumptions) {
