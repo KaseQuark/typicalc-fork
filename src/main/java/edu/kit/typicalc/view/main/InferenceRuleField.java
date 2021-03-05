@@ -71,6 +71,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
     @Override
     public void localeChange(LocaleChangeEvent event) {
         ruleName.setText(getTranslation(nameKey));
+        copyButton.getElement().setAttribute("title", getTranslation("root.copyLatexTooltip"));
     }
 
 }
