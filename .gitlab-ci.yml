@@ -1,7 +1,8 @@
 build:
   script:
+    - alias mvn="mvn -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp"
     - file src/main/resources/language/translation_de.properties | rg UTF-8
-    - mvn -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp checkstyle:check jacoco:prepare-agent test jacoco:report
+    - mvn checkstyle:check jacoco:prepare-agent test jacoco:report
     - python3 /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml
     - python3 /opt/source2filename.py target/site/cobertura.xml
     - /opt/calcCoverage.sh < target/site/cobertura.xml
