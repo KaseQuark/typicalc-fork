@@ -32,9 +32,11 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     /*
      * IDs for the imported .css-file
      */
+    private static final String HEADING_LAYOUT_ID = "headingLayout";
     private static final String ASS_LAYOUT_ID = "assLayout";
     private static final String ASS_BUTTONS_ID = "assButtons";
     private static final String ASS_CONTAINER_ID = "assContainer";
+    private static final String CLOSE_ICON_ID = "closeIcon";
 
     private final H3 heading;
     private final VerticalLayout assumptionContainer;
@@ -71,8 +73,9 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         assumptionContainer.setId(ASS_CONTAINER_ID);
 
         initializeWithAssumptions(types);
-        layout.add(heading, buttons, assumptionContainer);
-        add(layout);
+        layout.add(buttons, assumptionContainer);
+        HorizontalLayout headingLayout = makeHeader();
+        add(headingLayout, layout);
         // attach and trigger javascript event listener after reopening the dialog
         addOpenedChangeListener(e -> {
            if (e.isOpened()) { 
@@ -82,6 +85,17 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         );
     }
 
+    private HorizontalLayout makeHeader() {
+        HorizontalLayout headingLayout = new HorizontalLayout();
+        headingLayout.setId(HEADING_LAYOUT_ID);
+
+        Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
+        closeIcon.addClickListener(event -> this.close());
+        closeIcon.setId(CLOSE_ICON_ID);
+        headingLayout.add(heading);
+        headingLayout.add(closeIcon);
+        return headingLayout;
+    }
     /**
      * Creates a new empty TypeAssumptionsArea.
      */

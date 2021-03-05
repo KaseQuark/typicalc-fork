@@ -26,6 +26,12 @@
 	min-width: 110px;
 }
 
+#closeIcon {
+	right: 0;
+	position: absolute;
+	bottom: 2.1em;
+}
+
 .help-field {
 	justify-content: center;
 	align-items: center;
