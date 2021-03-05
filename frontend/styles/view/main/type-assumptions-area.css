@@ -5,6 +5,20 @@
 	padding: 0;
 }
 
+#headingLayout {
+	width: 100%;
+	display: flex;
+	position: relative;
+	align-items: center;
+	justify-content: center;
+}
+
+#closeIcon {
+	right: 0;
+	position: absolute;
+	bottom: 2.1em;
+}
+
 #assButtons {
 	display: flex;
 	justify-content: center;

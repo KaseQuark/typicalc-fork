@@ -74,6 +74,4 @@ public final class LatexCreatorConstants {
     protected static final String ALIGN_END = "\\end{aligned}";
     protected static final String SPLIT_BEGIN = "\\begin{split}";
     protected static final String SPLIT_END = "\\end{split}";
-
-    protected static final String BUSSPROOFS = "\\usepackage{bussproofs}";
 }

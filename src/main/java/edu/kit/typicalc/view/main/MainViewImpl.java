@@ -95,7 +95,7 @@ public class MainViewImpl extends AppLayout
     private void setTermInURL(Pair<String, Map<String, String>> lambdaTermAndAssumptions) {
         String lambdaTerm = lambdaTermAndAssumptions.getLeft();
         if ("".equals(lambdaTerm)) {
-            UI.getCurrent().getPage().getHistory().pushState(null, new Location(""));
+            UI.getCurrent().getPage().getHistory().pushState(null, "./");
             setContent(new StartPageView());
             return;
         }
