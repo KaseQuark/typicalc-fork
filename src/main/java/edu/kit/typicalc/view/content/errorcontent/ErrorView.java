@@ -1,48 +1,40 @@
-package edu.kit.typicalc.view.main;
+package edu.kit.typicalc.view.content.errorcontent;
 
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.notification.Notification;
-import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-
+import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.i18n.LocaleChangeObserver;
 import edu.kit.typicalc.model.parser.ParseError;
+import edu.kit.typicalc.view.main.InfoContent;
 
-/**
- * The notification being displayed on invalid input.
- */
-@CssImport("./styles/view/error-notification.css")
-@CssImport(value = "./styles/view/main/error-details.css", themeFor = "vaadin-details")
-public class ErrorNotification extends Notification {
-
+@CssImport("./styles/view/error-view.css")
+public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = 239587L;
 
-    private static final String NOTIFICATION_ID = "errorNotification";
-    private static final String NOTIFICATION_CONTENT_ID = "errorNotificationContent";
-    private static final String ADDITIONAL_INFO_ID = "additionalInfo";
+    private static final String ERROR_CONTENT_ID = "errorViewContent";
+    private static final String ADDITIONAL_INFO_ID = "errorAdditionalInfo";
     private static final String ERROR_SUMMARY_ID = "errorSummary";
-    
+
     private static final int NO_ADDITIONAL_INFO = -1;
 
-    /**
-     * Creates a new ErrorNotification with a specific error.
-     *
-     * @param error the occurred error
-     */
-    protected ErrorNotification(ParseError error) {
-        VerticalLayout container = new VerticalLayout();
-        container.setId(NOTIFICATION_CONTENT_ID);
-        Button closeButton = new Button(getTranslation("root.close"), event -> this.close());
+    private final H3 heading;
+    private Component errorMessage;
+    private final ParseError error;
 
-        container.add(buildErrorMessage(error), closeButton);
-        addThemeVariants(NotificationVariant.LUMO_ERROR);
-        add(container);
-        setPosition(Position.MIDDLE);
-        setId(NOTIFICATION_ID);
+    public ErrorView(ParseError error) {
+        this.error = error;
+        VerticalLayout container = new VerticalLayout();
+        heading = new H3();
+        heading.getStyle().set("color", "white");
+        errorMessage = buildErrorMessage(error);
+        container.add(heading, errorMessage);
+        add(container, new InfoContent());
+        container.setId(ERROR_CONTENT_ID);
     }
 
     private Component buildErrorMessage(ParseError error) {
@@ -63,5 +55,11 @@ public class ErrorNotification extends Notification {
         }
 
         return new Details(summary, additionalInformation);
+    }
+
+    @Override
+    public void localeChange(LocaleChangeEvent localeChangeEvent) {
+        heading.setText(getTranslation("error.heading"));
+        errorMessage = buildErrorMessage(error);
     }
 }

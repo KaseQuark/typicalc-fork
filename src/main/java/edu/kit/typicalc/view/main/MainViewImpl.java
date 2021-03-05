@@ -4,12 +4,12 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JavaScript;
-import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.router.*;
 import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.presenter.Presenter;
+import edu.kit.typicalc.view.content.errorcontent.ErrorView;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +39,9 @@ public class MainViewImpl extends AppLayout
         implements MainView, BeforeEnterObserver, HasErrorParameter<NotFoundException> {
     private static final long serialVersionUID = -2411433187835906976L;
 
+    /**
+     * The title of the application
+     */
     public static final String PAGE_TITLE = "Typicalc";
 
     private final UpperBar upperBar;
@@ -63,8 +66,7 @@ public class MainViewImpl extends AppLayout
 
     @Override
     public void displayError(ParseError error) {
-        Notification errorNotification = new ErrorNotification(error);
-        errorNotification.open();
+        setContent(new ErrorView(error));
     }
 
     @Override
