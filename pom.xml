@@ -249,6 +249,40 @@
                     <propertiesEncoding>UTF-8</propertiesEncoding>
                 </configuration>
             </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <target>
+                                <!-- inject noscript tag into index.html -->
+                                <delete failonerror="false">
+                                    <fileset dir="${project.build.directory}/tmp" includes="*" />
+                                </delete>
+                                <mkdir dir="${project.build.directory}/tmp" />
+                                <unzip src="${project.build.directory}/${project.build.finalName}.jar"
+                                       dest="${project.build.directory}/tmp" />
+                                <replaceregexp file="${project.build.directory}/tmp/META-INF/VAADIN/index.html"
+                                               match="(\x3C)body(\x3E)"
+                                               replace="\1body\2 \1noscript\2This application requires JavaScript.\1/noscript\2"
+                                               byline="true" />
+                                <zip basedir="${project.build.directory}/tmp"
+                                     destfile="${project.build.directory}/${project.build.finalName}.jar"
+                                     update="true"
+                                     keepcompression="true" />
+                            </target>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
         </plugins>
     </build>
 
