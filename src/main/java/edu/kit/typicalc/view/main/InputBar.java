@@ -50,7 +50,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param callback Consumer to call the inferType()-method in UpperBar
      */
     protected InputBar(Consumer<Pair<String, Map<String, String>>> callback) {
-        Icon infoIcon = new Icon(VaadinIcon.INFO_CIRCLE);
+        Button infoIcon = new Button(new Icon(VaadinIcon.INFO_CIRCLE));
         infoIcon.addClickListener(event -> onInfoIconClick());
 
         inputField = new TextField();

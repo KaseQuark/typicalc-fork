@@ -48,7 +48,7 @@ public class MainViewImpl extends AppLayout
     public MainViewImpl() {
         setDrawerOpened(false);
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
-        upperBar = new UpperBar(presenter, this::setContent, this::setTermInURL);
+        upperBar = new UpperBar(presenter, this::setTermInURL);
         addToNavbar(upperBar);
         addToDrawer(new DrawerContent());
     }

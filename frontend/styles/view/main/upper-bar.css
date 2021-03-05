@@ -1,26 +1,28 @@
 #header {
-  height: var(--lumo-size-xl);
-  width: 100%;
-  align-items: center;
+	height: var(--lumo-size-xl);
+	width: 100%;
+	align-items: center;
 }
 
 #header img {
-  border-radius: 50%;
-  height: var(--lumo-size-s);
-  margin-left: auto;
-  margin-right: var(--lumo-space-m);
-  overflow: hidden;
-  background-color: var(--lumo-contrast);
+	border-radius: 50%;
+	height: var(--lumo-size-s);
+	margin-left: auto;
+	margin-right: var(--lumo-space-m);
+	overflow: hidden;
+	background-color: var(--lumo-contrast);
 }
 
 #viewTitle {
-  font-size: var(--lumo-font-size-l);
-  cursor: pointer;
-  bottom: 1em;
+	font-size: var(--lumo-font-size-l);
+	cursor: pointer;
+}
+
+#viewTitle a {
+	color: var(--lumo-header-text-color);
 }
 
 #helpIcon {
-	margin-left: 1em;
 	margin-right: 1em;
 }
 
