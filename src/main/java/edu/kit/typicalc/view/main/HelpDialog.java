@@ -1,16 +1,13 @@
 package edu.kit.typicalc.view.main;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Pre;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -40,6 +37,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private final H3 heading;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
+    private final Paragraph shortcuts;
 
     /**
      * Create a new HelpDialog.
@@ -48,6 +46,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         HorizontalLayout headingLayout = new HorizontalLayout();
         renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
         heading = new H3();
+        shortcuts = new Paragraph();
         headingLayout.setId(HEADING_LAYOUT_ID);
 
         languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
@@ -75,7 +74,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         acc.add(new HelpContentField("root.typeInferButton", "root.helpTypeInferButton"));
         acc.add(new HelpContentField("root.inputField", "root.helpInputField"));
         acc.add(new HelpContentField("root.typeAssumptions", "root.helpTypeAssumptions"));
-        acc.add(new HelpContentField("root.shortcuts", createShortcutComponent()));
+        acc.add(new HelpContentField("root.shortcuts", shortcuts));
         acc.add(new HelpContentField("root.drawer",
                 new Button(new Icon(VaadinIcon.MENU)), "root.helpDrawer"));
         acc.add(new HelpContentField("root.example",
@@ -93,30 +92,10 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         return acc;
     }
 
-    private Component createShortcutComponent() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(new Div(
-                new Span(getTranslation("root.shortcut0")),
-                new Pre(getTranslation("root.shortcut0key"))));
-        layout.add(new Div(
-                new Span(getTranslation("root.shortcut1")),
-                new Pre(getTranslation("root.shortcut1key"))));
-        layout.add(new Div(
-                new Span(getTranslation("root.shortcut2")),
-                new Pre(getTranslation("root.shortcut2key"))));
-        layout.add(new Div(
-                new Span(getTranslation("root.shortcut3")),
-                new Pre(getTranslation("root.shortcut3key"))));
-        layout.add(new Div(
-                new Span(getTranslation("root.shortcut4")),
-                new Pre(getTranslation("root.shortcut4key"))));
-        // TODO: localeChange, English translation texts
-        return layout;
-    }
-
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
+        shortcuts.getElement().setProperty("innerHTML", getTranslation("root.helpShortcuts"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
     }
