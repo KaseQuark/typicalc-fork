@@ -18,5 +18,8 @@ function handleKey(e) {
         } else {
             document.getElementById("last-step").click();
         }
+    } else if (e.key === "/") {
+        document.getElementById("inputField").focus();
+        e.preventDefault();
     }
 }
