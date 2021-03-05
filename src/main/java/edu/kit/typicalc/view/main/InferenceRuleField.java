@@ -7,6 +7,8 @@ import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.H4;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -30,6 +32,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
     private static final String HEADER_ID = "headerField";
     private static final String MAIN_ID = "main";
     private static final String RULE_NAME_ID = "ruleName";
+    private static final String COPY_BUTTON_ID = "copyButton";
 
     private final String nameKey;
     private final Button copyButton;
@@ -48,22 +51,25 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
         HorizontalLayout header = new HorizontalLayout();
         header.setId(HEADER_ID);
         this.ruleName = new H4(getTranslation(nameKey));
+        this.copyButton = new Button(new Icon(VaadinIcon.CLIPBOARD));
+        copyButton.addClickListener(event -> {
+            UI.getCurrent().getPage().executeJs("window.copyToClipboard($0)", latex);
+            Notification.show(getTranslation("root.copied")).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        });
+        copyButton.setId(COPY_BUTTON_ID);
         ruleName.setId(RULE_NAME_ID);
-        header.add(ruleName);
+        header.add(ruleName, copyButton);
 
         VerticalLayout main = new VerticalLayout();
         main.setId(MAIN_ID);
-        this.copyButton = new Button(getTranslation("root.copyLatex"), new Icon(VaadinIcon.CLIPBOARD));
         MathjaxDisplay rule = new MathjaxDisplay(latex);
-        copyButton.addClickListener(event -> UI.getCurrent().getPage().executeJs("window.copyToClipboard($0)", latex));
-        main.add(rule, copyButton);
+        main.add(rule);
         add(header, main);
         setId(INFERENCE_RULE_FIELD_ID);
     }
-
+    
     @Override
     public void localeChange(LocaleChangeEvent event) {
-        copyButton.setText(getTranslation("root.copyLatex"));
         ruleName.setText(getTranslation(nameKey));
     }
 
