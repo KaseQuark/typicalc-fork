@@ -2,6 +2,7 @@ package edu.kit.typicalc.presenter;
 
 import java.util.Map;
 
+import com.vaadin.flow.component.UI;
 import edu.kit.typicalc.model.Model;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
@@ -30,6 +31,11 @@ public class Presenter implements MainViewListener {
 
     @Override
     public void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions) {
+        if (lambdaTerm.isBlank()) {
+            UI.getCurrent().getPage().setTitle(UI.getCurrent().getTranslation("root.typicalc"));
+        } else {
+            UI.getCurrent().getPage().setTitle(UI.getCurrent().getTranslation("root.typicalc") + " - " + lambdaTerm);
+        }
         Result<TypeInfererInterface, ParseError> result = model.getTypeInferer(lambdaTerm, typeAssumptions);
         if (result.isError()) {
             view.displayError(result.unwrapError());

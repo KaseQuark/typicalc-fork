@@ -1,8 +1,5 @@
 package edu.kit.typicalc.view.content;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.Key;
-import com.vaadin.flow.component.KeyModifier;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
@@ -15,30 +12,31 @@ public class ControlPanel extends HorizontalLayout {
     public static final String ID = "control-panel";
 
     private final Button firstStep;
+    public static final String FIRST_STEP_ID = "first-step";
     private final Button lastStep;
+    public static final String LAST_STEP_ID = "last-step";
     private final Button nextStep;
+    public static final String NEXT_STEP_ID = "next-step";
     private final Button previousStep;
+    public static final String PREVIOUS_STEP_ID = "previous-step";
     private final Button share;
 
     /**
      * Sets up buttons with click-listeners that call the corresponding method in the view.
      *
-     * @param view      the view that reacts to the button clicks
-     * @param focusArea the component key shortcuts should work in
+     * @param view the view that reacts to the button clicks
      */
-    public ControlPanel(ControlPanelView view, Component focusArea) {
+    public ControlPanel(ControlPanelView view) {
         setId(ID);
         firstStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT), evt -> view.firstStepButton());
+        firstStep.setId(FIRST_STEP_ID);
         lastStep = new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_RIGHT), evt -> view.lastStepButton());
+        lastStep.setId(LAST_STEP_ID);
         nextStep = new Button(new Icon(VaadinIcon.ANGLE_RIGHT), evt -> view.nextStepButton());
+        nextStep.setId(NEXT_STEP_ID);
         previousStep = new Button(new Icon(VaadinIcon.ANGLE_LEFT), evt -> view.previousStepButton());
+        previousStep.setId(PREVIOUS_STEP_ID);
         share = new Button(new Icon(VaadinIcon.CONNECT), evt -> view.shareButton());
-
-        // todo change shortcut scope
-        firstStep.addClickShortcut(Key.ARROW_LEFT, KeyModifier.CONTROL).listenOn(focusArea);
-        lastStep.addClickShortcut(Key.ARROW_RIGHT, KeyModifier.CONTROL).listenOn(focusArea);
-        nextStep.addClickShortcut(Key.ARROW_RIGHT).listenOn(focusArea);
-        previousStep.addClickShortcut(Key.ARROW_LEFT).listenOn(focusArea);
 
         add(share, firstStep, previousStep, nextStep, lastStep);
     }

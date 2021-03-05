@@ -1,15 +1,14 @@
 package edu.kit.typicalc.view.main;
 
-import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.DrawerToggle;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
-import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -41,21 +40,18 @@ public class UpperBar extends HorizontalLayout {
      * Initializes a new UpperBar with the provided mainViewListener.
      *
      * @param presenter    the listener used to communicate with the model
-     * @param setContent   function to set the content of the application
      * @param setTermInURL function to set the term into the URL
      */
-    protected UpperBar(MainViewListener presenter, Consumer<Component> setContent,
-                       Consumer<Pair<String, Map<String, String>>> setTermInURL) {
+    protected UpperBar(MainViewListener presenter, Consumer<Pair<String, Map<String, String>>> setTermInURL) {
 
         this.presenter = presenter;
         this.setTermInURL = setTermInURL;
 
-        H1 viewTitle = new H1(getTranslation("root.typicalc"));
-        viewTitle.addClickListener(event -> routeToStartPage(setContent));
+        H1 viewTitle = new H1(new Anchor("/", getTranslation("root.typicalc")));
         viewTitle.setId(VIEW_TITLE_ID);
         this.inputBar = new InputBar(this::typeInfer);
         inputBar.setId(INPUT_BAR_ID);
-        Icon helpIcon = new Icon(VaadinIcon.QUESTION_CIRCLE);
+        Button helpIcon = new Button(new Icon(VaadinIcon.QUESTION_CIRCLE));
         helpIcon.addClickListener(event -> onHelpIconClick());
         helpIcon.setId(HELP_ICON_ID);
 
@@ -66,31 +62,32 @@ public class UpperBar extends HorizontalLayout {
     }
 
     /**
-     * Starts the type inference algorithm by passing the required arguments to the MainViewListener.
+     * Starts the type inference algorithm by passing the required arguments to the MainViewListener
+     * and updating the URL.
      *
      * @param termAndAssumptions the lambda term to be type-inferred and the type assumptions to use
      */
     protected void typeInfer(Pair<String, Map<String, String>> termAndAssumptions) {
         setTermInURL.accept(termAndAssumptions);
-        presenter.typeInferLambdaString(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
+        if (!"".equals(termAndAssumptions.getLeft())) {
+            startInfer(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
+        }
+    }
+
+    private void startInfer(String term, Map<String, String> typeAssumptions) {
+        presenter.typeInferLambdaString(term, typeAssumptions);
     }
 
     /**
-     * Calls the inferTerm method in {@link InputBar} with the provided
-     * string as the argument.
+     * Sets the lambda term and type assumptions in the InputBar and starts the inference.
      *
      * @param term            the provided string
      * @param typeAssumptions type assumptions to use
      */
     protected void inferTerm(String term, Map<String, String> typeAssumptions) {
         inputBar.setTypeAssumptions(typeAssumptions);
-        inputBar.inferTerm(term);
-    }
-
-    private void routeToStartPage(Consumer<Component> setContent) {
-        setContent.accept(new StartPageView());
-        UI.getCurrent().getPage().setTitle(MainViewImpl.PAGE_TITLE);
-        UI.getCurrent().getPage().executeJs("history.pushState(null, '', $0)", "/");
+        inputBar.setTerm(term);
+        startInfer(term, typeAssumptions);
     }
 
     private void onHelpIconClick() {

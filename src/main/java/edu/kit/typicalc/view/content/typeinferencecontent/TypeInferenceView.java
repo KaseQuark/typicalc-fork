@@ -4,6 +4,7 @@ import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -23,6 +24,7 @@ import java.util.Locale;
  * {@link TypeInfererInterface} and MathJax to render the LaTeX to the user.
  */
 @CssImport("./styles/view/type-inference.css")
+@JavaScript("./src/key-shortcuts.js")
 public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent> {
     /**
@@ -42,7 +44,7 @@ public class TypeInferenceView extends VerticalLayout
     private MathjaxProofTree tree;
     private final transient LatexCreator lc;
     private final Div content;
-    private ControlPanel controlPanel;
+    private final ControlPanel controlPanel;
 
     /**
      * Initializes the component. When initialization is complete, the first step of the type
@@ -59,7 +61,7 @@ public class TypeInferenceView extends VerticalLayout
                 error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
         content = new Div();
         content.setId(CONTENT_ID);
-        controlPanel = new ControlPanel(this, this);
+        controlPanel = new ControlPanel(this);
         Scroller scroller = new Scroller(content);
         scroller.setId(SCROLLER_ID);
         scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
