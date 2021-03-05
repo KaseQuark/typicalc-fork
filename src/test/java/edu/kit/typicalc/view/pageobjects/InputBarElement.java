@@ -47,7 +47,7 @@ public class InputBarElement extends HorizontalLayoutElement {
      * Opens the type assumptions area.
      */
     public void openTypeAssumptionsArea() {
-        $(ButtonElement.class).first().click();
+        $(ButtonElement.class).id("assButton").click();
     }
     
 }

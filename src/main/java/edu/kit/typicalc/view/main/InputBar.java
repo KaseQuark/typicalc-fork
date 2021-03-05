@@ -35,6 +35,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String INFER_BUTTON_ID = "inferButton";
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";
     private static final String LAMBDA_BUTTON_ID = "lambdaButton";
+    private static final String ASS_BUTTON_ID = "assButton";
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
@@ -80,6 +81,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         lambdaButton.setId(LAMBDA_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
         typeAssumptions = new Button("", event -> onTypeAssumptionsButton());
+        typeAssumptions.setId(ASS_BUTTON_ID);
         typeAssumptionsArea = new TypeAssumptionsArea();
         exampleButton = new Button(VaadinIcon.PAPERCLIP.create(), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
