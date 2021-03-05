@@ -7,8 +7,11 @@ import com.vaadin.flow.component.accordion.Accordion;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Pre;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -94,8 +97,22 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 
     private Component createShortcutComponent() {
         VerticalLayout layout = new VerticalLayout();
-        layout.add(new Paragraph("CTRL + Left = First Step"));
-        layout.add(new Paragraph("Left = Previous Step")); // todo
+        layout.add(new Div(
+                new Span(getTranslation("root.shortcut0")),
+                new Pre(getTranslation("root.shortcut0key"))));
+        layout.add(new Div(
+                new Span(getTranslation("root.shortcut1")),
+                new Pre(getTranslation("root.shortcut1key"))));
+        layout.add(new Div(
+                new Span(getTranslation("root.shortcut2")),
+                new Pre(getTranslation("root.shortcut2key"))));
+        layout.add(new Div(
+                new Span(getTranslation("root.shortcut3")),
+                new Pre(getTranslation("root.shortcut3key"))));
+        layout.add(new Div(
+                new Span(getTranslation("root.shortcut4")),
+                new Pre(getTranslation("root.shortcut4key"))));
+        // TODO: localeChange, English translation texts
         return layout;
     }
 
