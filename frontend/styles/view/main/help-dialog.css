@@ -15,7 +15,8 @@
 
 #languageSelect {
 	position: absolute;
-	right: 0;
+	margin: 0;
+	left: 0;
 }
 
 #accordion {

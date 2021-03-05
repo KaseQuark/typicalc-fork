@@ -23,6 +23,8 @@ import java.util.function.Consumer;
  * Contains all the components constantly shown in the upper part of the webpage.
  */
 @CssImport("./styles/view/main/upper-bar.css")
+@CssImport(value = "./styles/view/button-hover.css", themeFor = "vaadin-button")
+@CssImport(value = "./styles/view/button-hover.css", themeFor = "vaadin-drawer-toggle")
 public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -7344967027514015830L;
 
