@@ -5,6 +5,9 @@ build:
     - python3 /opt/cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml
     - python3 /opt/source2filename.py target/site/cobertura.xml
     - /opt/calcCoverage.sh < target/site/cobertura.xml
+    - mvn package -Pproduction
+    - java -jar target/typicalc-1.0-SNAPSHOT.jar &
+    - mvn integration-test
   artifacts:
     reports:
       cobertura: target/site/cobertura.xml
