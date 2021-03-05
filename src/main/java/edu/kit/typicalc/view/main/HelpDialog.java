@@ -1,6 +1,5 @@
 package edu.kit.typicalc.view.main;
 
-import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ItemLabelGenerator;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.accordion.Accordion;
@@ -39,6 +38,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private final H3 heading;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
+    private final Paragraph shortcuts;
 
     /**
      * Create a new HelpDialog.
@@ -47,6 +47,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         HorizontalLayout headingLayout = new HorizontalLayout();
         renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
         heading = new H3();
+        shortcuts = new Paragraph();
         headingLayout.setId(HEADING_LAYOUT_ID);
 
         languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
@@ -74,7 +75,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         acc.add(new HelpContentField("root.typeInferButton", "root.helpTypeInferButton"));
         acc.add(new HelpContentField("root.inputField", "root.helpInputField"));
         acc.add(new HelpContentField("root.typeAssumptions", "root.helpTypeAssumptions"));
-        acc.add(new HelpContentField("root.shortcuts", createShortcutComponent()));
+        acc.add(new HelpContentField("root.shortcuts", shortcuts));
         acc.add(new HelpContentField("root.drawer",
                 new Button(new Icon(VaadinIcon.MENU)), "root.helpDrawer"));
         acc.add(new HelpContentField("root.example",
@@ -92,16 +93,10 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         return acc;
     }
 
-    private Component createShortcutComponent() {
-        VerticalLayout layout = new VerticalLayout();
-        layout.add(new Paragraph("CTRL + Left = First Step"));
-        layout.add(new Paragraph("Left = Previous Step")); // todo
-        return layout;
-    }
-
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
+        shortcuts.getElement().setProperty("innerHTML", getTranslation("root.helpShortcuts"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
     }
