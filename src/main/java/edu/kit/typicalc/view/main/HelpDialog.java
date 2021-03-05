@@ -9,7 +9,6 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
-import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -36,7 +35,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String CONTENT_LAYOUT_ID = "contentLayout";
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
     private static final String ACCORDION_ID = "accordion";
-    private static final String TYPE_BUTTON_COPY_ID = "typeButtonCopy";
     private static final String CLOSE_ICON_ID = "closeIcon";
 
     private final H3 heading;
