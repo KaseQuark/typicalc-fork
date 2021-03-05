@@ -32,7 +32,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String CONTENT_LAYOUT_ID = "contentLayout";
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
     private static final String ACCORDION_ID = "accordion";
-    private static final String TYPE_BUTTON_COPY_ID = "typeButtonCopy";
     private static final String CLOSE_ICON_ID = "closeIcon";
 
     private final H3 heading;
