@@ -36,12 +36,6 @@
     padding-bottom: 24px;
     text-align: center;
 }
-
-.help-field {
-	justify-content: center;
-	align-items: center;
-}
-
 kbd {
 	background-color: #eee;
 	border-radius: 3px;

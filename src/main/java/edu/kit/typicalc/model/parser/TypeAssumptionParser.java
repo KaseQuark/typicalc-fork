@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
  */
 public class TypeAssumptionParser {
 
+    public static final Pattern TYPE_NAME_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
     private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
 
     /**
@@ -28,7 +29,11 @@ public class TypeAssumptionParser {
     public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> assumptions) {
         Map<VarTerm, TypeAbstraction> typeAssumptions = new LinkedHashMap<>();
         for (Map.Entry<String, String> entry : assumptions.entrySet()) {
-            VarTerm var = new VarTerm(entry.getKey());
+            String typeName = entry.getKey();
+            if (!TYPE_NAME_PATTERN.matcher(typeName).matches()) {
+                return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+            }
+            VarTerm var = new VarTerm(typeName);
             Result<TypeAbstraction, ParseError> typeAbs = parseType(entry.getValue());
             if (typeAbs.isError()) {
                 return new Result<>(typeAbs);

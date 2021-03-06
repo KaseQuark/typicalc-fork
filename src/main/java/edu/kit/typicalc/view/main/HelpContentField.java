@@ -15,8 +15,6 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
  * These panels are used for the Accordion in the {@link edu.kit.typicalc.view.main.HelpDialog}.
  */
 public class HelpContentField extends AccordionPanel implements LocaleChangeObserver {
-    private static final String CLASSNAME = "help-field";
-
     private static final long serialVersionUID = -2793005857762897734L;
 
     private final String summaryKey;

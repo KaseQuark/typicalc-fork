@@ -209,6 +209,14 @@ class TypeAssumptionParserTest {
             assertTrue(type.isError());
             assertEquals(entry.getValue(), type.unwrapError());
         }
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(Map.of("föhn", "int"));
+        assertTrue(type.isError());
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, type.unwrapError());
+        parser = new TypeAssumptionParser();
+        type = parser.parse(Map.of("1typ", "int"));
+        assertTrue(type.isError());
+        assertEquals(ParseError.UNEXPECTED_CHARACTER, type.unwrapError());
     }
 
     @Test
