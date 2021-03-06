@@ -46,6 +46,14 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
 
         if (error == ParseError.TOO_FEW_TOKENS) {
             additionalInformation.add(new Span(getTranslation("root.tooFewTokensHelp")));
+        } else if (error == ParseError.UNEXPECTED_CHARACTER) {
+            char c = error.getWrongCharacter();
+            if (c != '\0') {
+                additionalInformation.add(new Span(getTranslation("root.wrongCharacter") + c));
+                additionalInformation.add(new Span(getTranslation("root.position") + error.getPosition()));
+            } else {
+                return summary;
+            }
         } else {
             if (error.getCause().getPos() == NO_ADDITIONAL_INFO) {
                 return summary;

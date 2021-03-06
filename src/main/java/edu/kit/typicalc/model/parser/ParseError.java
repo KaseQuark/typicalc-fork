@@ -24,6 +24,8 @@ public enum ParseError {
     UNEXPECTED_CHARACTER;
 
     private Token cause = new Token(Token.TokenType.EOF, "", -1);
+    private char wrongChar = '\0';
+    private int position = -1;
 
     /**
      * Attach a token to this error.
@@ -37,10 +39,31 @@ public enum ParseError {
     }
 
     /**
+     * Attach a character and position to this error.
+     *
+     * @param cause the character
+     * @param position it's position
+     * @return this object
+     */
+    public ParseError withCharacter(char cause, int position) {
+        this.wrongChar = cause;
+        this.position = position;
+        return this;
+    }
+
+    /**
      * @return the token associated with this error, or null if none
      */
     public Token getCause() { // TODO: document
         return cause;
+    }
+
+    public char getWrongCharacter() {
+        return wrongChar;
+    }
+
+    public int getPosition() {
+        return position;
     }
 
     ParseError() {

@@ -82,15 +82,20 @@ public class LambdaLexer {
         char c = term.charAt(pos);
         switch (c) {
             case '-':
-                if (pos + 1 < term.length() && term.charAt(pos + 1) == '>') {
-                    t = new Token(TokenType.ARROW, "->", pos);
-                    advance();
-                    advance();
-                    return new Result<>(t);
+                if (pos + 1 < term.length()) {
+                    if (term.charAt(pos + 1) == '>') {
+                        t = new Token(TokenType.ARROW, "->", pos);
+                        advance();
+                        advance();
+                        return new Result<>(t);
+                    } else {
+                        return new Result<>(null, ParseError.UNEXPECTED_CHARACTER
+                                .withCharacter(term.charAt(pos + 1), pos + 1));
+                    }
                 } else {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+                    return new Result<>(null, ParseError.TOO_FEW_TOKENS); // actually too few *characters* ..
                 }
-                // bunch of single-character tokens
+            // bunch of single-character tokens
             case '.':
                 t = new Token(TokenType.DOT, ".", pos);
                 advance();
@@ -124,7 +129,8 @@ public class LambdaLexer {
                     } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos))
                             && (int) term.charAt(pos) < 128);
                     if (pos < term.length() && (int) term.charAt(pos) >= 128) {
-                        return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+                        return new Result<>(null, ParseError.UNEXPECTED_CHARACTER
+                                .withCharacter(term.charAt(pos), pos));
                     }
                     String s = sb.toString();
                     TokenType type;
@@ -156,7 +162,7 @@ public class LambdaLexer {
                     } while (pos < term.length() && Character.isDigit(term.charAt(pos)));
                     return new Result<>(new Token(TokenType.NUMBER, sb.toString(), startPos));
                 } else {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(c, pos));
                 }
         }
     }
