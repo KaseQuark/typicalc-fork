@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -33,11 +34,13 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private static final String LANGUAGE_SELECT_ID = "languageSelect";
     private static final String ACCORDION_ID = "accordion";
     private static final String CLOSE_ICON_ID = "closeIcon";
+    private static final String TYPICALC_INFO_ID = "typicalcInfo";
 
     private final H3 heading;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
     private final Paragraph shortcuts;
+    private final Paragraph typicalcInfo;
 
     /**
      * Create a new HelpDialog.
@@ -66,6 +69,12 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         content.setId(ACCORDION_ID);
         contentLayout.add(content);
         contentLayout.setId(CONTENT_LAYOUT_ID);
+
+        typicalcInfo = new Paragraph();
+        typicalcInfo.setId(TYPICALC_INFO_ID);
+        contentLayout.add(typicalcInfo);
+        contentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
+
         add(headingLayout, contentLayout);
     }
 
@@ -98,5 +107,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         shortcuts.getElement().setProperty("innerHTML", getTranslation("root.helpShortcuts"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
+        typicalcInfo.getElement().setProperty("innerHTML", getTranslation("help.typicalcInfo"));
     }
 }

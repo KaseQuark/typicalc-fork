@@ -3,6 +3,7 @@
 	padding-left: 0;
 	padding-right: 0;
 	height: 525px;
+    overflow-y: auto;
 }
 
 #headingLayout {
@@ -11,6 +12,7 @@
 	position: relative;
 	align-items: center;
 	justify-content: center;
+    padding-bottom: 12px;
 }
 
 #languageSelect {
@@ -27,6 +29,12 @@
 	right: 0;
 	position: absolute;
 	bottom: 2.1em;
+}
+
+#typicalcInfo {
+    padding-top: 24px;
+    padding-bottom: 24px;
+    text-align: center;
 }
 
 .help-field {
