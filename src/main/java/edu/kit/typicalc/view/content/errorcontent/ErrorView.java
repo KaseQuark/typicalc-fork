@@ -24,7 +24,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     private static final int NO_ADDITIONAL_INFO = -1;
 
     private final H3 heading;
-    private Div errorMessage;
+    private final Div errorMessage;
     private final ParseError error;
 
     public ErrorView(ParseError error) {

@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class TypeAssumptionParser {
 
-    private static final Pattern TYPE_NAME_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
+    public static final Pattern TYPE_NAME_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
     private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
 
     /**
