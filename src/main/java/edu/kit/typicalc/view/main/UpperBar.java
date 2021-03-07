@@ -3,7 +3,6 @@ package edu.kit.typicalc.view.main;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.icon.Icon;
@@ -39,20 +38,20 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private final InputBar inputBar;
     private final Button toggle;
     private final Button helpButton;
-    
+
     private final transient MainViewListener presenter;
-    private final transient Consumer<Pair<String, Map<String, String>>> setTermInURL;
+    private final transient Consumer<Pair<String, Map<String, String>>> inputConsumer;
 
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
      *
      * @param presenter    the listener used to communicate with the model
-     * @param setTermInURL function to set the term into the URL
+     * @param inputConsumer function to handle user input
      */
-    protected UpperBar(MainViewListener presenter, Consumer<Pair<String, Map<String, String>>> setTermInURL) {
+    protected UpperBar(MainViewListener presenter, Consumer<Pair<String, Map<String, String>>> inputConsumer) {
 
         this.presenter = presenter;
-        this.setTermInURL = setTermInURL;
+        this.inputConsumer = inputConsumer;
 
         toggle = new DrawerToggle();
         H1 viewTitle = new H1(new Anchor("/", getTranslation("root.typicalc")));
@@ -60,7 +59,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         this.inputBar = new InputBar(this::typeInfer);
         inputBar.setId(INPUT_BAR_ID);
         helpButton = new Button(new Icon(VaadinIcon.QUESTION_CIRCLE));
-        helpButton.addClickListener(event -> onHelpIconClick());
+        helpButton.addClickListener(event -> new HelpDialog().open());
         helpButton.setId(HELP_ICON_ID);
 
         add(toggle, viewTitle, inputBar, helpButton);
@@ -76,10 +75,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param termAndAssumptions the lambda term to be type-inferred and the type assumptions to use
      */
     protected void typeInfer(Pair<String, Map<String, String>> termAndAssumptions) {
-        setTermInURL.accept(termAndAssumptions);
-        if (!"".equals(termAndAssumptions.getLeft())) {
-            startInfer(termAndAssumptions.getLeft(), termAndAssumptions.getRight());
-        }
+        inputConsumer.accept(termAndAssumptions);
     }
 
     private void startInfer(String term, Map<String, String> typeAssumptions) {
@@ -96,11 +92,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         inputBar.setTypeAssumptions(typeAssumptions);
         inputBar.setTerm(term);
         startInfer(term, typeAssumptions);
-    }
-
-    private void onHelpIconClick() {
-        Dialog helpDialog = new HelpDialog();
-        helpDialog.open();
     }
 
     @Override

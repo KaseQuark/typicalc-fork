@@ -8,6 +8,7 @@ import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
+import com.vaadin.flow.data.binder.Binder;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import edu.kit.typicalc.model.parser.TypeAssumptionParser;
@@ -44,6 +45,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
                     '\u2085', '\u2086', '\u2087', '\u2088', '\u2089');
     private static final char TAU = '\u03C4';
 
+    private final TypeAssumptionParser parser = new TypeAssumptionParser();
     private final TextField variableInputField;
     private final TextField typeInputField;
 
@@ -79,8 +81,42 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         Button deleteButton = new Button(minusIcon, event -> deleteSelf.accept(this));
         deleteButton.setId(ASS_DELETE_BUTTON_ID);
         deleteButton.setTabIndex(-1);
+        addValidatior();
         add(variableInputField, typeInputField, deleteButton);
         setId(ASSUMPTIONS_FIELD_ID);
+    }
+    
+    /**
+     * Checks if the current variable matches the defined syntax.
+     * 
+     * @param variable the variable
+     * @return true if the variable matches the syntax, false if not
+     */
+    protected boolean hasCorrectVariable(String variable) {
+        return variable.isEmpty() || TypeAssumptionParser.TYPE_NAME_PATTERN.matcher(variable).matches();
+    }
+    
+    /**
+     * Checks if the current type matches the defined syntax.
+     * 
+     * @param type the type
+     * @return true if the type matches the syntax, false if not
+     */
+    protected boolean hasCorrectType(String type) {
+        return type.isEmpty() || parser.parseType(parseBackType(type)).isOk();
+    }
+    
+    private void addValidatior() {
+        Binder<String> varBinder = new Binder<>();
+        varBinder.forField(variableInputField)
+                .withValidator(this::hasCorrectVariable, StringUtils.EMPTY)
+                .bind(o -> variableInputField.getEmptyValue(), null);
+        variableInputField.setReadOnly(false);
+        Binder<String> typeBinder = new Binder<>();
+        typeBinder.forField(typeInputField)
+            .withValidator(this::hasCorrectType, StringUtils.EMPTY)
+            .bind(o -> typeInputField.getEmptyValue(), null);
+        typeInputField.setReadOnly(false);
     }
 
     private String parseBackType(String type) {

@@ -1,32 +1,29 @@
 #type-inference-view {
-    width: 100%;
-    height: 100%;
-    padding: 0 0 1em;
-    align-items: center;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	align-items: center;
 }
 
 #type-inference-view::before {
-    margin: 0 !important;
+	margin: 0 !important;
 }
 
-#scroller {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-}
-#content {
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding: 10px;
-    box-sizing: border-box;
+#type-inference-view #content {
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+	height: 100%;
+	padding: 10px;
+	box-sizing: border-box;
+	margin-top: 0;
 }
 
 tc-proof-tree {
-    border-style: solid;
-    border-color: #37485f;
+	border-style: solid;
+	border-color: #37485f;
 }
 
 tc-unification {
-    background-color: #e9f2fd;
+	background-color: #e9f2fd;
 }

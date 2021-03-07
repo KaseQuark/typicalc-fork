@@ -10,11 +10,18 @@ import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
+import com.vaadin.flow.router.HasDynamicTitle;
+import com.vaadin.flow.router.Route;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
+import edu.kit.typicalc.view.main.MainViewImpl;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
@@ -27,8 +34,10 @@ import java.util.Locale;
  */
 @CssImport("./styles/view/type-inference.css")
 @JavaScript("./src/key-shortcuts.js")
+@Route(value = TypeInferenceView.ROUTE + "/:term", layout = MainViewImpl.class)
 public class TypeInferenceView extends VerticalLayout
-        implements ControlPanelView, ComponentEventListener<AttachEvent>, LocaleChangeObserver {
+        implements ControlPanelView, ComponentEventListener<AttachEvent>, LocaleChangeObserver, HasDynamicTitle,
+        BeforeEnterObserver {
     /**
      * Route of this view.
      */
@@ -47,6 +56,15 @@ public class TypeInferenceView extends VerticalLayout
     private final transient TypeInfererInterface typeInferer;
     private final Div content;
     private final ControlPanel controlPanel;
+    private String term = "?";
+
+    // used by Spring
+    public TypeInferenceView() {
+        this.typeInferer = null;
+        this.content = null;
+        this.controlPanel = null;
+        this.treeNumbers = null;
+    }
 
     /**
      * Initializes the component. When initialization is complete, the first step of the type
@@ -69,10 +87,6 @@ public class TypeInferenceView extends VerticalLayout
         controlPanel.setEnabledPreviousStep(false);
 
         Footer footer = new Footer(controlPanel);
-        footer.getStyle().set("position", "sticky");
-        footer.getStyle().set("bottom", "1em");
-        content.getStyle().set("overflow", "auto");
-        content.setWidthFull();
         add(content, footer);
     }
 
@@ -142,11 +156,31 @@ public class TypeInferenceView extends VerticalLayout
 
     @Override
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
-        lc = new LatexCreator(typeInferer,
-                error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
-        unification = new MathjaxUnification(lc.getUnification());
-        content.removeAll();
-        content.add(unification, tree);
-        refreshElements();
+        if (typeInferer != null) {
+            lc = new LatexCreator(typeInferer,
+                    error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
+            unification = new MathjaxUnification(lc.getUnification());
+            content.removeAll();
+            content.add(unification, tree);
+            refreshElements();
+        }
+    }
+
+    @Override
+    public void beforeEnter(BeforeEnterEvent event) {
+        if (event.getLocation().getPath().matches(ROUTE + "/.*")) {
+            term = URLDecoder.decode(
+                    event.getRouteParameters().get("term")
+                            .orElseThrow(IllegalStateException::new),
+                    StandardCharsets.UTF_8);
+        }
+    }
+
+    @Override
+    public String getPageTitle() {
+        if (typeInferer != null) {
+            return typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm().toString();
+        }
+        return UI.getCurrent().getTranslation("root.typicalc") + " - " + term;
     }
 }

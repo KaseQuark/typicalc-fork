@@ -48,6 +48,7 @@ class MathjaxProofTree extends MathjaxAdapter {
         const stepSelector = 'g[typicalc="step"]';
         // space between inference premises
         const padding = 300;
+        console.log("calculating steps..");
 
         if (this.shadowRoot !== null) {
             console.time('stepCalculation');
