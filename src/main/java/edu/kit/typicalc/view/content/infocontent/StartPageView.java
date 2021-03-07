@@ -5,12 +5,7 @@ import com.flowingcode.vaadin.addons.carousel.Slide;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
-import com.vaadin.flow.component.html.Anchor;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.H1;
-import com.vaadin.flow.component.html.Hr;
-import com.vaadin.flow.component.html.Paragraph;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.*;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.progressbar.ProgressBar;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -53,6 +48,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
      * Fills the view with content.
      */
     public StartPageView() {
+        VerticalLayout content = new VerticalLayout();
         ControlPanel controlPanel = new ControlPanel(this);
         controlPanel.setId(CONTROL_PANEL_ID);
         controlPanel.setEnabledShareButton(false);
@@ -81,8 +77,17 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         slideProgress = new ProgressBar(slideShow.getStartPosition(), slideShow.getSlides().length - 1);
         slideProgress.setId(SLIDE_PROGRESS_ID);
 
-        add(heading, line1, textContainer, slideProgress, slideShow, line2, controlPanel);
+        content.setAlignItems(Alignment.CENTER);
+        content.add(heading, line1, textContainer, slideProgress, slideShow, line2);
         setId(START_PAGE_ID);
+
+        Footer footer = new Footer(controlPanel);
+        footer.setWidthFull();
+        footer.getStyle().set("position", "sticky");
+        footer.getStyle().set("bottom", "1em");
+        footer.getStyle().set("background-color", "white");
+        content.setWidthFull();
+        add(content, footer);
     }
 
     private Carousel createScenarioCarousel() {
