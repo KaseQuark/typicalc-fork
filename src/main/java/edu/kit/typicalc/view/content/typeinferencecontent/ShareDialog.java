@@ -1,6 +1,8 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
+import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
@@ -15,6 +17,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 /**
  * Contains GUI elements to extract the URL and LaTeX code of the currently shown proof tree.
  */
+@JsModule("./src/share-dialog-autoselect.js")
 @CssImport("./styles/view/share-dialog.css")
 public class ShareDialog extends Dialog implements LocaleChangeObserver {
 
@@ -62,6 +65,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         packageArea.setClassName(FIELD_CLASS);
         latexArea.setValue(latexCode);
         latexArea.setClassName(FIELD_CLASS);
+        UI.getCurrent().getPage().executeJs("window.autoSelect($0)", FIELD_CLASS);
 
         layout.add(urlField, packageArea, latexArea);
 
