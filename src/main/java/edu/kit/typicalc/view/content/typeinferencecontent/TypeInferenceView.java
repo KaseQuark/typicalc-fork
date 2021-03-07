@@ -8,6 +8,8 @@ import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.Scroller;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.i18n.LocaleChangeEvent;
+import com.vaadin.flow.i18n.LocaleChangeObserver;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
@@ -26,7 +28,7 @@ import java.util.Locale;
 @CssImport("./styles/view/type-inference.css")
 @JavaScript("./src/key-shortcuts.js")
 public class TypeInferenceView extends VerticalLayout
-        implements ControlPanelView, ComponentEventListener<AttachEvent> {
+        implements ControlPanelView, ComponentEventListener<AttachEvent>, LocaleChangeObserver {
     /**
      * Route of this view.
      */
@@ -42,7 +44,8 @@ public class TypeInferenceView extends VerticalLayout
 
     private MathjaxUnification unification;
     private MathjaxProofTree tree;
-    private final transient LatexCreator lc;
+    private transient LatexCreator lc;
+    private final transient TypeInfererInterface typeInferer;
     private final Div content;
     private final ControlPanel controlPanel;
 
@@ -55,6 +58,7 @@ public class TypeInferenceView extends VerticalLayout
     public TypeInferenceView(TypeInfererInterface typeInferer) {
         setId(ID);
         addAttachListener(this);
+        this.typeInferer = typeInferer;
         lc = new LatexCreator(typeInferer,
                 error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
         content = new Div();
@@ -131,6 +135,16 @@ public class TypeInferenceView extends VerticalLayout
     @Override
     public void onComponentEvent(AttachEvent attachEvent) {
         currentStep = 0;
+        refreshElements();
+    }
+
+    @Override
+    public void localeChange(LocaleChangeEvent localeChangeEvent) {
+        lc = new LatexCreator(typeInferer,
+                error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
+        unification = new MathjaxUnification(lc.getUnification());
+        content.removeAll();
+        content.add(unification, tree);
         refreshElements();
     }
 }
