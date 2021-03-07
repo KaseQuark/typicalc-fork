@@ -92,7 +92,7 @@ public class LatexCreatorConstraints implements StepVisitor {
             });
             typeInferer.getMGU().ifPresent(mgu -> {
                 // avoid superfluous step if unification only has one step (that equals the mgu)
-                if (typeInferer.getUnificationSteps().get().size() > 2) {
+                if (typeInferer.getUnificationSteps().orElseThrow(IllegalStateException::new).size() > 2) {
                     result.add(generateMGU(constraintSets));
                     numberGenerator.push();
                 }
@@ -353,7 +353,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(PAREN_LEFT);
         latex.append(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType()).getLatex());
         latex.append("" + PAREN_RIGHT + EQUALS);
-        latex.append(new LatexCreatorType(typeInferer.getType().get()).getLatex());
+        latex.append(new LatexCreatorType(typeInferer.getType().orElseThrow(IllegalStateException::new)).getLatex());
         return latex.toString();
     }
 

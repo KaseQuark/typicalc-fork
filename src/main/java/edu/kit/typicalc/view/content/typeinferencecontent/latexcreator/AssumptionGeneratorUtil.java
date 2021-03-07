@@ -5,8 +5,10 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
 
 import java.util.Map;
 
-import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.COLON;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.COMMA;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.DOT_SIGN;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.FOR_ALL;
 
 /**
  * Util class for {@link LatexCreator} and {@link LatexCreatorConstraints} to generate LaTeX code from
