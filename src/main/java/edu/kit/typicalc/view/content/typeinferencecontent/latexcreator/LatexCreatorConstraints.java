@@ -246,7 +246,7 @@ public class LatexCreatorConstraints implements StepVisitor {
             if (subs.isError()) {
                 error = Optional.of(subs.unwrapError());
                 step = unificationSteps.get(unificationSteps.size() - 2);
-                subs = step.getSubstitutions(); // TODO: what if first step fails?
+                subs = step.getSubstitutions();
             }
             List<Substitution> substitutions = subs.unwrap();
             StringBuilder latex = new StringBuilder();

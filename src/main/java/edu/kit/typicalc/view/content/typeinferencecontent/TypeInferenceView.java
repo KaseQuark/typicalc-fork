@@ -55,8 +55,6 @@ public class TypeInferenceView extends VerticalLayout
     public TypeInferenceView(TypeInfererInterface typeInferer) {
         setId(ID);
         addAttachListener(this);
-        // TODO: document new translation function
-        // TODO: is Function<UnificationError, String> too limiting?
         lc = new LatexCreator(typeInferer,
                 error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
         content = new Div();
@@ -73,7 +71,6 @@ public class TypeInferenceView extends VerticalLayout
     }
 
     private void setContent() {
-        // todo maybe swap
         unification = new MathjaxUnification(lc.getUnification());
         tree = new MathjaxProofTree(lc.getTree());
         content.add(unification, tree);

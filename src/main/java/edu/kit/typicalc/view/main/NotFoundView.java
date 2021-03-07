@@ -26,7 +26,7 @@ public class NotFoundView extends VerticalLayout implements LocaleChangeObserver
         setId(ID);
         error404 = new H1();
         suggestion = new H2();
-        add(error404, suggestion); // todo make beautiful
+        add(error404, suggestion);
     }
 
     @Override
