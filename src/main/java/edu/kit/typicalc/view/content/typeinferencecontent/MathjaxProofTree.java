@@ -22,6 +22,7 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
 
     private int stepCount = -1;
 
+    // initialized by Vaadin
     @Id("tc-content")
     private Div content;
 
@@ -36,6 +37,10 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
         content.add(latex);
     }
 
+    /**
+     * Used by mathjax-proof-tree.ts to set the calculated number of steps in the tree.
+     * @param stepCount number of steps in tree
+     */
     @ClientCallable
     private void setStepCount(int stepCount) {
         this.stepCount = stepCount;

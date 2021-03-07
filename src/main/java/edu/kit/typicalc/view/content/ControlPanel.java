@@ -11,16 +11,19 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
  * Provides a GUI in form of buttons for the user to navigate through steps.
  */
 public class ControlPanel extends HorizontalLayout implements LocaleChangeObserver {
-    public static final String ID = "control-panel";
+
+    private static final String ATTRIBUTE_TITLE = "title";
+
+    private static final String ID = "control-panel";
 
     private final Button firstStep;
-    public static final String FIRST_STEP_ID = "first-step";
+    private static final String FIRST_STEP_ID = "first-step";
     private final Button lastStep;
-    public static final String LAST_STEP_ID = "last-step";
+    private static final String LAST_STEP_ID = "last-step";
     private final Button nextStep;
-    public static final String NEXT_STEP_ID = "next-step";
+    private static final String NEXT_STEP_ID = "next-step";
     private final Button previousStep;
-    public static final String PREVIOUS_STEP_ID = "previous-step";
+    private static final String PREVIOUS_STEP_ID = "previous-step";
     private final Button share;
 
     /**
@@ -90,10 +93,10 @@ public class ControlPanel extends HorizontalLayout implements LocaleChangeObserv
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-        share.getElement().setAttribute("title", getTranslation("root.shareButtonTooltip"));
-        firstStep.getElement().setAttribute("title", getTranslation("root.firstStepTooltip"));
-        previousStep.getElement().setAttribute("title", getTranslation("root.previousStepTooltip"));
-        nextStep.getElement().setAttribute("title", getTranslation("root.nextStepTooltip"));
-        lastStep.getElement().setAttribute("title", getTranslation("root.lastStepTooltip"));
+        share.getElement().setAttribute(ATTRIBUTE_TITLE, getTranslation("root.shareButtonTooltip"));
+        firstStep.getElement().setAttribute(ATTRIBUTE_TITLE, getTranslation("root.firstStepTooltip"));
+        previousStep.getElement().setAttribute(ATTRIBUTE_TITLE, getTranslation("root.previousStepTooltip"));
+        nextStep.getElement().setAttribute(ATTRIBUTE_TITLE, getTranslation("root.nextStepTooltip"));
+        lastStep.getElement().setAttribute(ATTRIBUTE_TITLE, getTranslation("root.lastStepTooltip"));
     }
 }

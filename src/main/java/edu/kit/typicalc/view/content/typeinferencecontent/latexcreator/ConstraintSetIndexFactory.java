@@ -27,13 +27,14 @@ public class ConstraintSetIndexFactory {
      * @return the next constraint set index
      */
     protected String nextConstraintSetIndex() {
-        String index = nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX
-                ? ""
-                : nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX + 1
+        String realIndex = nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX + 1
                 ? "" + UNDERSCORE + CURLY_LEFT + LET + CURLY_RIGHT
                 : "" + UNDERSCORE + CURLY_LEFT + LET + UNDERSCORE
                 + CURLY_LEFT + nextConstraintSetIndex + CURLY_RIGHT + CURLY_RIGHT;
 
+        String index = nextConstraintSetIndex == FIRST_CONSTRAINT_SET_INDEX
+                ? ""
+                : realIndex;
         nextConstraintSetIndex++;
         return index;
     }

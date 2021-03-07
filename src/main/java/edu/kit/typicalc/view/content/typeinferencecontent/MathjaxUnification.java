@@ -20,6 +20,7 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
     private final String[] latex;
 
+    // initialized by Vaadin
     @Id("tc-content")
     private Div content;
 
