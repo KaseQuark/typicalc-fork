@@ -38,3 +38,10 @@
 	height: 500px;
 	width: 100%;
 }
+
+#startpage-footer {
+	position: sticky;
+	bottom: 1em;
+	background-color: white;
+	width: 100%;
+}

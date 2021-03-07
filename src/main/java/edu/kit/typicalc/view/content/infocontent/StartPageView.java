@@ -35,6 +35,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
     private static final String CONTROL_PANEL_ID = "controlPanel";
     private static final String START_PAGE_ID = "startPage";
     private static final String SLIDE_SHOW_ID = "slideShow";
+    private static final String FOOTER_ID = "startpage-footer";
 
     private static final String DOT = ".";
 
@@ -62,17 +63,12 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         line1.setId(H_LINE_ID);
         Hr line2 = new Hr();
         line2.setId(H_LINE_ID);
-        Div textContainer = new Div();
-        textContainer.setId(TEXT_CONTAINER_ID);
         introduction = new Span();
 
         linkText = new Text(getTranslation("root.linkText"));
         link = new Anchor(getTranslation("root.link"), getTranslation("root.here"));
-        link.setTarget("_blank"); // opens new tab
-        Paragraph linkContainer = new Paragraph(linkText, link, new Text(DOT));
-        linkContainer.setId(LINK_CONTAINER_ID);
 
-        textContainer.add(introduction, linkContainer);
+        Div textContainer = createTextContainer();
 
         slideProgress = new ProgressBar(slideShow.getStartPosition(), slideShow.getSlides().length - 1);
         slideProgress.setId(SLIDE_PROGRESS_ID);
@@ -82,12 +78,19 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         setId(START_PAGE_ID);
 
         Footer footer = new Footer(controlPanel);
-        footer.setWidthFull();
-        footer.getStyle().set("position", "sticky");
-        footer.getStyle().set("bottom", "1em");
-        footer.getStyle().set("background-color", "white");
+        footer.setId(FOOTER_ID);
         content.setWidthFull();
         add(content, footer);
+    }
+    
+    private Div createTextContainer() {
+        Div textContainer = new Div();
+        textContainer.setId(TEXT_CONTAINER_ID);
+        link.setTarget("_blank"); // opens new tab
+        Paragraph linkContainer = new Paragraph(linkText, link, new Text(DOT));
+        linkContainer.setId(LINK_CONTAINER_ID);
+        textContainer.add(introduction, linkContainer);
+        return textContainer;
     }
 
     private Carousel createScenarioCarousel() {
