@@ -16,11 +16,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.servlet.http.HttpServletResponse;
+import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +35,8 @@ import java.util.stream.Collectors;
 @CssImport(value = "./styles/view/main/app-layout.css", themeFor = "vaadin-app-layout")
 @JavaScript("./src/svg-pan-zoom.min.js")
 @JavaScript("./src/tex-svg-full.js")
-@Route(TypeInferenceView.ROUTE + "/:term")
 public class MainViewImpl extends AppLayout
-        implements MainView, BeforeEnterObserver, HasErrorParameter<NotFoundException> {
+        implements MainView, HasErrorParameter<NotFoundException>, AfterNavigationObserver {
     private static final long serialVersionUID = -2411433187835906976L;
 
     /**
@@ -45,7 +45,6 @@ public class MainViewImpl extends AppLayout
     public static final String PAGE_TITLE = "Typicalc";
 
     private final UpperBar upperBar;
-    private transient Optional<TypeInferenceView> tiv = Optional.empty();
 
     /**
      * Creates a new MainViewImpl.
@@ -53,15 +52,14 @@ public class MainViewImpl extends AppLayout
     public MainViewImpl() {
         setDrawerOpened(false);
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
-        upperBar = new UpperBar(presenter, this::setTermInURL);
+        upperBar = new UpperBar(presenter, this::processInput);
         addToNavbar(upperBar);
         addToDrawer(new DrawerContent());
     }
 
     @Override
     public void setTypeInferenceView(TypeInfererInterface typeInferer) {
-        tiv = Optional.of(new TypeInferenceView(typeInferer));
-        setContent(tiv.get());
+        setContent(new TypeInferenceView(typeInferer));
     }
 
     @Override
@@ -70,56 +68,41 @@ public class MainViewImpl extends AppLayout
     }
 
     @Override
-    public void beforeEnter(BeforeEnterEvent event) {
-        tiv = Optional.empty();
-        if (event.getLocation().getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
-            Location url = event.getLocation();
+    public void afterNavigation(AfterNavigationEvent event) {
+        this.handleLocation(event.getLocation());
+    }
+
+    private void handleLocation(Location url) {
+        if (url.getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
             List<String> segments = url.getSegments();
             String term = segments.get(segments.size() - 1);
             Map<String, String> types = url.getQueryParameters().getParameters().entrySet().stream().map(entry ->
                     Pair.of(entry.getKey(), entry.getValue().get(0))
             ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
             upperBar.inferTerm(decodeURL(term), types);
-        } else if (event.getLocation().getPath().equals(TypeInferenceView.ROUTE)) {
+        } else if (url.getPath().equals(TypeInferenceView.ROUTE)) {
             setContent(new StartPageView());
             upperBar.inferTerm(StringUtils.EMPTY, Collections.emptyMap());
-        } else if (event.getLocation().getPath().equals(StringUtils.EMPTY)) {
+        } else if (url.getPath().equals(StringUtils.EMPTY)) {
             setContent(new StartPageView());
         }
     }
 
-    @Override
-    protected void afterNavigation() {
-        // this method ensures that the content is visible after navigation
-        tiv.ifPresent(this::setContent);
-    }
-
-    private void setTermInURL(Pair<String, Map<String, String>> lambdaTermAndAssumptions) {
+    private void processInput(Pair<String, Map<String, String>> lambdaTermAndAssumptions) {
         String lambdaTerm = lambdaTermAndAssumptions.getLeft();
-        if ("".equals(lambdaTerm)) {
-            UI.getCurrent().getPage().getHistory().pushState(null, "./");
-            setContent(new StartPageView());
+        if (lambdaTerm.isBlank()) {
+            UI.getCurrent().navigate("./");
             return;
         }
-        StringBuilder types = new StringBuilder();
-        for (Map.Entry<String, String> type : lambdaTermAndAssumptions.getRight().entrySet()) {
-            if (types.length() > 0) {
-                types.append('&');
-            }
-            types.append(type.getKey());
-            types.append('=');
-            types.append(type.getValue());
-        }
-        String typeAssumptions = "";
-        if (types.length() > 0) {
-            typeAssumptions = "?" + types.toString();
-        }
-        UI.getCurrent().getPage().getHistory().pushState(null,
-                new Location(TypeInferenceView.ROUTE + "/" + lambdaTerm + typeAssumptions));
+        QueryParameters qp = new QueryParameters(lambdaTermAndAssumptions.getRight().entrySet().stream().map(entry ->
+                Pair.of(entry.getKey(), List.of(entry.getValue()))
+        ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
+                (existing, replacement) -> existing, TreeMap::new)));
+        UI.getCurrent().navigate(TypeInferenceView.ROUTE + "/" + lambdaTerm, qp);
     }
 
     private String decodeURL(String encodedUrl) {
-        return java.net.URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8);
+        return URLDecoder.decode(encodedUrl, StandardCharsets.UTF_8);
     }
 
     @Override

@@ -36,7 +36,6 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
     private static final String CONTROL_PANEL_ID = "controlPanel";
     private static final String START_PAGE_ID = "startPage";
     private static final String SLIDE_SHOW_ID = "slideShow";
-    private static final String FOOTER_ID = "startpage-footer";
 
     private static final String DOT = ".";
 
