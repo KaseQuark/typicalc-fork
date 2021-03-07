@@ -13,7 +13,6 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Map;
@@ -118,9 +117,12 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onTypeInferButtonClick() {
-        String currentInput = inputField.getOptionalValue().orElse(StringUtils.EMPTY);
-        inputField.blur();
-        callback.accept(Pair.of(currentInput, typeAssumptionsArea.getTypeAssumptions()));
+        UI.getCurrent().getPage()
+            .executeJs("return document.getElementById($0).shadowRoot.querySelector('input').value", INPUT_FIELD_ID)
+            .then(String.class, value -> {
+                inputField.blur();
+                callback.accept(Pair.of(value, typeAssumptionsArea.getTypeAssumptions()));
+            });
     }
 
     private void onTypeAssumptionsButton() {
