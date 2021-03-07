@@ -22,16 +22,16 @@ function listener(area) {
 	var value = parseBack(area.value);
 	var start = area.selectionStart;
 	var end = area.selectionEnd;
-	if (value.startsWith('t') && isNumeric(value.substr(1, value.length - 1))) {
-		area.value = value.replace('t', '\u03C4');
-		area.value = area.value.replace(/[0123456789]/g, toUnicode);
-	} else {
-		area.value = value;
-	}
+	// ignore brackets, allow '>' or spaces in front and '-' or spaces at the end of string 
+	area.value = value.replace(/(^|\s+|\(|\)|>)t[0-9]+(?=\s+|\)|\(|\-|$)/ig, replacer);
 	area.selectionStart = start;
 	area.selectionEnd = end;
 }
 
+function replacer(value) {
+	value = value.replace('t', '\u03C4');
+	return value.replace(/[0123456789]/g, toUnicode);
+}
 
 function toUnicode(number) {
     return subscripted[number];
@@ -44,10 +44,6 @@ function toNumber(unicode) {
 }
 
 function parseBack(value) {
-	value = value.replace('\u03C4', 't');
+	value = value.replaceAll('\u03C4', 't');
 	return value.replace(/./g, toNumber);
-}
-
-function isNumeric(value) {
-	return /^\d+$/.test(value);
 }
