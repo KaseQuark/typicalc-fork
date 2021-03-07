@@ -43,7 +43,7 @@ public class TypeAssumptionParser {
         return new Result<>(typeAssumptions);
     }
 
-    private Result<TypeAbstraction, ParseError> parseType(String type) {
+    public Result<TypeAbstraction, ParseError> parseType(String type) {
         LambdaLexer lexer = new LambdaLexer(type);
         Result<Pair<Type, Integer>, ParseError> parsedType = parseType(lexer, 0);
         if (parsedType.isError()) {

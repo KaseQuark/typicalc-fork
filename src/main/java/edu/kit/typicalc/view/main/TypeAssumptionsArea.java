@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.main;
 
+import com.vaadin.flow.component.Key;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -7,6 +8,9 @@ import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.notification.Notification.Position;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
@@ -43,7 +47,8 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     private final Button addAssumption;
     private final Button deleteAll;
     private final Button saveAssumptions;
-
+    private final Notification invalidInputNotification;
+    
     private final List<TypeAssumptionField> fields = new ArrayList<>();
 
     /**
@@ -53,7 +58,8 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
      */
     protected TypeAssumptionsArea(Map<String, String> types) {
         heading = new H3("");
-
+        invalidInputNotification = createInvInputNotification();
+            
         VerticalLayout layout = new VerticalLayout();
         layout.setId(ASS_LAYOUT_ID);
         HorizontalLayout buttons = new HorizontalLayout();
@@ -65,8 +71,9 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         deleteAll.addClickListener(event -> onDeleteAllClick());
         deleteAll.setIconAfterText(true);
         deleteAll.addThemeVariants(ButtonVariant.LUMO_ERROR);
-        saveAssumptions = new Button(getTranslation("root.save"), event -> this.close());
+        saveAssumptions = new Button(getTranslation("root.save"), event -> closeAction());
         saveAssumptions.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        saveAssumptions.addClickShortcut(Key.ENTER);
         buttons.add(addAssumption, deleteAll, saveAssumptions);
 
         assumptionContainer = new VerticalLayout();
@@ -76,15 +83,36 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         layout.add(buttons, assumptionContainer);
         HorizontalLayout headingLayout = makeHeader();
         add(headingLayout, layout);
+        addDialogCloseActionListener(event -> closeAction());
         // attach and trigger javascript event listener after reopening the dialog
-        addOpenedChangeListener(e -> {
-           if (e.isOpened()) { 
-                   fields.forEach(TypeAssumptionField::refresh); 
-               } 
-           } 
-        );
+        addOpenedChangeListener(this::onOpenedChange);
+    }
+    
+    private void onOpenedChange(OpenedChangeEvent<Dialog> event) {
+        if (event.isOpened()) {
+            fields.forEach(TypeAssumptionField::refresh); 
+        }
     }
 
+    private void closeAction() {
+        for (TypeAssumptionField field : fields) {
+            if (!(field.hasCorrectType(field.getType()) && field.hasCorrectVariable(field.getVariable()))) {
+                invalidInputNotification.open();
+                return;
+            }
+        }
+        invalidInputNotification.close();
+        this.close();
+    }
+    
+    private Notification createInvInputNotification() {
+        Notification notification = new Notification();
+        notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
+        notification.setPosition(Position.TOP_CENTER);
+        notification.setDuration(5000); // set the duration to 5 seconds
+        return notification;
+    }
+    
     private HorizontalLayout makeHeader() {
         HorizontalLayout headingLayout = new HorizontalLayout();
         headingLayout.setId(HEADING_LAYOUT_ID);
@@ -150,5 +178,6 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         addAssumption.setText(getTranslation("root.addAssumption"));
         deleteAll.setText(getTranslation("root.deleteAll"));
         saveAssumptions.setText(getTranslation("root.save"));
+        invalidInputNotification.setText(getTranslation("root.correctAssumptions"));
     }
 }
