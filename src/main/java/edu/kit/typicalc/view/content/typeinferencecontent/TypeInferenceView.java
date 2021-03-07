@@ -69,10 +69,6 @@ public class TypeInferenceView extends VerticalLayout
         controlPanel.setEnabledPreviousStep(false);
 
         Footer footer = new Footer(controlPanel);
-        footer.getStyle().set("position", "sticky");
-        footer.getStyle().set("bottom", "1em");
-        content.getStyle().set("overflow", "auto");
-        content.setWidthFull();
         add(content, footer);
     }
 

@@ -1,6 +1,7 @@
 package edu.kit.typicalc.view.content;
 
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -10,6 +11,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 /**
  * Provides a GUI in form of buttons for the user to navigate through steps.
  */
+@CssImport("./styles/view/control-panel.css")
 public class ControlPanel extends HorizontalLayout implements LocaleChangeObserver {
 
     private static final String ATTRIBUTE_TITLE = "title";
@@ -25,6 +27,7 @@ public class ControlPanel extends HorizontalLayout implements LocaleChangeObserv
     private final Button previousStep;
     private static final String PREVIOUS_STEP_ID = "previous-step";
     private final Button share;
+    private static final String SHARE_ID = "share";
 
     /**
      * Sets up buttons with click-listeners that call the corresponding method in the view.
@@ -42,8 +45,7 @@ public class ControlPanel extends HorizontalLayout implements LocaleChangeObserv
         previousStep = new Button(new Icon(VaadinIcon.ANGLE_LEFT), evt -> view.previousStepButton());
         previousStep.setId(PREVIOUS_STEP_ID);
         share = new Button(new Icon(VaadinIcon.CONNECT), evt -> view.shareButton());
-        share.getStyle().set("margin-left", "auto");
-        lastStep.getStyle().set("margin-right", "auto");
+        share.setId(SHARE_ID);
 
         add(share, firstStep, previousStep, nextStep, lastStep);
     }

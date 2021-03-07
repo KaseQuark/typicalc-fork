@@ -32,6 +32,7 @@
 	justify-content: center;
 	align-items: center;
 	width: 100%;
+	height: 100%;
 }
 
 #slideShow {
@@ -39,9 +40,14 @@
 	width: 100%;
 }
 
-#startpage-footer {
-	position: sticky;
-	bottom: 1em;
-	background-color: white;
+#startPage #content {
 	width: 100%;
+	height: 100%;
+	align-items: center;
+}
+
+footer {
+	width: 100%;
+	padding-bottom: 1em;
+	background-color: white;
 }
