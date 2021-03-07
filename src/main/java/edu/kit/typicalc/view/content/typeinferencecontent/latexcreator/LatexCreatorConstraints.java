@@ -24,6 +24,7 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
 public class LatexCreatorConstraints implements StepVisitor {
 
     private static final String FIRST_PREFIX = "";
+    private static final int BREAK_AFTER = 10;
 
     private final List<String> constraints;
     private final TypeInfererInterface typeInferer;
@@ -35,6 +36,7 @@ public class LatexCreatorConstraints implements StepVisitor {
     private final Optional<Map<VarTerm, TypeAbstraction>> newTypeAssumption;
     private String prevStep;
     private final Function<UnificationError, String> translationProvider;
+    private int constraintsInCurrLine;
 
     /**
      * Initializes the LatexCreatorConstraints with the right values calculates the strings
@@ -66,6 +68,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         this.constraintSetIndex = constraintSetIndexFactory.nextConstraintSetIndex();
         this.typeInferer = typeInferer;
         this.translationProvider = translationProvider;
+        this.constraintsInCurrLine = 0;
         constraints = new ArrayList<>();
         if (FIRST_PREFIX.equals(prefix)) {
             constraints.add(AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT);
@@ -132,12 +135,21 @@ public class LatexCreatorConstraints implements StepVisitor {
     }
 
     private void addConstraint(InferenceStep step) {
-        String currentConstraint = createSingleConstraint(step.getConstraint());
-        prevStep = prevStep.equals("") ? currentConstraint : prevStep + COMMA + currentConstraint;
-        currentConstraint = prefix + AMPERSAND + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
-                + prevStep + LATEX_CURLY_RIGHT;
-        constraints.add(currentConstraint);
+        String currentSingleConstraint = createSingleConstraint(step.getConstraint());
+        if (!prevStep.equals("")) {
+            prevStep += COMMA;
+        }
+        if (constraintsInCurrLine >= BREAK_AFTER) {
+            prevStep += LATEX_NEW_LINE + AMPERSAND;
+            constraintsInCurrLine = 0;
+        }
+        prevStep += currentSingleConstraint;
+
+        String currentConstraints = prefix + AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + constraintSetIndex
+                + EQUALS + LATEX_CURLY_LEFT + AMPERSAND + prevStep + LATEX_CURLY_RIGHT + SPLIT_END;
+        constraints.add(currentConstraints);
         numberGenerator.incrementPush();
+        constraintsInCurrLine++;
     }
 
     @Override
@@ -195,8 +207,8 @@ public class LatexCreatorConstraints implements StepVisitor {
         // adds one step in which all let constraints are added to 'outer' constraint set
         String letConstraints = createLetConstraints(letD.getTypeInferer().getLetConstraints());
         prevStep = prevStep.equals("") ? letConstraints : prevStep + COMMA + letConstraints;
-        letConstraints = prefix + AMPERSAND + CONSTRAINT_SET + constraintSetIndex + EQUALS + LATEX_CURLY_LEFT
-                + prevStep + LATEX_CURLY_RIGHT;
+        letConstraints = prefix + AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + constraintSetIndex + EQUALS
+                + LATEX_CURLY_LEFT + AMPERSAND + prevStep + LATEX_CURLY_RIGHT + SPLIT_END;
         constraints.add(letConstraints);
         numberGenerator.push();
 
@@ -205,7 +217,15 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     private String createLetConstraints(List<Constraint> letConstraints) {
         StringBuilder result = new StringBuilder();
-        letConstraints.forEach(constraint -> result.append(createSingleConstraint(constraint)).append(COMMA));
+        letConstraints.forEach(constraint -> {
+            if (constraintsInCurrLine >= BREAK_AFTER) {
+                result.append(LATEX_NEW_LINE)
+                        .append(AMPERSAND);
+                constraintsInCurrLine = 0;
+            }
+            result.append(createSingleConstraint(constraint)).append(COMMA);
+            constraintsInCurrLine++;
+        });
         if (!letConstraints.isEmpty()) {
             result.deleteCharAt(result.length() - 1);
         }

@@ -26,8 +26,9 @@ class LatexCreatorConstraintsTest {
         typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
         List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
-        String constraintSet = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
-                + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT;
+        String constraintSet = AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + AMPERSAND
+                + TREE_VARIABLE + "_{1}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT
+                + SPLIT_END;
 
 
         String mgu = "" + EQUALS + BRACKET_LEFT + AMPERSAND + TREE_VARIABLE + "_{1}"
@@ -55,12 +56,14 @@ class LatexCreatorConstraintsTest {
         typeInferer = model.getTypeInferer("λx.y", new HashMap<>()).unwrap();
         List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString).getEverything();
 
-        String constraintSet1 = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
-                + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}" + LATEX_CURLY_RIGHT;
+        String constraintSet1 = AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + AMPERSAND
+                + TREE_VARIABLE + "_{1}" + EQUALS + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE
+                + TREE_VARIABLE + "_{3}" + LATEX_CURLY_RIGHT + SPLIT_END;
 
-        String constraintSet2 = AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + TREE_VARIABLE + "_{1}" + EQUALS
-                + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE + TREE_VARIABLE + "_{3}" + COMMA + TREE_VARIABLE
-                + "_{3}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}" + LATEX_CURLY_RIGHT;
+        String constraintSet2 = AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + AMPERSAND
+                + TREE_VARIABLE + "_{1}" + EQUALS + TREE_VARIABLE + "_{2}" + SPACE + RIGHT_ARROW + SPACE
+                + TREE_VARIABLE + "_{3}" + COMMA + TREE_VARIABLE + "_{3}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE
+                + "_{1}" + LATEX_CURLY_RIGHT + SPLIT_END;
 
         String unify1 = MGU_START + EQUALS + UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT + AMPERSAND
                 + TREE_VARIABLE + "_{3}" + EQUALS + GENERATED_ASSUMPTION_VARIABLE + "_{1}";
