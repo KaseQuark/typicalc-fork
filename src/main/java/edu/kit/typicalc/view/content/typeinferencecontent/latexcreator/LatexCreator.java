@@ -101,8 +101,8 @@ public class LatexCreator implements StepVisitor {
         String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions());
         String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm()).getLatex();
         String type = generateTypeAbstraction(var.getTypeAbsInPremise());
-        return DOLLAR_SIGN + PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
-                + PAREN_RIGHT + EQUALS + type + DOLLAR_SIGN;
+        return PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
+                + PAREN_RIGHT + EQUALS + type;
     }
 
 
@@ -137,7 +137,8 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(VarStepDefault varD) {
         tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
-        tree.insert(0, AXC + CURLY_LEFT + generateVarStepPremise(varD) + CURLY_RIGHT + NEW_LINE);
+        tree.insert(0, AXC + CURLY_LEFT + DOLLAR_SIGN + generateVarStepPremise(varD)
+                + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE);
     }
 
     @Override
@@ -145,11 +146,11 @@ public class LatexCreator implements StepVisitor {
         tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
-        String premiseRight = DOLLAR_SIGN + typeAbstraction + INSTANTIATE_SIGN + instantiatedType + DOLLAR_SIGN;
+        String premiseRight = typeAbstraction + INSTANTIATE_SIGN + instantiatedType;
         String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + ALIGN_BEGIN
-                + generateVarStepPremise(varL).replace(DOLLAR_SIGN, "")
-                + SPACE + LATEX_NEW_LINE + SPACE // todo less replacement fixups
-                + premiseRight.replace(DOLLAR_SIGN, "")
+                + generateVarStepPremise(varL)
+                + SPACE + LATEX_NEW_LINE + SPACE
+                + premiseRight
                 + ALIGN_END + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, premiseLeft);
     }
