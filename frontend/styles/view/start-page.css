@@ -1,5 +1,5 @@
 #startPage-Heading {
-	margin-top: 50px;
+	margin-top: 20px;
 	margin-bottom: 10px;
 	font-size: 50px;
 }
@@ -24,11 +24,6 @@
 	max-width: 100%;
 	margin-top: 30px;
 	margin-bottom: 0;
-}
-
-#controlPanel {
-	margin-top: auto;
-	margin-bottom: 15px;
 }
 
 #startPage {

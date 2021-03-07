@@ -6,7 +6,7 @@ import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.orderedlayout.Scroller;
+import com.vaadin.flow.component.html.Footer;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -33,7 +33,6 @@ public class TypeInferenceView extends VerticalLayout
      * Route of this view.
      */
     public static final String ROUTE = "infer";
-    private static final String SCROLLER_ID = "scroller";
     private static final String CONTENT_ID = "content";
     private static final String ID = "type-inference-view";
 
@@ -64,14 +63,17 @@ public class TypeInferenceView extends VerticalLayout
         content = new Div();
         content.setId(CONTENT_ID);
         controlPanel = new ControlPanel(this);
-        Scroller scroller = new Scroller(content);
-        scroller.setId(SCROLLER_ID);
-        scroller.setScrollDirection(Scroller.ScrollDirection.BOTH);
-        add(scroller, controlPanel);
         treeNumbers = lc.getTreeNumbers();
         setContent();
         controlPanel.setEnabledFirstStep(false);
         controlPanel.setEnabledPreviousStep(false);
+
+        Footer footer = new Footer(controlPanel);
+        footer.getStyle().set("position", "sticky");
+        footer.getStyle().set("bottom", "1em");
+        content.getStyle().set("overflow", "auto");
+        content.setWidthFull();
+        add(content, footer);
     }
 
     private void setContent() {

@@ -42,6 +42,8 @@ public class ControlPanel extends HorizontalLayout implements LocaleChangeObserv
         previousStep = new Button(new Icon(VaadinIcon.ANGLE_LEFT), evt -> view.previousStepButton());
         previousStep.setId(PREVIOUS_STEP_ID);
         share = new Button(new Icon(VaadinIcon.CONNECT), evt -> view.shareButton());
+        share.getStyle().set("margin-left", "auto");
+        lastStep.getStyle().set("margin-right", "auto");
 
         add(share, firstStep, previousStep, nextStep, lastStep);
     }
