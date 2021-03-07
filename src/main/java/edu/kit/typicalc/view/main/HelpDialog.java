@@ -10,7 +10,6 @@ import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.select.Select;
@@ -73,7 +72,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         typicalcInfo = new Paragraph();
         typicalcInfo.setId(TYPICALC_INFO_ID);
         contentLayout.add(typicalcInfo);
-        contentLayout.setAlignItems(FlexComponent.Alignment.CENTER);
 
         add(headingLayout, contentLayout);
     }
