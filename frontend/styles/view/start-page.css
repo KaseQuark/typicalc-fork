@@ -22,6 +22,7 @@
 #slideProgress {
 	width: 55em;
 	max-width: 100%;
+	min-height: 1px;
 	margin-top: 30px;
 	margin-bottom: 0;
 }
@@ -29,20 +30,27 @@
 #startPage {
 	padding: 0;
 	display: flex;
-	justify-content: center;
+	justify-content: space-between;
 	align-items: center;
 	width: 100%;
 	height: 100%;
 }
 
 #slideShow {
-	height: 500px;
+	height: var(--paper-slide-height);
 	width: 100%;
+}
+
+#startPage::before {
+	position: absolute;
 }
 
 #startPage #content {
 	width: 100%;
-	height: 100%;
+	overflow-y: auto;
+	margin-top: 0;
+	padding: 1em 0 0;
+	justify-content: start;
 	align-items: center;
 }
 

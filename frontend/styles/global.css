@@ -1,3 +1,7 @@
+body {
+	--paper-slide-height: 500px;
+}
+
 vaadin-button {
 	min-width: 0;
 }
