@@ -31,7 +31,7 @@ public class LambdaTermGenerator extends Generator<String> {
     }
 
     private LambdaTerm generateReal(SourceOfRandomness random) {
-        if (random.nextInt(1, 7) < 3) {
+        if (random.nextInt(1, 10) < 3) {
             LambdaTerm one = generateReal(random);
             LambdaTerm two = generateReal(random);
             if (random.nextInt(1, 10) < 8) {

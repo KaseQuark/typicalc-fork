@@ -27,6 +27,7 @@ public class Result<T, E> {
      *
      * @param other the result
      */
+    @SuppressWarnings("unchecked")
     public Result(Result<?, ?> other) {
         this.value = (T) other.value;
         this.error = (E) other.error;
@@ -42,7 +43,7 @@ public class Result<T, E> {
      */
     public Result(T value, E error) {
         if ((value != null) == (error != null)) {
-            throw new IllegalArgumentException("value xor error must be null in constructor!");
+            throw new IllegalArgumentException("value or error must be null in constructor!");
         }
         this.value = value;
         this.error = error;

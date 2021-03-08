@@ -34,7 +34,7 @@ public class LambdaParser {
 
     private static final Set<TokenType> ATOM_START_TOKENS
             = EnumSet.of(TokenType.VARIABLE, TokenType.NUMBER, TokenType.TRUE,
-            TokenType.FALSE, TokenType.LEFT_PARENTHESIS);
+            TokenType.FALSE, TokenType.LEFT_PARENTHESIS, TokenType.LAMBDA, TokenType.LET);
 
     /**
      * Constructs a parser with the specified String
@@ -85,10 +85,10 @@ public class LambdaParser {
             return t;
         }
         Optional<ParseError> next = expect(TokenType.EOF);
-        if (next.isPresent()) {
-            return new Result<>(null, next.get());
+        if (next.isEmpty()) {
+            return t;
         }
-        return t;
+        return new Result<>(null, next.get());
     }
 
     /**
@@ -103,26 +103,10 @@ public class LambdaParser {
                 return new Result<>(null, error.get());
             }
         }
-        switch (token.getType()) {
-            case LAMBDA:
-                Result<AbsTerm, ParseError> abs = parseAbstraction();
-                if (abs.isError()) {
-                    return new Result<>(abs);
-                }
-                return new Result<>(abs.unwrap());
-            case LET:
-                Result<LetTerm, ParseError> let = parseLet();
-                if (let.isError()) {
-                    return new Result<>(let);
-                }
-                return new Result<>(let.unwrap());
-            case VARIABLE:
-                return new Result<>(parseApplication());
-            case EOF:
-                return new Result<>(null, ParseError.TOO_FEW_TOKENS);
-            default:
-                return parseApplication();
+        if (token.getType() == TokenType.EOF) {
+            return new Result<>(null, ParseError.TOO_FEW_TOKENS);
         }
+        return parseApplication();
     }
 
     private Result<AbsTerm, ParseError> parseAbstraction() {
@@ -148,20 +132,12 @@ public class LambdaParser {
      * @return the term, or an error
      */
     private Result<LambdaTerm, ParseError> parseApplication() {
-        Result<LambdaTerm, ParseError> left = parseAtom();
+        Result<LambdaTerm, ParseError> left = parsePart();
         if (left.isError()) {
             return left;
         }
-        while (ATOM_START_TOKENS.contains(token.getType())
-                || token.getType() == TokenType.LAMBDA || token.getType() == TokenType.LET) {
-            Result<LambdaTerm, ParseError> atom;
-            if (token.getType() == TokenType.LAMBDA) {
-                atom = new Result<>(parseAbstraction());
-            } else if (token.getType() == TokenType.LET) {
-                atom = new Result<>(parseLet());
-            } else {
-                atom = parseAtom();
-            }
+        while (ATOM_START_TOKENS.contains(token.getType())) {
+            Result<LambdaTerm, ParseError> atom = parsePart();
             if (atom.isError()) {
                 return atom;
             }
@@ -199,15 +175,28 @@ public class LambdaParser {
     }
 
     /**
-     * Parses an atom (variable or number) or a parenthesised expression.
+     * Parses a part of an expression (variable, constants, abstraction, let).
      *
      * @return the term
      */
-    private Result<LambdaTerm, ParseError> parseAtom() {
+    private Result<LambdaTerm, ParseError> parsePart() {
         switch (token.getType()) {
             case VARIABLE:
                 Result<VarTerm, ParseError> var = parseVar();
                 return new Result<>(var.unwrap()); // variable token can always be parsed
+            case LAMBDA:
+                return new Result<>(parseAbstraction());
+            case LET:
+                return new Result<>(parseLet());
+            case TRUE:
+            case FALSE:
+                String boolText = token.getText();
+                boolean b = Boolean.parseBoolean(boolText);
+                Optional<ParseError> error = nextToken();
+                if (error.isEmpty()) {
+                    return new Result<>(new BooleanTerm(b));
+                }
+                return new Result<>(null, error.get());
             case NUMBER:
                 String number = token.getText();
                 int n;
@@ -216,20 +205,11 @@ public class LambdaParser {
                 } catch (NumberFormatException e) {
                     return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(token));
                 }
-                Optional<ParseError> error = nextToken();
-                if (error.isPresent()) {
-                    return new Result<>(null, error.get());
-                }
-                return new Result<>(new IntegerTerm(n));
-            case TRUE:
-            case FALSE:
-                String boolText = token.getText();
-                boolean b = Boolean.parseBoolean(boolText);
                 error = nextToken();
-                if (error.isPresent()) {
-                    return new Result<>(null, error.get());
+                if (error.isEmpty()) {
+                    return new Result<>(new IntegerTerm(n));
                 }
-                return new Result<>(new BooleanTerm(b));
+                return new Result<>(null, error.get());
             default:
                 error = expect(TokenType.LEFT_PARENTHESIS);
                 if (error.isPresent()) {
@@ -237,19 +217,19 @@ public class LambdaParser {
                 }
                 Result<LambdaTerm, ParseError> term = parseTerm(false);
                 error = expect(TokenType.RIGHT_PARENTHESIS);
-                if (error.isPresent()) {
-                    return new Result<>(null, error.get());
+                if (error.isEmpty()) {
+                    return term;
                 }
-                return term;
+                return new Result<>(null, error.get());
         }
     }
 
     private Result<VarTerm, ParseError> parseVar() {
         String s = token.getText();
         Optional<ParseError> next = expect(TokenType.VARIABLE);
-        if (next.isPresent()) {
-            return new Result<>(null, next.get());
+        if (next.isEmpty()) {
+            return new Result<>(new VarTerm(s));
         }
-        return new Result<>(new VarTerm(s));
+        return new Result<>(null, next.get());
     }
 }

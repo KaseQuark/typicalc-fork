@@ -24,7 +24,7 @@ public class Token {
         RIGHT_PARENTHESIS, // )
         DOT, // .
         EQUALS, // =
-        ARROW, // -> TODO: document
+        ARROW, // ->
         EOF // pseudo token if end of file is reached
     }
 

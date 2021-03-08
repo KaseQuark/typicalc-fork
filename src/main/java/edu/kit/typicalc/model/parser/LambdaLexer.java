@@ -118,52 +118,56 @@ public class LambdaLexer {
                 advance();
                 return new Result<>(t);
             default:
-                // only allow ascii characters in variable names
-                if (Character.isLetter(c) && (int) c < 128) {
-                    int startPos = pos;
-                    // identifier
-                    StringBuilder sb = new StringBuilder();
-                    do {
-                        sb.append(term.charAt(pos));
-                        advance();
-                    } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos))
-                            && (int) term.charAt(pos) < 128);
-                    if (pos < term.length() && (int) term.charAt(pos) >= 128) {
-                        return new Result<>(null, ParseError.UNEXPECTED_CHARACTER
-                                .withCharacter(term.charAt(pos), pos));
-                    }
-                    String s = sb.toString();
-                    TokenType type;
-                    switch (s) {
-                        case "let":
-                            type = TokenType.LET;
-                            break;
-                        case "in":
-                            type = TokenType.IN;
-                            break;
-                        case "true":
-                            type = TokenType.TRUE;
-                            break;
-                        case "false":
-                            type = TokenType.FALSE;
-                            break;
-                        default:
-                            type = TokenType.VARIABLE;
-                            break;
-                    }
-                    return new Result<>(new Token(type, sb.toString(), startPos));
-                } else if (Character.isDigit(c)) {
-                    int startPos = pos;
-                    // number literal
-                    StringBuilder sb = new StringBuilder();
-                    do {
-                        sb.append(term.charAt(pos));
-                        advance();
-                    } while (pos < term.length() && Character.isDigit(term.charAt(pos)));
-                    return new Result<>(new Token(TokenType.NUMBER, sb.toString(), startPos));
-                } else {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(c, pos));
-                }
+                return parseAtomToken(c);
+        }
+    }
+
+    private Result<Token, ParseError> parseAtomToken(char c) {
+        // only allow ascii characters in variable names
+        if (Character.isLetter(c) && (int) c < 128) {
+            int startPos = pos;
+            // identifier or keyword
+            StringBuilder sb = new StringBuilder();
+            do {
+                sb.append(term.charAt(pos));
+                advance();
+            } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos))
+                    && (int) term.charAt(pos) < 128);
+            if (pos < term.length() && (int) term.charAt(pos) >= 128) {
+                return new Result<>(null, ParseError.UNEXPECTED_CHARACTER
+                        .withCharacter(term.charAt(pos), pos));
+            }
+            String s = sb.toString();
+            TokenType type;
+            switch (s) {
+                case "let":
+                    type = TokenType.LET;
+                    break;
+                case "in":
+                    type = TokenType.IN;
+                    break;
+                case "true":
+                    type = TokenType.TRUE;
+                    break;
+                case "false":
+                    type = TokenType.FALSE;
+                    break;
+                default:
+                    type = TokenType.VARIABLE;
+                    break;
+            }
+            return new Result<>(new Token(type, sb.toString(), startPos));
+        } else if (Character.isDigit(c)) {
+            int startPos = pos;
+            // number literal
+            StringBuilder sb = new StringBuilder();
+            do {
+                sb.append(term.charAt(pos));
+                advance();
+            } while (pos < term.length() && Character.isDigit(term.charAt(pos)));
+            return new Result<>(new Token(TokenType.NUMBER, sb.toString(), startPos));
+        } else {
+            return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(c, pos));
         }
     }
 }
