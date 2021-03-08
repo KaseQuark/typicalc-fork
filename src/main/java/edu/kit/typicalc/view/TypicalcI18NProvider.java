@@ -37,21 +37,17 @@ public class TypicalcI18NProvider implements I18NProvider {
     @Override
     public String getTranslation(String key, Locale locale, Object... params) {
         ResourceBundle bundle = ResourceBundle.getBundle(LANGUAGE_BUNDLE_PREFIX, locale);
-        String translation;
-
 
         if (bundle.containsKey(key)) {
-            translation = bundle.getString(key);
+            return bundle.getString(key);
         } else {
             try {
-                translation = this.generalBundle.getString(key);
+                return this.generalBundle.getString(key);
             } catch (MissingResourceException exception) {
-                // this should never be the case
+                // this is only the case for untranslated texts
                 return "?[" + key + "]?";
             }
         }
-
-        return translation;
     }
 
 }

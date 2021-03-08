@@ -13,15 +13,18 @@ import org.vaadin.artur.helpers.LaunchUtil;
 import java.util.regex.Pattern;
 
 /**
- * The entry point of the Spring Boot application.
- * <p>
- * Use the * and some desktop browsers.
+ * Entry point of the Spring Boot application.
  */
 @SpringBootApplication
 public class Application extends SpringBootServletInitializer
         implements AppShellConfigurator, VaadinServiceInitListener {
     private static final Pattern ROUTE_PATTERN = Pattern.compile("/" + TypeInferenceView.ROUTE + "/[^/]+");
 
+    /**
+     * Main function executed in development mode.
+     *
+     * @param args empty array
+     */
     public static void main(String[] args) {
         LaunchUtil.launchBrowserInDevelopmentMode(SpringApplication.run(Application.class, args));
     }

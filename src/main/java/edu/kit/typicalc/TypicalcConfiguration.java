@@ -8,10 +8,16 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 /**
- * This class configures some server properties related to HTTP.
+ * This class configures server properties related to HTTP.
  */
 @Configuration
 public class TypicalcConfiguration implements WebMvcConfigurer {
+
+    /**
+     * Sets SameSite=Strict on all cookies.
+     *
+     * @return a customizer object that does the cookie modification
+     */
     @Bean
     public TomcatContextCustomizer sameSiteCookiesConfig() {
         return context -> {
