@@ -67,9 +67,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         latexArea.setClassName(FIELD_CLASS);
         UI.getCurrent().getPage().executeJs("window.autoSelect($0)", FIELD_CLASS);
 
-        urlField.setReadOnly(true);
-        packageArea.setReadOnly(true);
-        latexArea.setReadOnly(true);
+        setReadOnly();
 
         layout.add(urlField, packageArea, latexArea);
 
@@ -83,5 +81,11 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         urlField.setLabel(getTranslation("share.url.label"));
         packageArea.setLabel(getTranslation("share.packages.label"));
         latexArea.setLabel(getTranslation("share.latex.label"));
+    }
+
+    private void setReadOnly() {
+        urlField.setReadOnly(true);
+        packageArea.setReadOnly(true);
+        latexArea.setReadOnly(true);
     }
 }
