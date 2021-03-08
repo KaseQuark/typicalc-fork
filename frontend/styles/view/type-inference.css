@@ -17,6 +17,7 @@
 	padding: 10px;
 	box-sizing: border-box;
 	margin-top: 0;
+	overflow-y: scroll;
 }
 
 tc-proof-tree {
