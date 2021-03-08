@@ -29,7 +29,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     /*
      * IDs for the imported .css-file
      */
-    private static final String INPUT_FIELD_ID = "inputField";
+    public static final String INPUT_FIELD_ID = "inputField";
     private static final String INPUT_BAR_ID = "inputBar";
     private static final String INFER_BUTTON_ID = "inferButton";
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";

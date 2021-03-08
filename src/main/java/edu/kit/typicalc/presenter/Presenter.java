@@ -2,12 +2,15 @@ package edu.kit.typicalc.presenter;
 
 import java.util.Map;
 
+import com.vaadin.flow.component.UI;
 import edu.kit.typicalc.model.Model;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.util.Result;
 import edu.kit.typicalc.view.main.MainView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
+
+import static edu.kit.typicalc.view.main.InputBar.INPUT_FIELD_ID;
 
 /**
  * Manages data exchange between the view and the model.
@@ -33,6 +36,9 @@ public class Presenter implements MainViewListener {
         Result<TypeInfererInterface, ParseError> result = model.getTypeInferer(lambdaTerm, typeAssumptions);
         if (result.isError()) {
             view.displayError(result.unwrapError());
+            // focus the input bar again
+            UI.getCurrent().getPage().executeJs(
+                    "setTimeout(() => document.getElementById('" + INPUT_FIELD_ID + "').focus(), 0)");
         } else {
             view.setTypeInferenceView(result.unwrap());
         }
