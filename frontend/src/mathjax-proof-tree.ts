@@ -1,7 +1,15 @@
 import {MathjaxAdapter} from "./mathjax-adapter";
 
 declare let window: {
-    svgPanZoomFun: (svg: SVGElement, options: { fit: boolean }) => void;
+    svgPanZoomFun: (svg: SVGElement, options: {
+        fit: boolean;
+        controlIconsEnabled: boolean;
+        customEventsHandler: {
+            init: (options: any) => void;
+            haltEventListeners: string[];
+            destroy: () => void
+        };
+    }) => void;
 }
 // these attributes and functions are supported by major browsers, but TS does not know about them
 declare global {
@@ -221,7 +229,70 @@ class MathjaxProofTree extends MathjaxAdapter {
 
             if (nodeIterator.length >= 3) {
                 // should not be used on empty SVGs
-                window.svgPanZoomFun(svg, { fit: false });
+                window.svgPanZoomFun(svg, {
+                    fit: false,
+                    controlIconsEnabled: true,
+                    customEventsHandler: {
+                        // Halt all touch events
+                        haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel'],
+
+                        // Init custom events handler
+                        init: function(options) {
+                            const instance = options.instance;
+                            // Init Hammer
+                            // @ts-ignore
+                            this.hammer = Hammer(options.svgElement);
+
+                            // @ts-ignore
+                            this.hammer.get('pinch').set({enable: true})
+
+                            // Handle double tap
+                            // @ts-ignore
+                            this.hammer.on('doubletap', function(ev) {
+                                options.instance.zoomIn()
+                            });
+
+                            let pannedX = 0;
+                            let pannedY = 0;
+                            // Handle pan
+                            // @ts-ignore
+                            this.hammer.on('panstart panmove', function(ev){
+                                // On pan start reset panned variables
+                                if (ev.type === 'panstart') {
+                                    pannedX = 0
+                                    pannedY = 0
+                                }
+
+                                // Pan only the difference
+                                instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
+                                pannedX = ev.deltaX
+                                pannedY = ev.deltaY
+                            })
+
+                            let initialScale = 1;
+                            // Handle pinch
+                            // @ts-ignore
+                            this.hammer.on('pinchstart pinchmove', function(ev){
+                                // On pinch start remember initial zoom
+                                if (ev.type === 'pinchstart') {
+                                    initialScale = instance.getZoom()
+                                    instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                                }
+
+                                instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                            })
+
+                            // Prevent moving the page on some devices when panning over SVG
+                            options.svgElement.addEventListener('touchmove', function(e: TouchEvent){ e.preventDefault(); });
+                        }
+
+                        // Destroy custom events handler
+                        , destroy: function(){
+                            // @ts-ignore
+                            this.hammer.destroy()
+                        }
+                    }
+                });
             }
             this.steps = steps;
             this.showStep(0);

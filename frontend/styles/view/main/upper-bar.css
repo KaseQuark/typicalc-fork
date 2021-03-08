@@ -3,6 +3,7 @@
 	min-width: 100%;
 	align-items: center;
 	overflow-x: auto;
+	overflow-y: hidden;
 }
 
 #header img {
@@ -31,5 +32,3 @@
 	flex-grow: 1;
 	justify-content: end;
 }
-
-
