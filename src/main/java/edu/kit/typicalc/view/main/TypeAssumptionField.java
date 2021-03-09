@@ -45,7 +45,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
                     '\u2085', '\u2086', '\u2087', '\u2088', '\u2089');
     private static final char TAU = '\u03C4';
 
-    private final TypeAssumptionParser parser = new TypeAssumptionParser();
+    private final transient TypeAssumptionParser parser = new TypeAssumptionParser();
     private final TextField variableInputField;
     private final TextField typeInputField;
 

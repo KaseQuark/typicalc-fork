@@ -71,7 +71,7 @@ public class Result<T, E> {
      * @return the value
      * @throws IllegalStateException if this is an error
      */
-    public T unwrap() throws IllegalStateException {
+    public T unwrap()  {
         if (value == null) {
             throw new IllegalStateException("tried to unwrap a result, but error = " + error);
         }

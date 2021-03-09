@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Abstract representation of a constant lambda term that has a predetermined type and a value of that type.
  */
-public abstract class ConstTerm extends LambdaTerm {
+public abstract class ConstTerm implements LambdaTerm {
 
     /**
      * Returns the named type of the constant

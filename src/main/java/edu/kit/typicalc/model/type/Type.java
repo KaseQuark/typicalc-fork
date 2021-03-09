@@ -9,21 +9,21 @@ import java.util.Set;
 /**
  * Models the type of a lambda term.
  */
-public abstract class Type {
+public interface Type {
     /**
      * Checks whether some type occurs in this type.
      *
      * @param x the type to look for
      * @return whether the specified type occurs in this type
      */
-    public abstract boolean contains(Type x);
+    boolean contains(Type x);
 
     /**
      * Returns a set of all free type variables occurring in the type.
      *
      * @return all free type variables
      */
-    public abstract Set<TypeVariable> getFreeTypeVariables();
+    Set<TypeVariable> getFreeTypeVariables();
 
     /**
      * Substitutes a type Variable for a different type.
@@ -32,7 +32,7 @@ public abstract class Type {
      * @param b the type to insert
      * @return a Type that is created by replacing a with b
      */
-    public abstract Type substitute(TypeVariable a, Type b);
+    Type substitute(TypeVariable a, Type b);
 
     /**
      * Applies the given substitution to the type.
@@ -40,7 +40,7 @@ public abstract class Type {
      * @param substitution the substitution to apply to the type
      * @return the substituted type
      */
-    public Type substitute(Substitution substitution) {
+    default Type substitute(Substitution substitution) {
         return substitute(substitution.getVariable(), substitution.getType());
     }
 
@@ -49,7 +49,7 @@ public abstract class Type {
      *
      * @param typeVisitor the visitor that wants to visit this
      */
-    public abstract void accept(TypeVisitor typeVisitor);
+    void accept(TypeVisitor typeVisitor);
 
     /**
      * Computes the necessary constraints (and substitution) to unify this type with
@@ -58,7 +58,7 @@ public abstract class Type {
      * @param type the other type
      * @return unification steps necessary, or an error if that is impossible
      */
-    public abstract Result<UnificationActions, UnificationError> constrainEqualTo(Type type);
+    Result<UnificationActions, UnificationError> constrainEqualTo(Type type);
 
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
@@ -67,7 +67,7 @@ public abstract class Type {
      * @param type the function type
      * @return unification steps necessary, or an error if that is impossible
      */
-    public abstract Result<UnificationActions, UnificationError> constrainEqualToFunction(FunctionType type);
+    Result<UnificationActions, UnificationError> constrainEqualToFunction(FunctionType type);
 
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
@@ -76,7 +76,7 @@ public abstract class Type {
      * @param type the named type
      * @return unification steps necessary, or an error if that is impossible
      */
-    public abstract Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type);
+    Result<UnificationActions, UnificationError> constrainEqualToNamedType(NamedType type);
 
     /**
      * Computes the necessary constraints (and substitution) to unify this type with a
@@ -85,5 +85,5 @@ public abstract class Type {
      * @param type the type variable
      * @return the unification steps necessary, or an error if that is impossible
      */
-    public abstract Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type);
+    Result<UnificationActions, UnificationError> constrainEqualToVariable(TypeVariable type);
 }

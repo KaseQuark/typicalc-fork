@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Representation of a variable term with its name.
  */
-public class VarTerm extends LambdaTerm {
+public class VarTerm implements LambdaTerm {
     private final String name;
 
     /**

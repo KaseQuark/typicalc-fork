@@ -12,7 +12,7 @@ import java.util.Set;
 /**
  * Representation of an abstraction term with its two sub-lambda terms.
  */
-public class AbsTerm extends LambdaTerm {
+public class AbsTerm implements LambdaTerm {
     private final VarTerm var;
     private final LambdaTerm body;
 

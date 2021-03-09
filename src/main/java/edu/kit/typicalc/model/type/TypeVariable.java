@@ -8,7 +8,7 @@ import java.util.*;
 /**
  * Models a type variable
  */
-public class TypeVariable extends Type implements Comparable<TypeVariable> {
+public class TypeVariable implements Type, Comparable<TypeVariable> {
 
     private final TypeVariableKind kind;
     private final int index;

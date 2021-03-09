@@ -9,7 +9,7 @@ import java.util.*;
 /**
  * Representation of an application term consisting of a function and the parameter passed to it.
  */
-public class AppTerm extends LambdaTerm {
+public class AppTerm implements LambdaTerm {
     private final LambdaTerm left;
     private final LambdaTerm right;
 

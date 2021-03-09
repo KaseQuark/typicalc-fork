@@ -13,7 +13,7 @@ import java.util.Set;
  * Representation of a let term with its variable, the lambda term assigned
  * to this variable and the lambda term the variable is used in.
  */
-public class LetTerm extends LambdaTerm {
+public class LetTerm implements LambdaTerm {
     private final VarTerm variable;
     private final LambdaTerm definition;
     private final LambdaTerm body;

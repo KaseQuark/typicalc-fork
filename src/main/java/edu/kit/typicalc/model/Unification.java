@@ -20,7 +20,7 @@ public class Unification {
      *
      * @param constraints constraints to execute the unification for
      */
-    protected Unification(Deque<Constraint> constraints) { // TODO: document List->Deque
+    protected Unification(Deque<Constraint> constraints) {
         steps = new ArrayList<>();
         List<Substitution> substitutions = new ArrayList<>();
 
