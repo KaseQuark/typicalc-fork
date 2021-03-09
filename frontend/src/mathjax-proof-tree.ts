@@ -113,16 +113,18 @@ class MathjaxProofTree extends MathjaxAdapter {
                     steps.push([a, above]);
                 }
             }
+            const svg = root.querySelector<SVGElement>("svg")!;
+            // limit start zoom
+            svg.viewBox.baseVal.width = Math.min(100000, svg.viewBox.baseVal.width);
+            svg.viewBox.baseVal.width = Math.max(20000, svg.viewBox.baseVal.width);
+
             // MathJax layout of bussproofs is sometimes wrong:
             // https://github.com/mathjax/MathJax/issues/2270
             // https://github.com/mathjax/MathJax/issues/2626
-            // we fix it in two phases:
+            // we fix it in two phases (executed at the same time):
             // 1. fix overlapping by iterating over "rows" in the SVG created by MathJax
             // in each row, the elements are arranged to not overlap
             // 2. place inference conclusions under the center of their line
-            const svg = root.querySelector<SVGElement>("svg")!;
-            svg.viewBox.baseVal.width = Math.min(100000, svg.viewBox.baseVal.width);
-
             const nodeIterator = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']," + inferenceRuleSelector)];
             console.log(`working with ${nodeIterator.length} nodes`);
             // start layout fixes in the innermost part of the SVG
@@ -293,6 +295,11 @@ class MathjaxProofTree extends MathjaxAdapter {
                         }
                     }
                 });
+                // @ts-ignore
+                let matrix = svg.getElementById("svg-pan-zoom-controls").transform.baseVal[0].matrix;
+                // move control to upper left corner
+                matrix.e = 0;
+                matrix.f = 0;
             }
             this.steps = steps;
             this.showStep(0);
