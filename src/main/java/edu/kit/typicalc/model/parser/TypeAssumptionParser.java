@@ -1,14 +1,13 @@
 package edu.kit.typicalc.model.parser;
 
 import edu.kit.typicalc.model.parser.Token.TokenType;
-import edu.kit.typicalc.model.term.VarTerm;
+import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +18,9 @@ public class TypeAssumptionParser {
 
     public static final Pattern TYPE_NAME_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
     private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
+
+    private static final Set<TokenType> END_TOKENS
+            = EnumSet.of(TokenType.ARROW, TokenType.RIGHT_PARENTHESIS, TokenType.EOF);
 
     /**
      * Parse the given type assumptions.
@@ -53,73 +55,67 @@ public class TypeAssumptionParser {
     }
 
     private Result<Pair<Type, Integer>, ParseError> parseType(LambdaLexer lexer, int parenCount) {
-        Result<Token, ParseError> token = lexer.nextToken();
-        if (token.isError()) {
-            return new Result<>(token);
-        }
-        Token t = token.unwrap();
-        Type type;
+        Type type = null;
         int removedParens = 0;
-        switch (t.getType()) {
-            case LEFT_PARENTHESIS:
-                Result<Pair<Type, Integer>, ParseError> type2 = parseType(lexer, 1);
-                if (type2.isError()) {
-                    return type2;
-                }
-                type = type2.unwrap().getLeft();
-                removedParens += type2.unwrap().getRight() - 1;
-                if (parenCount - removedParens < 0) {
-                    return new Result<>(new ImmutablePair<>(type, removedParens));
-                }
-                break;
-            case VARIABLE:
-                Matcher typeVariableMatcher = TYPE_VARIABLE_PATTERN.matcher(t.getText());
-                if (typeVariableMatcher.matches()) {
-                    int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(1));
-                    type = new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
-                } else {
-                    type = new NamedType(t.getText());
-                }
-                break;
-            default:
-                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
-        }
         while (true) {
-            token = lexer.nextToken();
+            Result<Token, ParseError> token = lexer.nextToken();
             if (token.isError()) {
                 return new Result<>(token);
             }
-            t = token.unwrap();
-            if (t.getType() == TokenType.RIGHT_PARENTHESIS) {
-                removedParens += 1;
-                if (parenCount - removedParens < 0) {
+            Token t = token.unwrap();
+            Result<Type, ParseError> typeResult = null;
+            switch (t.getType()) {
+                case LEFT_PARENTHESIS:
+                    Result<Pair<Type, Integer>, ParseError> type2 = parseType(lexer, 1);
+                    typeResult = type2.map(Pair::getLeft);
+                    removedParens += type2.map(Pair::getRight).unwrapOr(1) - 1;
+                    break;
+                case VARIABLE:
+                    type = parseLiteral(t.getText());
+                    break;
+                case RIGHT_PARENTHESIS:
+                    removedParens += 1;
+                    break;
+                case ARROW:
+                    if (type == null) {
+                        return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    }
+                    Result<Pair<Type, Integer>, ParseError> nextType = parseType(lexer, parenCount);
+                    final Type left = type;
+                    typeResult = nextType.map(Pair::getLeft).map(right -> new FunctionType(left, right));
+                    removedParens += nextType.map(Pair::getRight).unwrapOr(0);
+                    break;
+                case EOF:
+                    break;
+                default:
                     return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
-                } else if (parenCount - removedParens == 0) {
-                    return new Result<>(new ImmutablePair<>(type, removedParens));
-                }
-                continue;
             }
-            if (t.getType() == TokenType.EOF) {
-                if (parenCount - removedParens > 0) {
-                    return new Result<>(null, ParseError.TOO_FEW_TOKENS);
-                } else {
-                    return new Result<>(new ImmutablePair<>(type, removedParens));
-                }
+            if (typeResult != null && typeResult.isError()) {
+                return new Result<>(typeResult);
             }
-            if (t.getType() != TokenType.ARROW) {
-                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
+            type = typeResult != null ? typeResult.unwrap() : type;
+            if (type == null) {
+                return new Result<>(null, ParseError.TOO_FEW_TOKENS);
             }
-            Result<Pair<Type, Integer>, ParseError> nextType = parseType(lexer, parenCount);
-            if (nextType.isError()) {
-                return nextType;
-            }
-            type = new FunctionType(type, nextType.unwrap().getLeft());
-            removedParens += nextType.unwrap().getRight();
             if (parenCount - removedParens < 0) {
                 return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
-            } else if (parenCount - removedParens == 0) {
-                return new Result<>(new ImmutablePair<>(type, removedParens));
+            } else if (END_TOKENS.contains(t.getType())) {
+                if (parenCount - removedParens == 0) {
+                    return new Result<>(new ImmutablePair<>(type, removedParens));
+                } else {
+                    return new Result<>(null, ParseError.TOO_FEW_TOKENS);
+                }
             }
+        }
+    }
+
+    private Type parseLiteral(String text) {
+        Matcher typeVariableMatcher = TYPE_VARIABLE_PATTERN.matcher(text);
+        if (typeVariableMatcher.matches()) {
+            int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(1));
+            return new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
+        } else {
+            return new NamedType(text);
         }
     }
 }

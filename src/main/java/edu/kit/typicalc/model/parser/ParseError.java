@@ -54,7 +54,7 @@ public enum ParseError {
     /**
      * @return the token associated with this error, or null if none
      */
-    public Token getCause() { // TODO: document
+    public Token getCause() {
         return cause;
     }
 

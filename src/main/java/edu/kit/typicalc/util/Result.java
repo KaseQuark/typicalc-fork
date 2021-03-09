@@ -1,6 +1,7 @@
 package edu.kit.typicalc.util;
 
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * Can be a value of type T or an error of type E (if the computation failed).
@@ -77,6 +78,13 @@ public class Result<T, E> {
         return value;
     }
 
+    public T unwrapOr(T alternative) {
+        if (value == null) {
+            return alternative;
+        }
+        return value;
+    }
+
     /**
      * If the result contains an error, returns that error.
      * Otherwise an IllegalStateException is thrown.
@@ -89,6 +97,10 @@ public class Result<T, E> {
             throw new IllegalStateException("tried to unwrap the error, but value = " + value);
         }
         return error;
+    }
+
+    public <U> Result<U, E> map(Function<T, U> mapping) {
+        return new Result<>(value != null ? mapping.apply(value) : null, error);
     }
 
     @Override
