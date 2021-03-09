@@ -59,6 +59,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         infoIcon.addClickListener(event -> onInfoIconClick());
 
         inputField = new TextField();
+        inputField.getElement().setAttribute("autofocus", "");
         inputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
