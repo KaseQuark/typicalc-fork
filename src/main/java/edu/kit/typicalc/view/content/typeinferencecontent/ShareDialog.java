@@ -17,7 +17,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 /**
  * Contains GUI elements to extract the URL and LaTeX code of the currently shown proof tree.
  */
-@JsModule("./src/share-dialog-autoselect.js")
+@JsModule("./src/share-dialog-autoselect.ts")
 @CssImport("./styles/view/share-dialog.css")
 public class ShareDialog extends Dialog implements LocaleChangeObserver {
 
