@@ -71,13 +71,19 @@ public class Result<T, E> {
      * @return the value
      * @throws IllegalStateException if this is an error
      */
-    public T unwrap()  {
+    public T unwrap() throws IllegalStateException {
         if (value == null) {
             throw new IllegalStateException("tried to unwrap a result, but error = " + error);
         }
         return value;
     }
 
+    /**
+     * If the result contains a regular value, returns that value.
+     * Otherwise return the supplied alternative value.
+     *
+     * @return the value or the alternative
+     */
     public T unwrapOr(T alternative) {
         if (value == null) {
             return alternative;
@@ -99,6 +105,13 @@ public class Result<T, E> {
         return error;
     }
 
+    /**
+     * Apply a function to the value of this result if it exists.
+     *
+     * @param mapping function to apply
+     * @param <U> new type of the value
+     * @return new result
+     */
     public <U> Result<U, E> map(Function<T, U> mapping) {
         return new Result<>(value != null ? mapping.apply(value) : null, error);
     }
