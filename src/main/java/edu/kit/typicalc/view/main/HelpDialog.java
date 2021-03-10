@@ -38,7 +38,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private final H3 heading;
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
-    private final Paragraph shortcuts;
     private final Paragraph typicalcInfo;
 
     /**
@@ -48,7 +47,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         HorizontalLayout headingLayout = new HorizontalLayout();
         renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
         heading = new H3();
-        shortcuts = new Paragraph();
         headingLayout.setId(HEADING_LAYOUT_ID);
 
         languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
@@ -82,7 +80,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         acc.add(new HelpContentField("root.inputField", "root.helpInputField"));
         acc.add(new HelpContentField("root.typeAssumptions", "root.helpTypeAssumptions"));
         acc.add(new HelpContentField("root.inferenceViewFeatures", "root.helpInferenceViewFeatures"));
-        acc.add(new HelpContentField("root.shortcuts", shortcuts));
+        acc.add(new HelpContentField("root.shortcuts", "root.helpShortcuts"));
         acc.add(new HelpContentField("root.drawer",
                 new Button(new Icon(VaadinIcon.MENU)), "root.helpDrawer"));
         acc.add(new HelpContentField("root.example",
@@ -103,7 +101,6 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent event) {
         heading.setText(getTranslation("root.operatingHelp"));
-        shortcuts.getElement().setProperty("innerHTML", getTranslation("root.helpShortcuts"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
         typicalcInfo.getElement().setProperty("innerHTML", getTranslation("help.typicalcInfo"));
