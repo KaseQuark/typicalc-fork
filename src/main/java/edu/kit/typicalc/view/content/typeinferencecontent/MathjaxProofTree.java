@@ -26,13 +26,14 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
 
     /**
      * Creates a new HTML element that renders the proof tree and cuts it into steps.
-     * The latex String must consist of exactly one proof tree environment in order for
-     * this element to work. In other cases the expected behaviour is undefined.
+     * The latex code must consist of exactly one proof tree environment.
+     * In other cases unexpected behaviour may occur.
      *
-     * @param latex the LaTeX-String to render with MathJax
+     * @param latex the LaTeX code to render with MathJax
      */
     public MathjaxProofTree(String latex) {
         content.add(latex);
+        getElement().callJsFunction("requestTypeset");
     }
 
     /**

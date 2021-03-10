@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <groupId>edu.kit.typicalc</groupId>
     <artifactId>typicalc</artifactId>
@@ -280,10 +282,12 @@
                                 <mkdir dir="${project.build.directory}/tmp" />
                                 <unzip src="${project.build.directory}/${project.build.finalName}.jar"
                                        dest="${project.build.directory}/tmp" />
-                                <replaceregexp file="${project.build.directory}/tmp/META-INF/VAADIN/index.html"
+                                <replaceregexp file="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html"
                                                match="(\x3C)body(\x3E)"
                                                replace="\1body\2 \1noscript\2This application requires JavaScript.\1/noscript\2"
                                                byline="true" />
+                                <gzip src="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html"
+                                      destfile="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html.gz" />
                                 <zip basedir="${project.build.directory}/tmp"
                                      destfile="${project.build.directory}/${project.build.finalName}.jar"
                                      update="true"

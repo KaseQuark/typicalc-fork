@@ -21,7 +21,7 @@ import java.util.function.Consumer;
  * Represents a single type assumption input component.
  * Each TypeAssumptionField is displayed in the TypeAssumptionsArea.
  */
-@JsModule("./src/type-input-listener.js")
+@JsModule("./src/type-input-listener.ts")
 @CssImport("./styles/view/main/type-assumption-field.css")
 @CssImport(value = "./styles/view/main/type-assumption-input-field.css", themeFor = "vaadin-text-field")
 public class TypeAssumptionField extends HorizontalLayout implements LocaleChangeObserver {
@@ -85,27 +85,27 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         add(variableInputField, typeInputField, deleteButton);
         setId(ASSUMPTIONS_FIELD_ID);
     }
-    
+
     /**
      * Checks if the current variable matches the defined syntax.
-     * 
+     *
      * @param variable the variable
      * @return true if the variable matches the syntax, false if not
      */
     protected boolean hasCorrectVariable(String variable) {
         return variable.isEmpty() || TypeAssumptionParser.TYPE_NAME_PATTERN.matcher(variable).matches();
     }
-    
+
     /**
      * Checks if the current type matches the defined syntax.
-     * 
+     *
      * @param type the type
      * @return true if the type matches the syntax, false if not
      */
     protected boolean hasCorrectType(String type) {
         return type.isEmpty() || parser.parseType(parseBackType(type)).isOk();
     }
-    
+
     private void addValidatior() {
         Binder<String> varBinder = new Binder<>();
         varBinder.forField(variableInputField)
