@@ -1,3 +1,7 @@
 tc-unification {
     flex: initial;
+    background-color: #e9f2fd;
+    min-width: 100%;
+    width: max-content;
+    padding-left: 12px;
 }
