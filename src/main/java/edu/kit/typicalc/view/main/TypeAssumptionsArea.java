@@ -96,7 +96,8 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
 
     private void closeAction() {
         for (TypeAssumptionField field : fields) {
-            if (!(field.hasCorrectType(field.getType()) && field.hasCorrectVariable(field.getVariable()))) {
+            if (!(field.hasCorrectType(field.getType()) && field.hasCorrectVariable(field.getVariable()))
+                    && !field.isEmpty()) {
                 invalidInputNotification.open();
                 return;
             }
