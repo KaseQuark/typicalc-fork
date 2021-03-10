@@ -185,6 +185,7 @@ public class TypeInferenceView extends VerticalLayout
             content.removeAll();
             lc = new LatexCreator(typeInferer,
                     error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
+            treeNumbers = lc.getTreeNumbers();
             setContent();
             refreshElements();
         }
