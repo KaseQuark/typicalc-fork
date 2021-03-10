@@ -15,6 +15,8 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  * @see Type
  */
 public class LatexCreatorType implements TypeVisitor {
+    private static final int MAX_LENGTH = 50000;
+
     private final StringBuilder latex = new StringBuilder();
     private boolean needsParentheses = false;
 
@@ -80,6 +82,13 @@ public class LatexCreatorType implements TypeVisitor {
         latex.append(SPACE);
 
         function.getOutput().accept(this);
+        checkMemoryUsage();
         needsParentheses = true;
+    }
+
+    private void checkMemoryUsage() {
+        if (latex.length() > MAX_LENGTH) {
+            throw new IllegalStateException("type too large!");
+        }
     }
 }
