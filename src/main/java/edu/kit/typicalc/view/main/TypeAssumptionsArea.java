@@ -118,7 +118,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         headingLayout.setId(HEADING_LAYOUT_ID);
 
         Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
-        closeIcon.addClickListener(event -> this.close());
+        closeIcon.addClickListener(event -> closeAction());
         closeIcon.setId(CLOSE_ICON_ID);
         headingLayout.add(heading);
         headingLayout.add(closeIcon);
