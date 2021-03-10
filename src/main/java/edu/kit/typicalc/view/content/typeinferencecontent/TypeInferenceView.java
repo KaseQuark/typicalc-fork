@@ -3,6 +3,7 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
@@ -18,6 +19,7 @@ import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
+import edu.kit.typicalc.view.main.DrawerContent;
 import edu.kit.typicalc.view.main.MainViewImpl;
 
 import java.net.URLDecoder;
@@ -42,8 +44,12 @@ public class TypeInferenceView extends VerticalLayout
      * Route of this view.
      */
     public static final String ROUTE = "infer";
-    private static final String CONTENT_ID = "content";
     private static final String ID = "type-inference-view";
+    private static final String CONTENT_ID = "content";
+    private static final String CONTENT_ID2 = "content2";
+    private static final String CONTENT_ID3 = "content3";
+    private static final String RULES_ID = "rules";
+    private static final String RULES_BUTTON_ID = "rules-button";
 
     private final List<Integer> treeNumbers;
 
@@ -90,10 +96,28 @@ public class TypeInferenceView extends VerticalLayout
         add(content, footer);
     }
 
+    private boolean rulesVisible = false;
+
     private void setContent() {
+        Button button = new Button("Typregeln");
+        button.setId(RULES_BUTTON_ID);
+        Div container = new Div();
+        container.setId(CONTENT_ID2);
         unification = new MathjaxUnification(lc.getUnification());
         tree = new MathjaxProofTree(lc.getTree());
-        content.add(unification, tree);
+        Div treeDiv = new Div();
+        treeDiv.setId(CONTENT_ID3);
+        treeDiv.add(tree, button);
+        container.add(unification, treeDiv);
+        DrawerContent rules = new DrawerContent();
+        rules.setId(RULES_ID);
+        rulesVisible = false;
+        rules.getElement().setVisible(rulesVisible);
+        button.addClickListener(e -> {
+            rulesVisible = !rulesVisible;
+            rules.getElement().setVisible(rulesVisible);
+        });
+        content.add(rules, container);
     }
 
     @Override
@@ -157,11 +181,10 @@ public class TypeInferenceView extends VerticalLayout
     @Override
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
         if (typeInferer != null) {
+            content.removeAll();
             lc = new LatexCreator(typeInferer,
                     error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
-            unification = new MathjaxUnification(lc.getUnification());
-            content.removeAll();
-            content.add(unification, tree);
+            setContent();
             refreshElements();
         }
     }

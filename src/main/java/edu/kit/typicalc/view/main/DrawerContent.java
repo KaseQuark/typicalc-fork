@@ -1,5 +1,8 @@
 package edu.kit.typicalc.view.main;
 
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.HasComponents;
+import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,7 +13,8 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
  * Container for the components displayed in the drawer area of the web page.
  */
 @CssImport("./styles/view/main/drawer-content.css")
-public class DrawerContent extends VerticalLayout implements LocaleChangeObserver {
+@Tag("div")
+public class DrawerContent extends Component implements LocaleChangeObserver, HasComponents {
 
     private static final long serialVersionUID = -5751275682270653335L;
 
@@ -26,7 +30,7 @@ public class DrawerContent extends VerticalLayout implements LocaleChangeObserve
     /**
      * Creates a new DrawerContent.
      */
-    protected DrawerContent() {
+    public DrawerContent() {
         heading = new H3();
         ruleContainer = new VerticalLayout();
         ruleContainer.setId(RULE_CONTAINER_ID);

@@ -62,7 +62,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         helpButton.addClickListener(event -> new HelpDialog().open());
         helpButton.setId(HELP_ICON_ID);
 
-        add(toggle, viewTitle, inputBar, helpButton);
+        add(/*toggle, */viewTitle, inputBar, helpButton);
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true);
         setSpacing(false);

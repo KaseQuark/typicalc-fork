@@ -4,6 +4,9 @@
 	align-items: center;
 	overflow-x: auto;
 	overflow-y: hidden;
+
+	padding-left: 1em;
+	padding-right: 1em;
 }
 
 #header img {
@@ -22,10 +25,6 @@
 
 #viewTitle a {
 	color: var(--lumo-header-text-color);
-}
-
-#helpIcon {
-	margin-right: 1em;
 }
 
 #inputBar {
