@@ -119,7 +119,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
                 .bind(o -> variableInputField.getEmptyValue(), null);
         variableInputField.setReadOnly(false);
         typeBinder.forField(typeInputField)
-            .withValidator(type -> (hasCorrectVariable(type) || isEmpty()), StringUtils.EMPTY)
+            .withValidator(type -> (hasCorrectType(type) || isEmpty()), StringUtils.EMPTY)
             .bind(o -> typeInputField.getEmptyValue(), null);
         typeInputField.setReadOnly(false);
     }
