@@ -10,32 +10,32 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
 /**
- * Container for the components displayed in the drawer area of the web page.
+ * Type inference rules overview.
  */
-@CssImport("./styles/view/main/drawer-content.css")
+@CssImport("./styles/view/main/type-inference-rules.css")
 @Tag("div")
-public class DrawerContent extends Component implements LocaleChangeObserver, HasComponents {
+public class TypeInferenceRules extends Component implements LocaleChangeObserver, HasComponents {
 
     private static final long serialVersionUID = -5751275682270653335L;
 
     /*
      * IDs for the imported .css-file
      */
-    private static final String RULE_CONTAINER_ID = "ruleContainer";
-    private static final String DRAWER_CONTENT_ID = "drawerContent";
+    private static final String ID = "type-inference-rules";
+    private static final String RULE_CONTAINER_ID = "rule-container";
 
     private final H3 heading;
     private final VerticalLayout ruleContainer;
 
     /**
-     * Creates a new DrawerContent.
+     * Initialize the content of this container.
      */
-    public DrawerContent() {
+    public TypeInferenceRules() {
+        setId(ID);
         heading = new H3();
         ruleContainer = new VerticalLayout();
         ruleContainer.setId(RULE_CONTAINER_ID);
         add(heading, ruleContainer);
-        setId(DRAWER_CONTENT_ID);
     }
 
     @Override

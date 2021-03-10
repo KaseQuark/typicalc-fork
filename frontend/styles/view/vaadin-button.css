@@ -1,0 +1,3 @@
+.vaadin-button-container::before {
+	display: none !important;
+}

@@ -33,6 +33,7 @@ import java.util.stream.Collectors;
 @CssImport("./styles/view/main/main-view.css")
 @CssImport("./styles/global.css")
 @CssImport(value = "./styles/view/main/app-layout.css", themeFor = "vaadin-app-layout")
+@CssImport(value = "./styles/view/vaadin-button.css", themeFor = "vaadin-button")
 @JavaScript("./src/hammer.min.js")
 @JavaScript("./src/svg-pan-zoom.min.js")
 @JavaScript("./src/tex-svg-full.js")
@@ -55,7 +56,6 @@ public class MainViewImpl extends AppLayout
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
         upperBar = new UpperBar(presenter, this::processInput);
         addToNavbar(upperBar);
-        addToDrawer(new DrawerContent());
     }
 
     @Override

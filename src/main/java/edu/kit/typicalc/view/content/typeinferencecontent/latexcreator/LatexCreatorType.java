@@ -15,7 +15,7 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  * @see Type
  */
 public class LatexCreatorType implements TypeVisitor {
-    private static final int MAX_LENGTH = 50000;
+    private static final int MAX_LENGTH = 100000; // 100 KB
 
     private final StringBuilder latex = new StringBuilder();
     private boolean needsParentheses = false;
@@ -29,6 +29,9 @@ public class LatexCreatorType implements TypeVisitor {
         type.accept(this);
     }
 
+    /**
+     * @return the generated LaTeX code
+     */
     protected String getLatex() {
         return latex.toString();
     }

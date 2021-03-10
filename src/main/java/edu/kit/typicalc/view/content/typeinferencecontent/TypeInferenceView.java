@@ -19,7 +19,7 @@ import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
-import edu.kit.typicalc.view.main.DrawerContent;
+import edu.kit.typicalc.view.main.TypeInferenceRules;
 import edu.kit.typicalc.view.main.MainViewImpl;
 
 import java.net.URLDecoder;
@@ -51,7 +51,7 @@ public class TypeInferenceView extends VerticalLayout
     private static final String RULES_ID = "rules";
     private static final String RULES_BUTTON_ID = "rules-button";
 
-    private final List<Integer> treeNumbers;
+    private List<Integer> treeNumbers;
 
     private int currentStep = 0;
 
@@ -79,16 +79,14 @@ public class TypeInferenceView extends VerticalLayout
      * @param typeInferer used to create LaTeX code from
      */
     public TypeInferenceView(TypeInfererInterface typeInferer) {
+        this.typeInferer = typeInferer;
+
         setId(ID);
         addAttachListener(this);
-        this.typeInferer = typeInferer;
-        lc = new LatexCreator(typeInferer,
-                error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
         content = new Div();
         content.setId(CONTENT_ID);
+        // actual content is added by the immediately received LocaleChangeEvent
         controlPanel = new ControlPanel(this);
-        treeNumbers = lc.getTreeNumbers();
-        setContent();
         controlPanel.setEnabledFirstStep(false);
         controlPanel.setEnabledPreviousStep(false);
 
@@ -99,8 +97,9 @@ public class TypeInferenceView extends VerticalLayout
     private boolean rulesVisible = false;
 
     private void setContent() {
-        Button button = new Button("Typregeln");
+        Button button = new Button(getTranslation("root.inferenceRules"));
         button.setId(RULES_BUTTON_ID);
+
         Div container = new Div();
         container.setId(CONTENT_ID2);
         unification = new MathjaxUnification(lc.getUnification());
@@ -109,7 +108,8 @@ public class TypeInferenceView extends VerticalLayout
         treeDiv.setId(CONTENT_ID3);
         treeDiv.add(tree, button);
         container.add(unification, treeDiv);
-        DrawerContent rules = new DrawerContent();
+
+        TypeInferenceRules rules = new TypeInferenceRules();
         rules.setId(RULES_ID);
         rulesVisible = false;
         rules.getElement().setVisible(rulesVisible);
@@ -117,6 +117,7 @@ public class TypeInferenceView extends VerticalLayout
             rulesVisible = !rulesVisible;
             rules.getElement().setVisible(rulesVisible);
         });
+
         content.add(rules, container);
     }
 
