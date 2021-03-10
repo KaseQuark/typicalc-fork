@@ -67,18 +67,8 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         latexAreaTree = new TextArea();
         packageAreaUnification = new TextArea();
         latexAreaUnification = new TextArea();
+        initializeFields(url, latexCodeTree, latexCodeUnification);
 
-        urlField.setValue(url);
-        urlField.setClassName(FIELD_CLASS);
-        packageAreaTree.setValue(getTranslation("share.neededPackagesTree")); //todo
-        packageAreaTree.setClassName(FIELD_CLASS);
-        packageAreaUnification.setValue(getTranslation("share.neededPackagesUnification")); //todo
-        packageAreaUnification.setClassName(FIELD_CLASS);
-        latexAreaTree.setValue(latexCodeTree);
-        latexAreaTree.setClassName(FIELD_CLASS);
-        latexAreaUnification.setValue(latexCodeUnification
-                .replaceAll(Pattern.quote(LatexCreatorConstants.SUBSTITUTION_SIGN), RIGHT_ARROW_WHITE));
-        latexAreaUnification.setClassName(FIELD_CLASS);
         UI.getCurrent().getPage().executeJs("window.autoSelect($0)", FIELD_CLASS);
 
         setReadOnly();
@@ -86,6 +76,20 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         layout.add(urlField, packageAreaTree, latexAreaTree, packageAreaUnification, latexAreaUnification);
 
         add(headingLayout, layout);
+    }
+
+    private void initializeFields(String url, String latexCodeTree, String latexCodeUnification) {
+        urlField.setValue(url);
+        urlField.setClassName(FIELD_CLASS);
+        packageAreaTree.setValue(getTranslation("share.neededPackagesTree"));
+        packageAreaTree.setClassName(FIELD_CLASS);
+        packageAreaUnification.setValue(getTranslation("share.neededPackagesUnification"));
+        packageAreaUnification.setClassName(FIELD_CLASS);
+        latexAreaTree.setValue(latexCodeTree);
+        latexAreaTree.setClassName(FIELD_CLASS);
+        latexAreaUnification.setValue(latexCodeUnification
+                .replaceAll(Pattern.quote(LatexCreatorConstants.SUBSTITUTION_SIGN), RIGHT_ARROW_WHITE));
+        latexAreaUnification.setClassName(FIELD_CLASS);
     }
 
 
