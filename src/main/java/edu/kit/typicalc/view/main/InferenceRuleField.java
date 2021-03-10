@@ -20,7 +20,7 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
  * clipboard. Each InferenceRuleField is displayed in drawer area of the web page.
  */
 @CssImport("./styles/view/main/inference-rule-field.css")
-@JsModule("./src/copy-to-clipboard.js")
+@JsModule("./src/copy-to-clipboard.ts")
 public class InferenceRuleField extends VerticalLayout implements LocaleChangeObserver {
 
     private static final long serialVersionUID = -8551851183297707985L;
@@ -67,7 +67,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
         add(header, main);
         setId(INFERENCE_RULE_FIELD_ID);
     }
-    
+
     @Override
     public void localeChange(LocaleChangeEvent event) {
         ruleName.setText(getTranslation(nameKey));

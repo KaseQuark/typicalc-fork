@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  * Contains components which allow the user to enter a lambda term and start the type inference algorithm.
  */
 @CssImport("./styles/view/main/input-bar.css")
-@JsModule("./src/input-bar-enhancements.js")
+@JsModule("./src/input-bar-enhancements.ts")
 public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -6099700300418752958L;
 

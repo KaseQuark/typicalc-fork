@@ -35,7 +35,7 @@ import java.util.Locale;
  * {@link TypeInfererInterface} and MathJax to render the LaTeX to the user.
  */
 @CssImport("./styles/view/type-inference.css")
-@JavaScript("./src/key-shortcuts.js")
+@JavaScript("./src/key-shortcuts.ts")
 @Route(value = TypeInferenceView.ROUTE + "/:term", layout = MainViewImpl.class)
 public class TypeInferenceView extends VerticalLayout
         implements ControlPanelView, ComponentEventListener<AttachEvent>, LocaleChangeObserver, HasDynamicTitle,

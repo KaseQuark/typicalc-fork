@@ -4,7 +4,9 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
     return elem.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
 window.MathJax = {
-    loader: {load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/color', '[tex]/textmacros', '[tex]/unicode']},
+    loader: {
+        load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/color', '[tex]/textmacros', '[tex]/unicode']
+    },
     tex: {
         packages: {'[+]': ['ams', 'bussproofs', 'color', 'textmacros', 'unicode']},
         inlineMath: [['$', '$'], ['\\(', '\\)']]
@@ -86,7 +88,7 @@ window.MathJax = {
             //  you need to rerender the shadowRoot later.
             //
             MathJax.typesetShadow = function (root, callback) {
-                if (root.getElementById("tc-content") == null) {
+                if (root.getElementById("tc-content") === null) {
                     return;
                 }
                 const mjxContainer = root.querySelector<HTMLElement>("mjx-container");
@@ -104,17 +106,16 @@ window.MathJax = {
                     }
                     return html;
                 }
-                if (root.querySelector("#style-fixes") == null) {
+                // set the size of the rendered SVG to the size of the container element
+                if (root.querySelector("#style-fixes") === null) {
                     const style = document.createElement('style');
-                    style.type = "text/css";
                     style.innerHTML = "\
-mjx-doc, mjx-body, mjx-container, #tc-content, svg {\
-    height: 100%;\
-}\
-mjx-container {\
-    margin: 0 !important;\
-}\
-                    ";
+                        mjx-doc, mjx-body, mjx-container, #tc-content, svg {\
+                            height: 100%;\
+                        }\
+                        mjx-container {\
+                            margin: 0 !important;\
+                        }";
                     if (hostTag === "tc-proof-tree") {
                         style.innerHTML += "svg { width: 100%; }";
                     }
