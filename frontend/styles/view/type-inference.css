@@ -48,6 +48,7 @@
 }
 
 #type-inference-view #rules {
+	min-width: 25em;
 	overflow-x: hidden;
 	overflow-y: auto;
 }
