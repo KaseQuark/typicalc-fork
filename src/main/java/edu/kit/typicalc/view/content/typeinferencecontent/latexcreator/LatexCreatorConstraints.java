@@ -259,7 +259,8 @@ public class LatexCreatorConstraints implements StepVisitor {
                 .orElseThrow(IllegalStateException::new);
         // store constraints of previous step to highlight changes
         String[] previousConstraints = new String[0];
-        for (UnificationStep step : unificationSteps) {
+        for (int stepNum = 0; stepNum < unificationSteps.size(); stepNum++) {
+            UnificationStep step = unificationSteps.get(stepNum);
             List<String> constraints2 = new ArrayList<>();
             Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
             Optional<UnificationError> error = Optional.empty();
@@ -276,6 +277,9 @@ public class LatexCreatorConstraints implements StepVisitor {
 
             boolean markError = error.isPresent();
             List<Constraint> unificationConstraints = step.getConstraints();
+            // if new constraints were created in this step, mark them
+            boolean markLastTwoConstraints = (stepNum != 0)
+                    && unificationSteps.get(stepNum - 1).getConstraints().size() < unificationConstraints.size();
             if (!unificationConstraints.isEmpty()) {
                 latex.append(UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT);
             }
@@ -285,11 +289,14 @@ public class LatexCreatorConstraints implements StepVisitor {
                 if (markError && i == 0) {
                     sb.append(CURLY_LEFT);
                     sb.append(COLOR_RED);
+                } else if (markLastTwoConstraints && (i < 2)) {
+                    sb.append(CURLY_LEFT);
+                    sb.append(COLOR_HIGHLIGHT);
                 }
                 sb.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType()).getLatex());
                 sb.append(EQUALS);
                 sb.append(new LatexCreatorType(unificationConstraints.get(i).getSecondType()).getLatex());
-                if (markError && i == 0) {
+                if ((markError && i == 0) || markLastTwoConstraints && (i < 2)) {
                     sb.append(CURLY_RIGHT);
                 }
                 constraints2.add(sb.toString());
@@ -299,13 +306,17 @@ public class LatexCreatorConstraints implements StepVisitor {
                     // perform the substitution "manually" and color the new type
                     Substitution s = substitutions.get(substitutions.size() - 1);
                     String original = previousConstraints[invIdx];
-                    StringBuilder highlightedChange2 = new StringBuilder();
-                    highlightedChange2.append(CURLY_LEFT);
-                    highlightedChange2.append(COLOR_HIGHLIGHT);
-                    highlightedChange2.append(new LatexCreatorType(s.getType()).getLatex());
-                    highlightedChange2.append(CURLY_RIGHT);
-                    latex.append(original.replace(new LatexCreatorType(s.getVariable()).getLatex(),
-                            highlightedChange2.toString()));
+                    String originalType = new LatexCreatorType(s.getVariable()).getLatex();
+                    if (original.contains(originalType)) {
+                        StringBuilder highlightedChange2 = new StringBuilder();
+                        highlightedChange2.append(CURLY_LEFT);
+                        highlightedChange2.append(COLOR_HIGHLIGHT);
+                        highlightedChange2.append(new LatexCreatorType(s.getType()).getLatex());
+                        highlightedChange2.append(CURLY_RIGHT);
+                        latex.append(original.replace(originalType, highlightedChange2.toString()));
+                    } else {
+                        latex.append(sb.toString());
+                    }
                 } else {
                     latex.append(sb.toString());
                 }
