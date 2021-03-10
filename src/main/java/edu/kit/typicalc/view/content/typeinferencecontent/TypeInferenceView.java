@@ -124,7 +124,10 @@ public class TypeInferenceView extends VerticalLayout
     @Override
     public void shareButton() {
         UI.getCurrent().getPage().executeJs("return decodeURI(window.location.href)").then(url ->
-                new ShareDialog(url.asString().replace(" ", "%20"), lc.getTree()).open()
+                new ShareDialog(
+                        url.asString().replace(" ", "%20"),
+                        lc.getTree(),
+                        lc.getUnification()[currentStep]).open()
         );
     }
 

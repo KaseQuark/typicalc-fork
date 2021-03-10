@@ -13,6 +13,9 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants;
+
+import java.util.regex.Pattern;
 
 /**
  * Contains GUI elements to extract the URL and LaTeX code of the currently shown proof tree.
@@ -27,9 +30,13 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     private static final String FIELD_CLASS = "share-dialog-field";
     private static final String CLOSE_ICON_ID = "closeIcon";
 
+    private static final String RIGHT_ARROW_WHITE = "\\\\rightwhitearrow";
+
     private final TextField urlField;
-    private final TextArea packageArea;
-    private final TextArea latexArea;
+    private final TextArea packageAreaTree;
+    private final TextArea packageAreaUnification;
+    private final TextArea latexAreaTree;
+    private final TextArea latexAreaUnification;
     private final H3 heading;
 
     /**
@@ -37,9 +44,9 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      * to the String that is passed as corresponding parameter.
      *
      * @param url           a permalink to share with other users
-     * @param latexCode     LaTeX code for users to copy into their own LaTeX document(s)
+     * @param latexCodeTree     LaTeX code for the tree for users to copy into their own LaTeX document(s)
      */
-    public ShareDialog(String url, String latexCode) {
+    public ShareDialog(String url, String latexCodeTree, String latexCodeUnification) {
         HorizontalLayout headingLayout = new HorizontalLayout();
         headingLayout.setId(HEADING_LAYOUT_ID);
 
@@ -56,20 +63,27 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         setId(SHARE_DIALOG_ID);
 
         urlField = new TextField();
-        packageArea = new TextArea();
-        latexArea = new TextArea();
+        packageAreaTree = new TextArea();
+        latexAreaTree = new TextArea();
+        packageAreaUnification = new TextArea();
+        latexAreaUnification = new TextArea();
 
         urlField.setValue(url);
         urlField.setClassName(FIELD_CLASS);
-        packageArea.setValue(getTranslation("share.neededPackages"));
-        packageArea.setClassName(FIELD_CLASS);
-        latexArea.setValue(latexCode);
-        latexArea.setClassName(FIELD_CLASS);
+        packageAreaTree.setValue(getTranslation("share.neededPackagesTree")); //todo
+        packageAreaTree.setClassName(FIELD_CLASS);
+        packageAreaUnification.setValue(getTranslation("share.neededPackagesUnification")); //todo
+        packageAreaUnification.setClassName(FIELD_CLASS);
+        latexAreaTree.setValue(latexCodeTree);
+        latexAreaTree.setClassName(FIELD_CLASS);
+        latexAreaUnification.setValue(latexCodeUnification
+                .replaceAll(Pattern.quote(LatexCreatorConstants.SUBSTITUTION_SIGN), RIGHT_ARROW_WHITE));
+        latexAreaUnification.setClassName(FIELD_CLASS);
         UI.getCurrent().getPage().executeJs("window.autoSelect($0)", FIELD_CLASS);
 
         setReadOnly();
 
-        layout.add(urlField, packageArea, latexArea);
+        layout.add(urlField, packageAreaTree, latexAreaTree, packageAreaUnification, latexAreaUnification);
 
         add(headingLayout, layout);
     }
@@ -79,13 +93,17 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
         heading.setText(getTranslation("share.heading"));
         urlField.setLabel(getTranslation("share.url.label"));
-        packageArea.setLabel(getTranslation("share.packages.label"));
-        latexArea.setLabel(getTranslation("share.latex.label"));
+        packageAreaTree.setLabel(getTranslation("share.packagesTree.label"));
+        latexAreaTree.setLabel(getTranslation("share.latexTree.label"));
+        packageAreaUnification.setLabel(getTranslation("share.packagesUnification.label"));
+        latexAreaUnification.setLabel(getTranslation("share.latexUnification.label"));
     }
 
     private void setReadOnly() {
         urlField.setReadOnly(true);
-        packageArea.setReadOnly(true);
-        latexArea.setReadOnly(true);
+        packageAreaTree.setReadOnly(true);
+        latexAreaTree.setReadOnly(true);
+        packageAreaUnification.setReadOnly(true);
+        latexAreaUnification.setReadOnly(true);
     }
 }
