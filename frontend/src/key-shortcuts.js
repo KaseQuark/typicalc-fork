@@ -25,5 +25,6 @@ function handleKey(e) {
     }
     if (element !== null) {
         element.click();
+        e.preventDefault();
     }
 }
