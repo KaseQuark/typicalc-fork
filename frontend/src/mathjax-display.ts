@@ -1,7 +1,10 @@
 import {MathjaxAdapter} from "./mathjax-adapter";
 
 class MathjaxDisplay extends MathjaxAdapter {
-    protected showStep(_n: number): void {}
+    connectedCallback() {
+        super.connectedCallback();
+        this.requestTypeset();
+    }
 }
 
 customElements.define('tc-display', MathjaxDisplay);

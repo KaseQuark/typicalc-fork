@@ -1,6 +1,10 @@
 import {MathjaxAdapter} from "./mathjax-adapter";
 
 class MathjaxUnification extends MathjaxAdapter {
+    connectedCallback() {
+        super.connectedCallback();
+        this.requestTypeset();
+    }
 
     static get properties() {
         return {

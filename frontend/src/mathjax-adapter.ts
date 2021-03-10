@@ -25,20 +25,16 @@ export abstract class MathjaxAdapter extends LitElement {
         });
     }
 
-    connectedCallback() {
-        super.connectedCallback();
-        this.requestTypeset();
-    }
-
     render(): TemplateResult {
         return html`<mjx-doc id="mjx-document"><mjx-head></mjx-head><mjx-body>
             <div id="tc-content"></div>
         </mjx-body></mjx-doc>`;
     }
 
-    protected abstract showStep(n: number): void;
+    protected showStep(_n: number): void {
+        /* ignore by default */
+    }
 
     protected calculateSteps(): void {
     }
 }
-

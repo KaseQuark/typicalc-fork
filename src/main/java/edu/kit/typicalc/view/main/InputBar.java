@@ -22,7 +22,7 @@ import java.util.function.Consumer;
  * Contains components which allow the user to enter a lambda term and start the type inference algorithm.
  */
 @CssImport("./styles/view/main/input-bar.css")
-@JsModule("./src/lambda-button-listener.js")
+@JsModule("./src/input-bar-enhancements.js")
 public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -6099700300418752958L;
 
@@ -66,17 +66,9 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inputField.setMaxLength(MAX_INPUT_LENGTH);
 
         // attach a listener that replaces \ with λ
-        // JavaScript is used because Vaadin does not have APIs for selectionStart/selectionEnd
-        UI.getCurrent().getPage().executeJs(
-                "document.getElementById('" + INPUT_FIELD_ID + "').addEventListener('keyup', e => {"
-                        + "var area = e.target.shadowRoot.querySelector('input');"
-                        + "if (area.value.indexOf('\\\\') >= 0) {"
-                        + "    var start = area.selectionStart;"
-                        + "    var end = area.selectionEnd;"
-                        + "    area.value = area.value.replaceAll('\\\\', 'λ');"
-                        + "    area.selectionStart = start;"
-                        + "    area.selectionEnd = end;"
-                        + "}});");
+        // JavaScript is used because this is a latency-sensitive operation
+        // (and Vaadin does not have APIs for selectionStart/selectionEnd)
+        UI.getCurrent().getPage().executeJs("window.backslashListener($0);", INPUT_FIELD_ID);
         Button lambdaButton = new Button(getTranslation("root.lambda"));
         lambdaButton.setId(LAMBDA_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
@@ -118,12 +110,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onTypeInferButtonClick() {
-        UI.getCurrent().getPage()
-            .executeJs("return document.getElementById($0).shadowRoot.querySelector('input').value", INPUT_FIELD_ID)
-            .then(String.class, value -> {
-                inputField.blur();
-                callback.accept(Pair.of(value, typeAssumptionsArea.getTypeAssumptions()));
-            });
+        inputField.blur();
+        callback.accept(Pair.of(inputField.getValue(), typeAssumptionsArea.getTypeAssumptions()));
     }
 
     private void onTypeAssumptionsButton() {
