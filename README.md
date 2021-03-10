@@ -62,7 +62,7 @@ docker build . -t myapp:latest
 Once the Docker image is correctly built, you can test it locally using
 
 ```
-docker run -p 8080:8080 myapp:latest
+docker run -p 80:8080 myapp:latest
 ```
 
 ## Deploying using a JAR
@@ -73,5 +73,5 @@ mvn package -Pproduction
 ```
 Then run the server:
 ```
-java -jar target/typicalc-1.0-SNAPSHOT.jar
+PORT=80 java -jar target/typicalc-1.0-SNAPSHOT.jar
 ```
