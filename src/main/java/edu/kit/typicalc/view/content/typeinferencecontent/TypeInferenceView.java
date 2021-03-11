@@ -8,6 +8,7 @@ import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JavaScript;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Footer;
+import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -50,6 +51,8 @@ public class TypeInferenceView extends VerticalLayout
     private static final String CONTENT_ID3 = "content3";
     private static final String RULES_ID = "rules";
     private static final String RULES_BUTTON_ID = "rules-button";
+    private static final String H_LINE_ID = "horizontalLine";
+    private static final String FOOTER_ID = "footer";
 
     private List<Integer> treeNumbers;
 
@@ -90,7 +93,10 @@ public class TypeInferenceView extends VerticalLayout
         controlPanel.setEnabledFirstStep(false);
         controlPanel.setEnabledPreviousStep(false);
 
-        Footer footer = new Footer(controlPanel);
+        Hr line = new Hr();
+        line.setId(H_LINE_ID);
+        Footer footer = new Footer(line, controlPanel);
+        footer.setId(FOOTER_ID);
         add(content, footer);
     }
 

@@ -42,6 +42,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     private static final String ASS_BUTTONS_ID = "assButtons";
     private static final String ASS_CONTAINER_ID = "assContainer";
     private static final String CLOSE_ICON_ID = "closeIcon";
+    private static final String HINT_ID = "hint";
 
     private final H3 heading;
     private final VerticalLayout assumptionContainer;
@@ -75,6 +76,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         assumptionContainer.setId(ASS_CONTAINER_ID);
 
         hintLabel = new Label("");
+        hintLabel.setId(HINT_ID);
 
         initializeWithAssumptions(types);
         layout.add(hintLabel, buttons, assumptionContainer);

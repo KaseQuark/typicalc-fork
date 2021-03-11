@@ -19,6 +19,11 @@
 	bottom: 2.1em;
 }
 
+#hint {
+    width: 80%;
+    text-align: center;
+}
+
 #assButtons {
 	display: flex;
 	justify-content: center;
