@@ -6,6 +6,7 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.notification.Notification;
@@ -48,6 +49,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     private final Button deleteAll;
     private final Button saveAssumptions;
     private final Notification invalidInputNotification;
+    private final Label hintLabel;
     
     private final List<TypeAssumptionField> fields = new ArrayList<>();
 
@@ -62,25 +64,20 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
             
         VerticalLayout layout = new VerticalLayout();
         layout.setId(ASS_LAYOUT_ID);
-        HorizontalLayout buttons = new HorizontalLayout();
-        buttons.setId(ASS_BUTTONS_ID);
+
         addAssumption = new Button("", new Icon(VaadinIcon.PLUS_CIRCLE));
-        addAssumption.setIconAfterText(true);
-        addAssumption.addClickListener(event -> onAddAssumptionClicked());
         deleteAll = new Button("", new Icon(VaadinIcon.TRASH));
-        deleteAll.addClickListener(event -> onDeleteAllClick());
-        deleteAll.setIconAfterText(true);
-        deleteAll.addThemeVariants(ButtonVariant.LUMO_ERROR);
         saveAssumptions = new Button(getTranslation("root.save"), event -> closeAction());
-        saveAssumptions.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-        saveAssumptions.addClickShortcut(Key.ENTER);
-        buttons.add(addAssumption, deleteAll, saveAssumptions);
+        HorizontalLayout buttons = makeButtons();
+        buttons.setId(ASS_BUTTONS_ID);
 
         assumptionContainer = new VerticalLayout();
         assumptionContainer.setId(ASS_CONTAINER_ID);
 
+        hintLabel = new Label("");
+
         initializeWithAssumptions(types);
-        layout.add(buttons, assumptionContainer);
+        layout.add(hintLabel, buttons, assumptionContainer);
         HorizontalLayout headingLayout = makeHeader();
         add(headingLayout, layout);
         addDialogCloseActionListener(event -> closeAction());
@@ -124,6 +121,20 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         headingLayout.add(heading);
         headingLayout.add(closeIcon);
         return headingLayout;
+    }
+
+    private HorizontalLayout makeButtons() {
+        HorizontalLayout buttons = new HorizontalLayout();
+        buttons.setId(ASS_BUTTONS_ID);
+        addAssumption.setIconAfterText(true);
+        addAssumption.addClickListener(event -> onAddAssumptionClicked());
+        deleteAll.addClickListener(event -> onDeleteAllClick());
+        deleteAll.setIconAfterText(true);
+        deleteAll.addThemeVariants(ButtonVariant.LUMO_ERROR);
+        saveAssumptions.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
+        saveAssumptions.addClickShortcut(Key.ENTER);
+        buttons.add(addAssumption, deleteAll, saveAssumptions);
+        return buttons;
     }
     /**
      * Creates a new empty TypeAssumptionsArea.
@@ -180,5 +191,6 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         deleteAll.setText(getTranslation("root.deleteAll"));
         saveAssumptions.setText(getTranslation("root.save"));
         invalidInputNotification.setText(getTranslation("root.correctAssumptions"));
+        hintLabel.setText(getTranslation("root.typeAssumptionsHint"));
     }
 }
