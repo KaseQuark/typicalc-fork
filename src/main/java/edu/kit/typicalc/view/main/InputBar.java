@@ -55,12 +55,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     protected InputBar(Consumer<Pair<String, Map<String, String>>> callback) {
         this.callback = callback;
 
+        setId(INPUT_BAR_ID);
+
         infoIcon = new Button(new Icon(VaadinIcon.INFO_CIRCLE));
         infoIcon.addClickListener(event -> onInfoIconClick());
 
         inputField = new TextField();
-        inputField.getElement().setAttribute("autofocus", "");
-        inputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
+        inputField.getElement().setAttribute("autofocus", ""); // focus on page load
         inputField.setId(INPUT_FIELD_ID);
         inputField.setClearButtonVisible(true);
         inputField.setMaxLength(MAX_INPUT_LENGTH);
@@ -72,10 +73,11 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         Button lambdaButton = new Button(getTranslation("root.lambda"));
         lambdaButton.setId(LAMBDA_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
+
         typeAssumptions = new Button("", event -> onTypeAssumptionsButton());
         typeAssumptions.setId(ASS_BUTTON_ID);
         typeAssumptionsArea = new TypeAssumptionsArea();
-        exampleButton = new Button(VaadinIcon.PAPERCLIP.create(), event -> onExampleButtonClick());
+        exampleButton = new Button(getTranslation("root.exampleButton"), event -> onExampleButtonClick());
         exampleButton.setId(EXAMPLE_BUTTON_ID);
         inferTypeButton = new Button("", event -> onTypeInferButtonClick());
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
@@ -83,7 +85,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inferTypeButton.setId(INFER_BUTTON_ID);
 
         add(infoIcon, typeAssumptions, lambdaButton, inputField, exampleButton, inferTypeButton);
-        setId(INPUT_BAR_ID);
     }
 
     /**

@@ -53,7 +53,6 @@ public class MainViewImpl extends AppLayout
      * Creates a new MainViewImpl.
      */
     public MainViewImpl() {
-        setDrawerOpened(false);
         MainViewListener presenter = new Presenter(new ModelImpl(), this);
         upperBar = new UpperBar(presenter, this::processInput);
         addToNavbar(upperBar);
