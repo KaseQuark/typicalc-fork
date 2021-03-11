@@ -38,16 +38,22 @@ public class TypicalcI18NProvider implements I18NProvider {
     public String getTranslation(String key, Locale locale, Object... params) {
         ResourceBundle bundle = ResourceBundle.getBundle(LANGUAGE_BUNDLE_PREFIX, locale);
 
+        String result;
         if (bundle.containsKey(key)) {
-            return bundle.getString(key);
+            result = bundle.getString(key);
         } else {
             try {
-                return this.generalBundle.getString(key);
+                result = this.generalBundle.getString(key);
             } catch (MissingResourceException exception) {
                 // this is only the case for untranslated texts
                 return "?[" + key + "]?";
             }
         }
+        // replace placeholders {0} ...
+        for (int i = 0; i < params.length; i++) {
+            result = result.replace(String.format("{%d}", i), params[i].toString());
+        }
+        return result;
     }
 
 }
