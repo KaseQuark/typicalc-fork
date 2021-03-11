@@ -1,7 +1,11 @@
 package edu.kit.typicalc.model.parser;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Optional;
+
 /**
- * Errors that can occur when parsing a lambda term.
+ * Errors that can occur when parsing a lambda term or type assumption.
  *
  * @see LambdaLexer
  * @see LambdaParser
@@ -23,7 +27,8 @@ public enum ParseError {
      */
     UNEXPECTED_CHARACTER;
 
-    private Token cause = new Token(Token.TokenType.EOF, "", -1);
+    private Optional<Token> cause = Optional.empty();
+    private Optional<Collection<Token.TokenType>> needed = Optional.empty();
     private char wrongChar = '\0';
     private int position = -1;
 
@@ -34,7 +39,29 @@ public enum ParseError {
      * @return this object
      */
     public ParseError withToken(Token cause) {
-        this.cause = cause;
+        this.cause = Optional.of(cause);
+        return this;
+    }
+
+    /**
+     * Attach an expected token type to this error.
+     *
+     * @param needed the required token type
+     * @return this object
+     */
+    public ParseError expectedType(Token.TokenType needed) {
+        this.needed = Optional.of(List.of(needed));
+        return this;
+    }
+
+    /**
+     * Attach expected token types to this error.
+     *
+     * @param needed the possible token types
+     * @return this object
+     */
+    public ParseError expectedTypes(Collection<Token.TokenType> needed) {
+        this.needed = Optional.of(needed);
         return this;
     }
 
@@ -52,16 +79,29 @@ public enum ParseError {
     }
 
     /**
-     * @return the token associated with this error, or null if none
+     * @return the token associated with this error
      */
-    public Token getCause() {
+    public Optional<Token> getCause() {
         return cause;
     }
 
+    /**
+     * @return the expected/possible token(s) if this error is UNEXPECTED_TOKEN
+     */
+    public Optional<Collection<Token.TokenType>> getExpected() {
+        return needed;
+    }
+
+    /**
+     * @return the wrong character if this error is UNEXPECTED_CHARACTER ('\0' otherwise)
+     */
     public char getWrongCharacter() {
         return wrongChar;
     }
 
+    /**
+     * @return the character position if this error is UNEXPECTED_CHARACTER
+     */
     public int getPosition() {
         return position;
     }

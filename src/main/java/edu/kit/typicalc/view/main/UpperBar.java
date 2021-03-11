@@ -1,6 +1,5 @@
 package edu.kit.typicalc.view.main;
 
-import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Anchor;
@@ -36,7 +35,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String UPPER_BAR_ID = "header";
 
     private final InputBar inputBar;
-    private final Button toggle;
     private final Button helpButton;
 
     private final transient MainViewListener presenter;
@@ -45,7 +43,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
      *
-     * @param presenter    the listener used to communicate with the model
+     * @param presenter     the listener used to communicate with the model
      * @param inputConsumer function to handle user input
      */
     protected UpperBar(MainViewListener presenter, Consumer<Pair<String, Map<String, String>>> inputConsumer) {
@@ -53,7 +51,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         this.presenter = presenter;
         this.inputConsumer = inputConsumer;
 
-        toggle = new DrawerToggle();
         H1 viewTitle = new H1(new Anchor("/", getTranslation("root.typicalc")));
         viewTitle.setId(VIEW_TITLE_ID);
         this.inputBar = new InputBar(this::typeInfer);
@@ -62,7 +59,7 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
         helpButton.addClickListener(event -> new HelpDialog().open());
         helpButton.setId(HELP_ICON_ID);
 
-        add(/*toggle, */viewTitle, inputBar, helpButton);
+        add(viewTitle, inputBar, helpButton);
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true);
         setSpacing(false);
@@ -96,7 +93,6 @@ public class UpperBar extends HorizontalLayout implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-        toggle.getElement().setAttribute("title", getTranslation("root.drawerToggleTooltip"));
         helpButton.getElement().setAttribute("title", getTranslation("root.helpIconTooltip"));
     }
 }

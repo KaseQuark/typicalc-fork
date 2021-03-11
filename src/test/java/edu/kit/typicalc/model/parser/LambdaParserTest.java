@@ -98,7 +98,7 @@ class LambdaParserTest {
         parser = new LambdaParser("x)");
         ParseError error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 1), error.getCause());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 1), error.getCause().get());
         parser = new LambdaParser("??");
         assertEquals(ParseError.UNEXPECTED_CHARACTER, parser.parse().unwrapError());
         parser = new LambdaParser("aλ");
@@ -110,39 +110,39 @@ class LambdaParserTest {
         parser = new LambdaParser("x 123333333333333");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_CHARACTER, error);
-        assertEquals(new Token(TokenType.NUMBER, "123333333333333", 2), error.getCause());
+        assertEquals(new Token(TokenType.NUMBER, "123333333333333", 2), error.getCause().get());
         parser = new LambdaParser("λ)");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 1), error.getCause());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 1), error.getCause().get());
         parser = new LambdaParser("λx=");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.EQUALS, "=", 2), error.getCause());
+        assertEquals(new Token(TokenType.EQUALS, "=", 2), error.getCause().get());
         parser = new LambdaParser("λx..");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.DOT, ".", 3), error.getCause());
+        assertEquals(new Token(TokenType.DOT, ".", 3), error.getCause().get());
         parser = new LambdaParser("let ) =");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 4), error.getCause());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 4), error.getCause().get());
         parser = new LambdaParser("let x .");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.DOT, ".", 6), error.getCause());
+        assertEquals(new Token(TokenType.DOT, ".", 6), error.getCause().get());
         parser = new LambdaParser("let x = )");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 8), error.getCause());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 8), error.getCause().get());
         parser = new LambdaParser("let x = y )");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 10), error.getCause());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 10), error.getCause().get());
         parser = new LambdaParser("let x = y in )");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
-        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 13), error.getCause());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", 13), error.getCause().get());
     }
 
     @Test

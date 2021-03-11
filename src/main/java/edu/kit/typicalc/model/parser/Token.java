@@ -12,7 +12,7 @@ public class Token {
      * VARIABLE and NUMBER have a regular expression associated with them.
      * EOF is a special token to indicate that the end of file is reached.
      */
-    enum TokenType {
+    public enum TokenType {
         LAMBDA, // λ or a backslash
         VARIABLE, // [a-z][a-zA-Z0-9]* except "let" or "in" or constants
         LET, // let
@@ -25,7 +25,7 @@ public class Token {
         DOT, // .
         EQUALS, // =
         ARROW, // ->
-        EOF // pseudo token if end of file is reached
+        EOF // pseudo token if end of input is reached
     }
 
     /**

@@ -210,7 +210,7 @@ class TypeAssumptionParserTest {
             Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(Map.of("type1", entry.getKey()));
             assertTrue(type.isError());
             assertEquals(entry.getValue(), type.unwrapError());
-            if (entry.getValue().getCause().getPos() != -1) {
+            if (entry.getValue().getCause().isPresent()) {
                 assertEquals(entry.getValue().getCause(), type.unwrapError().getCause());
             }
         }
