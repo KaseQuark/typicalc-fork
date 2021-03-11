@@ -17,6 +17,7 @@ import org.apache.commons.lang3.tuple.Pair;
 
 import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
@@ -99,7 +100,8 @@ public class MainViewImpl extends AppLayout
                 Pair.of(entry.getKey(), List.of(entry.getValue()))
         ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
                 (existing, replacement) -> existing, TreeMap::new)));
-        UI.getCurrent().navigate(TypeInferenceView.ROUTE + "/" + lambdaTerm, qp);
+        UI.getCurrent().navigate(TypeInferenceView.ROUTE + "/"
+                + URLEncoder.encode(lambdaTerm, StandardCharsets.UTF_8), qp);
     }
 
     private String decodeURL(String encodedUrl) {
