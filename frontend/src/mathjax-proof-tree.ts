@@ -247,11 +247,11 @@ class MathjaxProofTree extends MathjaxAdapter {
                             this.hammer = Hammer(options.svgElement);
 
                             // @ts-ignore
-                            this.hammer.get('pinch').set({enable: true})
+                            this.hammer.get('pinch').set({enable: true});
 
                             // Handle double tap
                             // @ts-ignore
-                            this.hammer.on('doubletap', function(ev) {
+                            this.hammer.on('doubletap', () => {
                                 options.instance.zoomIn()
                             });
 
@@ -259,7 +259,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                             let pannedY = 0;
                             // Handle pan
                             // @ts-ignore
-                            this.hammer.on('panstart panmove', function(ev){
+                            this.hammer.on('panstart panmove', ev => {
                                 // On pan start reset panned variables
                                 if (ev.type === 'panstart') {
                                     pannedX = 0
@@ -270,7 +270,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
                                 pannedX = ev.deltaX
                                 pannedY = ev.deltaY
-                            })
+                            });
 
                             let initialScale = 1;
                             // Handle pinch
@@ -283,7 +283,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 }
 
                                 instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
-                            })
+                            });
 
                             // Prevent moving the page on some devices when panning over SVG
                             options.svgElement.addEventListener('touchmove', function(e: TouchEvent){ e.preventDefault(); });
