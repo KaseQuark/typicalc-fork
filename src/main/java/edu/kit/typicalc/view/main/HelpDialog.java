@@ -82,8 +82,8 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         acc.add(new HelpContentField("root.inferenceViewFeatures", "root.helpInferenceViewFeatures"));
         acc.add(new HelpContentField("root.shortcuts", "root.helpShortcuts"));
         acc.add(new HelpContentField("root.drawer", "root.helpDrawer"));
-        acc.add(new HelpContentField("root.example",
-                new Button(new Icon(VaadinIcon.PAPERCLIP)), "root.helpExample"));
+        acc.add(new HelpContentField("",
+                InputBar.createExampleButton(), "root.helpExample"));
         acc.add(new HelpContentField("root.firstStepButton",
                 new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT)), "root.helpFirstStepButton"));
         acc.add(new HelpContentField("root.previousStepButton",
