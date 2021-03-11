@@ -53,24 +53,26 @@ More samples can be added to `src/test/resources/terms/` to speed up the process
 
 ## Deploying using Docker
 
-To build the Dockerized version of the project, run
+To build the Dockerized version of the project, run:
 
 ```
-docker build . -t myapp:latest
+docker build . -t typicalc:latest
 ```
 
-Once the Docker image is correctly built, you can test it locally using
+Once the Docker image is correctly built, you can run it:
 
 ```
-docker run -p 80:8080 myapp:latest
+docker run -p 80:8080 typicalc:latest
 ```
 
 ## Deploying using a JAR
 
-First build the project:
+First build the application:
+
 ```
-mvn package -Pproduction
+mvn clean package -Pproduction
 ```
+
 Then run the server:
 ```
 PORT=80 java -jar target/typicalc-1.0-SNAPSHOT.jar
