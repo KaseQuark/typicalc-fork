@@ -18,8 +18,8 @@ public final class LatexCreatorConstants {
     protected static final String CONST = "Const";
     protected static final String LET = "let";
     protected static final String IN = "in";
-    protected static final String MGU = "mgu";
-    protected static final String UNIFY = "unify";
+    protected static final String MGU = "\\textit{mgu}";
+    protected static final String UNIFY = "\\textit{unify}";
     protected static final String CONSTRAINT_SET = "C";
     protected static final String TYPE_ABSTRACTION = "ta";
 
