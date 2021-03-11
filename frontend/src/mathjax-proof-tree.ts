@@ -14,6 +14,7 @@ declare let window: {
 // these attributes and functions are supported by major browsers, but TS does not know about them
 declare global {
     interface SVGElement {
+        getElementById: (id: string) => SVGGraphicsElement | null;
         viewBox: SVGAnimatedRect;
     }
 
@@ -295,9 +296,16 @@ class MathjaxProofTree extends MathjaxAdapter {
                         }
                     }
                 });
-                // @ts-ignore
-                let matrix = svg.getElementById("svg-pan-zoom-controls").transform.baseVal[0].matrix;
+                // add tooltips to buttons
+                const zoomIn = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                zoomIn.append(document.createTextNode("zoom in"));
+                svg.getElementById("svg-pan-zoom-zoom-in")!.children[0].appendChild(zoomIn);
+                const zoomOut = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                zoomOut.append(document.createTextNode("zoom out"));
+                svg.getElementById("svg-pan-zoom-zoom-out")!.appendChild(zoomOut);
+
                 // move control to upper left corner
+                let matrix = svg.getElementById("svg-pan-zoom-controls")!.transform.baseVal[0].matrix;
                 matrix.e = 0;
                 matrix.f = 0;
             }
