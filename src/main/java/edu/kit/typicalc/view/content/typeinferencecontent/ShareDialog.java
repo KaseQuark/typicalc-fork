@@ -31,6 +31,8 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     private static final String CLOSE_ICON_ID = "closeIcon";
 
     private static final String RIGHT_ARROW_WHITE = "\\\\rightwhitearrow";
+    private static final String MATH_OPEN = "\\[";
+    private static final String MATH_CLOSE = "\\]";
 
     private final TextField urlField;
     private final TextArea packageAreaTree;
@@ -67,7 +69,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         latexAreaTree = new TextArea();
         packageAreaUnification = new TextArea();
         latexAreaUnification = new TextArea();
-        initializeFields(url, latexCodeTree, latexCodeUnification);
+        initializeFields(url, latexCodeTree, MATH_OPEN + latexCodeUnification + MATH_CLOSE);
 
         UI.getCurrent().getPage().executeJs("window.autoSelect($0)", FIELD_CLASS);
 

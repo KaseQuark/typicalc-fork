@@ -58,8 +58,8 @@ public final class LatexCreatorConstants {
 
     protected static final String LATEX_NEW_LINE = "\\\\";
     protected static final String CIRC = "\\circ";
-    protected static final String COLOR_RED = "\\color{#f00}";
-    protected static final String COLOR_HIGHLIGHT = "\\color{#006AF5}";
+    protected static final String COLOR_RED = "\\color{Red}";
+    protected static final String COLOR_HIGHLIGHTED = "\\color{RoyalBlue}";
     protected static final String EMPTY_SET = "\\emptyset";
     protected static final String LAMBDA = "\\lambda";
     protected static final String LATEX_SPACE = "\\ ";

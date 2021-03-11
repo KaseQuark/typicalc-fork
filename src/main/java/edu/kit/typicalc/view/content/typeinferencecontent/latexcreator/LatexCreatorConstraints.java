@@ -291,7 +291,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                     sb.append(COLOR_RED);
                 } else if (markLastTwoConstraints && (i < 2)) {
                     sb.append(CURLY_LEFT);
-                    sb.append(COLOR_HIGHLIGHT);
+                    sb.append(COLOR_HIGHLIGHTED);
                 }
                 sb.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType()).getLatex());
                 sb.append(EQUALS);
@@ -310,7 +310,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                     if (original.contains(originalType)) {
                         StringBuilder highlightedChange2 = new StringBuilder();
                         highlightedChange2.append(CURLY_LEFT);
-                        highlightedChange2.append(COLOR_HIGHLIGHT);
+                        highlightedChange2.append(COLOR_HIGHLIGHTED);
                         highlightedChange2.append(new LatexCreatorType(s.getType()).getLatex());
                         highlightedChange2.append(CURLY_RIGHT);
                         latex.append(original.replace(originalType, highlightedChange2.toString()));
