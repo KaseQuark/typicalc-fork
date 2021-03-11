@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Models the type of an abstraction/function.
  */
-public class FunctionType implements Type {
+public class FunctionType extends Type {
 
     private final Type parameter;
     private final Type output;

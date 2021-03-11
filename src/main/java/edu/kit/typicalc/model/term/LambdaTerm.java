@@ -12,27 +12,27 @@ import java.util.Set;
  * Depending on the subclass used, a lambda term may contain several other lambda terms
  * and thus form a tree-like structure of lambda terms.
  */
-    public interface LambdaTerm {
+    public abstract class LambdaTerm {
     /**
      * Returns whether the lambda term contains a let expression
      *
      * @return whether the lambda term contains a let expression
      */
-    boolean hasLet();
+    public abstract boolean hasLet();
 
     /**
      * Returns a set of all free variables occurring in the lambda term.
      *
      * @return all free variables
      */
-    Set<VarTerm> getFreeVariables();
+    public abstract Set<VarTerm> getFreeVariables();
 
     /**
      * Calls exactly one method on the visitor depending on the lambda term type.
      *
      * @param termVisitor a visitor
      */
-    void accept(TermVisitor termVisitor);
+    public abstract void accept(TermVisitor termVisitor);
 
     /**
      * Uses exactly one method of the visitor and provides the arguments passed.
@@ -42,6 +42,6 @@ import java.util.Set;
      * @param type            a type
      * @return the result returned by the visitor
      */
-    InferenceStep accept(TermVisitorTree termVisitorTree,
+    public abstract InferenceStep accept(TermVisitorTree termVisitorTree,
                                          Map<VarTerm, TypeAbstraction> assumptions, Type type);
 }

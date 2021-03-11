@@ -10,7 +10,7 @@ import java.util.Set;
 /**
  * Models a simple named type.
  */
-public class NamedType implements Type {
+public class NamedType extends Type {
     /**
      * boolean type
      */
