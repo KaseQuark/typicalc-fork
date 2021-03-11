@@ -77,14 +77,20 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         typeAssumptions = new Button("", event -> onTypeAssumptionsButton());
         typeAssumptions.setId(ASS_BUTTON_ID);
         typeAssumptionsArea = new TypeAssumptionsArea();
-        exampleButton = new Button(getTranslation("root.exampleButton"), event -> onExampleButtonClick());
-        exampleButton.setId(EXAMPLE_BUTTON_ID);
+        exampleButton = createExampleButton();
+        exampleButton.addClickListener(event -> onExampleButtonClick());
         inferTypeButton = new Button("", event -> onTypeInferButtonClick());
         inferTypeButton.addClickShortcut(Key.ENTER).listenOn(this);
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         inferTypeButton.setId(INFER_BUTTON_ID);
 
         add(infoIcon, typeAssumptions, lambdaButton, inputField, exampleButton, inferTypeButton);
+    }
+
+    public static Button createExampleButton() {
+        Button button = new Button(UI.getCurrent().getTranslation("root.exampleButton"));
+        button.setId(EXAMPLE_BUTTON_ID);
+        return button;
     }
 
     /**

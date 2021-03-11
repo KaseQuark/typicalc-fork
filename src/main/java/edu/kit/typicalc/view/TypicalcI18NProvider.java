@@ -36,6 +36,9 @@ public class TypicalcI18NProvider implements I18NProvider {
 
     @Override
     public String getTranslation(String key, Locale locale, Object... params) {
+        if (key.equals("")) {
+            return "";
+        }
         ResourceBundle bundle = ResourceBundle.getBundle(LANGUAGE_BUNDLE_PREFIX, locale);
 
         String result;

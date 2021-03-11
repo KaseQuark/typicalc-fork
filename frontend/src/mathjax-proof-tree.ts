@@ -14,6 +14,7 @@ declare let window: {
 // these attributes and functions are supported by major browsers, but TS does not know about them
 declare global {
     interface SVGElement {
+        getElementById: (id: string) => SVGGraphicsElement | null;
         viewBox: SVGAnimatedRect;
     }
 
@@ -246,11 +247,11 @@ class MathjaxProofTree extends MathjaxAdapter {
                             this.hammer = Hammer(options.svgElement);
 
                             // @ts-ignore
-                            this.hammer.get('pinch').set({enable: true})
+                            this.hammer.get('pinch').set({enable: true});
 
                             // Handle double tap
                             // @ts-ignore
-                            this.hammer.on('doubletap', function(ev) {
+                            this.hammer.on('doubletap', () => {
                                 options.instance.zoomIn()
                             });
 
@@ -258,7 +259,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                             let pannedY = 0;
                             // Handle pan
                             // @ts-ignore
-                            this.hammer.on('panstart panmove', function(ev){
+                            this.hammer.on('panstart panmove', ev => {
                                 // On pan start reset panned variables
                                 if (ev.type === 'panstart') {
                                     pannedX = 0
@@ -269,7 +270,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
                                 pannedX = ev.deltaX
                                 pannedY = ev.deltaY
-                            })
+                            });
 
                             let initialScale = 1;
                             // Handle pinch
@@ -282,7 +283,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 }
 
                                 instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
-                            })
+                            });
 
                             // Prevent moving the page on some devices when panning over SVG
                             options.svgElement.addEventListener('touchmove', function(e: TouchEvent){ e.preventDefault(); });
@@ -295,9 +296,16 @@ class MathjaxProofTree extends MathjaxAdapter {
                         }
                     }
                 });
-                // @ts-ignore
-                let matrix = svg.getElementById("svg-pan-zoom-controls").transform.baseVal[0].matrix;
+                // add tooltips to buttons
+                const zoomIn = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                zoomIn.append(document.createTextNode("zoom in"));
+                svg.getElementById("svg-pan-zoom-zoom-in")!.children[0].appendChild(zoomIn);
+                const zoomOut = document.createElementNS("http://www.w3.org/2000/svg", "title");
+                zoomOut.append(document.createTextNode("zoom out"));
+                svg.getElementById("svg-pan-zoom-zoom-out")!.appendChild(zoomOut);
+
                 // move control to upper left corner
+                let matrix = svg.getElementById("svg-pan-zoom-controls")!.transform.baseVal[0].matrix;
                 matrix.e = 0;
                 matrix.f = 0;
             }
