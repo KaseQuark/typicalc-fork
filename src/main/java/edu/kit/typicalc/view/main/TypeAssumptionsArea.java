@@ -51,7 +51,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     private final Button saveAssumptions;
     private final Notification invalidInputNotification;
     private final Label hintLabel;
-    
+
     private final List<TypeAssumptionField> fields = new ArrayList<>();
 
     /**
@@ -62,18 +62,18 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
     protected TypeAssumptionsArea(Map<String, String> types) {
         heading = new H3("");
         invalidInputNotification = createInvInputNotification();
-            
+
         VerticalLayout layout = new VerticalLayout();
         layout.setId(ASS_LAYOUT_ID);
+
+        assumptionContainer = new VerticalLayout();
+        assumptionContainer.setId(ASS_CONTAINER_ID);
 
         addAssumption = new Button("", new Icon(VaadinIcon.PLUS_CIRCLE));
         deleteAll = new Button("", new Icon(VaadinIcon.TRASH));
         saveAssumptions = new Button(getTranslation("root.save"), event -> closeAction());
         HorizontalLayout buttons = makeButtons();
         buttons.setId(ASS_BUTTONS_ID);
-
-        assumptionContainer = new VerticalLayout();
-        assumptionContainer.setId(ASS_CONTAINER_ID);
 
         hintLabel = new Label("");
         hintLabel.setId(HINT_ID);
@@ -86,10 +86,10 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         // attach and trigger javascript event listener after reopening the dialog
         addOpenedChangeListener(this::onOpenedChange);
     }
-    
+
     private void onOpenedChange(OpenedChangeEvent<Dialog> event) {
         if (event.isOpened()) {
-            fields.forEach(TypeAssumptionField::refresh); 
+            fields.forEach(TypeAssumptionField::refresh);
         }
     }
 
@@ -104,7 +104,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         invalidInputNotification.close();
         this.close();
     }
-    
+
     private Notification createInvInputNotification() {
         Notification notification = new Notification();
         notification.addThemeVariants(NotificationVariant.LUMO_ERROR);
@@ -112,7 +112,7 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         notification.setDuration(5000); // set the duration to 5 seconds
         return notification;
     }
-    
+
     private HorizontalLayout makeHeader() {
         HorizontalLayout headingLayout = new HorizontalLayout();
         headingLayout.setId(HEADING_LAYOUT_ID);
@@ -134,10 +134,11 @@ public class TypeAssumptionsArea extends Dialog implements LocaleChangeObserver 
         deleteAll.setIconAfterText(true);
         deleteAll.addThemeVariants(ButtonVariant.LUMO_ERROR);
         saveAssumptions.addThemeVariants(ButtonVariant.LUMO_SUCCESS);
-        saveAssumptions.addClickShortcut(Key.ENTER);
+        saveAssumptions.addClickShortcut(Key.ENTER).listenOn(assumptionContainer);
         buttons.add(addAssumption, deleteAll, saveAssumptions);
         return buttons;
     }
+
     /**
      * Creates a new empty TypeAssumptionsArea.
      */
