@@ -5,10 +5,13 @@ import com.vaadin.flow.component.orderedlayout.testbench.HorizontalLayoutElement
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.commands.TestBenchCommandExecutor;
 import edu.kit.typicalc.view.pageobjects.*;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -22,6 +25,8 @@ public class ScreenshotIT extends AbstractIT {
     private static final String IDENTITY_TERM = "λx.x";
     private static final String LET_TERM = "let f = λx. g y y in f 3";
 
+    private List<Boolean> matches = new ArrayList<>();
+
     /**
      * We'll want to perform some additional setup functions, so we override the
      * setUp() method.
@@ -30,6 +35,8 @@ public class ScreenshotIT extends AbstractIT {
     public void setUp() {
         super.setUp();
 
+        matches = new ArrayList<>();
+
         // Set a fixed viewport size so the screenshot is always the same
         // resolution
         testBench().resizeViewPortTo(1600, 800);
@@ -37,6 +44,13 @@ public class ScreenshotIT extends AbstractIT {
         // Define the directory for reference screenshots and for error files
         Parameters.setScreenshotReferenceDirectory("src/test/resources/screenshots");
         Parameters.setScreenshotErrorDirectory("target/screenshot_errors");
+    }
+
+    @After
+    public void checkMatches() {
+        for (int i = 0; i < matches.size(); i++) {
+            assertTrue(String.format("comparison %d failed", i), matches.get(i));
+        }
     }
 
     @Test
@@ -83,29 +97,20 @@ public class ScreenshotIT extends AbstractIT {
         inputBar.typeInfer();
         TestBenchCommandExecutor executor = getCommandExecutor();
         executor.waitForVaadin();
-        
-        assertTrue("Screenshot comparison for 'letView' failed, see "
-                        + Parameters.getScreenshotErrorDirectory()
-                        + " for error images",
-                testBench().compareScreen("letView"));
+
+        matches.add(testBench().compareScreen("letView"));
 
         ControlPanelElement control = $(ControlPanelElement.class).waitForFirst();
         control.openShareDialog();
         executor.waitForVaadin();
 
-        assertTrue("Screenshot comparison for 'letShareDialog' failed, see "
-                        + Parameters.getScreenshotErrorDirectory()
-                        + " for error images",
-                testBench().compareScreen("letShareDialog"));
+        matches.add(testBench().compareScreen("letShareDialog"));
 
         ShareDialogElement shareDialogElement = $(ShareDialogElement.class).waitForFirst();
         String permalink = shareDialogElement.getPermalink();
         getDriver().get(permalink);
 
-        assertTrue("Screenshot comparison for 'letView' from permalink failed, see "
-                        + Parameters.getScreenshotErrorDirectory()
-                        + " for error images",
-                testBench().compareScreen("letView"));
+        matches.add(testBench().compareScreen("letView"));
         // TODO: jeden Schritt durchgehen?
     }
 
@@ -118,15 +123,13 @@ public class ScreenshotIT extends AbstractIT {
         String term = "λx.x";
         exampleDialog.insertExample(term);
 
-        Assert.assertEquals(term, inputBar.getCurrentValue());
+        matches.add(term.equals(inputBar.getCurrentValue()));
 
         TestBenchCommandExecutor executor = getCommandExecutor();
         executor.waitForVaadin();
 
         // check that the example is copied to the input bar
-        // TODO: the blinking cursor could cause issues here
-        assertTrue("Screenshot comparison for 'chooseExample' (stage 1) failed",
-                testBench().compareScreen("chooseExample1"));
+        matches.add(testBench().compareScreen("chooseExample1"));
 
         inputBar.typeInfer();
         executor.waitForVaadin();
@@ -135,66 +138,61 @@ public class ScreenshotIT extends AbstractIT {
         executor.waitForVaadin();
 
         // check that the example is inferred correctly
-        assertTrue("Screenshot comparison for 'chooseExample' (stage 2) failed",
-                testBench().compareScreen("chooseExample2"));
+        matches.add(testBench().compareScreen("chooseExample2"));
 
         control.lastStep();
         executor.waitForVaadin();
         // check that the example is unified correctly
-        assertTrue("Screenshot comparison for 'chooseExample' (stage 3) failed",
-                testBench().compareScreen("chooseExample3"));
+        matches.add(testBench().compareScreen("chooseExample3"));
     }
-    
+
     @Test
     public void exportLatexWithAssumptions() throws IOException {
         TestBenchCommandExecutor executor = getCommandExecutor();
-        
+
         InputBarElement inputBar = $(InputBarElement.class).first();
         String term = "λx. f x";
         inputBar.setCurrentValue(term);
-        
+
         // check if the correct term is entered
-        Assert.assertEquals(term, inputBar.getCurrentValue());
-        
+        matches.add(term.equals(inputBar.getCurrentValue()));
+
         inputBar.openTypeAssumptionsArea();
         TypeAssumptionsAreaElement assumptionsArea = $(TypeAssumptionsAreaElement.class).waitForFirst();
         assumptionsArea.addTypeAssumption();
         executor.waitForVaadin();
         TypeAssumptionFieldElement assumptionField =  assumptionsArea.getLastTypeAssumption();
-        
+
         String variable = "f";
         String type = "int -> y";
         assumptionField.setVariable(variable);
         assumptionField.setType(type);
         assumptionsArea.$(HorizontalLayoutElement.class).first().$(ButtonElement.class).last().focus();
-        
+
         executor.waitForVaadin();
         // check if type assumption is added correctly
-        assertTrue("Screenshot comparison for 'exportLatexWithAssumptions' (stage 1) failed",
-                testBench().compareScreen("exportLatexWithAssumptions1"));
+        matches.add(testBench().compareScreen("exportLatexWithAssumptions1"));
         assumptionsArea.closeDialog();
-        
+
         inputBar.typeInfer();
         executor.waitForVaadin();
         ControlPanelElement controlPanel = $(ControlPanelElement.class).waitForFirst();
         controlPanel.lastStep();
         executor.waitForVaadin();
-        
+
         // check if the algorithm is processed correctly
-        assertTrue("Screenshot comparison for 'exportLatexWithAssumptions' (stage 2) failed",
-                testBench().compareScreen("exportLatexWithAssumptions2"));
-        
+        matches.add(testBench().compareScreen("exportLatexWithAssumptions2"));
+
         controlPanel.openShareDialog();
         executor.waitForVaadin();
         // check if the share dialog content is correct
-        assertTrue("Screenshot comparison for 'exportLatexWithAssumptions' (stage 3) failed",
-                testBench().compareScreen("exportLatexWithAssumptions3"));
+        matches.add(testBench().compareScreen("exportLatexWithAssumptions3"));
     }
 
     @Test
     public void testScenario1() throws IOException {
         TestBenchCommandExecutor executor = getCommandExecutor();
-        
+
         InputBarElement inputBar = $(InputBarElement.class).first();
         String term = "λx. f x";
         inputBar.setCurrentValue(term);
@@ -205,31 +203,31 @@ public class ScreenshotIT extends AbstractIT {
 
         ControlPanelElement controlPanelElement = $(ControlPanelElement.class).first();
         executor.waitForVaadin();
-        
-        assertTrue(testBench().compareScreen("testScenario1_step0"));
+
+        matches.add(testBench().compareScreen("testScenario1_step0"));
         controlPanelElement.nextStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step1"));
+        matches.add(testBench().compareScreen("testScenario1_step1"));
         controlPanelElement.nextStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step2"));
+        matches.add(testBench().compareScreen("testScenario1_step2"));
         controlPanelElement.nextStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step3"));
+        matches.add(testBench().compareScreen("testScenario1_step3"));
         controlPanelElement.nextStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step4"));
+        matches.add(testBench().compareScreen("testScenario1_step4"));
         controlPanelElement.previousStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step3"));
+        matches.add(testBench().compareScreen("testScenario1_step3"));
         controlPanelElement.previousStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step2"));
+        matches.add(testBench().compareScreen("testScenario1_step2"));
         controlPanelElement.firstStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step0"));
+        matches.add(testBench().compareScreen("testScenario1_step0"));
         controlPanelElement.lastStep();
         executor.waitForVaadin();
-        assertTrue(testBench().compareScreen("testScenario1_step4gi"));
+        matches.add(testBench().compareScreen("testScenario1_step4gi"));
     }
 }
