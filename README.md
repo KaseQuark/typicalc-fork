@@ -75,6 +75,8 @@ Finally, a code coverage report can be generated:
 mvn antrun:run@generate-report -Dskip.int.tests.report=false
 ```
 
+JaCoCo execution data of manual tests should be exported to `target/jacoco-manual.exec`.
+
 ## Deploying using Docker
 
 To build the Dockerized version of the project, run:
