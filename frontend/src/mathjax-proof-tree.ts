@@ -299,7 +299,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 // add tooltips to buttons
                 const zoomIn = document.createElementNS("http://www.w3.org/2000/svg", "title");
                 zoomIn.append(document.createTextNode("zoom in"));
-                svg.getElementById("svg-pan-zoom-zoom-in")!.children[0].appendChild(zoomIn);
+                svg.getElementById("svg-pan-zoom-zoom-in")!.appendChild(zoomIn);
                 const zoomOut = document.createElementNS("http://www.w3.org/2000/svg", "title");
                 zoomOut.append(document.createTextNode("zoom out"));
                 svg.getElementById("svg-pan-zoom-zoom-out")!.appendChild(zoomOut);
