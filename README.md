@@ -71,12 +71,13 @@ mvn integration-test
 mvn jacoco:dump@pull-test-data -Dapp.host=localhost -Dapp.port=36320 -Dskip.dump=false
 ```
 
+JaCoCo execution data of manual tests should be exported to `target/jacoco-manual.exec`.
+
 Finally, a code coverage report can be generated:
 ```
 mvn antrun:run@generate-report -Dskip.int.tests.report=false
 ```
-
-JaCoCo execution data of manual tests should be exported to `target/jacoco-manual.exec`.
+The report can be found at `target/coverage-report/html/jacoco-multi/index.html`.
 
 ## Deploying using Docker
 
