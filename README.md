@@ -60,6 +60,7 @@ mvn jacoco:prepare-agent test jacoco:report
 
 Then run the application with the JaCoCo agent: (adjust the path to the agent jar)
 ```
+mvn package -Pproduction
 cp target/typicalc-1.0-SNAPSHOT.jar /tmp
 java  -javaagent:jacoco.agent.jar=port=36320,destfile=jacoco-it.exec,output=tcpserver /tmp/typicalc-1.0-SNAPSHOT.jar
 ```
