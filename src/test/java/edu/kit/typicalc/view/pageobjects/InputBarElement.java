@@ -50,4 +50,11 @@ public class InputBarElement extends HorizontalLayoutElement {
         $(ButtonElement.class).id("assButton").click();
     }
     
+    /**
+     * Opens the info dialog.
+     */
+    public void openInfoDialog() {
+        $(ButtonElement.class).first().click();
+    }
+    
 }

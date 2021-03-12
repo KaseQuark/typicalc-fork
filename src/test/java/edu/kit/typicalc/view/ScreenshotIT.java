@@ -98,7 +98,7 @@ public class ScreenshotIT extends AbstractIT {
         TestBenchCommandExecutor executor = getCommandExecutor();
         executor.waitForVaadin();
 
-        matches.add(testBench().compareScreen("letView"));
+        matches.add(testBench().compareScreen("letView1"));
 
         ControlPanelElement control = $(ControlPanelElement.class).waitForFirst();
         control.openShareDialog();
@@ -110,7 +110,7 @@ public class ScreenshotIT extends AbstractIT {
         String permalink = shareDialogElement.getPermalink();
         getDriver().get(permalink);
 
-        matches.add(testBench().compareScreen("letView"));
+        matches.add(testBench().compareScreen("letView2"));
         // TODO: jeden Schritt durchgehen?
     }
 
@@ -229,5 +229,21 @@ public class ScreenshotIT extends AbstractIT {
         controlPanelElement.lastStep();
         executor.waitForVaadin();
         matches.add(testBench().compareScreen("testScenario1_step4gi"));
+    }
+    
+    @Test
+    public void infoDialogTest() throws IOException {
+        InputBarElement inputBar = $(InputBarElement.class).first();
+        inputBar.openInfoDialog();
+        
+        matches.add(testBench().compareScreen("infoDialog"));
+    }
+    
+    @Test
+    public void helpDialogTest() throws IOException {
+        UpperBarElement upperBar = $(UpperBarElement.class).first();
+        upperBar.openHelpDialog();
+        
+        matches.add(testBench().compareScreen("helpDialog"));
     }
 }
