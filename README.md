@@ -61,7 +61,7 @@ mvn jacoco:prepare-agent test jacoco:report
 Then run the application with the JaCoCo agent: (adjust the path to the agent jar)
 ```
 cp target/typicalc-1.0-SNAPSHOT.jar /tmp
-java  -javaagent:jacoco.agent.jar=port=36320,destfile=jacoco-it.exec,output=tcpserver /tmp/typicalc-1.0-SNAPSHOT.jar
+java  -javaagent:$HOME/.m2/repository/org/jacoco/org.jacoco.agent/0.8.6/org.jacoco.agent-0.8.6-runtime.jar=port=36320,destfile=jacoco-it.exec,output=tcpserver -jar /tmp/typicalc-1.0-SNAPSHOT.jar
 ```
 
 To run the integration tests:
