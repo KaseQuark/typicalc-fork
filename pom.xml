@@ -224,6 +224,115 @@
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
                 <version>0.8.6</version>
+                <executions>
+                    <execution>
+                        <id>pull-test-data</id>
+                        <phase>post-integration-test</phase>
+                        <goals>
+                            <goal>dump</goal>
+                        </goals>
+                        <configuration>
+                            <destFile>${project.build.directory}/jacoco-it.exec</destFile>
+                            <address>${app.host}</address>
+                            <port>${app.port}</port>
+                            <reset>false</reset>
+                            <skip>${skip.dump}</skip>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>jacoco-integration-initialize</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>prepare-agent-integration</goal>
+                        </goals>
+                        <configuration>
+                            <propertyName>failsafe.argLine</propertyName>
+                            <destFile>target/jacoco-it-base.exec</destFile>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>3.0.0</version>
+                <executions>
+                    <execution>
+                        <id>generate-report</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                        <configuration>
+                            <skip>${skip.int.tests.report}</skip>
+                            <target>
+                                <!-- Execute an ant task within maven -->
+                                <echo message="Generating JaCoCo Reports"
+                                      level="info"/>
+                                <taskdef name="report" classname="org.jacoco.ant.ReportTask">
+                                    <classpath path="${basedir}/target/jacoco-jars/org.jacoco.ant.jar"/>
+                                </taskdef>
+                                <mkdir dir="${basedir}/target/coverage-report"/>
+                                <report>
+                                    <executiondata>
+                                        <fileset dir="${basedir}">
+                                            <include name="target/jacoco.exec"/>
+                                            <include name="target/jacoco-it.exec"/>
+                                        </fileset>
+                                    </executiondata>
+                                    <structure name="jacoco-multi Coverage Project">
+                                        <group name="jacoco-multi">
+                                            <classfiles>
+                                                <fileset dir="target/classes"/>
+                                            </classfiles>
+                                            <sourcefiles encoding="UTF-8">
+                                                <fileset dir="src/main/java"/>
+                                            </sourcefiles>
+                                        </group>
+                                    </structure>
+                                    <html destdir="${basedir}/target/coverage-report/html"/>
+                                    <xml destfile="${basedir}/target/coverage-report/coverage-report.xml"/>
+                                    <csv destfile="${basedir}/target/coverage-report/coverage-report.csv"/>
+                                </report>
+                            </target>
+                        </configuration>
+                    </execution>
+                <execution>
+                    <phase>package</phase>
+                    <goals>
+                        <goal>run</goal>
+                    </goals>
+                    <configuration>
+                        <target>
+                            <!-- inject noscript tag into index.html -->
+                            <delete failonerror="false">
+                                <fileset dir="${project.build.directory}/tmp" includes="*" />
+                            </delete>
+                            <mkdir dir="${project.build.directory}/tmp" />
+                            <unzip src="${project.build.directory}/${project.build.finalName}.jar"
+                                   dest="${project.build.directory}/tmp" />
+                            <replaceregexp file="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html"
+                                           match="(\x3C)body(\x3E)"
+                                           replace="\1body\2 \1noscript\2This application requires JavaScript.\1/noscript\2"
+                                           byline="true" />
+                            <gzip src="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html"
+                                  destfile="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html.gz" />
+                            <zip basedir="${project.build.directory}/tmp"
+                                 destfile="${project.build.directory}/${project.build.finalName}.jar"
+                                 update="true"
+                                 keepcompression="true" />
+                        </target>
+                    </configuration>
+                </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>org.jacoco.ant</artifactId>
+                        <version>0.8.6</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>
@@ -262,42 +371,6 @@
                     <propertiesEncoding>UTF-8</propertiesEncoding>
                 </configuration>
             </plugin>
-
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-antrun-plugin</artifactId>
-                <version>3.0.0</version>
-                <executions>
-                    <execution>
-                        <phase>package</phase>
-                        <goals>
-                            <goal>run</goal>
-                        </goals>
-                        <configuration>
-                            <target>
-                                <!-- inject noscript tag into index.html -->
-                                <delete failonerror="false">
-                                    <fileset dir="${project.build.directory}/tmp" includes="*" />
-                                </delete>
-                                <mkdir dir="${project.build.directory}/tmp" />
-                                <unzip src="${project.build.directory}/${project.build.finalName}.jar"
-                                       dest="${project.build.directory}/tmp" />
-                                <replaceregexp file="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html"
-                                               match="(\x3C)body(\x3E)"
-                                               replace="\1body\2 \1noscript\2This application requires JavaScript.\1/noscript\2"
-                                               byline="true" />
-                                <gzip src="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html"
-                                      destfile="${project.build.directory}/tmp/META-INF/VAADIN/webapp/index.html.gz" />
-                                <zip basedir="${project.build.directory}/tmp"
-                                     destfile="${project.build.directory}/${project.build.finalName}.jar"
-                                     update="true"
-                                     keepcompression="true" />
-                            </target>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
-
         </plugins>
     </build>
 

@@ -51,6 +51,30 @@ jqf-afl-fuzz -c target/test-classes:target/classes -i src/test/resources/terms/ 
 Generated inputs are stored in `fuzz-results/queue/`.
 More samples can be added to `src/test/resources/terms/` to speed up the process.
 
+## Running tests + calculating test coverage
+
+First run the unit tests:
+```
+mvn jacoco:prepare-agent test jacoco:report
+```
+
+Then run the application with the JaCoCo agent: (adjust the path to the agent jar)
+```
+cp target/typicalc-1.0-SNAPSHOT.jar /tmp
+java  -javaagent:jacoco.agent.jar=port=36320,destfile=jacoco-it.exec,output=tcpserver /tmp/typicalc-1.0-SNAPSHOT.jar
+```
+
+To run the integration tests:
+```
+mvn integration-test
+mvn jacoco:dump@pull-test-data -Dapp.host=localhost -Dapp.port=36320 -Dskip.dump=false
+```
+
+Finally, a code coverage report can be generated:
+```
+mvn antrun:run@generate-report -Dskip.int.tests.report=false
+```
+
 ## Deploying using Docker
 
 To build the Dockerized version of the project, run:
