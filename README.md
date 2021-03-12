@@ -60,6 +60,7 @@ mvn jacoco:prepare-agent test jacoco:report
 
 Then run the application with the JaCoCo agent: (adjust the path to the agent jar)
 ```
+mvn package -Pproduction
 cp target/typicalc-1.0-SNAPSHOT.jar /tmp
 java  -javaagent:$HOME/.m2/repository/org/jacoco/org.jacoco.agent/0.8.6/org.jacoco.agent-0.8.6-runtime.jar=port=36320,destfile=jacoco-it.exec,output=tcpserver -jar /tmp/typicalc-1.0-SNAPSHOT.jar
 ```
@@ -70,12 +71,13 @@ mvn integration-test
 mvn jacoco:dump@pull-test-data -Dapp.host=localhost -Dapp.port=36320 -Dskip.dump=false
 ```
 
+JaCoCo execution data of manual tests should be exported to `target/jacoco-manual.exec`.
+
 Finally, a code coverage report can be generated:
 ```
 mvn antrun:run@generate-report -Dskip.int.tests.report=false
 ```
-
-JaCoCo execution data of manual tests should be exported to `target/jacoco-manual.exec`.
+The report can be found at `target/coverage-report/html/jacoco-multi/index.html`.
 
 ## Deploying using Docker
 
