@@ -31,3 +31,7 @@
 	flex-grow: 1;
 	justify-content: end;
 }
+
+#helpIcon {
+	color: white;
+}
