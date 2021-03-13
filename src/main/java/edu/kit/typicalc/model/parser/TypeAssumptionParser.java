@@ -46,6 +46,7 @@ public class TypeAssumptionParser {
     }
 
     public Result<TypeAbstraction, ParseError> parseType(String type) {
+        // this parser is using the same lexer as the LambdaParser (to avoid types named "let" etc.)
         LambdaLexer lexer = new LambdaLexer(type);
         Result<Pair<Type, Integer>, ParseError> parsedType = parseType(lexer, 0);
         if (parsedType.isError()) {
@@ -66,11 +67,13 @@ public class TypeAssumptionParser {
             Result<Type, ParseError> typeResult = null;
             switch (t.getType()) {
                 case LEFT_PARENTHESIS:
+                    // recursive call, set number of open parentheses to 1
                     Result<Pair<Type, Integer>, ParseError> type2 = parseType(lexer, 1);
                     typeResult = type2.map(Pair::getLeft);
                     removedParens += type2.map(Pair::getRight).unwrapOr(1) - 1;
                     break;
                 case VARIABLE:
+                    // named type or type variable
                     type = parseLiteral(t.getText());
                     break;
                 case RIGHT_PARENTHESIS:
@@ -78,8 +81,10 @@ public class TypeAssumptionParser {
                     break;
                 case ARROW:
                     if (type == null) {
+                        // there was no type in front of the arrow
                         return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
                     }
+                    // recursive call, keep open parentheses count
                     Result<Pair<Type, Integer>, ParseError> nextType = parseType(lexer, parenCount);
                     final Type left = type;
                     typeResult = nextType.map(Pair::getLeft).map(right -> new FunctionType(left, right));
@@ -90,19 +95,26 @@ public class TypeAssumptionParser {
                 default:
                     return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
             }
+            // update type based on Result
             if (typeResult != null && typeResult.isError()) {
                 return new Result<>(typeResult);
             }
             type = typeResult != null ? typeResult.unwrap() : type;
+            // after fully processing one token / a type in parenthesis,
+            // some type should have been parsed
             if (type == null) {
                 return new Result<>(null, ParseError.TOO_FEW_TOKENS);
             }
             if (parenCount - removedParens < 0) {
+                // too many closing parenthesis
                 return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
             } else if (END_TOKENS.contains(t.getType())) {
+                // potential end of type
                 if (parenCount - removedParens == 0) {
+                    // opening and closing parentheses match
                     return new Result<>(new ImmutablePair<>(type, removedParens));
                 } else {
+                    // missing closing parenthesis
                     return new Result<>(null, ParseError.TOO_FEW_TOKENS);
                 }
             }

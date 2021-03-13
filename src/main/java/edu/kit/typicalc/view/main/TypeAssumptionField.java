@@ -48,10 +48,10 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
     private final transient TypeAssumptionParser parser = new TypeAssumptionParser();
     private final TextField variableInputField;
     private final TextField typeInputField;
-    
+
     private final Binder<String> varBinder = new Binder<>();
     private final Binder<String> typeBinder = new Binder<>();
-    
+
     /**
      * Creates a new TypeAssumptionField with initial values and a callback to remove this
      * type assumption from the {@link TypeAssumptionsArea}.
@@ -87,7 +87,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         variableInputField.addBlurListener(event -> typeBinder.validate());
         typeInputField.addBlurListener(event -> varBinder.validate());
 
-        addValidatior();
+        addValidator();
         add(variableInputField, typeInputField, deleteButton);
         setId(ASSUMPTIONS_FIELD_ID);
     }
@@ -112,7 +112,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         return parser.parseType(parseBackType(type)).isOk();
     }
 
-    private void addValidatior() {
+    private void addValidator() {
         varBinder.forField(variableInputField)
                 .withValidator(var -> (hasCorrectVariable(var) || isEmpty()), StringUtils.EMPTY)
                 .bind(o -> variableInputField.getEmptyValue(), null);
@@ -133,10 +133,10 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
         }
         return new String(rawTypeArray);
     }
-    
+
     /**
      * Checks if both text fields of this type assumption are empty.
-     * 
+     *
      * @return true if both text fields are empty, false if not
      */
     protected boolean isEmpty() {
