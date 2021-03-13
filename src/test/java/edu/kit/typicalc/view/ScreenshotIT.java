@@ -246,4 +246,19 @@ public class ScreenshotIT extends AbstractIT {
         
         matches.add(testBench().compareScreen("helpDialog"));
     }
+    
+    @Test
+    public void errorViewTest() throws IOException {
+        TestBenchCommandExecutor executor = getCommandExecutor();
+        
+        InputBarElement inputBar = $(InputBarElement.class).first();
+        String term = "λ5.x";
+        
+        inputBar.setCurrentValue(term);
+        assertEquals(term, inputBar.getCurrentValue());
+        inputBar.typeInfer();
+        executor.waitForVaadin();
+        
+        matches.add(testBench().compareScreen("errorView"));
+    }
 }
