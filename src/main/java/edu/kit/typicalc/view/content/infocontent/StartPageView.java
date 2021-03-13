@@ -93,16 +93,17 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
     }
 
     private Carousel createScenarioCarousel() {
-        Slide slide1 = new ImageSlide(getTranslation("root.image1"), "root.text1");
-        Slide slide2 = new ImageSlide(getTranslation("root.image2"), "root.text2");
-        Slide slide3 = new ImageSlide(getTranslation("root.image3"), "root.text3");
-        Slide slide4 = new ImageSlide(getTranslation("root.image4"), "root.text4");
-        Slide slide5 = new ImageSlide(getTranslation("root.image5"), "root.text5");
-        Slide slide6 = new ImageSlide(getTranslation("root.image6"), "root.text6");
-        Slide slide7 = new ImageSlide(getTranslation("root.image7"), "root.text7");
-        Slide slide8 = new ImageSlide(getTranslation("root.image8"), "root.text8");
+        Slide slide0 = new ImageSlide("root.image0", "root.text0");
+        Slide slide1 = new ImageSlide("root.image1", "root.text1");
+        Slide slide2 = new ImageSlide("root.image2", "root.text2");
+        Slide slide3 = new ImageSlide("root.image3", "root.text3");
+        Slide slide4 = new ImageSlide("root.image4", "root.text4");
+        Slide slide5 = new ImageSlide("root.image5", "root.text5");
+        Slide slide6 = new ImageSlide("root.image6", "root.text6");
+        Slide slide7 = new ImageSlide("root.image7", "root.text7");
+        Slide slide8 = new ImageSlide("root.image8", "root.text8");
 
-        return new Carousel(slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8).withoutNavigation()
+        return new Carousel(slide0, slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8).withoutNavigation()
                 .withoutSwipe();
     }
 
