@@ -39,6 +39,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     private final Select<Locale> languageSelect;
     private final ItemLabelGenerator<Locale> renderer;
     private final Paragraph typicalcInfo;
+    private final Button exampleButton;
 
     /**
      * Create a new HelpDialog.
@@ -61,6 +62,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 
         headingLayout.add(heading, languageSelect, closeIcon);
 
+        exampleButton = InputBar.createExampleButton();
         VerticalLayout contentLayout = new VerticalLayout();
         Accordion content = createHelpContent();
         content.setId(ACCORDION_ID);
@@ -83,7 +85,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
         acc.add(new HelpContentField("root.shortcuts", "root.helpShortcuts"));
         acc.add(new HelpContentField("root.drawer", "root.helpDrawer"));
         acc.add(new HelpContentField("",
-                InputBar.createExampleButton(), "root.helpExample"));
+                exampleButton, "root.helpExample"));
         acc.add(new HelpContentField("root.firstStepButton",
                 new Button(new Icon(VaadinIcon.ANGLE_DOUBLE_LEFT)), "root.helpFirstStepButton"));
         acc.add(new HelpContentField("root.previousStepButton",
@@ -99,6 +101,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
+        exampleButton.setText(getTranslation("root.exampleButton"));
         heading.setText(getTranslation("root.operatingHelp"));
         languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);

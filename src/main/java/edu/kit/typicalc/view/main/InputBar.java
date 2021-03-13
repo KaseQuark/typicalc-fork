@@ -138,6 +138,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent event) {
         inputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
+        exampleButton.setText(getTranslation("root.exampleButton"));
         inferTypeButton.setText(getTranslation("root.typeInfer"));
         typeAssumptions.setText(getTranslation("root.typeAssumptions"));
         infoIcon.getElement().setAttribute("title", getTranslation("root.inputSyntax"));
