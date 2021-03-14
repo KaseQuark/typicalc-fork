@@ -27,16 +27,22 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     private final H3 heading;
     private final Div errorMessage;
     private final ParseError error;
+    private final Paragraph hint;
 
     public ErrorView(ParseError error) {
         this.error = error;
         VerticalLayout container = new VerticalLayout();
+        container.setId(ERROR_CONTENT_ID);
         heading = new H3();
         heading.getStyle().set("color", "white");
         errorMessage = new Div();
         container.add(heading, errorMessage);
-        add(container, new InfoContent());
-        container.setId(ERROR_CONTENT_ID);
+
+        InfoContent infoContent = new InfoContent();
+        hint = new Paragraph();
+        infoContent.addComponentAsFirst(hint);
+
+        add(container, infoContent);
     }
 
     private Component buildErrorMessage(ParseError error) {
@@ -94,5 +100,6 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         heading.setText(getTranslation("error.heading"));
         errorMessage.removeAll();
         errorMessage.add(buildErrorMessage(error));
+        hint.setText(getTranslation("error.hint"));
     }
 }
