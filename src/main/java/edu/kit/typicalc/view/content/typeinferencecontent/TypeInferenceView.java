@@ -60,7 +60,7 @@ public class TypeInferenceView extends VerticalLayout
 
 
     private MathjaxUnification unification;
-    private MathjaxProofTree tree;
+    private MathjaxProofTree tree = null;
     private transient LatexCreator lc;
     private final transient TypeInfererInterface typeInferer;
     private final Div content;
@@ -109,7 +109,11 @@ public class TypeInferenceView extends VerticalLayout
         Div container = new Div();
         container.setId(CONTENT_ID2);
         unification = new MathjaxUnification(lc.getUnification());
-        tree = new MathjaxProofTree(lc.getTree());
+
+        if (tree == null) {
+            tree = new MathjaxProofTree(lc.getTree());
+        }
+
         Div treeDiv = new Div();
         treeDiv.setId(CONTENT_ID3);
         treeDiv.add(tree, button);
