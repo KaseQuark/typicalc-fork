@@ -71,7 +71,6 @@ public class ScreenshotIT extends AbstractIT {
 
     @Test
     public void basicExecution() throws Exception {
-        //TODO take screenshot and add to proper folder
         InputBarElement inputBar = $(InputBarElement.class).first();
         inputBar.setCurrentValue(IDENTITY_TERM);
 
@@ -111,7 +110,6 @@ public class ScreenshotIT extends AbstractIT {
         getDriver().get(permalink);
 
         matches.add(testBench().compareScreen("letView2"));
-        // TODO: jeden Schritt durchgehen?
     }
 
     @Test
