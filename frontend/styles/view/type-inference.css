@@ -49,6 +49,7 @@
 
 #type-inference-view #rules {
 	width: 28em;
+	flex-shrink: 0;
 	overflow-y: auto;
 }
 
