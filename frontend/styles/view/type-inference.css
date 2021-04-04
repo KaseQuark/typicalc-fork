@@ -68,7 +68,7 @@
 
 tc-proof-tree {
 	flex-grow: 1;
-	min-height: 75vh;
+	min-height: 70vh;
 	display: block;
 
 	border-style: solid;
