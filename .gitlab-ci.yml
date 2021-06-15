@@ -1,10 +1,13 @@
+variables:
+  NIX_PATH: "nixpkgs=channel:nixos-21.05"
+
 build:
   script:
-    - file src/main/resources/language/translation_de.properties | rg UTF-8
-    - mvn -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp checkstyle:check jacoco:prepare-agent test jacoco:report
-    - python3 ./cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml
-    - python3 ./source2filename.py target/site/cobertura.xml
-    - ./calcCoverage.sh < target/site/cobertura.xml
+    - nix-shell --pure --run "file src/main/resources/language/translation_de.properties | rg UTF-8"
+    - nix-shell --pure --run "mvn -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp checkstyle:check jacoco:prepare-agent test jacoco:report"
+    - nix-shell --pure --run "python3 ./cover2cover.py target/site/jacoco/jacoco.xml src/main/java > target/site/cobertura.xml"
+    - nix-shell --pure --run "python3 ./source2filename.py target/site/cobertura.xml"
+    - nix-shell --pure --run "./calcCoverage.sh < target/site/cobertura.xml"
   artifacts:
     reports:
       cobertura: target/site/cobertura.xml
