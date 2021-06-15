@@ -9,6 +9,7 @@ mkShell {
     ripgrep
     mavenJdk11
     nodejs-14_x
+    which # required by Vaadin
     python3
   ];
 }
