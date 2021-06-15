@@ -8,6 +8,7 @@ mkShell {
     file
     ripgrep
     mavenJdk11
+    nodejs-14_x
     python3
   ];
 }
