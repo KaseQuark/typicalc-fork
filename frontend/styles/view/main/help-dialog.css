@@ -16,12 +16,6 @@
     padding-bottom: 12px;
 }
 
-#languageSelect {
-	position: absolute;
-	margin: 0;
-	left: 0;
-}
-
 #accordion {
 	width: 100%;
 }
