@@ -109,7 +109,7 @@ public class TypeAssumptionField extends HorizontalLayout implements LocaleChang
      * @return true if the type matches the syntax, false if not
      */
     protected boolean hasCorrectType(String type) {
-        return parser.parseType(parseBackType(type)).isOk();
+        return parser.parseTypeDefinition(parseBackType(type)).isOk();
     }
 
     private void addValidator() {

@@ -36,7 +36,7 @@ public class TypeAssumptionParser {
                 return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
             }
             VarTerm var = new VarTerm(typeName);
-            Result<TypeAbstraction, ParseError> typeAbs = parseType(entry.getValue());
+            Result<TypeAbstraction, ParseError> typeAbs = parseTypeDefinition(entry.getValue());
             if (typeAbs.isError()) {
                 return new Result<>(typeAbs);
             }
@@ -45,14 +45,33 @@ public class TypeAssumptionParser {
         return new Result<>(typeAssumptions);
     }
 
-    public Result<TypeAbstraction, ParseError> parseType(String type) {
+    /**
+     * Parse a type definition that may use the all quantor.
+     * @param definition type definition
+     * @return parsed type
+     */
+    public Result<TypeAbstraction, ParseError> parseTypeDefinition(String definition) {
+        Set<TypeVariable> allQuantified = new HashSet<>();
+        // TODO: clarify syntax, this just (barely) accepts a comma separated list of t<number>
+        if (definition.startsWith("∀")) {
+            String[] parts = definition.split(":", 2);
+            for (String quantified : parts[0].substring(1).split(",")) {
+                int i = Integer.parseInt(quantified.trim().substring(1));
+                allQuantified.add(new TypeVariable(TypeVariableKind.USER_INPUT, i));
+            }
+            definition = parts[1];
+        }
+        return parseType(definition, allQuantified);
+    }
+
+    private Result<TypeAbstraction, ParseError> parseType(String type, Set<TypeVariable> allQuantified) {
         // this parser is using the same lexer as the LambdaParser (to avoid types named "let" etc.)
         LambdaLexer lexer = new LambdaLexer(type);
         Result<Pair<Type, Integer>, ParseError> parsedType = parseType(lexer, 0);
         if (parsedType.isError()) {
             return new Result<>(null, parsedType.unwrapError());
         }
-        return new Result<>(new TypeAbstraction(parsedType.unwrap().getLeft()));
+        return new Result<>(new TypeAbstraction(parsedType.unwrap().getLeft(), allQuantified));
     }
 
     private Result<Pair<Type, Integer>, ParseError> parseType(LambdaLexer lexer, int parenCount) {

@@ -52,7 +52,11 @@ public class Tree implements TermVisitorTree {
         this.typeVarFactory = typeVariableFactory;
         this.constraints = new ArrayList<>();
 
-        this.stepFactory = lambdaTerm.hasLet() || partOfLetTerm ? new StepFactoryWithLet() : new StepFactoryDefault();
+        // quantified type assumptions have the same effect as let terms
+        // (both require VarStepWithLet)
+        this.stepFactory = typeAssumptions.entrySet().stream()
+                             .anyMatch(entry -> entry.getValue().hasQuantifiedVariables())
+                || lambdaTerm.hasLet() || partOfLetTerm ? new StepFactoryWithLet() : new StepFactoryDefault();
 
         this.failedSubInference = false;
 
