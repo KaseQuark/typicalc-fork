@@ -1,6 +1,7 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.parser.ParseError;
+import edu.kit.typicalc.model.parser.TypeAssumptionParser;
 import edu.kit.typicalc.model.step.AbsStepDefault;
 import edu.kit.typicalc.model.step.VarStepDefault;
 import edu.kit.typicalc.model.term.AbsTerm;
@@ -15,9 +16,7 @@ import edu.kit.typicalc.model.type.TypeVariableKind;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -64,6 +63,29 @@ class ModelImplTest {
                         new Conclusion(Map.of(x, new TypeAbstraction(NamedType.INT)), term, a1),
                         new Constraint(a1, new FunctionType(a2, a3))
                 ), typeInference.getFirstInferenceStep()
+        );
+    }
+
+    @Test
+    void quantifiedTypeAssumption() {
+        ModelImpl model = new ModelImpl();
+        Map<String, String> assumptions = new HashMap<>();
+        assumptions.put("id", "∀ t1 : t1 -> t1");
+
+        Result<TypeInfererInterface, ParseError> result = model.getTypeInferer("(id id) (id true)", assumptions);
+        assertTrue(result.isOk());
+        TypeInfererInterface typeInference = result.unwrap();
+        assertTrue(typeInference.getType().isPresent());
+        assertEquals(
+                new NamedType("boolean"),
+                typeInference.getType().get());
+        // spot check unification steps
+        assertEquals(
+                new Substitution(new TypeVariable(TypeVariableKind.TREE, 4), new FunctionType(
+                        new FunctionType(new NamedType("boolean"), new NamedType("boolean")),
+                        new FunctionType(new NamedType("boolean"), new NamedType("boolean"))
+                )),
+                typeInference.getMGU().get().get(3)
         );
     }
 }

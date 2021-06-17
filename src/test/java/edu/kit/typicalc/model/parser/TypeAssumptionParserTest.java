@@ -5,9 +5,7 @@ import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import static edu.kit.typicalc.model.type.NamedType.BOOLEAN;
 import static edu.kit.typicalc.model.type.NamedType.INT;
@@ -192,6 +190,26 @@ class TypeAssumptionParserTest {
                         new FunctionType(new NamedType("a"), new FunctionType(new NamedType("b"), new NamedType("c"))),
                         new NamedType("d")
                 )), assumption.getValue());
+    }
+
+    @Test
+    void allQuantified() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        Map<String, String> assumptions = new HashMap<>();
+        assumptions.put("id", "∀ t1 : t1 -> t1");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
+        assertEquals(1, types.size());
+        Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
+        assertEquals(new VarTerm("id"), assumption.getKey());
+        Set<TypeVariable> quantified = new HashSet<>();
+        quantified.add(new TypeVariable(TypeVariableKind.USER_INPUT, 1));
+        assertEquals(new TypeAbstraction(
+                new FunctionType(
+                        new TypeVariable(TypeVariableKind.USER_INPUT, 1),
+                        new TypeVariable(TypeVariableKind.USER_INPUT, 1)
+                ), quantified), assumption.getValue());
     }
 
     @Test
