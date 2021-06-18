@@ -6,6 +6,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.html.Paragraph;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -48,8 +49,10 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     private Component buildErrorMessage(ParseError error) {
         VerticalLayout additionalInformation = new VerticalLayout();
         additionalInformation.setId(ADDITIONAL_INFO_ID);
+        additionalInformation.setSpacing(false);
         Paragraph summary = new Paragraph(getTranslation("root." + error.toString()));
         summary.setId(ERROR_SUMMARY_ID);
+        String term = error.getTerm();
 
         switch (error) {
             case TOO_FEW_TOKENS:
@@ -58,15 +61,20 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
                 if (cause.isPresent()) {
-                    additionalInformation.add(new Span(getTranslation("root.wrongCharacter") + cause.get().getText()));
-                    additionalInformation.add(new Span(getTranslation("root.position") + cause.get().getPos()));
+                    additionalInformation.add(new Span(new Pre(getTranslation("root.term") + term)));
+                    additionalInformation.add(
+                            new Span(new Pre(" ".repeat(Math.max(getTranslation("root.term").length(),
+                                    cause.get().getPos() + "root.term".length()))
+                            + "^ " + getTranslation("root.wrongCharacter") + cause.get().getText())));
                 }
                 break;
             case UNEXPECTED_CHARACTER:
                 char c = error.getWrongCharacter();
                 if (c != '\0') {
-                    additionalInformation.add(new Span(getTranslation("root.wrongCharacter") + c));
-                    additionalInformation.add(new Span(getTranslation("root.position") + error.getPosition()));
+                    additionalInformation.add(new Span(new Pre(getTranslation("root.term") + term)));
+                    additionalInformation.add(new Span(new Pre(" ".repeat(Math.max(getTranslation("root.term").length(),
+                            error.getPosition() + "root.term".length()))
+                            + "^ " + getTranslation("root.wrongCharacter") + c)));
                 } else {
                     return summary;
                 }
@@ -88,8 +96,8 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
                 }
                 sb.append(getTranslation("tokentype." + t));
             }
-            additionalInformation.add(new Span(
-                    getTranslation("error.expectedToken", sb.toString())));
+            additionalInformation.add(new Span(new Pre(
+                    getTranslation("error.expectedToken", sb.toString()))));
         }
 
         return new Div(summary, additionalInformation);

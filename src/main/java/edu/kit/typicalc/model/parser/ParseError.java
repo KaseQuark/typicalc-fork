@@ -29,6 +29,7 @@ public enum ParseError {
 
     private Optional<Token> cause = Optional.empty();
     private Optional<Collection<Token.TokenType>> needed = Optional.empty();
+    private String term = "";
     private char wrongChar = '\0';
     private int position = -1;
 
@@ -36,10 +37,12 @@ public enum ParseError {
      * Attach a token to this error.
      *
      * @param cause the token that caused the error
+     * @param term the term that is parsed
      * @return this object
      */
-    public ParseError withToken(Token cause) {
+    public ParseError withToken(Token cause, String term) {
         this.cause = Optional.of(cause);
+        this.term = term;
         return this;
     }
 
@@ -70,11 +73,13 @@ public enum ParseError {
      *
      * @param cause the character
      * @param position it's position
+     * @param term the term that is parsed
      * @return this object
      */
-    public ParseError withCharacter(char cause, int position) {
+    public ParseError withCharacter(char cause, int position, String term) {
         this.wrongChar = cause;
         this.position = position;
+        this.term = term;
         return this;
     }
 
@@ -104,6 +109,13 @@ public enum ParseError {
      */
     public int getPosition() {
         return position;
+    }
+
+    /**
+     * @return the input term
+     */
+    public String getTerm() {
+        return term;
     }
 
     ParseError() {
