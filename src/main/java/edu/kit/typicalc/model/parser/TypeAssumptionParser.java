@@ -51,17 +51,49 @@ public class TypeAssumptionParser {
      * @return parsed type
      */
     public Result<TypeAbstraction, ParseError> parseTypeDefinition(String definition) {
+        definition = cleanAssumptionText(definition);
         Set<TypeVariable> allQuantified = new HashSet<>();
-        // TODO: clarify syntax, this just (barely) accepts a comma separated list of t<number>
         if (definition.startsWith("∀")) {
-            String[] parts = definition.split(":", 2);
+            String[] parts = definition.split("\\.");
+            if (parts.length < 2) {
+                int colonIndex = definition.indexOf(':');
+                if (colonIndex >= 0) {
+                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(
+                            ':', colonIndex, definition).expectedCharacter('.')
+                    );
+                }
+                return new Result<>(null, ParseError.TOO_FEW_TOKENS.expectedType(TokenType.DOT));
+            } else if (parts.length > 2) {
+                return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(
+                        '.', parts[0].length() + 1 + parts[1].length(), definition));
+            }
             for (String quantified : parts[0].substring(1).split(",")) {
-                int i = Integer.parseInt(quantified.trim().substring(1));
+                quantified = quantified.trim();
+                if (!quantified.matches("t\\d+")) {
+                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(
+                            new Token(TokenType.VARIABLE, quantified, parts[0].indexOf(quantified)), parts[0]
+                    ));
+                }
+                int i = Integer.parseInt(quantified.substring(1));
                 allQuantified.add(new TypeVariable(TypeVariableKind.USER_INPUT, i));
             }
             definition = parts[1];
         }
         return parseType(definition, allQuantified);
+    }
+
+    private String cleanAssumptionText(String text) {
+        return text.replace('₀', '0')
+                .replace('₁', '1')
+                .replace('₂', '2')
+                .replace('₃', '3')
+                .replace('₄', '4')
+                .replace('₅', '5')
+                .replace('₆', '6')
+                .replace('₇', '7')
+                .replace('₈', '8')
+                .replace('₉', '9')
+                .replace('τ', 't');
     }
 
     private Result<TypeAbstraction, ParseError> parseType(String type, Set<TypeVariable> allQuantified) {

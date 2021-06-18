@@ -69,7 +69,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
         helpButton = new Button(new Icon(VaadinIcon.QUESTION_CIRCLE));
         helpButton.addClickListener(event -> new HelpDialog().open());
         helpButton.setId(HELP_ICON_ID);
-        
+
         renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
         languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
         languageSelect.setTextRenderer(renderer);
@@ -78,7 +78,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
         languageSelect.setId(LANGUAGE_SELECT_ID);
         HorizontalLayout topLine = new HorizontalLayout(languageSelect, viewTitle, helpButton);
         topLine.setId(TOP_LINE_ID);
-        
+
         add(topLine, inputBar);
         setId(UPPER_BAR_ID);
         getThemeList().set("dark", true);
@@ -106,7 +106,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
      * @param typeAssumptions type assumptions to use
      */
     protected void inferTerm(String term, Map<String, String> typeAssumptions) {
-        inputBar.setTypeAssumptions(typeAssumptions); //TODO: currently does nothing, implement when lists are used
+        inputBar.setTypeAssumptions(typeAssumptions);
         inputBar.setTerm(term);
         startInfer(term, typeAssumptions);
     }

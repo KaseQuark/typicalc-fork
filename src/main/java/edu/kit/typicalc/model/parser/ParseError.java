@@ -31,6 +31,7 @@ public enum ParseError {
     private Optional<Collection<Token.TokenType>> needed = Optional.empty();
     private String term = "";
     private char wrongChar = '\0';
+    private char correctChar = '\0';
     private int position = -1;
 
     /**
@@ -69,6 +70,17 @@ public enum ParseError {
     }
 
     /**
+     * Attach an expected character to this error.
+     *
+     * @param expected the correct character
+     * @return this object
+     */
+    public ParseError expectedCharacter(char expected) {
+        this.correctChar = expected;
+        return this;
+    }
+
+    /**
      * Attach a character and position to this error.
      *
      * @param cause the character
@@ -102,6 +114,13 @@ public enum ParseError {
      */
     public char getWrongCharacter() {
         return wrongChar;
+    }
+
+    /**
+     * @return the correct character if this error is UNEXPECTED_CHARACTER ('\0' if unknown)
+     */
+    public char getExpectedCharacter() {
+        return correctChar;
     }
 
     /**

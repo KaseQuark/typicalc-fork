@@ -196,7 +196,7 @@ class TypeAssumptionParserTest {
     void allQuantified() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
         Map<String, String> assumptions = new HashMap<>();
-        assumptions.put("id", "∀ t1 : t1 -> t1");
+        assumptions.put("id", "∀ t1 . t1 -> t1");
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();

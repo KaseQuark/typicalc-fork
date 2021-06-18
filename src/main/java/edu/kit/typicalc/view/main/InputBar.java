@@ -15,9 +15,9 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * Contains components which allow the user to enter a lambda term and start the type inference algorithm.
@@ -35,7 +35,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String INFER_BUTTON_ID = "inferButton";
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";
     private static final String LAMBDA_BUTTON_ID = "lambdaButton";
-    private static final String ASS_BUTTON_ID = "assButton";
     private static final String QUANTIFIER_BUTTON_ID = "quantifier-button";
     private static final String ASS_INPUT_FIELD_ID = "ass-input-field";
 
@@ -75,15 +74,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         Button lambdaButton = new Button(getTranslation("root.lambda"));
         lambdaButton.setId(LAMBDA_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.buttonListener($0, $1);", LAMBDA_BUTTON_ID, TERM_INPUT_FIELD_ID);
-        
+
         Button allQuantifierButton = new Button(getTranslation("root.allQuantifier"));
         allQuantifierButton.setId(QUANTIFIER_BUTTON_ID);
         UI.getCurrent().getPage().executeJs("window.buttonListener($0, $1);", QUANTIFIER_BUTTON_ID, ASS_INPUT_FIELD_ID);
-        
+
         assumptionInputField = new AssumptionInputField();
-        assumptionInputField.setClearButtonVisible(true);
-        UI.getCurrent().getPage().executeJs("window.characterListener($0);", ASS_INPUT_FIELD_ID);
-        assumptionInputField.setId(ASS_INPUT_FIELD_ID);
+        setupAssumptionsField();
 
         exampleButton = createExampleButton();
         exampleButton.addClickListener(event -> onExampleButtonClick());
@@ -94,6 +91,12 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
         add(infoIcon, allQuantifierButton, assumptionInputField, lambdaButton, termInputField, exampleButton,
                 inferTypeButton);
+    }
+
+    private void setupAssumptionsField() {
+        assumptionInputField.setClearButtonVisible(true);
+        UI.getCurrent().getPage().executeJs("window.characterListener($0);", ASS_INPUT_FIELD_ID);
+        assumptionInputField.setId(ASS_INPUT_FIELD_ID);
     }
 
     public static Button createExampleButton() {
@@ -110,14 +113,17 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     protected void setTerm(String term) {
         termInputField.setValue(term);
     }
-    
+
     /**
      * Sets the type assumptions displayed in the type assumptions area.
      *
      * @param typeAssumptions the type assumptions as a map
      */
     protected void setTypeAssumptions(Map<String, String> typeAssumptions) {
-        // TODO: implement when parser takes list instead of map
+        assumptionInputField.setValue(
+                typeAssumptions.entrySet().stream()
+                        .map(entry -> entry.getKey().trim() + ": " + entry.getValue().trim())
+                        .collect(Collectors.joining("; ")));
     }
 
     protected void setTermAndClickTypeInfer(String term) {
@@ -127,8 +133,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     private void onTypeInferButtonClick() {
         termInputField.blur();
-        //TODO exchange dummy HashMap with list
-        callback.accept(Pair.of(termInputField.getValue(), new HashMap<String, String>()));
+        String assumptions = assumptionInputField.getValue();
+        Map<String, String> assumptionsMap = Arrays.stream(assumptions.split(";")).map(entry -> {
+            String[] parts = entry.split(":", 2);
+            return Pair.of(parts[0].trim(), parts[1].trim());
+        }).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
+                (existing, replacement) -> existing, LinkedHashMap::new));
+        callback.accept(Pair.of(termInputField.getValue(), assumptionsMap));
     }
 
     private void onExampleButtonClick() {

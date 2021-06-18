@@ -99,6 +99,12 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
             additionalInformation.add(new Span(new Pre(
                     getTranslation("error.expectedToken", sb.toString()))));
         }
+        // add expected character, if possible
+        char correct = error.getExpectedCharacter();
+        if (correct != '\0') {
+            additionalInformation.add(new Span(new Pre(
+                    getTranslation("error.expectedToken", correct))));
+        }
 
         return new Div(summary, additionalInformation);
     }

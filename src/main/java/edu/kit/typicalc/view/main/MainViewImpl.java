@@ -19,10 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -79,7 +76,8 @@ public class MainViewImpl extends AppLayout
             String term = segments.get(segments.size() - 1);
             Map<String, String> types = url.getQueryParameters().getParameters().entrySet().stream().map(entry ->
                     Pair.of(entry.getKey(), entry.getValue().get(0))
-            ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight));
+            ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
+                    (existing, replacement) -> existing, LinkedHashMap::new));
             upperBar.inferTerm(decodeURL(term), types);
         } else if (url.getPath().equals(TypeInferenceView.ROUTE)) {
             setContent(new StartPageView());
@@ -98,7 +96,7 @@ public class MainViewImpl extends AppLayout
         QueryParameters qp = new QueryParameters(lambdaTermAndAssumptions.getRight().entrySet().stream().map(entry ->
                 Pair.of(entry.getKey(), List.of(entry.getValue()))
         ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
-                (existing, replacement) -> existing, TreeMap::new)));
+                (existing, replacement) -> existing, LinkedHashMap::new)));
         UI.getCurrent().navigate(TypeInferenceView.ROUTE + "/"
                 + URLEncoder.encode(lambdaTerm, StandardCharsets.UTF_8), qp);
     }

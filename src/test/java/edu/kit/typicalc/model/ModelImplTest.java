@@ -18,8 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 class ModelImplTest {
 
@@ -70,9 +69,13 @@ class ModelImplTest {
     void quantifiedTypeAssumption() {
         ModelImpl model = new ModelImpl();
         Map<String, String> assumptions = new HashMap<>();
-        assumptions.put("id", "∀ t1 : t1 -> t1");
+        assumptions.put("id", "∀ t1 . t1 -> t1");
 
         Result<TypeInfererInterface, ParseError> result = model.getTypeInferer("(id id) (id true)", assumptions);
+        if (result.isError()) {
+            System.out.println(result.unwrapError());
+            fail();
+        }
         assertTrue(result.isOk());
         TypeInfererInterface typeInference = result.unwrap();
         assertTrue(typeInference.getType().isPresent());
