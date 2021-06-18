@@ -1,38 +1,41 @@
-function changeEvent(element: HTMLElement) {
+function changeEvent(element: HTMLElement, inputID: string) {
 	// notify Vaadin
 	// @ts-ignore
-	document.getElementById("inputField")!.__dataValue.value = element.value;
+	document.getElementById(inputID)!.__dataValue.value = element.value;
 	const evt = new Event("change", { bubbles: true });
 	element.dispatchEvent(evt);
 }
 
 // @ts-ignore
-window.lambdaButtonListener = (buttonID: string, inputID: string) => {
+window.buttonListener = (buttonID: string, inputID: string) => {
+	let replacement = (buttonID === "lambdaButton") ? 'λ' : '∀';
 	const button = document.getElementById(buttonID)!;
 	const input = document.getElementById(inputID)!;
 	button.addEventListener('click', () => {
 		const area = input.shadowRoot!.querySelector('input')!;
 		let start = area.selectionStart!;
-		area.value = [area.value.slice(0, start), 'λ', area.value.slice(start)].join('');
+		area.value = [area.value.slice(0, start), replacement, area.value.slice(start)].join('');
 		area.selectionStart = ++start;
 		area.selectionEnd = start;
 		area.focus();
-		changeEvent(area);
+		changeEvent(area, inputID);
 	});
 }
 
 // @ts-ignore
-window.backslashListener = (inputID: string) => {
+window.characterListener = (inputID: string) => {
+	let toReplace = (inputID === "term-input-field") ? '\\' : '!';
+	let replacement = (inputID === "term-input-field") ? 'λ' : '∀';
 	document.getElementById(inputID)!.addEventListener('keyup', e => {
 		const area = (e.target as HTMLElement).shadowRoot!.querySelector('input')!;
-		if (area.value.indexOf('\\') >= 0) {
+		if (area.value.indexOf(toReplace) >= 0) {
 			const start = area.selectionStart;
 			const end = area.selectionEnd;
 			// @ts-ignore
-			area.value = area.value.replaceAll('\\', 'λ');
+			area.value = area.value.replaceAll(toReplace, replacement);
 			area.selectionStart = start;
 			area.selectionEnd = end;
-			changeEvent(area);
+			changeEvent(area, inputID);
 		}
 	});
 }

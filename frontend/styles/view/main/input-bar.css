@@ -1,13 +1,15 @@
-#inputField {
+#term-input-field {
 	flex-grow: 1;
-}
-
-#inputField {
-	height: 2.3em;
+	padding-top: 0;
 }
 
 #inputBar {
-	align-items: center;
+	align-items: flex-end;
 	padding: 0 1em;
+	margin-top: -0.5em;
 }
 
+#ass-input-field {
+	flex-grow: 1;
+	padding-top: 0;
+}

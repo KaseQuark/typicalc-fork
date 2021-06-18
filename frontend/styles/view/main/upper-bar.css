@@ -22,7 +22,7 @@
 	font-size: var(--lumo-font-size-l);
 	cursor: pointer;
 	align-self: center;
-	margin: 0 47% 0 0;
+	margin: 0 47% 0.5% 0;
 }
 
 #viewTitle a {
@@ -30,7 +30,7 @@
 }
 
 #inputBar {
-	width: 60%;
+	width: 75%;
 	flex-grow: 1;
 	justify-content: end;
 }

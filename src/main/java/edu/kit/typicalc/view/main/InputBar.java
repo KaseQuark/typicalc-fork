@@ -15,6 +15,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import org.apache.commons.lang3.tuple.Pair;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
 
@@ -29,22 +30,23 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     /*
      * IDs for the imported .css-file
      */
-    public static final String INPUT_FIELD_ID = "inputField";
+    public static final String TERM_INPUT_FIELD_ID = "term-input-field";
     private static final String INPUT_BAR_ID = "inputBar";
     private static final String INFER_BUTTON_ID = "inferButton";
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";
     private static final String LAMBDA_BUTTON_ID = "lambdaButton";
     private static final String ASS_BUTTON_ID = "assButton";
+    private static final String QUANTIFIER_BUTTON_ID = "quantifier-button";
+    private static final String ASS_INPUT_FIELD_ID = "ass-input-field";
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
     private final transient Consumer<Pair<String, Map<String, String>>> callback;
     private final Button infoIcon;
-    private final TextField inputField;
-    private TypeAssumptionsArea typeAssumptionsArea;
+    private final TextField termInputField;
+    private final AssumptionInputField assumptionInputField;
     private final Button exampleButton;
     private final Button inferTypeButton;
-    private final Button typeAssumptions;
 
     /**
      * Creates an InputBar with a Consumer-object to call the inferType()-method in UpperBar.
@@ -60,23 +62,29 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         infoIcon = new Button(new Icon(VaadinIcon.INFO_CIRCLE));
         infoIcon.addClickListener(event -> onInfoIconClick());
 
-        inputField = new TextField();
-        inputField.getElement().setAttribute("autofocus", ""); // focus on page load
-        inputField.setId(INPUT_FIELD_ID);
-        inputField.setClearButtonVisible(true);
-        inputField.setMaxLength(MAX_INPUT_LENGTH);
+        termInputField = new TextField();
+        termInputField.getElement().setAttribute("autofocus", ""); // focus on page load
+        termInputField.setId(TERM_INPUT_FIELD_ID);
+        termInputField.setClearButtonVisible(true);
+        termInputField.setMaxLength(MAX_INPUT_LENGTH);
 
         // attach a listener that replaces \ with λ
         // JavaScript is used because this is a latency-sensitive operation
         // (and Vaadin does not have APIs for selectionStart/selectionEnd)
-        UI.getCurrent().getPage().executeJs("window.backslashListener($0);", INPUT_FIELD_ID);
+        UI.getCurrent().getPage().executeJs("window.characterListener($0);", TERM_INPUT_FIELD_ID);
         Button lambdaButton = new Button(getTranslation("root.lambda"));
         lambdaButton.setId(LAMBDA_BUTTON_ID);
-        UI.getCurrent().getPage().executeJs("window.lambdaButtonListener($0, $1);", LAMBDA_BUTTON_ID, INPUT_FIELD_ID);
+        UI.getCurrent().getPage().executeJs("window.buttonListener($0, $1);", LAMBDA_BUTTON_ID, TERM_INPUT_FIELD_ID);
+        
+        Button allQuantifierButton = new Button(getTranslation("root.allQuantifier"));
+        allQuantifierButton.setId(QUANTIFIER_BUTTON_ID);
+        UI.getCurrent().getPage().executeJs("window.buttonListener($0, $1);", QUANTIFIER_BUTTON_ID, ASS_INPUT_FIELD_ID);
+        
+        assumptionInputField = new AssumptionInputField();
+        assumptionInputField.setClearButtonVisible(true);
+        UI.getCurrent().getPage().executeJs("window.characterListener($0);", ASS_INPUT_FIELD_ID);
+        assumptionInputField.setId(ASS_INPUT_FIELD_ID);
 
-        typeAssumptions = new Button("", event -> onTypeAssumptionsButton());
-        typeAssumptions.setId(ASS_BUTTON_ID);
-        typeAssumptionsArea = new TypeAssumptionsArea();
         exampleButton = createExampleButton();
         exampleButton.addClickListener(event -> onExampleButtonClick());
         inferTypeButton = new Button("", event -> onTypeInferButtonClick());
@@ -84,7 +92,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         inferTypeButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         inferTypeButton.setId(INFER_BUTTON_ID);
 
-        add(infoIcon, typeAssumptions, lambdaButton, inputField, exampleButton, inferTypeButton);
+        add(infoIcon, allQuantifierButton, assumptionInputField, lambdaButton, termInputField, exampleButton,
+                inferTypeButton);
     }
 
     public static Button createExampleButton() {
@@ -99,16 +108,16 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      * @param term the provided string
      */
     protected void setTerm(String term) {
-        inputField.setValue(term);
+        termInputField.setValue(term);
     }
-
+    
     /**
      * Sets the type assumptions displayed in the type assumptions area.
      *
      * @param typeAssumptions the type assumptions as a map
      */
     protected void setTypeAssumptions(Map<String, String> typeAssumptions) {
-        typeAssumptionsArea = new TypeAssumptionsArea(typeAssumptions);
+        // TODO: implement when parser takes list instead of map
     }
 
     protected void setTermAndClickTypeInfer(String term) {
@@ -117,12 +126,9 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onTypeInferButtonClick() {
-        inputField.blur();
-        callback.accept(Pair.of(inputField.getValue(), typeAssumptionsArea.getTypeAssumptions()));
-    }
-
-    private void onTypeAssumptionsButton() {
-        typeAssumptionsArea.open();
+        termInputField.blur();
+        //TODO exchange dummy HashMap with list
+        callback.accept(Pair.of(termInputField.getValue(), new HashMap<String, String>()));
     }
 
     private void onExampleButtonClick() {
@@ -137,11 +143,13 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-        inputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
+        termInputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
+        termInputField.setLabel(getTranslation("root.term"));
         exampleButton.setText(getTranslation("root.exampleButton"));
         inferTypeButton.setText(getTranslation("root.typeInfer"));
-        typeAssumptions.setText(getTranslation("root.typeAssumptions"));
         infoIcon.getElement().setAttribute("title", getTranslation("root.inputSyntax"));
         exampleButton.getElement().setAttribute("title", getTranslation("root.exampleTooltip"));
+        assumptionInputField.setPlaceholder("TODO"); // TODO replace with usefull placeholder
+        assumptionInputField.setLabel(getTranslation("root.typeAssumptions"));
     }
 }

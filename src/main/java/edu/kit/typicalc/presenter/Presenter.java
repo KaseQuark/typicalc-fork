@@ -10,7 +10,7 @@ import edu.kit.typicalc.util.Result;
 import edu.kit.typicalc.view.main.MainView;
 import edu.kit.typicalc.view.main.MainView.MainViewListener;
 
-import static edu.kit.typicalc.view.main.InputBar.INPUT_FIELD_ID;
+import static edu.kit.typicalc.view.main.InputBar.TERM_INPUT_FIELD_ID;
 
 /**
  * Manages data exchange between the view and the model.
@@ -38,7 +38,7 @@ public class Presenter implements MainViewListener {
             view.displayError(result.unwrapError());
             // focus the input bar again
             UI.getCurrent().getPage().executeJs(
-                    "setTimeout(() => document.getElementById('" + INPUT_FIELD_ID + "').focus(), 0)");
+                    "setTimeout(() => document.getElementById('" + TERM_INPUT_FIELD_ID + "').focus(), 0)");
         } else {
             view.setTypeInferenceView(result.unwrap());
         }
