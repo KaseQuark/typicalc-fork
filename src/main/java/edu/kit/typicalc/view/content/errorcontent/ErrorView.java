@@ -2,7 +2,11 @@ package edu.kit.typicalc.view.content.errorcontent;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.dependency.CssImport;
-import com.vaadin.flow.component.html.*;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.H3;
+import com.vaadin.flow.component.html.Paragraph;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
@@ -52,7 +56,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
 
         switch (error) {
             case TOO_FEW_TOKENS:
-                additionalInformation.add(new Label(getTranslation("root.tooFewTokensHelp")));
+                additionalInformation.add(new Span(getTranslation("root.tooFewTokensHelp")));
                 break;
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
