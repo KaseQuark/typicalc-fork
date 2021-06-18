@@ -101,7 +101,7 @@ public class TypeAssumptionParser {
                 case ARROW:
                     if (type == null) {
                         // there was no type in front of the arrow
-                        return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
+                        return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
                     }
                     // recursive call, keep open parentheses count
                     Result<Pair<Type, Integer>, ParseError> nextType = parseType(lexer, parenCount);
@@ -112,7 +112,7 @@ public class TypeAssumptionParser {
                 case EOF:
                     break;
                 default:
-                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
             }
             // update type based on Result
             if (typeResult != null && typeResult.isError()) {
@@ -126,7 +126,7 @@ public class TypeAssumptionParser {
             }
             if (parenCount - removedParens < 0) {
                 // too many closing parenthesis
-                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t));
+                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
             } else if (END_TOKENS.contains(t.getType())) {
                 // potential end of type
                 if (parenCount - removedParens == 0) {

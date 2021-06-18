@@ -90,7 +90,7 @@ public class LambdaLexer {
                         return new Result<>(t);
                     } else {
                         return new Result<>(null, ParseError.UNEXPECTED_CHARACTER
-                                .withCharacter(term.charAt(pos + 1), pos + 1));
+                                .withCharacter(term.charAt(pos + 1), pos + 1, term));
                     }
                 } else {
                     return new Result<>(null, ParseError.TOO_FEW_TOKENS); // actually too few *characters* ..
@@ -135,7 +135,7 @@ public class LambdaLexer {
                     && (int) term.charAt(pos) < 128);
             if (pos < term.length() && (int) term.charAt(pos) >= 128) {
                 return new Result<>(null, ParseError.UNEXPECTED_CHARACTER
-                        .withCharacter(term.charAt(pos), pos));
+                        .withCharacter(term.charAt(pos), pos, term));
             }
             String s = sb.toString();
             TokenType type;
@@ -167,7 +167,14 @@ public class LambdaLexer {
             } while (pos < term.length() && Character.isDigit(term.charAt(pos)));
             return new Result<>(new Token(TokenType.NUMBER, sb.toString(), startPos));
         } else {
-            return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(c, pos));
+            return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(c, pos, term));
         }
+    }
+
+    /**
+     * @return the term that is parsed
+     */
+    public String getTerm() {
+        return term;
     }
 }
