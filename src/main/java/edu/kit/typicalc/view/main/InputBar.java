@@ -134,9 +134,14 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private void onTypeInferButtonClick() {
         termInputField.blur();
         String assumptions = assumptionInputField.getValue();
-        Map<String, String> assumptionsMap = Arrays.stream(assumptions.split(";")).map(entry -> {
-            String[] parts = entry.split(":", 2);
-            return Pair.of(parts[0].trim(), parts[1].trim());
+        Map<String, String> assumptionsMap = Arrays.stream(assumptions.split(";"))
+                .filter(entry -> entry.length() > 0).map(entry -> {
+            if (entry.contains(":")) {
+                String[] parts = entry.split(":", 2);
+                return Pair.of(parts[0].trim(), parts[1].trim());
+            } else {
+                return Pair.of(entry, "");
+            }
         }).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
                 (existing, replacement) -> existing, LinkedHashMap::new));
         callback.accept(Pair.of(termInputField.getValue(), assumptionsMap));
