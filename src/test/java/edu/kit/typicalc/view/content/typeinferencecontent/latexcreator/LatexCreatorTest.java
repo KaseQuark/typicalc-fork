@@ -15,7 +15,7 @@ class LatexCreatorTest {
     @Test
     void testFailedLet() {
         TypeInfererInterface typeInferer = model.getTypeInferer("let fun = 5 5 in fun 42", new HashMap<>()).unwrap();
-        String latex = new LatexCreator(typeInferer, Enum::toString).getTree();
+        String latex = new LatexCreator(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getTree();
         assertEquals("\\begin{prooftree}\n" +
                 "\\AxiomC{$\\texttt{5} \\in Const$}\n" +
                 "\\LeftLabel{\\textrm C{\\small ONST}}\n" +
@@ -30,7 +30,7 @@ class LatexCreatorTest {
                 "\\BinaryInfC{$\\vdash\\texttt{\\textbf{let}}\\ \\texttt{fun}=\\texttt{5}\\ \\texttt{5}\\ \\texttt{\\textbf{in}}\\ \\texttt{fun}\\ \\texttt{42}:\\alpha_{1}$}\n" +
                 "\\end{prooftree}", latex);
         typeInferer = model.getTypeInferer("(let fun = 5 5 in fun) 42", new HashMap<>()).unwrap();
-        latex = new LatexCreator(typeInferer, Enum::toString).getTree();
+        latex = new LatexCreator(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getTree();
         assertEquals("\\begin{prooftree}\n" +
                 "\\AxiomC{$\\texttt{5} \\in Const$}\n" +
                 "\\LeftLabel{\\textrm C{\\small ONST}}\n" +

@@ -6,5 +6,8 @@
 <suppressions>
   <suppress files="src/main/resources/*" checks=".*" />
   <suppress files="src/test/resources/*" checks=".*" />
+  <suppress
+          files="src/main/java/edu/kit/typicalc/view/content/typeinferencecontent/latexcreator/LatexCreatorConstraints.java"
+          checks="ParameterNumber" />
 </suppressions>
 

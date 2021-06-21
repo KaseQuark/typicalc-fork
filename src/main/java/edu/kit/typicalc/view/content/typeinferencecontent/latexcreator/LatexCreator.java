@@ -22,6 +22,7 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  */
 public class LatexCreator implements StepVisitor {
     private final StringBuilder tree;
+    private final LatexCreatorMode mode;
     private final boolean stepLabels;
     private final LatexCreatorConstraints constraintsCreator;
 
@@ -30,9 +31,11 @@ public class LatexCreator implements StepVisitor {
      *
      * @param typeInferer         theTypeInfererInterface to create the LaTeX-code from
      * @param translationProvider translation text provider for {@link UnificationError}
+     *                            @param mode                LaTeX creation mode
      */
-    public LatexCreator(TypeInfererInterface typeInferer, Function<UnificationError, String> translationProvider) {
-        this(typeInferer, true, translationProvider);
+    public LatexCreator(TypeInfererInterface typeInferer, Function<UnificationError, String> translationProvider,
+                        LatexCreatorMode mode) {
+        this(typeInferer, true, translationProvider, mode);
     }
 
     /**
@@ -41,13 +44,16 @@ public class LatexCreator implements StepVisitor {
      * @param typeInferer         theTypeInfererInterface to create the LaTeX code from
      * @param stepLabels          turns step labels on or off
      * @param translationProvider translation text provider for {@link UnificationError}
+     * @param mode                LaTeX creation mode
      */
     public LatexCreator(TypeInfererInterface typeInferer, boolean stepLabels,
-                        Function<UnificationError, String> translationProvider) {
+                        Function<UnificationError, String> translationProvider,
+                        LatexCreatorMode mode) {
         this.tree = new StringBuilder();
+        this.mode = mode;
         this.stepLabels = stepLabels;
         typeInferer.getFirstInferenceStep().accept(this);
-        this.constraintsCreator = new LatexCreatorConstraints(typeInferer, translationProvider);
+        this.constraintsCreator = new LatexCreatorConstraints(typeInferer, translationProvider, mode);
     }
 
     /**
@@ -78,9 +84,9 @@ public class LatexCreator implements StepVisitor {
     }
 
     private String conclusionToLatex(Conclusion conclusion) {
-        String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions());
+        String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions(), mode);
         String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
-        String type = new LatexCreatorType(conclusion.getType()).getLatex();
+        String type = new LatexCreatorType(conclusion.getType()).getLatex(mode);
         return DOLLAR_SIGN + typeAssumptions + VDASH + term + COLON + type + DOLLAR_SIGN;
     }
 
@@ -98,9 +104,9 @@ public class LatexCreator implements StepVisitor {
     }
 
     private String generateVarStepPremise(VarStep var) {
-        String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions());
+        String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions(), mode);
         String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm()).getLatex();
-        String type = generateTypeAbstraction(var.getTypeAbsInPremise());
+        String type = generateTypeAbstraction(var.getTypeAbsInPremise(), mode);
         return PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
                 + PAREN_RIGHT + EQUALS + type;
     }
@@ -144,8 +150,8 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(VarStepWithLet varL) {
         tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
-        String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise());
-        String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex();
+        String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise(), mode);
+        String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex(mode);
         String premiseRight = typeAbstraction + INSTANTIATE_SIGN + instantiatedType;
         String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + ALIGN_BEGIN
                 + generateVarStepPremise(varL)

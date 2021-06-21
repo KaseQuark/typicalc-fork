@@ -18,14 +18,15 @@ public final class AssumptionGeneratorUtil {
     private AssumptionGeneratorUtil() {
     }
 
-    protected static String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions) {
+    protected static String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions,
+                                                   LatexCreatorMode mode) {
         if (typeAssumptions.isEmpty()) {
             return "";
         } else {
             StringBuilder assumptions = new StringBuilder();
             typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
                 String termLatex = new LatexCreatorTerm(varTerm).getLatex();
-                String abstraction = generateTypeAbstraction(typeAbstraction);
+                String abstraction = generateTypeAbstraction(typeAbstraction, mode);
                 assumptions.append(termLatex)
                         .append(COLON)
                         .append(abstraction)
@@ -36,18 +37,18 @@ public final class AssumptionGeneratorUtil {
         }
     }
 
-    protected static String generateTypeAbstraction(TypeAbstraction abs) {
+    protected static String generateTypeAbstraction(TypeAbstraction abs, LatexCreatorMode mode) {
         StringBuilder abstraction = new StringBuilder();
         if (abs.hasQuantifiedVariables()) {
             abstraction.append(FOR_ALL);
             abs.getQuantifiedVariables().forEach(typeVariable -> {
-                String variableTex = new LatexCreatorType(typeVariable).getLatex();
+                String variableTex = new LatexCreatorType(typeVariable).getLatex(mode);
                 abstraction.append(variableTex).append(COMMA);
             });
             abstraction.deleteCharAt(abstraction.length() - 1);
             abstraction.append(DOT_SIGN);
         }
-        abstraction.append(new LatexCreatorType(abs.getInnerType()).getLatex());
+        abstraction.append(new LatexCreatorType(abs.getInnerType()).getLatex(mode));
         return abstraction.toString();
     }
 }

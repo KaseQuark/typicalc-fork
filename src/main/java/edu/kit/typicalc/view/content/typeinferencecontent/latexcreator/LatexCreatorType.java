@@ -34,9 +34,13 @@ public class LatexCreatorType implements TypeVisitor {
     /**
      * @return the generated LaTeX code
      */
-    protected String getLatex() {
-        // this class is used in frontend/src/mathjax-setup.js
-        return "\\class{typicalc-type typicalc-type-" + type.hashCode() + "}{" + latex + "}";
+    protected String getLatex(LatexCreatorMode mode) {
+        if (mode == LatexCreatorMode.MATHJAX) {
+            // this class is used in frontend/src/mathjax-setup.js
+            return "\\class{typicalc-type typicalc-type-" + type.hashCode() + "}{" + latex + "}";
+        } else {
+            return latex.toString();
+        }
     }
 
     @Override

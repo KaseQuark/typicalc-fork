@@ -20,6 +20,7 @@ import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorMode;
 import edu.kit.typicalc.view.main.TypeInferenceRules;
 import edu.kit.typicalc.view.main.MainViewImpl;
 
@@ -62,6 +63,7 @@ public class TypeInferenceView extends VerticalLayout
     private MathjaxUnification unification;
     private MathjaxProofTree tree = null;
     private transient LatexCreator lc;
+    private transient LatexCreator lcUser;
     private final transient TypeInfererInterface typeInferer;
     private final Div content;
     private final ControlPanel controlPanel;
@@ -136,8 +138,8 @@ public class TypeInferenceView extends VerticalLayout
         UI.getCurrent().getPage().executeJs("return decodeURI(window.location.href)").then(url ->
                 new ShareDialog(
                         url.asString().replace(" ", "%20"),
-                        lc.getTree(),
-                        lc.getUnification()[currentStep]).open()
+                        lcUser.getTree(),
+                        lcUser.getUnification()[currentStep]).open()
         );
     }
 
@@ -197,7 +199,11 @@ public class TypeInferenceView extends VerticalLayout
         if (typeInferer != null) {
             content.removeAll();
             lc = new LatexCreator(typeInferer,
-                    error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)));
+                    error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)),
+                    LatexCreatorMode.MATHJAX);
+            lcUser = new LatexCreator(typeInferer,
+                    error -> getTranslation("root." + error.toString().toLowerCase(Locale.ENGLISH)),
+                    LatexCreatorMode.NORMAL);
             treeNumbers = lc.getTreeNumbers();
             setContent();
             refreshElements();
