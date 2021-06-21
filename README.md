@@ -105,3 +105,7 @@ Then run the server:
 ```
 PORT=80 java -jar target/typicalc-1.0-SNAPSHOT.jar
 ```
+
+### Deploying using systemd
+
+Copy the `typicalc.service` file into your systemd configuration and enable the service.

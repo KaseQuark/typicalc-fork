@@ -1,0 +1,35 @@
+[Unit]
+Description=Typicalc
+After=syslog.target network.target
+
+[Service]
+# the JVM uses this exit code when stopping due to SIGTERM
+SuccessExitStatus=143
+
+User=typicalc
+Group=typicalc
+
+Type=simple
+
+WorkingDirectory=/opt
+ExecStart=/usr/lib/jvm/java-11-openjdk-amd64/bin/java -jar /opt/typicalc-1.0-SNAPSHOT.jar
+ExecStop=/bin/kill -15 $MAINPID
+
+ProtectSystem=strict
+ProtectHome=true
+ProtectKernelModules=true
+ProtectKernelTunables=true
+ProtectControlGroups=true
+PrivateDevices=true
+PrivateTmp=true
+PrivateUsers=true
+NoNewPrivileges=true
+CapabilityBoundingSet=~CAP_SYS_ADMIN CAP_SYS_PTRACE CAP_SETUID CAP_SETGID CAP_SETPCAP CAP_SYS_MODULE CAP_SYS_TIME
+RestrictNamespaces=~user
+SystemCallArchitectures=native
+LockPersonality=true
+UMask=0177
+RestrictAddressFamilies=AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target
