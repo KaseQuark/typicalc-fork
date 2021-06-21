@@ -101,13 +101,20 @@ window.MathJax = {
                 html.render();
                 const hostTag = root.host.tagName.toLowerCase();
                 if (hostTag !== "tc-proof-tree") {
-                    if (callback != null) {
+                    if (callback) {
                         callback(html);
                     }
                     return html;
                 }
+                // setup style container for styles applied on hover
+                let hoverStyles = root.querySelector("#typicalc-hover-styles");
+                if (!hoverStyles) {
+                    hoverStyles = document.createElement('style');
+                    hoverStyles.id = "typicalc-hover-styles";
+                    root.querySelector("mjx-head").appendChild(hoverStyles);
+                }
                 // set the size of the rendered SVG to the size of the container element
-                if (root.querySelector("#style-fixes") === null) {
+                if (!root.querySelector("#style-fixes")) {
                     const style = document.createElement('style');
                     style.innerHTML = "\
                         mjx-doc, mjx-body, mjx-container, #tc-content, svg {\
@@ -115,16 +122,49 @@ window.MathJax = {
                         }\
                         mjx-container {\
                             margin: 0 !important;\
+                        }\
+                        .typicalc-type {\
+                            stroke: transparent; stroke-width: 600px; pointer-events: all;\
                         }";
-                    if (hostTag === "tc-proof-tree") {
-                        style.innerHTML += "svg { width: 100%; }";
-                    }
+                    style.innerHTML += "svg { width: 100%; }";
                     style.id = "style-fixes";
                     root.querySelector("mjx-head").appendChild(style);
                 }
-                if (callback != null) {
+                if (callback) {
                     callback(html);
                 }
+                // listen for hover events on types
+                // the class "typicalc-type" is set in LatexCreatorType
+                root.querySelector("#step0").addEventListener("mouseover", e => {
+                    let typeTarget = e.target;
+                    let counter = 0;
+                    while (!typeTarget.classList.contains("typicalc-type")) {
+                        typeTarget = typeTarget.parentElement;
+                        counter++;
+                        if (counter > 3) {
+                            return;
+                        }
+                    }
+                    const typeClass = typeTarget.classList[1];
+                    hoverStyles.innerHTML = "." + typeClass + " { color: red; }";
+                });
+                root.querySelector("#step0").addEventListener("mouseout", e => {
+                    let typeTarget = e.target;
+                    let counter = 0;
+                    while (!typeTarget.classList.contains("typicalc-type")) {
+                        typeTarget = typeTarget.parentElement;
+                        counter++;
+                        if (counter > 3) {
+                            return;
+                        }
+                    }
+                    if (!typeTarget.classList.contains("typicalc-type")) {
+                        console.log(typeTarget);
+                        return;
+                    }
+                    console.log(typeTarget.classList[1]);
+                    hoverStyles.innerHTML = "";
+                });
                 return html;
             }
 

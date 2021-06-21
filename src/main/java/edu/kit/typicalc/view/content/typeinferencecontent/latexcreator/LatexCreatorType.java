@@ -15,6 +15,7 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  * @see Type
  */
 public class LatexCreatorType implements TypeVisitor {
+    private final Type type;
     private static final int MAX_LENGTH = 100000; // 100 KB
 
     private final StringBuilder latex = new StringBuilder();
@@ -26,6 +27,7 @@ public class LatexCreatorType implements TypeVisitor {
      * @param type the type
      */
     protected LatexCreatorType(Type type) {
+        this.type = type;
         type.accept(this);
     }
 
@@ -33,7 +35,8 @@ public class LatexCreatorType implements TypeVisitor {
      * @return the generated LaTeX code
      */
     protected String getLatex() {
-        return latex.toString();
+        // this class is used in frontend/src/mathjax-setup.js
+        return "\\class{typicalc-type typicalc-type-" + type.hashCode() + "}{" + latex + "}";
     }
 
     @Override
