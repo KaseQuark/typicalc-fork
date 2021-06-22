@@ -12,23 +12,26 @@ public class InfoContent extends VerticalLayout implements LocaleChangeObserver 
     private final Span termExplanation;
     private final Paragraph termSyntax;
     private final Span assExplanation;
-    private final Paragraph assSyntax;
+    private final Span typeExplanation;
+    private final Paragraph typeSyntax;
 
     public InfoContent() {
         termExplanation = new Span();
         termSyntax = new Paragraph();
         assExplanation = new Span();
-        assSyntax = new Paragraph();
+        typeExplanation = new Span();
+        typeSyntax = new Paragraph();
         termSyntax.setId(GRAMMAR_ID);
-        assSyntax.setId(GRAMMAR_ID);
-        add(termExplanation, termSyntax, assExplanation, assSyntax);
+        typeSyntax.setId(GRAMMAR_ID);
+        add(termExplanation, termSyntax, assExplanation, typeExplanation, typeSyntax);
     }
 
     @Override
     public void localeChange(LocaleChangeEvent localeChangeEvent) {
         termExplanation.setText(getTranslation("root.termExplanation"));
         termSyntax.getElement().setProperty("innerHTML", getTranslation("root.termGrammar"));
-        assExplanation.setText(getTranslation("root.assExplanation"));
-        assSyntax.getElement().setProperty("innerHTML", getTranslation("root.assGrammar"));
+        assExplanation.getElement().setProperty("innerHTML", getTranslation("root.assExplanation"));
+        typeExplanation.setText(getTranslation("root.typeExplanation"));
+        typeSyntax.getElement().setProperty("innerHTML", getTranslation("root.typeGrammar"));
     }
 }
