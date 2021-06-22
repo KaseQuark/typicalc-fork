@@ -409,7 +409,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(PAREN_LEFT);
         latex.append(typeAssumptions);
         latex.append("" + PAREN_RIGHT + COMMA + LATEX_SPACE);
-        latex.append(new LatexCreatorTerm(letVariable.orElseThrow(IllegalStateException::new)).getLatex());
+        latex.append(new LatexCreatorTerm(letVariable.orElseThrow(IllegalStateException::new), mode).getLatex());
         latex.append("" + COLON + TYPE_ABSTRACTION + PAREN_LEFT + SIGMA);
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);

@@ -25,7 +25,7 @@ public final class AssumptionGeneratorUtil {
         } else {
             StringBuilder assumptions = new StringBuilder();
             typeAssumptions.forEach(((varTerm, typeAbstraction) -> {
-                String termLatex = new LatexCreatorTerm(varTerm).getLatex();
+                String termLatex = new LatexCreatorTerm(varTerm, mode).getLatex();
                 String abstraction = generateTypeAbstraction(typeAbstraction, mode);
                 assumptions.append(termLatex)
                         .append(COLON)

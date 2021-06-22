@@ -11,8 +11,8 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  * @see LambdaTerm
  */
 public class LatexCreatorTerm implements TermVisitor {
-
     private final StringBuilder latex = new StringBuilder();
+    private final LatexCreatorMode mode;
 
     private enum ParenthesesNeeded {
         NEVER,
@@ -27,7 +27,8 @@ public class LatexCreatorTerm implements TermVisitor {
      *
      * @param lambdaTerm the term to convert into LaTeX
      */
-    protected LatexCreatorTerm(LambdaTerm lambdaTerm) {
+    protected LatexCreatorTerm(LambdaTerm lambdaTerm, LatexCreatorMode mode) {
+        this.mode = mode;
         lambdaTerm.accept(this);
     }
 
@@ -78,10 +79,18 @@ public class LatexCreatorTerm implements TermVisitor {
 
     @Override
     public void visit(VarTerm varTerm) {
+        if (mode == LatexCreatorMode.MATHJAX) {
+            latex.append("\\class{typicalc-type typicalc-type-v-");
+            latex.append(varTerm.hashCode());
+            latex.append("}{");
+        }
         latex.append(MONO_TEXT);
         latex.append(CURLY_LEFT);
         latex.append(varTerm.getName());
         latex.append(CURLY_RIGHT);
+        if (mode == LatexCreatorMode.MATHJAX) {
+            latex.append("}");
+        }
         needsParentheses = ParenthesesNeeded.NEVER;
     }
 

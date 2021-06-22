@@ -85,7 +85,7 @@ public class LatexCreator implements StepVisitor {
 
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions(), mode);
-        String term = new LatexCreatorTerm(conclusion.getLambdaTerm()).getLatex();
+        String term = new LatexCreatorTerm(conclusion.getLambdaTerm(), mode).getLatex();
         String type = new LatexCreatorType(conclusion.getType()).getLatex(mode);
         return DOLLAR_SIGN + typeAssumptions + VDASH + term + COLON + type + DOLLAR_SIGN;
     }
@@ -105,7 +105,7 @@ public class LatexCreator implements StepVisitor {
 
     private String generateVarStepPremise(VarStep var) {
         String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions(), mode);
-        String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm()).getLatex();
+        String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm(), mode).getLatex();
         String type = generateTypeAbstraction(var.getTypeAbsInPremise(), mode);
         return PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
                 + PAREN_RIGHT + EQUALS + type;
@@ -134,7 +134,7 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(ConstStepDefault constD) {
         tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
-        String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm()).getLatex();
+        String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm(), mode).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
                 + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
         tree.insert(0, step);
