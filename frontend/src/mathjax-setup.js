@@ -114,6 +114,7 @@ window.MathJax = {
                     root.querySelector("mjx-head").appendChild(hoverStyles);
                 }
                 // set the size of the rendered SVG to the size of the container element
+                // enlarge hover area of certain elements
                 if (!root.querySelector("#style-fixes")) {
                     const style = document.createElement('style');
                     style.innerHTML = "\
@@ -123,7 +124,7 @@ window.MathJax = {
                         mjx-container {\
                             margin: 0 !important;\
                         }\
-                        .typicalc-type {\
+                        .typicalc-type, g[semantics='bspr_prooflabel:left'] {\
                             stroke: transparent; stroke-width: 600px; pointer-events: all;\
                         }";
                     style.innerHTML += "svg { width: 100%; }";
@@ -133,37 +134,41 @@ window.MathJax = {
                 if (callback) {
                     callback(html);
                 }
-                // listen for hover events on types
-                // the class "typicalc-type" is set in LatexCreatorType
-                root.querySelector("#step0").addEventListener("mouseover", e => {
+                const handleMouseEvent = (e, mouseIn) => {
                     let typeTarget = e.target;
                     let counter = 0;
-                    while (!typeTarget.classList.contains("typicalc-type")) {
+                    while (!typeTarget.classList.contains("typicalc-type")
+                        && typeTarget.getAttribute("semantics") !== "bspr_prooflabel:left") {
                         typeTarget = typeTarget.parentElement;
                         counter++;
-                        if (counter > 3) {
+                        if (counter > 4) {
                             return;
                         }
                     }
-                    const typeClass = typeTarget.classList[1];
-                    hoverStyles.innerHTML = "." + typeClass + " { color: red; }";
+                    let isType = typeTarget.classList.contains("typicalc-type");
+                    let isLabel = typeTarget.getAttribute("semantics") === "bspr_prooflabel:left";
+                    if (mouseIn) {
+                        if (isType) {
+                            const typeClass = typeTarget.classList[1];
+                            hoverStyles.innerHTML = "." + typeClass + " { color: red; }";
+                        } else if (isLabel) {
+                            typeTarget.style.color = "green";
+                        }
+                    } else {
+                        if (isType) {
+                            hoverStyles.innerHTML = "";
+                        } else if (isLabel) {
+                            typeTarget.style.color = null;
+                        }
+                    }
+                };
+                // listen for hover events on types
+                // the class "typicalc-type" is set in LatexCreatorType and in LatexCreatorTerm
+                root.querySelector("#step0").addEventListener("mouseover", e => {
+                    handleMouseEvent(e, true);
                 });
                 root.querySelector("#step0").addEventListener("mouseout", e => {
-                    let typeTarget = e.target;
-                    let counter = 0;
-                    while (!typeTarget.classList.contains("typicalc-type")) {
-                        typeTarget = typeTarget.parentElement;
-                        counter++;
-                        if (counter > 3) {
-                            return;
-                        }
-                    }
-                    if (!typeTarget.classList.contains("typicalc-type")) {
-                        console.log(typeTarget);
-                        return;
-                    }
-                    console.log(typeTarget.classList[1]);
-                    hoverStyles.innerHTML = "";
+                    handleMouseEvent(e, false);
                 });
                 return html;
             }
