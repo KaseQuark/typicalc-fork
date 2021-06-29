@@ -32,7 +32,23 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
      * @param latex the LaTeX code to render with MathJax
      */
     public MathjaxProofTree(String latex) {
-        content.add(latex);
+        content.add("\\[\\cssId{typicalc-prooftree}{" + latex + "}"
+                + "\\cssId{typicalc-definition-abs}{"
+                + getTranslation("root.absLatex")
+                + "}"
+                + "\\cssId{typicalc-definition-app}{"
+                + getTranslation("root.appLatex")
+                + "}"
+                + "\\cssId{typicalc-definition-const}{"
+                + getTranslation("root.constLatex")
+                + "}"
+                + "\\cssId{typicalc-definition-var}{"
+                + getTranslation("root.varLatex")
+                + "}"
+                + "\\cssId{typicalc-definition-let}{"
+                + getTranslation("root.letLatex")
+                + "}"
+                + "\\]");
         getElement().callJsFunction("requestTypeset");
     }
 

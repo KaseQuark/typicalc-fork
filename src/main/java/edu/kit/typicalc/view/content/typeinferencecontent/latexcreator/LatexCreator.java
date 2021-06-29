@@ -114,26 +114,34 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(AbsStepDefault absD) {
-        tree.insert(0, generateConclusion(absD, LABEL_ABS, UIC));
+        tree.insert(0, generateConclusion(absD,
+                mode == LatexCreatorMode.MATHJAX ? LABEL_ABS_WITH_CLASS : LABEL_ABS,
+                UIC));
         absD.getPremise().accept(this);
     }
 
     @Override
     public void visit(AbsStepWithLet absL) {
-        tree.insert(0, generateConclusion(absL, LABEL_ABS, UIC));
+        tree.insert(0, generateConclusion(absL,
+                mode == LatexCreatorMode.MATHJAX ? LABEL_ABS_WITH_CLASS : LABEL_ABS, // TODO: differentiate with let
+                UIC));
         absL.getPremise().accept(this);
     }
 
     @Override
     public void visit(AppStepDefault appD) {
-        tree.insert(0, generateConclusion(appD, LABEL_APP, BIC));
+        tree.insert(0, generateConclusion(appD,
+                mode == LatexCreatorMode.MATHJAX ? LABEL_APP_WITH_CLASS : LABEL_APP,
+                BIC));
         appD.getPremise2().accept(this);
         appD.getPremise1().accept(this);
     }
 
     @Override
     public void visit(ConstStepDefault constD) {
-        tree.insert(0, generateConclusion(constD, LABEL_CONST, UIC));
+        tree.insert(0, generateConclusion(constD,
+                mode == LatexCreatorMode.MATHJAX ? LABEL_CONST_WITH_CLASS : LABEL_CONST,
+                UIC));
         String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm(), mode).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
                 + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE;
@@ -142,14 +150,18 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(VarStepDefault varD) {
-        tree.insert(0, generateConclusion(varD, LABEL_VAR, UIC));
+        tree.insert(0, generateConclusion(varD,
+                mode == LatexCreatorMode.MATHJAX ? LABEL_VAR_WITH_CLASS : LABEL_VAR,
+                UIC));
         tree.insert(0, AXC + CURLY_LEFT + DOLLAR_SIGN + generateVarStepPremise(varD)
                 + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE);
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
-        tree.insert(0, generateConclusion(varL, LABEL_VAR, UIC));
+        tree.insert(0, generateConclusion(varL,
+                mode == LatexCreatorMode.MATHJAX ? LABEL_VAR_WITH_CLASS : LABEL_VAR, // TODO: differentiate with let
+                UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise(), mode);
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex(mode);
         String premiseRight = typeAbstraction + INSTANTIATE_SIGN + instantiatedType;
@@ -163,7 +175,9 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(LetStepDefault letD) {
-        tree.insert(0, generateConclusion(letD, LABEL_LET, BIC));
+        tree.insert(0, generateConclusion(letD,
+                mode == LatexCreatorMode.MATHJAX ? LABEL_LET_WITH_CLASS : LABEL_LET,
+                BIC));
         letD.getPremise().accept(this);
         letD.getTypeInferer().getFirstInferenceStep().accept(this);
     }

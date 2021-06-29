@@ -5,10 +5,10 @@ SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformTo
 };
 window.MathJax = {
     loader: {
-        load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/color', '[tex]/textmacros', '[tex]/unicode']
+        load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/color', '[tex]/html', '[tex]/textmacros', '[tex]/unicode']
     },
     tex: {
-        packages: {'[+]': ['ams', 'bussproofs', 'color', 'textmacros', 'unicode']},
+        packages: {'[+]': ['ams', 'bussproofs', 'color', 'html', 'textmacros', 'unicode']},
         inlineMath: [['$', '$'], ['\\(', '\\)']]
     },
     svg: {
@@ -92,7 +92,7 @@ window.MathJax = {
                     return;
                 }
                 const mjxContainer = root.querySelector<HTMLElement>("mjx-container");
-                if (mjxContainer !== null) {
+                if (mjxContainer) {
                     mjxContainer.innerHTML = "";
                 }
                 const InputJax = startup.getInputJax();
@@ -126,6 +126,10 @@ window.MathJax = {
                         }\
                         .typicalc-type, g[semantics='bspr_prooflabel:left'] {\
                             stroke: transparent; stroke-width: 600px; pointer-events: all;\
+                        }\
+                        #typicalc-definition-abs, #typicalc-definition-app, #typicalc-definition-const, #typicalc-definition-var, #typicalc-definition-let {\
+                            display: none;\
+                            border: 2px solid red;\
                         }";
                     style.innerHTML += "svg { width: 100%; }";
                     style.id = "style-fixes";
@@ -134,31 +138,59 @@ window.MathJax = {
                 if (callback) {
                     callback(html);
                 }
+                const viewport = root.querySelector("#step0").parentElement;
                 const handleMouseEvent = (e, mouseIn) => {
                     let typeTarget = e.target;
                     let counter = 0;
                     while (!typeTarget.classList.contains("typicalc-type")
-                        && typeTarget.getAttribute("semantics") !== "bspr_prooflabel:left") {
+                        && !typeTarget.classList.contains("typicalc-label")) {
                         typeTarget = typeTarget.parentElement;
                         counter++;
-                        if (counter > 4) {
+                        if (counter > 3) {
                             return;
                         }
                     }
                     let isType = typeTarget.classList.contains("typicalc-type");
-                    let isLabel = typeTarget.getAttribute("semantics") === "bspr_prooflabel:left";
+                    let isLabel = typeTarget.classList.contains("typicalc-label");
                     if (mouseIn) {
                         if (isType) {
                             const typeClass = typeTarget.classList[1];
                             hoverStyles.innerHTML = "." + typeClass + " { color: red; }";
                         } else if (isLabel) {
-                            typeTarget.style.color = "green";
+                            const defId = typeTarget.classList[1].replace("-label-", "-definition-");
+                            const defEl = root.getElementById(defId);
+                            const transform = viewport.getTransformToElement(typeTarget);
+                            const offsetX = -3000;
+                            const offsetY = 5500;
+                            defEl.style.display = "block";
+                            const svgRect = defEl.getBBox();
+                            defEl.transform.baseVal[0].matrix.e = -transform.e - svgRect.width + offsetX + 1000;
+                            defEl.transform.baseVal[0].matrix.f = -transform.f - 5500 + offsetY;
+                            let defElBackground = root.getElementById(defId + "-background");
+                            if (!defElBackground) {
+                                defElBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                defElBackground.id = defId + "-background";
+                                defElBackground.setAttribute("x", 0);
+                                defElBackground.setAttribute("y", 0);
+                                defElBackground.setAttribute("width", svgRect.width + 2000);
+                                defElBackground.setAttribute("height", svgRect.height + 1000);
+                                defEl.parentElement.insertBefore(defElBackground, defEl);
+                            }
+                            console.log(transform);
+                            defElBackground.setAttribute("x", -transform.e - svgRect.width + offsetX);
+                            defElBackground.setAttribute("y", -transform.f - 7000 + offsetY);
+                            defElBackground.setAttribute("fill", "yellow");
                         }
                     } else {
                         if (isType) {
                             hoverStyles.innerHTML = "";
                         } else if (isLabel) {
-                            typeTarget.style.color = null;
+                            const defId = typeTarget.classList[1].replace("-label-", "-definition-");
+                            root.getElementById(defId).style.display = "none";
+                            console.log(defId + "-background");
+                            let defElBackground = root.getElementById(defId + "-background");
+                            defElBackground.setAttribute("y", 10000);
+                            defElBackground.setAttribute("fill", "transparent");
                         }
                     }
                 };

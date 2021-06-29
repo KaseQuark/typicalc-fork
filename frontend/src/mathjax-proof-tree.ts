@@ -61,10 +61,11 @@ class MathjaxProofTree extends MathjaxAdapter {
 
         if (this.shadowRoot !== null) {
             console.time('stepCalculation');
-            const root = this.shadowRoot;
+            const svg = this.shadowRoot.querySelector<SVGElement>("svg")!;
+            const root = this.shadowRoot.querySelector("#typicalc-prooftree")!.parentNode!.parentNode! as SVGElement;
             // first, enumerate all of the steps
             let stepIdx = 0;
-            for (const a of root.querySelectorAll<SVGElement>("g[semantics]")) {
+            for (const a of [root, ...root.querySelectorAll<SVGElement>("g[semantics]")]) {
                 let semantics = a.getAttribute("semantics")!;
                 if (semanticsMatch(semantics)) {
                     a.setAttribute("typicalc", "step");
@@ -75,7 +76,7 @@ class MathjaxProofTree extends MathjaxAdapter {
             // then create the steps
             let steps: [SVGElement, SVGElement[]][] = [];
             stepIdx = 0;
-            for (const a of root.querySelectorAll<SVGElement>("g[semantics]")) {
+            for (const a of [root, ...root.querySelectorAll<SVGElement>("g[semantics]")]) {
                 let semantics = a.getAttribute("semantics")!;
                 if (semanticsMatch(semantics)) {
                     const id = "step" + stepIdx;
@@ -114,7 +115,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                     steps.push([a, above]);
                 }
             }
-            const svg = root.querySelector<SVGElement>("svg")!;
             // limit start zoom
             svg.viewBox.baseVal.width = Math.min(100000, svg.viewBox.baseVal.width);
             svg.viewBox.baseVal.width = Math.max(20000, svg.viewBox.baseVal.width);
@@ -126,7 +126,7 @@ class MathjaxProofTree extends MathjaxAdapter {
             // 1. fix overlapping by iterating over "rows" in the SVG created by MathJax
             // in each row, the elements are arranged to not overlap
             // 2. place inference conclusions under the center of their line
-            const nodeIterator = [...svg.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']," + inferenceRuleSelector)];
+            const nodeIterator = [...root.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']," + inferenceRuleSelector)];
             console.log(`working with ${nodeIterator.length} nodes`);
             // start layout fixes in the innermost part of the SVG
             nodeIterator.reverse();
@@ -223,7 +223,8 @@ class MathjaxProofTree extends MathjaxAdapter {
                     }
                 }
             }
-            const conclusion0 = svg.querySelector<SVGElement>(inferenceRuleSelector)!.children[1].children[0].children[0].children[1] as SVGGraphicsElement;
+            const conclusion0 = root.querySelector<SVGElement>(inferenceRuleSelector)!.children[1].children[0].children[0].children[1] as SVGGraphicsElement;
+            console.log(conclusion0);
             const conclusionWidth = conclusion0.getBBox().width;
             const svgWidth = svg.viewBox.baseVal.width;
             const offset = (svg.children[1] as SVGGraphicsElement).getTransformToElement(conclusion0);
