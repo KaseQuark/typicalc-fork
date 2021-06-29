@@ -61,19 +61,18 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
                 if (cause.isPresent()) {
-                    additionalInformation.add(new Span(new Pre(getTranslation("root.term") + term)));
-                    additionalInformation.add(
-                            new Span(new Pre(" ".repeat(Math.max(getTranslation("root.term").length(),
-                                    cause.get().getPos() + "root.term".length()))
+                    additionalInformation.add(new Span(new Pre(getTranslation("root.termForError") + term
+                            + "\n" + " ".repeat(Math.max(getTranslation("root.termForError").length(),
+                            cause.get().getPos() + getTranslation("root.termForError").length()))
                             + "^ " + getTranslation("root.wrongCharacter") + cause.get().getText())));
                 }
                 break;
             case UNEXPECTED_CHARACTER:
                 char c = error.getWrongCharacter();
                 if (c != '\0') {
-                    additionalInformation.add(new Span(new Pre(getTranslation("root.term") + term)));
-                    additionalInformation.add(new Span(new Pre(" ".repeat(Math.max(getTranslation("root.term").length(),
-                            error.getPosition() + "root.term".length()))
+                    additionalInformation.add(new Span(new Pre(getTranslation("root.termForError") + term
+                            + "\n" + " ".repeat(Math.max(getTranslation("root.termForError").length(),
+                            error.getPosition() + getTranslation("root.termForError").length()))
                             + "^ " + getTranslation("root.wrongCharacter") + c)));
                 } else {
                     return summary;
@@ -106,7 +105,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
                     getTranslation("error.expectedToken", correct))));
         }
 
-        return new Div(summary, additionalInformation);
+        return new Div(additionalInformation);
     }
 
     @Override
