@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
  */
 @CssImport("./styles/view/main/input-bar.css")
 @JsModule("./src/input-bar-enhancements.ts")
+@CssImport(value = "./styles/view/main/vaadin-text-field.css", themeFor = "vaadin-text-field")
 public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -6099700300418752958L;
 
@@ -160,7 +161,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent event) {
         termInputField.setPlaceholder(getTranslation("root.inputFieldPlaceholder"));
-        termInputField.setLabel(getTranslation("root.term"));
+        termInputField.setLabel(getTranslation("root.termLabel"));
         exampleButton.setText(getTranslation("root.exampleButton"));
         inferTypeButton.setText(getTranslation("root.typeInfer"));
         infoIcon.getElement().setAttribute("title", getTranslation("root.inputSyntax"));

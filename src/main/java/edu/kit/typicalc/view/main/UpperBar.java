@@ -29,7 +29,6 @@ import java.util.function.Consumer;
 @CssImport("./styles/view/main/upper-bar.css")
 @CssImport(value = "./styles/view/button-hover.css", themeFor = "vaadin-button")
 @CssImport(value = "./styles/view/button-hover.css", themeFor = "vaadin-drawer-toggle")
-@CssImport(value = "./styles/view/main/select-text-field.css", themeFor = "vaadin-select-text-field")
 public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = -7344967027514015830L;
 
@@ -114,7 +113,6 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
     @Override
     public void localeChange(LocaleChangeEvent event) {
         helpButton.getElement().setAttribute("title", getTranslation("root.helpIconTooltip"));
-        languageSelect.setLabel(getTranslation("root.selectLanguage"));
         languageSelect.setTextRenderer(renderer);
     }
 }

@@ -1,6 +1,7 @@
 #term-input-field {
 	flex-grow: 1;
 	padding-top: 0;
+	padding-bottom: 0;
 }
 
 #inputBar {
@@ -12,4 +13,5 @@
 #ass-input-field {
 	flex-grow: 1;
 	padding-top: 0;
+	padding-bottom: 0;
 }
