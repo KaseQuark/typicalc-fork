@@ -213,6 +213,21 @@ class TypeAssumptionParserTest {
     }
 
     @Test
+    void usefulErrors() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        Map<String, String> assumptions = new HashMap<>();
+        assumptions.put("id", "∀ t1");
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        assertTrue(type.isError());
+        ParseError error = type.unwrapError();
+        assertEquals(ParseError.TOO_FEW_TOKENS, error);
+        Collection<Token.TokenType> expected = error.getExpected().get();
+        assertEquals(1, expected.size());
+        assertTrue(expected.contains(Token.TokenType.DOT));
+        // TODO: should also expect a comma, once the parser is fixed!
+    }
+
+    @Test
     void errors() {
         Map<String, ParseError> tests = new HashMap<>();
         tests.put("", ParseError.TOO_FEW_TOKENS);
