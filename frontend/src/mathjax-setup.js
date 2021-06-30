@@ -91,6 +91,7 @@ window.MathJax = {
                 if (root.getElementById("tc-content") === null) {
                     return;
                 }
+                const unificationEl = root.host.parentElement.parentElement.querySelector("tc-unification");
                 const mjxContainer = root.querySelector<HTMLElement>("mjx-container");
                 if (mjxContainer) {
                     mjxContainer.innerHTML = "";
@@ -113,8 +114,15 @@ window.MathJax = {
                     hoverStyles.id = "typicalc-hover-styles";
                     root.querySelector("mjx-head").appendChild(hoverStyles);
                 }
+                let hoverStylesUnification = unificationEl.shadowRoot.querySelector("#typicalc-hover-styles");
+                if (!hoverStylesUnification) {
+                    hoverStylesUnification = document.createElement('style');
+                    hoverStylesUnification.id = "typicalc-hover-styles";
+                    unificationEl.shadowRoot.querySelector("mjx-head").appendChild(hoverStylesUnification);
+                }
                 // set the size of the rendered SVG to the size of the container element
                 // enlarge hover area of certain elements
+                //console.log(unificationEl);
                 if (!root.querySelector("#style-fixes")) {
                     const style = document.createElement('style');
                     style.innerHTML = "\
@@ -155,7 +163,9 @@ window.MathJax = {
                     if (mouseIn) {
                         if (isType) {
                             const typeClass = typeTarget.classList[1];
-                            hoverStyles.innerHTML = "." + typeClass + " { color: red; }";
+                            const css = "." + typeClass + " { color: red; }";
+                            hoverStyles.innerHTML = css;
+                            hoverStylesUnification.innerHTML = css;
                         } else if (isLabel) {
                             const defId = typeTarget.classList[1].replace("-label-", "-definition-");
                             const defEl = root.getElementById(defId);
@@ -176,7 +186,6 @@ window.MathJax = {
                                 defElBackground.setAttribute("height", svgRect.height + 1000);
                                 defEl.parentElement.insertBefore(defElBackground, defEl);
                             }
-                            console.log(transform);
                             defElBackground.setAttribute("x", -transform.e - svgRect.width + offsetX);
                             defElBackground.setAttribute("y", -transform.f - 7000 + offsetY);
                             defElBackground.setAttribute("fill", "yellow");
@@ -184,10 +193,10 @@ window.MathJax = {
                     } else {
                         if (isType) {
                             hoverStyles.innerHTML = "";
+                            hoverStylesUnification.innerHTML = "";
                         } else if (isLabel) {
                             const defId = typeTarget.classList[1].replace("-label-", "-definition-");
                             root.getElementById(defId).style.display = "none";
-                            console.log(defId + "-background");
                             let defElBackground = root.getElementById(defId + "-background");
                             defElBackground.setAttribute("y", 10000);
                             defElBackground.setAttribute("fill", "transparent");
