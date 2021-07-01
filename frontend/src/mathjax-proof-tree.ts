@@ -62,7 +62,10 @@ class MathjaxProofTree extends MathjaxAdapter {
         if (this.shadowRoot !== null) {
             console.time('stepCalculation');
             const svg = this.shadowRoot.querySelector<SVGElement>("svg")!;
-            const root = this.shadowRoot.querySelector("#typicalc-prooftree")!.parentNode!.parentNode! as SVGElement;
+            let root = this.shadowRoot.querySelector("#typicalc-prooftree")!.parentNode! as SVGElement;
+            while (!root.getAttribute("semantics")) {
+                root = root.parentNode! as SVGElement;
+            }
             // first, enumerate all of the steps
             let stepIdx = 0;
             for (const a of [root, ...root.querySelectorAll<SVGElement>("g[semantics]")]) {
