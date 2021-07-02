@@ -17,6 +17,7 @@ import java.util.regex.Pattern;
 public class TypeAssumptionParser {
 
     public static final Pattern TYPE_NAME_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
+    public static final Pattern NEGATED_TYPE_NAME_PATTERN = Pattern.compile("(?![a-zA-Z][a-zA-Z0-9]*)");
     private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
 
     private static final Set<TokenType> END_TOKENS
@@ -33,7 +34,11 @@ public class TypeAssumptionParser {
         for (Map.Entry<String, String> entry : assumptions.entrySet()) {
             String typeName = entry.getKey();
             if (!TYPE_NAME_PATTERN.matcher(typeName).matches()) {
-                return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
+                Matcher matcher = NEGATED_TYPE_NAME_PATTERN.matcher(typeName);
+                if (matcher.find()) {
+                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(
+                            typeName.charAt(matcher.start()), matcher.start(), typeName));
+                }
             }
             VarTerm var = new VarTerm(typeName);
             Result<TypeAbstraction, ParseError> typeAbs = parseTypeDefinition(entry.getValue());
@@ -133,7 +138,7 @@ public class TypeAssumptionParser {
                 case ARROW:
                     if (type == null) {
                         // there was no type in front of the arrow
-                        return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
+                        return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, lexer.getTerm()));
                     }
                     // recursive call, keep open parentheses count
                     Result<Pair<Type, Integer>, ParseError> nextType = parseType(lexer, parenCount);
@@ -144,7 +149,7 @@ public class TypeAssumptionParser {
                 case EOF:
                     break;
                 default:
-                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
+                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, lexer.getTerm()));
             }
             // update type based on Result
             if (typeResult != null && typeResult.isError()) {
@@ -158,7 +163,7 @@ public class TypeAssumptionParser {
             }
             if (parenCount - removedParens < 0) {
                 // too many closing parenthesis
-                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
+                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, lexer.getTerm()));
             } else if (END_TOKENS.contains(t.getType())) {
                 // potential end of type
                 if (parenCount - removedParens == 0) {
