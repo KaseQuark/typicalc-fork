@@ -27,12 +27,30 @@ public enum ParseError {
      */
     UNEXPECTED_CHARACTER;
 
+    public enum ErrorType {
+        /**
+         * This error was created when parsing the input term
+         */
+        TERM_ERROR,
+
+        /**
+         * This error was created when parsing the type assumptions
+         */
+        TYPE_ASSUMPTION_ERROR,
+
+        /**
+         * initial error type
+         */
+        INITIAL_ERROR
+    }
+
     private Optional<Token> cause = Optional.empty();
     private Optional<Collection<Token.TokenType>> needed = Optional.empty();
     private String term = "";
     private char wrongChar = '\0';
     private char correctChar = '\0';
     private int position = -1;
+    private ErrorType errorType = ErrorType.INITIAL_ERROR;
 
     /**
      * Attach a token to this error.
@@ -41,9 +59,10 @@ public enum ParseError {
      * @param term the term that is parsed
      * @return this object
      */
-    public ParseError withToken(Token cause, String term) {
+    public ParseError withToken(Token cause, String term, ErrorType errorType) {
         this.cause = Optional.of(cause);
         this.term = term;
+        this.errorType = errorType;
         return this;
     }
 
@@ -88,10 +107,11 @@ public enum ParseError {
      * @param term the term that is parsed
      * @return this object
      */
-    public ParseError withCharacter(char cause, int position, String term) {
+    public ParseError withCharacter(char cause, int position, String term, ErrorType errorType) {
         this.wrongChar = cause;
         this.position = position;
         this.term = term;
+        this.errorType = errorType;
         return this;
     }
 
@@ -135,6 +155,17 @@ public enum ParseError {
      */
     public String getTerm() {
         return term;
+    }
+
+    /**
+     * @return the error type
+     */
+    public ErrorType getErrorType() {
+        return errorType;
+    }
+
+    protected void setErrorType(ErrorType errorType) {
+        this.errorType = errorType;
     }
 
     ParseError() {
