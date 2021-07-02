@@ -82,6 +82,8 @@ public class LatexCreatorTerm implements TermVisitor {
         if (mode == LatexCreatorMode.MATHJAX) {
             latex.append("\\class{typicalc-type typicalc-type-v-");
             latex.append(varTerm.hashCode());
+            latex.append("-");
+            latex.append(varTerm.uniqueIndex());
             latex.append("}{");
         }
         latex.append(MONO_TEXT);

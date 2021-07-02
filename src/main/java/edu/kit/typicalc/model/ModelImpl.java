@@ -4,6 +4,7 @@ import edu.kit.typicalc.model.parser.LambdaParser;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.model.parser.TypeAssumptionParser;
 import edu.kit.typicalc.model.term.LambdaTerm;
+import edu.kit.typicalc.model.term.ScopingVisitor;
 import edu.kit.typicalc.model.term.VarTerm;
 import edu.kit.typicalc.model.type.TypeAbstraction;
 import edu.kit.typicalc.util.Result;
@@ -39,8 +40,10 @@ public class ModelImpl implements Model {
         if (assumptionMap.isError()) {
             return new Result<>(null, assumptionMap.unwrapError());
         }
-        //Create and return TypeInferer
-        TypeInferer typeInferer = new TypeInferer(result.unwrap(), assumptionMap.unwrap());
+        // scope variables
+        LambdaTerm term = result.unwrap();
+        term.accept(new ScopingVisitor());
+        TypeInferer typeInferer = new TypeInferer(term, assumptionMap.unwrap());
         return new Result<>(typeInferer, null);
     }
 }

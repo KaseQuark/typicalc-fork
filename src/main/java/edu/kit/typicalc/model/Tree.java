@@ -133,6 +133,7 @@ public class Tree implements TermVisitorTree {
         Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new LinkedHashMap<>(typeAssumptions);
         Type assType = typeVarFactory.nextTypeVariable();
         TypeAbstraction assAbs = new TypeAbstraction(assType);
+        extendedTypeAssumptions.remove(absTerm.getVariable());
         extendedTypeAssumptions.put(absTerm.getVariable(), assAbs);
 
         Type premiseType = typeVarFactory.nextTypeVariable();
