@@ -11,6 +11,7 @@ import java.util.*;
  */
 public class VarTerm extends LambdaTerm {
     private final String name;
+    private int uniqueIndex = -1;
 
     /**
      * Initializes a new variable term with its name.
@@ -49,6 +50,18 @@ public class VarTerm extends LambdaTerm {
     @Override
     public InferenceStep accept(TermVisitorTree visitor, Map<VarTerm, TypeAbstraction> assumptions, Type type) {
         return visitor.visit(this, assumptions, type);
+    }
+
+    /**
+     * @see ScopingVisitor
+     * @return unique identifier of this VarTerm among VarTerms with the same name
+     */
+    public int uniqueIndex() {
+        return this.uniqueIndex;
+    }
+
+    public void setUniqueIndex(int index) {
+        this.uniqueIndex = index;
     }
 
     @Override
