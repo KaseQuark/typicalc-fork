@@ -19,8 +19,8 @@ function modifyValue(area: HTMLInputElement) {
 	const value = parseBack(area.value);
 	const start = area.selectionStart;
 	const end = area.selectionEnd;
-	// ignore brackets, allow '>', spaces, ':', '.' or '∀' in front and '-', spaces, '.', ':' or ';' at the end of string
-	area.value = value.replace(/(^|\s+|\(|\)|>|∀|:|\.)t[0-9]+(?=\s+|\)|\(|-|:|\.|;|$)/ig, replacer);
+	// ignore brackets, allow '>', spaces, ':', '.', ',' or '∀' in front and '-', spaces, '.', ':', ',' or ';' at the end of string
+	area.value = value.replace(/(^|\s+|\(|\)|>|∀|:|,|\.)t[0-9]+(?=\s+|\)|\(|-|:|\.|;|,|$)/ig, replacer);
 	area.selectionStart = start;
 	area.selectionEnd = end;
 }
