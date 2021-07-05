@@ -86,7 +86,7 @@ public class LatexCreator implements StepVisitor {
     private String conclusionToLatex(Conclusion conclusion) {
         String typeAssumptions = typeAssumptionsToLatex(conclusion.getTypeAssumptions(), mode);
         String term = new LatexCreatorTerm(conclusion.getLambdaTerm(), mode).getLatex();
-        String type = new LatexCreatorType(conclusion.getType()).getLatex(mode);
+        String type = new LatexCreatorType(conclusion.getType(), mode).getLatex();
         return DOLLAR_SIGN + typeAssumptions + VDASH + term + COLON + type + DOLLAR_SIGN;
     }
 
@@ -163,7 +163,7 @@ public class LatexCreator implements StepVisitor {
                 mode == LatexCreatorMode.MATHJAX ? LABEL_VAR_WITH_CLASS : LABEL_VAR, // TODO: differentiate with let
                 UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise(), mode);
-        String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs()).getLatex(mode);
+        String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs(), mode).getLatex();
         String premiseRight = typeAbstraction + INSTANTIATE_SIGN + instantiatedType;
         String premiseLeft = AXC + CURLY_LEFT + DOLLAR_SIGN + ALIGN_BEGIN
                 + generateVarStepPremise(varL)

@@ -133,8 +133,8 @@ public class LatexCreatorConstraints implements StepVisitor {
     }
 
     private String createSingleConstraint(Constraint constraint) {
-        String firstType = new LatexCreatorType(constraint.getFirstType()).getLatex(mode);
-        String secondType = new LatexCreatorType(constraint.getSecondType()).getLatex(mode);
+        String firstType = new LatexCreatorType(constraint.getFirstType(), mode).getLatex();
+        String secondType = new LatexCreatorType(constraint.getSecondType(), mode).getLatex();
         return firstType + EQUALS + secondType;
     }
 
@@ -297,9 +297,9 @@ public class LatexCreatorConstraints implements StepVisitor {
                     sb.append(CURLY_LEFT);
                     sb.append(COLOR_HIGHLIGHTED);
                 }
-                sb.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType()).getLatex(mode));
+                sb.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType(), mode).getLatex());
                 sb.append(EQUALS);
-                sb.append(new LatexCreatorType(unificationConstraints.get(i).getSecondType()).getLatex(mode));
+                sb.append(new LatexCreatorType(unificationConstraints.get(i).getSecondType(), mode).getLatex());
                 if ((markError && i == 0) || markLastTwoConstraints && (i < 2)) {
                     sb.append(CURLY_RIGHT);
                 }
@@ -310,12 +310,12 @@ public class LatexCreatorConstraints implements StepVisitor {
                     // perform the substitution "manually" and color the new type
                     Substitution s = substitutions.get(substitutions.size() - 1);
                     String original = previousConstraints[invIdx];
-                    String originalType = new LatexCreatorType(s.getVariable()).getLatex(mode);
+                    String originalType = new LatexCreatorType(s.getVariable(), mode).getLatex();
                     if (original.contains(originalType)) {
                         StringBuilder highlightedChange2 = new StringBuilder();
                         highlightedChange2.append(CURLY_LEFT);
                         highlightedChange2.append(COLOR_HIGHLIGHTED);
-                        highlightedChange2.append(new LatexCreatorType(s.getType()).getLatex(mode));
+                        highlightedChange2.append(new LatexCreatorType(s.getType(), mode).getLatex());
                         highlightedChange2.append(CURLY_RIGHT);
                         latex.append(original.replace(originalType, highlightedChange2.toString()));
                     } else {
@@ -341,9 +341,9 @@ public class LatexCreatorConstraints implements StepVisitor {
                 }
                 latex.append(BRACKET_LEFT);
                 latex.append(AMPERSAND);
-                latex.append(new LatexCreatorType(substitutions.get(i).getVariable()).getLatex(mode));
+                latex.append(new LatexCreatorType(substitutions.get(i).getVariable(), mode).getLatex());
                 latex.append(SUBSTITUTION_SIGN);
-                latex.append(new LatexCreatorType(substitutions.get(i).getType()).getLatex(mode));
+                latex.append(new LatexCreatorType(substitutions.get(i).getType(), mode).getLatex());
                 latex.append(BRACKET_RIGHT);
                 latex.append(LATEX_NEW_LINE);
             }
@@ -368,9 +368,9 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
             latex.append(AMPERSAND);
-            latex.append(new LatexCreatorType(substitution.getVariable()).getLatex(mode));
+            latex.append(new LatexCreatorType(substitution.getVariable(), mode).getLatex());
             latex.append(SUBSTITUTION_SIGN);
-            latex.append(new LatexCreatorType(substitution.getType()).getLatex(mode));
+            latex.append(new LatexCreatorType(substitution.getType(), mode).getLatex());
             latex.append(COMMA);
             latex.append(LATEX_NEW_LINE);
         }));
@@ -387,10 +387,10 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
         latex.append(
-                new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType()).getLatex(mode));
+                new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode).getLatex());
         latex.append("" + PAREN_RIGHT + EQUALS);
         latex.append(
-                new LatexCreatorType(typeInferer.getType().orElseThrow(IllegalStateException::new)).getLatex(mode));
+                new LatexCreatorType(typeInferer.getType().orElseThrow(IllegalStateException::new), mode).getLatex());
         return latex.toString();
     }
 
@@ -414,7 +414,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
         latex.append(
-                new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType()).getLatex(mode)
+                new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode).getLatex()
         );
         latex.append("" + PAREN_RIGHT + COMMA + SIGMA);
         latex.append(constraintSetIndex);

@@ -1,7 +1,6 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.parser.ParseError;
-import edu.kit.typicalc.model.parser.TypeAssumptionParser;
 import edu.kit.typicalc.model.step.AbsStepDefault;
 import edu.kit.typicalc.model.step.VarStepDefault;
 import edu.kit.typicalc.model.term.AbsTerm;
