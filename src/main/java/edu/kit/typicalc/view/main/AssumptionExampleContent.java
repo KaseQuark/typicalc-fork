@@ -43,7 +43,7 @@ public class AssumptionExampleContent extends VerticalLayout {
         selectedTermBar.setId(SELECTED_TERM_BAR_ID);
         this.add(selectedTermBar);
         
-        String[] exampleAssumptions = getTranslation("root." + term.replaceAll("(\\s+|=)", "")).split(",");
+        String[] exampleAssumptions = getTranslation("root." + term.replaceAll("(\\s+|=)", "")).split(";");
         for (String assumptions : exampleAssumptions) {
             Button button = new Button(assumptions);
             button.addClickListener(click -> forwardCallback.accept(assumptions.
