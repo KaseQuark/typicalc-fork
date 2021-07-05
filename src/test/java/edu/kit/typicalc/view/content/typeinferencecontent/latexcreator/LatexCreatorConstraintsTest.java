@@ -25,7 +25,7 @@ class LatexCreatorConstraintsTest {
 
     @Test
     void singleVarDefaultConstraintTest() {
-        typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("x", "").unwrap();
         List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getEverything();
 
         String constraintSet = AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + AMPERSAND
@@ -55,7 +55,7 @@ class LatexCreatorConstraintsTest {
 
     @Test
     void singleAbsDefaultConstraintTest() {
-        typeInferer = model.getTypeInferer("λx.y", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("λx.y", "").unwrap();
         List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getEverything();
 
         String constraintSet1 = AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + AMPERSAND
@@ -103,12 +103,12 @@ class LatexCreatorConstraintsTest {
 
     @Test
     void lineBreak() {
-        typeInferer = model.getTypeInferer("a b c d e f", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("a b c d e f", "").unwrap();
         List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getEverything();
 
         assertEquals("\\begin{aligned}&\\begin{split}C=\\{&\\alpha_{2}=\\alpha_{3} \\rightarrow \\alpha_{1},\\alpha_{4}=\\alpha_{5} \\rightarrow \\alpha_{2},\\alpha_{6}=\\alpha_{7} \\rightarrow \\alpha_{4},\\alpha_{8}=\\alpha_{9} \\rightarrow \\alpha_{6},\\alpha_{10}=\\alpha_{11} \\rightarrow \\alpha_{8},\\alpha_{10}=\\beta_{1},\\alpha_{11}=\\beta_{2},\\alpha_{9}=\\beta_{3},\\alpha_{7}=\\beta_{4},\\alpha_{5}=\\beta_{5},\\\\&\\alpha_{3}=\\beta_{6}\\}\\end{split}\\end{aligned}", actual.get(11));
 
-        typeInferer = model.getTypeInferer("let g = a b c d e f in g", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("let g = a b c d e f in g", "").unwrap();
         actual = new LatexCreatorConstraints(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getEverything();
 
         assertEquals("\\begin{aligned}&\\begin{split}C=\\{&\\alpha_{1}=\\alpha_{13}\\}\\end{split}\\\\\n" +
@@ -117,7 +117,7 @@ class LatexCreatorConstraintsTest {
 
     @Test
     void emptyLetTypeAssumptions() {
-        typeInferer = model.getTypeInferer("let g = 5 in g", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("let g = 5 in g", "").unwrap();
         List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getEverything();
         assertEquals("\\begin{aligned}&\\begin{split}C=\\{&\\alpha_{1}=\\alpha_{3}\\}\\end{split}\\\\\n" +
                 "&\\begin{split}C_{let}=\\{&\\alpha_{2}=\\texttt{int}\\}\\end{split}\\\\&\\begin{split}\\sigma_{let}:=\\textit{mgu}(C_{let})=[&\\alpha_{2}\\mathrel{\\unicode{x21E8}}\\texttt{int}]\\end{split}\\\\&\\sigma_{let}(\\alpha_{2})=\\texttt{int}\\\\&\\Gamma'=\\sigma_{let}(\\emptyset),\\ \\texttt{g}:ta(\\sigma_{let}(\\alpha_{2}),\\sigma_{let}(\\emptyset))=\\texttt{g}:\\texttt{int}\\end{aligned}", actual.get(6));
@@ -126,7 +126,7 @@ class LatexCreatorConstraintsTest {
     @Test
     void excessiveMemoryUsageAvoided() {
         try {
-            typeInferer = model.getTypeInferer("(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)", new HashMap<>()).unwrap();
+            typeInferer = model.getTypeInferer("(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)(λx.x)", "").unwrap();
             List<String> actual = new LatexCreatorConstraints(typeInferer, Enum::toString, LatexCreatorMode.NORMAL).getEverything();
             // should have thrown IllegalStateException by now
             fail("did not throw exception");

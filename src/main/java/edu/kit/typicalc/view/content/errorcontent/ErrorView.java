@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import edu.kit.typicalc.model.parser.ExpectedInput;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.model.parser.Token;
 import edu.kit.typicalc.view.main.InfoContent;
@@ -53,33 +54,51 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         Paragraph summary = new Paragraph(getTranslation("root." + error.toString()));
         summary.setId(ERROR_SUMMARY_ID);
         String term = error.getTerm();
-
+        String descriptionForError;
+        ParseError.ErrorType errorType = error.getErrorType();
+        if (errorType == ParseError.ErrorType.TERM_ERROR) {
+            descriptionForError = "error.termForError";
+        } else if (errorType == ParseError.ErrorType.TYPE_ASSUMPTION_ERROR) {
+            descriptionForError = "error.typeAssumptionForError";
+        } else {
+            //should never happen
+            descriptionForError = "error";
+        }
         switch (error) {
             case TOO_FEW_TOKENS:
-                additionalInformation.add(new Span(getTranslation("root.tooFewTokensHelp")));
+                additionalInformation.add(new Span(getTranslation("error.tooFewTokensHelp")));
                 break;
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
                 if (cause.isPresent()) {
-                    additionalInformation.add(new Span(new Pre(getTranslation("root.termForError") + term
-                            + "\n" + " ".repeat(Math.max(getTranslation("root.termForError").length(),
-                            cause.get().getPos() + getTranslation("root.termForError").length()))
-                            + "^ " + getTranslation("root.wrongCharacter") + cause.get().getText())));
+                    additionalInformation.add(new Span(new Pre(getTranslation(descriptionForError) + term
+                            + "\n" + " ".repeat(Math.max(getTranslation(descriptionForError).length(),
+                            cause.get().getPos() + getTranslation(descriptionForError).length()))
+                            + "^ " + getTranslation("error.wrongCharacter") + cause.get().getText())));
                 }
                 break;
             case UNEXPECTED_CHARACTER:
                 char c = error.getWrongCharacter();
                 if (c != '\0') {
-                    additionalInformation.add(new Span(new Pre(getTranslation("root.termForError") + term
-                            + "\n" + " ".repeat(Math.max(getTranslation("root.termForError").length(),
-                            error.getPosition() + getTranslation("root.termForError").length()))
-                            + "^ " + getTranslation("root.wrongCharacter") + c)));
+                    additionalInformation.add(new Span(new Pre(getTranslation(descriptionForError) + term
+                            + "\n" + " ".repeat(Math.max(getTranslation(descriptionForError).length(),
+                            error.getPosition() + getTranslation(descriptionForError).length()))
+                            + "^ " + getTranslation("error.wrongCharacter") + c)));
                 } else {
                     return summary;
                 }
                 break;
             default:
                 throw new IllegalStateException(); // delete when updating to Java 12+
+        }
+
+        // state expected input, if available
+        Optional<ExpectedInput> expectedInput = error.getExpectedInput();
+        if (expectedInput.isPresent()) {
+            ExpectedInput e = expectedInput.get();
+            additionalInformation.add(new Span(new Pre(
+                    getTranslation("error.expectedToken",
+                            getTranslation("expectedinput." + e)))));
         }
 
         // add expected tokens, if available

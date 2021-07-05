@@ -17,7 +17,7 @@ class LatexCreatorTermTest {
 
     @Test
     void absTest() {
-        typeInferer = model.getTypeInferer("λx.y", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("λx.y", "").unwrap();
         assertEquals(LAMBDA + SPACE + MONO_TEXT + "{x}" + DOT_SIGN
                         + LATEX_SPACE + MONO_TEXT + "{y}",
                 new LatexCreatorTerm(typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
@@ -26,7 +26,7 @@ class LatexCreatorTermTest {
 
     @Test
     void appTest() {
-        typeInferer = model.getTypeInferer("x y", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("x y", "").unwrap();
         assertEquals(MONO_TEXT + "{x}" + LATEX_SPACE + MONO_TEXT + "{y}",
                 new LatexCreatorTerm(typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
                         LatexCreatorMode.NORMAL).getLatex());
@@ -34,7 +34,7 @@ class LatexCreatorTermTest {
 
     @Test
     void varTest() {
-        typeInferer = model.getTypeInferer("x", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("x", "").unwrap();
         assertEquals(MONO_TEXT + "{x}",
                 new LatexCreatorTerm(typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
                         LatexCreatorMode.NORMAL).getLatex());
@@ -42,7 +42,7 @@ class LatexCreatorTermTest {
 
     @Test
     void integerTest() {
-        typeInferer = model.getTypeInferer("5", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("5", "").unwrap();
         assertEquals(MONO_TEXT + "{5}",
                 new LatexCreatorTerm(typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
                         LatexCreatorMode.NORMAL).getLatex());
@@ -50,7 +50,7 @@ class LatexCreatorTermTest {
 
     @Test
     void booleanTest() {
-        typeInferer = model.getTypeInferer("true", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("true", "").unwrap();
         assertEquals(MONO_TEXT + "{true}",
                 new LatexCreatorTerm(typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),
                         LatexCreatorMode.NORMAL).getLatex());
@@ -58,7 +58,7 @@ class LatexCreatorTermTest {
 
     @Test
     void letTest() {
-        typeInferer = model.getTypeInferer("let f = x in f", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("let f = x in f", "").unwrap();
         assertEquals(MONO_TEXT + CURLY_LEFT + BOLD_TEXT + "{let}" + CURLY_RIGHT + LATEX_SPACE + MONO_TEXT + "{f}"
                         + EQUALS + MONO_TEXT + "{x}" + LATEX_SPACE + MONO_TEXT + CURLY_LEFT + BOLD_TEXT + "{in}"
                         + CURLY_RIGHT + LATEX_SPACE + MONO_TEXT + "{f}",
@@ -68,7 +68,7 @@ class LatexCreatorTermTest {
 
     @Test
     void appWithParenthesesTest() {
-        typeInferer = model.getTypeInferer("x (y z)", new HashMap<>()).unwrap();
+        typeInferer = model.getTypeInferer("x (y z)", "").unwrap();
         assertEquals(MONO_TEXT + "{x}" + LATEX_SPACE + PAREN_LEFT + MONO_TEXT + "{y}"
                         + LATEX_SPACE + MONO_TEXT + "{z}" + PAREN_RIGHT,
                 new LatexCreatorTerm(typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(),

@@ -30,7 +30,7 @@ public class LambdaParser {
      * When calling a parseX method, token is the first token of X
      * (as opposed to the last token of the previous construct).
      */
-    private Token token = new Token(TokenType.EOF, "", -1);
+    private Token token = new Token(TokenType.EOF, "", "", -1);
 
     private static final Set<TokenType> ATOM_START_TOKENS
             = EnumSet.of(TokenType.VARIABLE, TokenType.NUMBER, TokenType.TRUE,
@@ -69,7 +69,8 @@ public class LambdaParser {
         TokenType current = token.getType();
         Optional<ParseError> error = nextToken();
         if (current != type) {
-            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(lastToken, lexer.getTerm()).expectedType(type));
+            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(lastToken,
+                    ParseError.ErrorType.TERM_ERROR).expectedType(type));
         }
         return error;
     }
@@ -91,7 +92,7 @@ public class LambdaParser {
         }
         return new Result<>(null,
                 (last.getType() == TokenType.EOF ? ParseError.TOO_FEW_TOKENS : ParseError.UNEXPECTED_TOKEN)
-                    .withToken(last, lexer.getTerm())
+                    .withToken(last, ParseError.ErrorType.TERM_ERROR)
                     .expectedTypes(ATOM_START_TOKENS));
     }
 
@@ -207,7 +208,8 @@ public class LambdaParser {
                 try {
                     n = Integer.parseInt(number);
                 } catch (NumberFormatException e) {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(token, lexer.getTerm()));
+                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(
+                            token, ParseError.ErrorType.TERM_ERROR));
                 }
                 error = nextToken();
                 if (error.isEmpty()) {
@@ -217,7 +219,7 @@ public class LambdaParser {
             default:
                 error = expect(TokenType.LEFT_PARENTHESIS);
                 if (error.isPresent()) {
-                    return new Result<>(null, error.get());
+                    return new Result<>(null, error.get().expectedInput(ExpectedInput.TERM));
                 }
                 Result<LambdaTerm, ParseError> term = parseTerm(false);
                 error = expect(TokenType.RIGHT_PARENTHESIS);

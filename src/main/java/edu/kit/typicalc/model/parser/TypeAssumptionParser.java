@@ -4,8 +4,6 @@ import edu.kit.typicalc.model.parser.Token.TokenType;
 import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
-import org.apache.commons.lang3.tuple.ImmutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -16,11 +14,7 @@ import java.util.regex.Pattern;
  */
 public class TypeAssumptionParser {
 
-    public static final Pattern TYPE_NAME_PATTERN = Pattern.compile("[a-zA-Z][a-zA-Z0-9]*");
     private static final Pattern TYPE_VARIABLE_PATTERN = Pattern.compile("t(\\d+)");
-
-    private static final Set<TokenType> END_TOKENS
-            = EnumSet.of(TokenType.ARROW, TokenType.RIGHT_PARENTHESIS, TokenType.EOF);
 
     /**
      * Parse the given type assumptions.
@@ -28,58 +22,31 @@ public class TypeAssumptionParser {
      * @param assumptions the type assumptions
      * @return if successful, a map of the type assumptions, otherwise an error
      */
-    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(Map<String, String> assumptions) {
-        Map<VarTerm, TypeAbstraction> typeAssumptions = new LinkedHashMap<>();
-        for (Map.Entry<String, String> entry : assumptions.entrySet()) {
-            String typeName = entry.getKey();
-            if (!TYPE_NAME_PATTERN.matcher(typeName).matches()) {
-                return new Result<>(null, ParseError.UNEXPECTED_CHARACTER);
-            }
-            VarTerm var = new VarTerm(typeName);
-            Result<TypeAbstraction, ParseError> typeAbs = parseTypeDefinition(entry.getValue());
-            if (typeAbs.isError()) {
-                return new Result<>(typeAbs);
-            }
-            typeAssumptions.put(var, typeAbs.unwrap());
-        }
-        return new Result<>(typeAssumptions);
-    }
-
-    /**
-     * Parse a type definition that may use the all quantor.
-     * @param definition type definition
-     * @return parsed type
-     */
-    public Result<TypeAbstraction, ParseError> parseTypeDefinition(String definition) {
-        definition = cleanAssumptionText(definition);
-        Set<TypeVariable> allQuantified = new HashSet<>();
-        if (definition.startsWith("∀")) {
-            String[] parts = definition.split("\\.");
-            if (parts.length < 2) {
-                int colonIndex = definition.indexOf(':');
-                if (colonIndex >= 0) {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(
-                            ':', colonIndex, definition).expectedCharacter('.')
-                    );
+    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(String assumptions) {
+        ParserState<Map<VarTerm, TypeAbstraction>> state = new InitialState(new LinkedHashMap<>());
+        LambdaLexer lexer = new LambdaLexer(cleanAssumptionText(assumptions));
+        Optional<Token> extraToken = Optional.empty();
+        while (true) {
+            Token token1;
+            if (extraToken.isPresent()) {
+                token1 = extraToken.get();
+            } else {
+                Result<Token, ParseError> token = lexer.nextToken();
+                if (token.isError()) {
+                    return token.castError();
                 }
-                return new Result<>(null, ParseError.TOO_FEW_TOKENS.expectedType(TokenType.DOT));
-            } else if (parts.length > 2) {
-                return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(
-                        '.', parts[0].length() + 1 + parts[1].length(), definition));
+                token1 = token.unwrap();
             }
-            for (String quantified : parts[0].substring(1).split(",")) {
-                quantified = quantified.trim();
-                if (!quantified.matches("t\\d+")) {
-                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(
-                            new Token(TokenType.VARIABLE, quantified, parts[0].indexOf(quantified)), parts[0]
-                    ));
-                }
-                int i = Integer.parseInt(quantified.substring(1));
-                allQuantified.add(new TypeVariable(TypeVariableKind.USER_INPUT, i));
+            ParserResult<Map<VarTerm, TypeAbstraction>> result = state.handle(token1);
+            if (result.isResult()) {
+                return new Result<>(result.getResult());
+            } else if (result.isError()) {
+                return new Result<>(null, result.getError());
+            } else {
+                state = result.getState();
+                extraToken = result.extraToken();
             }
-            definition = parts[1];
         }
-        return parseType(definition, allQuantified);
     }
 
     private String cleanAssumptionText(String text) {
@@ -96,89 +63,415 @@ public class TypeAssumptionParser {
                 .replace('τ', 't');
     }
 
-    private Result<TypeAbstraction, ParseError> parseType(String type, Set<TypeVariable> allQuantified) {
-        // this parser is using the same lexer as the LambdaParser (to avoid types named "let" etc.)
-        LambdaLexer lexer = new LambdaLexer(type);
-        Result<Pair<Type, Integer>, ParseError> parsedType = parseType(lexer, 0);
-        if (parsedType.isError()) {
-            return new Result<>(null, parsedType.unwrapError());
+    private static class ParserResult<T> {
+        private Optional<ParserState<T>> newState = Optional.empty();
+        private Optional<ParseError> error = Optional.empty();
+        private Optional<T> result = Optional.empty();
+        private Optional<Token> extraToken = Optional.empty();
+
+        ParserResult(ParseError e) {
+            this.error = Optional.of(e);
         }
-        return new Result<>(new TypeAbstraction(parsedType.unwrap().getLeft(), allQuantified));
+
+        ParserResult(ParserState<T> state) {
+            this.newState = Optional.of(state);
+        }
+
+        ParserResult(T result) {
+            this.result = Optional.of(result);
+        }
+
+        boolean isTransition() {
+            return newState.isPresent();
+        }
+
+        ParserState<T> getState() {
+            return newState.get();
+        }
+
+        boolean isError() {
+            return error.isPresent();
+        }
+
+        ParseError getError() {
+            return error.get();
+        }
+
+        <U> ParserResult<U> castError() {
+            return new ParserResult<>(error.get());
+        }
+
+        boolean isResult() {
+            return result.isPresent();
+        }
+
+        T getResult() {
+            return result.get();
+        }
+
+        ParserResult<T> attachToken(Token t) {
+            this.extraToken = Optional.of(t);
+            return this;
+        }
+
+        ParserResult<T> copyToken(ParserResult<?> other) {
+            this.extraToken = other.extraToken;
+            return this;
+        }
+
+        Optional<Token> extraToken() {
+            return this.extraToken;
+        }
     }
 
-    private Result<Pair<Type, Integer>, ParseError> parseType(LambdaLexer lexer, int parenCount) {
-        Type type = null;
-        int removedParens = 0;
-        while (true) {
-            Result<Token, ParseError> token = lexer.nextToken();
-            if (token.isError()) {
-                return new Result<>(token);
-            }
-            Token t = token.unwrap();
-            Result<Type, ParseError> typeResult = null;
+    private interface ParserState<T> {
+        ParserResult<T> handle(Token t);
+    }
+
+    private static class InitialState implements ParserState<Map<VarTerm, TypeAbstraction>> {
+        private Map<VarTerm, TypeAbstraction> alreadyParsed = new LinkedHashMap<>();
+
+        InitialState(Map<VarTerm, TypeAbstraction> alreadyParsed) {
+            this.alreadyParsed = alreadyParsed;
+        }
+
+        @Override
+        public ParserResult<Map<VarTerm, TypeAbstraction>> handle(Token t) {
             switch (t.getType()) {
-                case LEFT_PARENTHESIS:
-                    // recursive call, set number of open parentheses to 1
-                    Result<Pair<Type, Integer>, ParseError> type2 = parseType(lexer, 1);
-                    typeResult = type2.map(Pair::getLeft);
-                    removedParens += type2.map(Pair::getRight).unwrapOr(1) - 1;
-                    break;
                 case VARIABLE:
-                    // named type or type variable
-                    type = parseLiteral(t.getText());
-                    break;
-                case RIGHT_PARENTHESIS:
-                    removedParens += 1;
-                    break;
-                case ARROW:
-                    if (type == null) {
-                        // there was no type in front of the arrow
-                        return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
-                    }
-                    // recursive call, keep open parentheses count
-                    Result<Pair<Type, Integer>, ParseError> nextType = parseType(lexer, parenCount);
-                    final Type left = type;
-                    typeResult = nextType.map(Pair::getLeft).map(right -> new FunctionType(left, right));
-                    removedParens += nextType.map(Pair::getRight).unwrapOr(0);
-                    break;
+                    return new ParserResult<>(new ExpectingColon(alreadyParsed, new VarTerm(t.getText())));
                 case EOF:
-                    break;
+                    return new ParserResult<>(alreadyParsed);
                 default:
-                    return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
-            }
-            // update type based on Result
-            if (typeResult != null && typeResult.isError()) {
-                return new Result<>(typeResult);
-            }
-            type = typeResult != null ? typeResult.unwrap() : type;
-            // after fully processing one token / a type in parenthesis,
-            // some type should have been parsed
-            if (type == null) {
-                return new Result<>(null, ParseError.TOO_FEW_TOKENS);
-            }
-            if (parenCount - removedParens < 0) {
-                // too many closing parenthesis
-                return new Result<>(null, ParseError.UNEXPECTED_TOKEN.withToken(t, ""));
-            } else if (END_TOKENS.contains(t.getType())) {
-                // potential end of type
-                if (parenCount - removedParens == 0) {
-                    // opening and closing parentheses match
-                    return new Result<>(new ImmutablePair<>(type, removedParens));
-                } else {
-                    // missing closing parenthesis
-                    return new Result<>(null, ParseError.TOO_FEW_TOKENS);
-                }
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
     }
 
-    private Type parseLiteral(String text) {
-        Matcher typeVariableMatcher = TYPE_VARIABLE_PATTERN.matcher(text);
-        if (typeVariableMatcher.matches()) {
-            int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(1));
-            return new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
-        } else {
-            return new NamedType(text);
+    private static class ExpectingColon implements ParserState<Map<VarTerm, TypeAbstraction>> {
+        private Map<VarTerm, TypeAbstraction> alreadyParsed;
+        private final VarTerm var;
+        ExpectingColon(Map<VarTerm, TypeAbstraction> alreadyParsed, VarTerm var) {
+            this.alreadyParsed = alreadyParsed;
+            this.var = var;
+        }
+
+        @Override
+        public ParserResult<Map<VarTerm, TypeAbstraction>> handle(Token t) {
+            switch (t.getType()) {
+                case COLON:
+                    return new ParserResult<>(new ExpectingTypeDef(alreadyParsed, var));
+                default:
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+            }
+        }
+    }
+
+    private static class ExpectingTypeDef implements ParserState<Map<VarTerm, TypeAbstraction>> {
+        private final Map<VarTerm, TypeAbstraction> alreadyParsed;
+        private final Set<TypeVariable> typeVariables;
+        private final VarTerm var;
+        private Optional<ParserState<Type>> state = Optional.empty();
+        ExpectingTypeDef(Map<VarTerm, TypeAbstraction> alreadyParsed, VarTerm var) {
+            this.alreadyParsed = alreadyParsed;
+            this.typeVariables = new TreeSet<>();
+            this.var = var;
+        }
+
+        ExpectingTypeDef(Map<VarTerm, TypeAbstraction> alreadyParsed, Set<TypeVariable> typeVariables, VarTerm var) {
+            this.alreadyParsed = alreadyParsed;
+            this.typeVariables = typeVariables;
+            this.var = var;
+        }
+
+        @Override
+        public ParserResult<Map<VarTerm, TypeAbstraction>> handle(Token t) {
+            switch (t.getType()) {
+                case UNIVERSAL_QUANTIFIER:
+                    if (typeVariables.isEmpty()) {
+                        return new ParserResult<>(new ExpectingTypeVariables(alreadyParsed, var));
+                    } else {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                    }
+                default:
+                    if (state.isPresent()) {
+                        ParserState<Type> status = state.get();
+                        // already parsing type
+                        ParserResult<Type> result = status.handle(t);
+                        if (result.isResult()) {
+                            alreadyParsed.put(var, new TypeAbstraction(result.getResult(), typeVariables));
+                            return new ParserResult<>(new ExpectingCommaBeforeNextType(alreadyParsed))
+                                    .copyToken(result);
+                        } else if (result.isError()) {
+                            return result.castError();
+                        } else {
+                            state = Optional.of(result.getState());
+                            return new ParserResult<>(this);
+                        }
+                    }
+                    // attempt to parse as type
+                    ParserResult<Type> result = new ParseTypeState1().handle(t);
+                    if (result.isError()) {
+                        return result.castError();
+                    }
+                    state = Optional.of(result.getState());
+                    return new ParserResult<>(this);
+            }
+        }
+    }
+
+    private static class ExpectingCommaBeforeNextType implements ParserState<Map<VarTerm, TypeAbstraction>> {
+        private final Map<VarTerm, TypeAbstraction> alreadyParsed;
+
+        ExpectingCommaBeforeNextType(Map<VarTerm, TypeAbstraction> alreadyParsed) {
+            this.alreadyParsed = alreadyParsed;
+        }
+
+        @Override
+        public ParserResult<Map<VarTerm, TypeAbstraction>> handle(Token t) {
+            switch (t.getType()) {
+                case EOF:
+                    return new ParserResult<>(alreadyParsed);
+                case COMMA:
+                    return new ParserResult<>(new InitialState(alreadyParsed));
+                default:
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+            }
+        }
+    }
+
+    /**
+     * Main type parsing state.
+     */
+    private static class ParseTypeState1 implements ParserState<Type> {
+        private Optional<Type> parsedType = Optional.empty();
+        private Optional<ParserState<Type>> state = Optional.empty();
+        private Optional<ParserState<Type>> stateParenthesis = Optional.empty();
+        private int parenthesisInitial = 0;
+        private int openParens = 0;
+
+        @Override
+        public ParserResult<Type> handle(Token t) {
+            switch (t.getType()) {
+                case VARIABLE:
+                    if (state.isPresent()) {
+                        return handleInner(t);
+                    }
+                    if (stateParenthesis.isPresent()) {
+                        return handleInnerParenthesis(t);
+                    }
+                    if (parsedType.isPresent()) {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                    }
+                    Type type = parseLiteral(t.getText());
+                    // try parsing function type (see below)
+                    this.parsedType = Optional.of(type);
+                    return new ParserResult<>(this);
+                case ARROW:
+                    if (state.isPresent()) {
+                        return handleInner(t);
+                    }
+                    if (stateParenthesis.isPresent()) {
+                        return handleInnerParenthesis(t);
+                    }
+                    if (parsedType.isEmpty()) {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                    }
+                    // parse function type
+                    state = Optional.of(new ParseTypeStateExpectArrow().handle(t).getState());
+                    return new ParserResult<>(this);
+                case LEFT_PARENTHESIS:
+                    openParens += 1;
+                    if (state.isPresent()) {
+                        return handleInner(t);
+                    }
+                    if (stateParenthesis.isPresent()) {
+                        return handleInnerParenthesis(t);
+                    }
+                    stateParenthesis = Optional.of(new ParseTypeState1());
+                    parenthesisInitial = openParens - 1;
+                    return new ParserResult<>(this);
+                case RIGHT_PARENTHESIS:
+                    openParens -= 1;
+                    if (state.isPresent()) {
+                        return handleInner(t);
+                    }
+                    if (stateParenthesis.isPresent()) {
+                        if (openParens == parenthesisInitial) {
+                            // inner state is done parsing
+                            ParserResult<Type> result = handleInnerParenthesis(
+                                    new Token(TokenType.EOF, "", "", -1));
+                            if (result.isError()) {
+                                return result.castError();
+                            } else {
+                                parsedType = Optional.of(result.getResult());
+                                stateParenthesis = Optional.empty();
+                            }
+                        } else {
+                            return handleInnerParenthesis(t);
+                        }
+                    }
+                    if (parsedType.isPresent()) {
+                        return new ParserResult<>(this); // parenthesized part may be start of function
+                    }
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                case COMMA:
+                case EOF:
+                    if (state.isPresent()) {
+                        return handleInner(t).attachToken(t);
+                    }
+                    if (stateParenthesis.isPresent() && openParens == parenthesisInitial) {
+                        return handleInnerParenthesis(t).attachToken(t);
+                    }
+                    if (parsedType.isPresent() && openParens == parenthesisInitial) {
+                        return new ParserResult<>(parsedType.get()).attachToken(t);
+                    }
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                default:
+                    if (state.isPresent()) {
+                        return handleInner(t);
+                    }
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+            }
+        }
+
+        private ParserResult<Type> handleInner(Token t) {
+            ParserState<Type> status = state.get();
+            // already parsing right type of function
+            ParserResult<Type> result = status.handle(t);
+            if (result.isResult()) {
+                return new ParserResult<Type>(new FunctionType(parsedType.get(), result.getResult())).copyToken(result);
+            } else if (result.isError()) {
+                return result.castError();
+            } else {
+                state = Optional.of(result.getState());
+                return new ParserResult<>(this);
+            }
+        }
+
+        private ParserResult<Type> handleInnerParenthesis(Token t) {
+            ParserState<Type> status = stateParenthesis.get();
+            // already parsing right type of function
+            ParserResult<Type> result = status.handle(t);
+            if (result.isResult()) {
+                return new ParserResult<>(result.getResult()).copyToken(result);
+            } else if (result.isError()) {
+                return result.castError();
+            } else {
+                stateParenthesis = Optional.of(result.getState());
+                return new ParserResult<>(this);
+            }
+        }
+
+        private static Type parseLiteral(String text) {
+            Matcher typeVariableMatcher = TYPE_VARIABLE_PATTERN.matcher(text);
+            if (typeVariableMatcher.matches()) {
+                int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(1));
+                return new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
+            } else {
+                return new NamedType(text);
+            }
+        }
+    }
+
+    private static class ParseTypeStateExpectArrow implements ParserState<Type> {
+        private Optional<ParserState<Type>> state = Optional.empty();
+
+        @Override
+        public ParserResult<Type> handle(Token t) {
+            switch (t.getType()) {
+                case ARROW:
+                    if (state.isEmpty()) {
+                        // try parsing remainder as type
+                        state = Optional.of(new ParseTypeState1());
+                        return new ParserResult<>(this);
+                    }
+                default:
+                    if (state.isPresent()) {
+                        ParserState<Type> status = state.get();
+                        // already parsing type
+                        ParserResult<Type> result = status.handle(t);
+                        if (result.isResult()) {
+                            return result;
+                        } else if (result.isError()) {
+                            return result.castError();
+                        } else {
+                            state = Optional.of(result.getState());
+                            return new ParserResult<>(this);
+                        }
+                    } else {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                    }
+            }
+        }
+    }
+
+    private static class ExpectingTypeVariables implements ParserState<Map<VarTerm, TypeAbstraction>> {
+        private final Map<VarTerm, TypeAbstraction> alreadyParsed;
+        private final VarTerm var;
+        private final Set<TypeVariable> variables = new TreeSet<>();
+        private boolean expectCommaOrDot = false;
+        ExpectingTypeVariables(Map<VarTerm, TypeAbstraction> alreadyParsed, VarTerm var) {
+            this.alreadyParsed = alreadyParsed;
+            this.var = var;
+        }
+
+        @Override
+        public ParserResult<Map<VarTerm, TypeAbstraction>> handle(Token t) {
+            switch (t.getType()) {
+                case VARIABLE:
+                    if (expectCommaOrDot) {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                .expectedTypes(List.of(TokenType.COMMA, Token.TokenType.DOT)));
+                    }
+                    String input = t.getText();
+                    if (!TYPE_VARIABLE_PATTERN.matcher(input).matches()) {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                    }
+                    int i = Integer.parseInt(input.substring(1));
+                    variables.add(new TypeVariable(TypeVariableKind.USER_INPUT, i));
+                    expectCommaOrDot = true;
+                    return new ParserResult<>(this);
+                case COMMA:
+                    if (expectCommaOrDot) {
+                        expectCommaOrDot = false;
+                        return new ParserResult<>(this);
+                    } else {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                .expectedType(TokenType.VARIABLE));
+                    }
+                case DOT:
+                    if (expectCommaOrDot) {
+                        // list of type variables is complete
+                        // parse actual type
+                        return new ParserResult<>(new ExpectingTypeDef(alreadyParsed, variables, var));
+                    } else {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                .expectedType(TokenType.VARIABLE));
+                    }
+                default:
+                    if (expectCommaOrDot) {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                .expectedTypes(List.of(TokenType.COMMA, TokenType.DOT)));
+                    }
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+            }
         }
     }
 }

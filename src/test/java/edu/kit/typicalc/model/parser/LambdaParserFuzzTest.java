@@ -28,7 +28,7 @@ public class LambdaParserFuzzTest {
     @Fuzz
     public void testInference(@From(LambdaTermGenerator.class) String term) {
         Model model = new ModelImpl();
-        Result<TypeInfererInterface, ParseError> typer = model.getTypeInferer(term, new HashMap<>());
+        Result<TypeInfererInterface, ParseError> typer = model.getTypeInferer(term, "");
         InferenceStep first = typer.unwrap().getFirstInferenceStep();
     }
 

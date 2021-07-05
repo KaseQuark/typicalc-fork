@@ -94,7 +94,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
         inputConsumer.accept(termAndAssumptions);
     }
 
-    private void startInfer(String term, Map<String, String> typeAssumptions) {
+    private void startInfer(String term, String typeAssumptions) {
         presenter.typeInferLambdaString(term, typeAssumptions);
     }
 
@@ -104,7 +104,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
      * @param term            the provided string
      * @param typeAssumptions type assumptions to use
      */
-    protected void inferTerm(String term, Map<String, String> typeAssumptions) {
+    protected void inferTerm(String term, String typeAssumptions) {
         inputBar.setTypeAssumptions(typeAssumptions);
         inputBar.setTerm(term);
         startInfer(term, typeAssumptions);

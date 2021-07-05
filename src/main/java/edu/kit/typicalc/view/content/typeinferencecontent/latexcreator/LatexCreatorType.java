@@ -17,6 +17,7 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
 public class LatexCreatorType implements TypeVisitor {
     private final Type type;
     private static final int MAX_LENGTH = 100000; // 100 KB
+    private final LatexCreatorMode mode;
 
     private final StringBuilder latex = new StringBuilder();
     private boolean needsParentheses = false;
@@ -26,28 +27,33 @@ public class LatexCreatorType implements TypeVisitor {
      *
      * @param type the type
      */
-    protected LatexCreatorType(Type type) {
+    protected LatexCreatorType(Type type, LatexCreatorMode mode) {
         this.type = type;
+        this.mode = mode;
         type.accept(this);
     }
 
     /**
      * @return the generated LaTeX code
      */
-    protected String getLatex(LatexCreatorMode mode) {
-        if (mode == LatexCreatorMode.MATHJAX) {
-            // this class is used in frontend/src/mathjax-setup.js
-            return "\\class{typicalc-type typicalc-type-" + type.hashCode() + "}{" + latex + "}";
-        } else {
-            return latex.toString();
-        }
+    protected String getLatex() {
+        return latex.toString();
     }
 
     @Override
     public void visit(NamedType named) {
         latex.append(MONO_TEXT);
         latex.append(CURLY_LEFT);
+        if (mode == LatexCreatorMode.MATHJAX) {
+            // this class is used in frontend/src/mathjax-setup.js
+            latex.append("\\class{typicalc-type typicalc-type-")
+                    .append(named.hashCode())
+                    .append("}{");
+        }
         latex.append(named.getName());
+        if (mode == LatexCreatorMode.MATHJAX) {
+            latex.append(CURLY_RIGHT);
+        }
         latex.append(CURLY_RIGHT);
         needsParentheses = false;
     }
@@ -68,10 +74,19 @@ public class LatexCreatorType implements TypeVisitor {
             default:
                 throw new IllegalStateException("unreachable code");
         }
+        if (mode == LatexCreatorMode.MATHJAX) {
+            // this class is used in frontend/src/mathjax-setup.js
+            latex.append("\\class{typicalc-type typicalc-type-")
+                    .append(variable.hashCode())
+                    .append("}{");
+        }
         latex.append(name);
         latex.append(UNDERSCORE);
         latex.append(CURLY_LEFT);
         latex.append(variable.getIndex());
+        if (mode == LatexCreatorMode.MATHJAX) {
+            latex.append(CURLY_RIGHT);
+        }
         latex.append(CURLY_RIGHT);
         needsParentheses = false;
     }

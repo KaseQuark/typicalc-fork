@@ -3,7 +3,7 @@ package edu.kit.typicalc.model.parser;
 import java.util.Objects;
 
 /**
- * A token of the Prolog language.
+ * A token of a lambda term or type assumption.
  */
 public class Token {
     /**
@@ -13,6 +13,7 @@ public class Token {
      * EOF is a special token to indicate that the end of file is reached.
      */
     public enum TokenType {
+        UNIVERSAL_QUANTIFIER, // ∀ or exclamation mark
         LAMBDA, // λ or a backslash
         VARIABLE, // [a-z][a-zA-Z0-9]* except "let" or "in" or constants
         LET, // let
@@ -23,6 +24,8 @@ public class Token {
         LEFT_PARENTHESIS, // (
         RIGHT_PARENTHESIS, // )
         DOT, // .
+        COMMA, // ,
+        COLON, // :
         EQUALS, // =
         ARROW, // ->
         EOF // pseudo token if end of input is reached
@@ -36,6 +39,7 @@ public class Token {
      * the text of this token in the source code
      */
     private final String text;
+    private final String sourceText;
     private final int pos;
 
     /**
@@ -43,11 +47,13 @@ public class Token {
      *
      * @param type the token type
      * @param text text of this token in the source code
-     * @param pos  position this token begins
+     * @param sourceText context of this token
+     * @param pos  position this token begins in sourceText
      */
-    public Token(TokenType type, String text, int pos) {
+    public Token(TokenType type, String text, String sourceText, int pos) {
         this.type = type;
         this.text = text;
+        this.sourceText = sourceText;
         this.pos = pos;
     }
 
@@ -67,6 +73,13 @@ public class Token {
      */
     public String getText() {
         return text;
+    }
+
+    /**
+     * @return the surrounding text of this token
+     */
+    public String getSourceText() {
+        return sourceText;
     }
 
     /**
@@ -92,11 +105,12 @@ public class Token {
             return false;
         }
         Token token = (Token) o;
-        return pos == token.pos && type == token.type && Objects.equals(text, token.text);
+        return pos == token.pos && type == token.type
+                && Objects.equals(text, token.text) && sourceText.equals(token.sourceText);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(type, text, pos);
+        return Objects.hash(type, text, sourceText, pos);
     }
 }

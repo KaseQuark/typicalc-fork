@@ -20,7 +20,7 @@ function handleKey(e: KeyboardEvent) {
 			element = document.getElementById("last-step");
 		}
 	} else if (e.key === "/") {
-		document.getElementById("inputField")!.focus();
+		document.getElementById("term-input-field")!.focus();
 		e.preventDefault();
 	}
 	if (element !== null) {

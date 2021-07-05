@@ -120,11 +120,8 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      *
      * @param typeAssumptions the type assumptions as a map
      */
-    protected void setTypeAssumptions(Map<String, String> typeAssumptions) {
-        assumptionInputField.setValue(
-                typeAssumptions.entrySet().stream()
-                        .map(entry -> entry.getKey().trim() + ": " + entry.getValue().trim())
-                        .collect(Collectors.joining("; ")));
+    protected void setTypeAssumptions(String typeAssumptions) {
+        assumptionInputField.setValue(typeAssumptions);
     }
 
     /**

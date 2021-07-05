@@ -42,13 +42,13 @@ public final class AssumptionGeneratorUtil {
         if (abs.hasQuantifiedVariables()) {
             abstraction.append(FOR_ALL);
             abs.getQuantifiedVariables().forEach(typeVariable -> {
-                String variableTex = new LatexCreatorType(typeVariable).getLatex(mode);
+                String variableTex = new LatexCreatorType(typeVariable, mode).getLatex();
                 abstraction.append(variableTex).append(COMMA);
             });
             abstraction.deleteCharAt(abstraction.length() - 1);
             abstraction.append(DOT_SIGN);
         }
-        abstraction.append(new LatexCreatorType(abs.getInnerType()).getLatex(mode));
+        abstraction.append(new LatexCreatorType(abs.getInnerType(), mode).getLatex());
         return abstraction.toString();
     }
 }

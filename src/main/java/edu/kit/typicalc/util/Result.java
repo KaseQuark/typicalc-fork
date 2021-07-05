@@ -116,6 +116,10 @@ public class Result<T, E> {
         return new Result<>(value != null ? mapping.apply(value) : null, error);
     }
 
+    public <U> Result<U, E> castError() {
+        return new Result<>(null, this.error);
+    }
+
     @Override
     public String toString() {
         if (isOk()) {
