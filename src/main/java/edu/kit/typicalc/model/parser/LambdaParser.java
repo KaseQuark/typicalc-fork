@@ -69,7 +69,8 @@ public class LambdaParser {
         TokenType current = token.getType();
         Optional<ParseError> error = nextToken();
         if (current != type) {
-            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(lastToken).expectedType(type));
+            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(lastToken,
+                    ParseError.ErrorType.TERM_ERROR).expectedType(type));
         }
         return error;
     }
@@ -91,7 +92,7 @@ public class LambdaParser {
         }
         return new Result<>(null,
                 (last.getType() == TokenType.EOF ? ParseError.TOO_FEW_TOKENS : ParseError.UNEXPECTED_TOKEN)
-                    .withToken(last)
+                    .withToken(last, ParseError.ErrorType.TERM_ERROR)
                     .expectedTypes(ATOM_START_TOKENS));
     }
 
@@ -207,7 +208,8 @@ public class LambdaParser {
                 try {
                     n = Integer.parseInt(number);
                 } catch (NumberFormatException e) {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(token));
+                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(
+                            token, ParseError.ErrorType.TERM_ERROR));
                 }
                 error = nextToken();
                 if (error.isEmpty()) {

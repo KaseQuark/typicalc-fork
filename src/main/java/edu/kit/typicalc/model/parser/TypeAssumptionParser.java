@@ -143,7 +143,8 @@ public class TypeAssumptionParser {
                 case EOF:
                     return new ParserResult<>(alreadyParsed);
                 default:
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
     }
@@ -162,7 +163,8 @@ public class TypeAssumptionParser {
                 case COLON:
                     return new ParserResult<>(new ExpectingTypeDef(alreadyParsed, var));
                 default:
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
     }
@@ -191,7 +193,8 @@ public class TypeAssumptionParser {
                     if (typeVariables.isEmpty()) {
                         return new ParserResult<>(new ExpectingTypeVariables(alreadyParsed, var));
                     } else {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
                 default:
                     if (state.isPresent()) {
@@ -235,7 +238,8 @@ public class TypeAssumptionParser {
                 case COMMA:
                     return new ParserResult<>(new InitialState(alreadyParsed));
                 default:
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
     }
@@ -261,7 +265,8 @@ public class TypeAssumptionParser {
                         return handleInnerParenthesis(t);
                     }
                     if (parsedType.isPresent()) {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
                     Type type = parseLiteral(t.getText());
                     // try parsing function type (see below)
@@ -275,7 +280,8 @@ public class TypeAssumptionParser {
                         return handleInnerParenthesis(t);
                     }
                     if (parsedType.isEmpty()) {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
                     // parse function type
                     state = Optional.of(new ParseTypeStateExpectArrow().handle(t).getState());
@@ -314,7 +320,8 @@ public class TypeAssumptionParser {
                     if (parsedType.isPresent()) {
                         return new ParserResult<>(this); // parenthesized part may be start of function
                     }
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                 case COMMA:
                 case EOF:
                     if (state.isPresent()) {
@@ -326,12 +333,14 @@ public class TypeAssumptionParser {
                     if (parsedType.isPresent() && openParens == parenthesisInitial) {
                         return new ParserResult<>(parsedType.get()).attachToken(t);
                     }
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                 default:
                     if (state.isPresent()) {
                         return handleInner(t);
                     }
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
 
@@ -400,7 +409,8 @@ public class TypeAssumptionParser {
                             return new ParserResult<>(this);
                         }
                     } else {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
             }
         }
@@ -422,13 +432,13 @@ public class TypeAssumptionParser {
                 case VARIABLE:
                     if (expectCommaOrDot) {
                         return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
-                                .withToken(t)
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
                                 .expectedTypes(List.of(TokenType.COMMA, Token.TokenType.DOT)));
                     }
                     String input = t.getText();
                     if (!TYPE_VARIABLE_PATTERN.matcher(input).matches()) {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
-                        // TODO: somehow convey the expected format
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
                     int i = Integer.parseInt(input.substring(1));
                     variables.add(new TypeVariable(TypeVariableKind.USER_INPUT, i));
@@ -440,7 +450,7 @@ public class TypeAssumptionParser {
                         return new ParserResult<>(this);
                     } else {
                         return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
-                                .withToken(t)
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
                                 .expectedType(TokenType.VARIABLE));
                     }
                 case DOT:
@@ -450,15 +460,17 @@ public class TypeAssumptionParser {
                         return new ParserResult<>(new ExpectingTypeDef(alreadyParsed, variables, var));
                     } else {
                         return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
-                                .withToken(t)
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
                                 .expectedType(TokenType.VARIABLE));
                     }
                 default:
                     if (expectCommaOrDot) {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t)
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
                                 .expectedTypes(List.of(TokenType.COMMA, TokenType.DOT)));
                     }
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN.withToken(t));
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
     }

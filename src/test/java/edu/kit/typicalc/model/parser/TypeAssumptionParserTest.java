@@ -232,17 +232,23 @@ class TypeAssumptionParserTest {
     void errors() {
         Map<String, ParseError> tests = new HashMap<>();
         tests.put("",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "", 0)));
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "", 0),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
         tests.put("ö", ParseError.UNEXPECTED_CHARACTER);
         tests.put("(x",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "(x", 2)));
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "(x", 2),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
         tests.put("-> x",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.ARROW, "->", "-> x", 0)));
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.ARROW, "->", "-> x", 0),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
         tests.put("x 11",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.NUMBER, "11", "x 11", 2)));
-        tests.put("x )", ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x )", 2)));
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.NUMBER, "11", "x 11", 2),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+        tests.put("x )", ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x )", 2),
+                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
         tests.put("x -> (x) )", ParseError.UNEXPECTED_TOKEN
-                .withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x -> (x) )", 9)));
+                .withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x -> (x) )", 9),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
         for (Map.Entry<String, ParseError> entry : tests.entrySet()) {
             TypeAssumptionParser parser = new TypeAssumptionParser();
             Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("type1:" + entry.getKey());

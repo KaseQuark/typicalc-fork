@@ -54,27 +54,36 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         Paragraph summary = new Paragraph(getTranslation("root." + error.toString()));
         summary.setId(ERROR_SUMMARY_ID);
         String term = error.getTerm();
-
+        String descriptionForError;
+        ParseError.ErrorType errorType = error.getErrorType();
+        if (errorType == ParseError.ErrorType.TERM_ERROR) {
+            descriptionForError = "error.termForError";
+        } else if (errorType == ParseError.ErrorType.TYPE_ASSUMPTION_ERROR) {
+            descriptionForError = "error.typeAssumptionForError";
+        } else {
+            //should never happen
+            descriptionForError = "error";
+        }
         switch (error) {
             case TOO_FEW_TOKENS:
-                additionalInformation.add(new Span(getTranslation("root.tooFewTokensHelp")));
+                additionalInformation.add(new Span(getTranslation("error.tooFewTokensHelp")));
                 break;
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
                 if (cause.isPresent()) {
-                    additionalInformation.add(new Span(new Pre(getTranslation("root.termForError") + term
-                            + "\n" + " ".repeat(Math.max(getTranslation("root.termForError").length(),
-                            cause.get().getPos() + getTranslation("root.termForError").length()))
-                            + "^ " + getTranslation("root.wrongCharacter") + cause.get().getText())));
+                    additionalInformation.add(new Span(new Pre(getTranslation(descriptionForError) + term
+                            + "\n" + " ".repeat(Math.max(getTranslation(descriptionForError).length(),
+                            cause.get().getPos() + getTranslation(descriptionForError).length()))
+                            + "^ " + getTranslation("error.wrongCharacter") + cause.get().getText())));
                 }
                 break;
             case UNEXPECTED_CHARACTER:
                 char c = error.getWrongCharacter();
                 if (c != '\0') {
-                    additionalInformation.add(new Span(new Pre(getTranslation("root.termForError") + term
-                            + "\n" + " ".repeat(Math.max(getTranslation("root.termForError").length(),
-                            error.getPosition() + getTranslation("root.termForError").length()))
-                            + "^ " + getTranslation("root.wrongCharacter") + c)));
+                    additionalInformation.add(new Span(new Pre(getTranslation(descriptionForError) + term
+                            + "\n" + " ".repeat(Math.max(getTranslation(descriptionForError).length(),
+                            error.getPosition() + getTranslation(descriptionForError).length()))
+                            + "^ " + getTranslation("error.wrongCharacter") + c)));
                 } else {
                     return summary;
                 }
