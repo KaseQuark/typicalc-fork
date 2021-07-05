@@ -66,7 +66,7 @@ public class LambdaLexer {
             Token token = tokens.removeFirst();
             return new Result<>(token);
         } else {
-            return new Result<>(new Token(TokenType.EOF, "", 0));
+            return new Result<>(new Token(TokenType.EOF, "", term, term.length()));
         }
     }
 
@@ -76,7 +76,7 @@ public class LambdaLexer {
         }
         if (pos >= term.length()) {
             // term ended, return EOF
-            return new Result<>(new Token(TokenType.EOF, "", pos));
+            return new Result<>(new Token(TokenType.EOF, "", term, pos));
         }
         Token t;
         char c = term.charAt(pos);
@@ -84,7 +84,7 @@ public class LambdaLexer {
             case '-':
                 if (pos + 1 < term.length()) {
                     if (term.charAt(pos + 1) == '>') {
-                        t = new Token(TokenType.ARROW, "->", pos);
+                        t = new Token(TokenType.ARROW, "->", term, pos);
                         advance();
                         advance();
                         return new Result<>(t);
@@ -97,24 +97,37 @@ public class LambdaLexer {
                 }
             // bunch of single-character tokens
             case '.':
-                t = new Token(TokenType.DOT, ".", pos);
+                t = new Token(TokenType.DOT, ".", term, pos);
+                advance();
+                return new Result<>(t);
+            case ',':
+                t = new Token(TokenType.COMMA, ",", term, pos);
+                advance();
+                return new Result<>(t);
+            case ':':
+                t = new Token(TokenType.COLON, ":", term, pos);
                 advance();
                 return new Result<>(t);
             case '(':
-                t = new Token(TokenType.LEFT_PARENTHESIS, "(", pos);
+                t = new Token(TokenType.LEFT_PARENTHESIS, "(", term, pos);
                 advance();
                 return new Result<>(t);
             case ')':
-                t = new Token(TokenType.RIGHT_PARENTHESIS, ")", pos);
+                t = new Token(TokenType.RIGHT_PARENTHESIS, ")", term, pos);
                 advance();
                 return new Result<>(t);
             case '=':
-                t = new Token(TokenType.EQUALS, "=", pos);
+                t = new Token(TokenType.EQUALS, "=", term, pos);
                 advance();
                 return new Result<>(t);
             case '\\':
             case 'λ':
-                t = new Token(TokenType.LAMBDA, c + "", pos);
+                t = new Token(TokenType.LAMBDA, Character.toString(c), term, pos);
+                advance();
+                return new Result<>(t);
+            case '!':
+            case '∀':
+                t = new Token(TokenType.UNIVERSAL_QUANTIFIER, Character.toString(c), term, pos);
                 advance();
                 return new Result<>(t);
             default:
@@ -156,7 +169,7 @@ public class LambdaLexer {
                     type = TokenType.VARIABLE;
                     break;
             }
-            return new Result<>(new Token(type, sb.toString(), startPos));
+            return new Result<>(new Token(type, sb.toString(), term, startPos));
         } else if (Character.isDigit(c)) {
             int startPos = pos;
             // number literal
@@ -165,7 +178,7 @@ public class LambdaLexer {
                 sb.append(term.charAt(pos));
                 advance();
             } while (pos < term.length() && Character.isDigit(term.charAt(pos)));
-            return new Result<>(new Token(TokenType.NUMBER, sb.toString(), startPos));
+            return new Result<>(new Token(TokenType.NUMBER, sb.toString(), term, startPos));
         } else {
             return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withCharacter(c, pos, term));
         }

@@ -74,14 +74,13 @@ public class MainViewImpl extends AppLayout
         if (url.getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
             List<String> segments = url.getSegments();
             String term = segments.get(segments.size() - 1);
-            Map<String, String> types = url.getQueryParameters().getParameters().entrySet().stream().map(entry ->
-                    Pair.of(entry.getKey(), entry.getValue().get(0))
-            ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
-                    (existing, replacement) -> existing, LinkedHashMap::new));
+            String types = url.getQueryParameters().getParameters()
+                    .entrySet().stream().map(kv -> kv.getKey() + ": " + kv.getValue().get(0))
+                    .collect(Collectors.joining(", "));
             upperBar.inferTerm(decodeURL(term), types);
         } else if (url.getPath().equals(TypeInferenceView.ROUTE)) {
             setContent(new StartPageView());
-            upperBar.inferTerm(StringUtils.EMPTY, Collections.emptyMap());
+            upperBar.inferTerm(StringUtils.EMPTY, "");
         } else if (url.getPath().equals(StringUtils.EMPTY)) {
             setContent(new StartPageView());
         }

@@ -19,7 +19,10 @@ public enum ParseError {
 
     /**
      * some tokens were required, but not provided
+     *
+     * DEPRECATED: use UNEXPECTED_TOKEN with TokenType.EOF instead
      */
+    @Deprecated
     TOO_FEW_TOKENS,
 
     /**
@@ -39,12 +42,11 @@ public enum ParseError {
      * Attach a token to this error.
      *
      * @param cause the token that caused the error
-     * @param term the term that is parsed
      * @return this object
      */
-    public ParseError withToken(Token cause, String term) {
+    public ParseError withToken(Token cause) {
         this.cause = Optional.of(cause);
-        this.term = term;
+        this.term = cause.getSourceText();
         this.position = cause.getPos();
         return this;
     }

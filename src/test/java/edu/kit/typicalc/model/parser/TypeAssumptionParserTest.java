@@ -6,6 +6,7 @@ import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static edu.kit.typicalc.model.type.NamedType.BOOLEAN;
 import static edu.kit.typicalc.model.type.NamedType.INT;
@@ -16,9 +17,7 @@ class TypeAssumptionParserTest {
     @Test
     void simpleType() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("a", "int");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("a: int");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -30,9 +29,7 @@ class TypeAssumptionParserTest {
     @Test
     void typeVariablesOneDigitIndex() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("x", "t1");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("x: t1");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -40,23 +37,19 @@ class TypeAssumptionParserTest {
         assertEquals(new VarTerm("x"), assumption.getKey());
         assertEquals(new TypeAbstraction(new TypeVariable(TypeVariableKind.USER_INPUT, 1)), assumption.getValue());
 
-        Map<String, String> assumptions2 = new LinkedHashMap<>();
-        assumptions2.put("x", "t001");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type2 = parser.parse(assumptions2);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type2 = parser.parse("x: t009");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types2 = type2.unwrap();
         assertEquals(1, types2.size());
         Map.Entry<VarTerm, TypeAbstraction> assumption2 = types2.entrySet().stream().findFirst().get();
         assertEquals(new VarTerm("x"), assumption2.getKey());
-        assertEquals(new TypeAbstraction(new TypeVariable(TypeVariableKind.USER_INPUT, 1)), assumption2.getValue());
+        assertEquals(new TypeAbstraction(new TypeVariable(TypeVariableKind.USER_INPUT, 9)), assumption2.getValue());
     }
 
     @Test
     void typeVariablesMultipleDigitIndex() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("x", "t123456");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("x: t123456");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -68,9 +61,7 @@ class TypeAssumptionParserTest {
     @Test
     void namedTypeStartingWithT() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("x", "tau1");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("x: tau1");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -82,27 +73,27 @@ class TypeAssumptionParserTest {
     @Test
     void functionType() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("id", "int -> int");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id: int -> int");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
         Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
         assertEquals(new VarTerm("id"), assumption.getKey());
         assertEquals(new TypeAbstraction(new FunctionType(INT, INT)), assumption.getValue());
+    }
 
-        Map<String, String> assumptions2 = new LinkedHashMap<>();
-        assumptions2.put("f", "int -> int -> int");
-        type = parser.parse(assumptions2);
+    @Test
+    void functionType2() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("f: int -> int -> int");
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());
         }
         assertTrue(type.isOk());
-        types = type.unwrap();
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
-        assumption = types.entrySet().stream().findFirst().get();
+        Map.Entry<VarTerm, TypeAbstraction> assumption = types.entrySet().stream().findFirst().get();
         assertEquals(new VarTerm("f"), assumption.getKey());
         assertEquals(new TypeAbstraction(
                 new FunctionType(
@@ -114,9 +105,7 @@ class TypeAssumptionParserTest {
     @Test
     void functionTypeWithVariables() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("fun", "t0 -> t0");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("fun: t0 -> t0");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -129,9 +118,7 @@ class TypeAssumptionParserTest {
     @Test
     void complicatedTypes() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("id", "(int -> int) -> (boolean -> boolean)");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id: (int -> int) -> (boolean -> boolean)");
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());
@@ -147,9 +134,7 @@ class TypeAssumptionParserTest {
                         new FunctionType(BOOLEAN, BOOLEAN)
                 )), assumption.getValue());
         parser = new TypeAssumptionParser();
-        Map<String, String> assumptions2 = new LinkedHashMap<>();
-        assumptions2.put("id", "((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
-        type = parser.parse(assumptions2);
+        type = parser.parse("id: ((int -> int) -> (boolean -> boolean)) -> ((int2 -> boolean2) -> (boolean2 -> int2))");
         if (type.isError()) {
             System.err.println(type.unwrapError());
             System.err.println(type.unwrapError().getCause());
@@ -177,9 +162,7 @@ class TypeAssumptionParserTest {
     @Test
     void longFunction() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new LinkedHashMap<>();
-        assumptions.put("fun", "(a -> b -> c) -> d");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("fun: (a -> b -> c) -> d");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -195,9 +178,7 @@ class TypeAssumptionParserTest {
     @Test
     void allQuantified() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new HashMap<>();
-        assumptions.put("id", "∀ t1 . t1 -> t1");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id: ∀ t1 . t1 -> t1");
         assertTrue(type.isOk());
         Map<VarTerm, TypeAbstraction> types = type.unwrap();
         assertEquals(1, types.size());
@@ -213,34 +194,58 @@ class TypeAssumptionParserTest {
     }
 
     @Test
+    void allQuantifiedCommaSeparation() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("transmute: ∀ t1, t2 . t1 -> t2, createAny: ∀ t1 . t1 ");
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> types = type.unwrap();
+        assertEquals(2, types.size());
+        Set<TypeVariable> quantified = new HashSet<>();
+        quantified.add(new TypeVariable(TypeVariableKind.USER_INPUT, 1));
+        quantified.add(new TypeVariable(TypeVariableKind.USER_INPUT, 2));
+        assertEquals(new TypeAbstraction(
+                new FunctionType(
+                        new TypeVariable(TypeVariableKind.USER_INPUT, 1),
+                        new TypeVariable(TypeVariableKind.USER_INPUT, 2)
+                ), quantified), types.get(new VarTerm("transmute")));
+        quantified.remove(new TypeVariable(TypeVariableKind.USER_INPUT, 2));
+        assertEquals(new TypeAbstraction(
+                new TypeVariable(TypeVariableKind.USER_INPUT, 1),
+                quantified), types.get(new VarTerm("createAny")));
+    }
+
+    @Test
     void usefulErrors() {
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Map<String, String> assumptions = new HashMap<>();
-        assumptions.put("id", "∀ t1");
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(assumptions);
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id: ∀ t1");
         assertTrue(type.isError());
         ParseError error = type.unwrapError();
-        assertEquals(ParseError.TOO_FEW_TOKENS, error);
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(Token.TokenType.EOF, error.getCause().get().getType());
         Collection<Token.TokenType> expected = error.getExpected().get();
-        assertEquals(1, expected.size());
+        assertEquals(2, expected.size());
         assertTrue(expected.contains(Token.TokenType.DOT));
-        // TODO: should also expect a comma, once the parser is fixed!
+        assertTrue(expected.contains(Token.TokenType.COMMA));
     }
 
     @Test
     void errors() {
         Map<String, ParseError> tests = new HashMap<>();
-        tests.put("", ParseError.TOO_FEW_TOKENS);
+        tests.put("",
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "", 0)));
         tests.put("ö", ParseError.UNEXPECTED_CHARACTER);
-        tests.put("(x", ParseError.TOO_FEW_TOKENS);
-        tests.put("-> x", ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.ARROW, "->", 0), ""));
-        tests.put("x 11", ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.NUMBER, "11", 2), ""));
-        tests.put("x )", ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", 2), ""));
+        tests.put("(x",
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "(x", 2)));
+        tests.put("-> x",
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.ARROW, "->", "-> x", 0)));
+        tests.put("x 11",
+                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.NUMBER, "11", "x 11", 2)));
+        tests.put("x )", ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x )", 2)));
         tests.put("x -> (x) )", ParseError.UNEXPECTED_TOKEN
-                .withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", 9), ""));
+                .withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x -> (x) )", 9)));
         for (Map.Entry<String, ParseError> entry : tests.entrySet()) {
             TypeAssumptionParser parser = new TypeAssumptionParser();
-            Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(Map.of("type1", entry.getKey()));
+            Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("type1:" + entry.getKey());
             assertTrue(type.isError());
             assertEquals(entry.getValue(), type.unwrapError());
             if (entry.getValue().getCause().isPresent()) {
@@ -248,13 +253,15 @@ class TypeAssumptionParserTest {
             }
         }
         TypeAssumptionParser parser = new TypeAssumptionParser();
-        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(Map.of("föhn", "int"));
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("föhn: int");
         assertTrue(type.isError());
         assertEquals(ParseError.UNEXPECTED_CHARACTER, type.unwrapError());
+        assertEquals(1, type.unwrapError().getPosition());
         parser = new TypeAssumptionParser();
-        type = parser.parse(Map.of("1typ", "int"));
+        type = parser.parse("1typ:int");
         assertTrue(type.isError());
-        assertEquals(ParseError.UNEXPECTED_CHARACTER, type.unwrapError());
+        assertEquals(ParseError.UNEXPECTED_TOKEN, type.unwrapError());
+        assertEquals(0, type.unwrapError().getPosition());
     }
 
     @Test
@@ -281,7 +288,7 @@ class TypeAssumptionParserTest {
         tests.put("((x) -> ((x)) -> (x)) -> (x -> (x -> (x)))", new TypeAbstraction(xxxxxx));
         for (Map.Entry<String, TypeAbstraction> entry : tests.entrySet()) {
             TypeAssumptionParser parser = new TypeAssumptionParser();
-            Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse(Map.of("type1", entry.getKey()));
+            Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("type1:" + entry.getKey());
             assertTrue(type.isOk());
             assertEquals(entry.getValue(), type.unwrap().get(new VarTerm("type1")));
         }

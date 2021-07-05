@@ -1,7 +1,5 @@
 package edu.kit.typicalc.presenter;
 
-import java.util.Map;
-
 import com.vaadin.flow.component.UI;
 import edu.kit.typicalc.model.Model;
 import edu.kit.typicalc.model.TypeInfererInterface;
@@ -32,7 +30,7 @@ public class Presenter implements MainViewListener {
     }
 
     @Override
-    public void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions) {
+    public void typeInferLambdaString(String lambdaTerm, String typeAssumptions) {
         Result<TypeInfererInterface, ParseError> result = model.getTypeInferer(lambdaTerm, typeAssumptions);
         if (result.isError()) {
             view.displayError(result.unwrapError());

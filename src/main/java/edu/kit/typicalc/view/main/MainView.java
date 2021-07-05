@@ -3,8 +3,6 @@ package edu.kit.typicalc.view.main;
 import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.parser.ParseError;
 
-import java.util.Map;
-
 /**
  * Provides an interface for the presenter to interact with the view. The interaction consists of
  * either passing a TypeInfererInterface or a ParseError to the view.
@@ -37,6 +35,6 @@ public interface MainView {
          * @param lambdaTerm      the lambda term to type-infer
          * @param typeAssumptions type assumptions to use during the calculation
          */
-        void typeInferLambdaString(String lambdaTerm, Map<String, String> typeAssumptions);
+        void typeInferLambdaString(String lambdaTerm, String typeAssumptions);
     }
 }

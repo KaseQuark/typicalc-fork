@@ -27,7 +27,7 @@ public class ModelImpl implements Model {
      */
     @Override
     public Result<TypeInfererInterface, ParseError> getTypeInferer(String lambdaTerm,
-                                                                   Map<String, String> typeAssumptions) {
+                                                                   String typeAssumptions) {
         // Parse Lambda Term
         LambdaParser parser = new LambdaParser(lambdaTerm);
         Result<LambdaTerm, ParseError> result = parser.parse();

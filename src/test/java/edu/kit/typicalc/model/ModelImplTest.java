@@ -23,14 +23,10 @@ class ModelImplTest {
     @Test
     void getTypeInferer() {
         ModelImpl model = new ModelImpl();
-        Map<String, String> map = new LinkedHashMap<>();
-        map.put("x", "int");
-        Map<String, String> map2 = new LinkedHashMap<>();
-        map2.put("a.x", "3.int");
-        assertTrue(model.getTypeInferer("test.x.x.test", map2).isError());
-        assertTrue(model.getTypeInferer("x", map2).isError());
+        assertTrue(model.getTypeInferer("test.x.x.test", "a.x: 3.int").isError());
+        assertTrue(model.getTypeInferer("x", "a.x: 3.int").isError());
 
-        Result<TypeInfererInterface, ParseError> result = model.getTypeInferer("λy.x", map);
+        Result<TypeInfererInterface, ParseError> result = model.getTypeInferer("λy.x", "x: int");
         VarTerm y = new VarTerm("y");
         VarTerm x = new VarTerm("x");
         LambdaTerm term = new AbsTerm(y, x);
@@ -66,10 +62,9 @@ class ModelImplTest {
     @Test
     void quantifiedTypeAssumption() {
         ModelImpl model = new ModelImpl();
-        Map<String, String> assumptions = new HashMap<>();
-        assumptions.put("id", "∀ t1 . t1 -> t1");
 
-        Result<TypeInfererInterface, ParseError> result = model.getTypeInferer("(id id) (id true)", assumptions);
+        Result<TypeInfererInterface, ParseError> result = model.getTypeInferer("(id id) (id true)",
+                "id: ∀ t1 . t1 -> t1");
         if (result.isError()) {
             System.out.println(result.unwrapError());
             fail();
@@ -93,7 +88,7 @@ class ModelImplTest {
     @Test
     void letTermTypeAssumptions() {
         Model model = new ModelImpl();
-        TypeInfererInterface typer = model.getTypeInferer("(let g = λx.x in g) g", new HashMap<>()).unwrap();
+        TypeInfererInterface typer = model.getTypeInferer("(let g = λx.x in g) g", "").unwrap();
         AppStep first = (AppStep) typer.getFirstInferenceStep();
         LetStep second = (LetStep) first.getPremise1();
         VarStep third = (VarStep) second.getPremise();
