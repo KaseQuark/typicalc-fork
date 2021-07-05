@@ -29,6 +29,7 @@ public enum ParseError {
 
     private Optional<Token> cause = Optional.empty();
     private Optional<Collection<Token.TokenType>> needed = Optional.empty();
+    private Optional<ExpectedInput> expected = Optional.empty();
     private String term = "";
     private char wrongChar = '\0';
     private char correctChar = '\0';
@@ -44,6 +45,7 @@ public enum ParseError {
     public ParseError withToken(Token cause, String term) {
         this.cause = Optional.of(cause);
         this.term = term;
+        this.position = cause.getPos();
         return this;
     }
 
@@ -67,6 +69,22 @@ public enum ParseError {
     public ParseError expectedTypes(Collection<Token.TokenType> needed) {
         this.needed = Optional.of(needed);
         return this;
+    }
+
+    /**
+     * Store which kind of input is expected. Clears expected tokens.
+     *
+     * @param input expected input
+     * @return this object
+     */
+    public ParseError expectedInput(ExpectedInput input) {
+        this.needed = Optional.empty();
+        this.expected = Optional.of(input);
+        return this;
+    }
+
+    public Optional<ExpectedInput> getExpectedInput() {
+        return this.expected;
     }
 
     /**

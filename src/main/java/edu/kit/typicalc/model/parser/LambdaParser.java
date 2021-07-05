@@ -217,7 +217,7 @@ public class LambdaParser {
             default:
                 error = expect(TokenType.LEFT_PARENTHESIS);
                 if (error.isPresent()) {
-                    return new Result<>(null, error.get());
+                    return new Result<>(null, error.get().expectedInput(ExpectedInput.TERM));
                 }
                 Result<LambdaTerm, ParseError> term = parseTerm(false);
                 error = expect(TokenType.RIGHT_PARENTHESIS);

@@ -185,6 +185,14 @@ class LambdaParserTest {
     }
 
     @Test
+    void usefulErrors() {
+        LambdaParser parser = new LambdaParser("λx..");
+        ParseError error = parser.parse().unwrapError();
+        assertEquals(ExpectedInput.TERM, error.getExpectedInput().get());
+        assertEquals(3, error.getPosition());
+    }
+
+    @Test
     void equality() {
         EqualsVerifier.forClass(Token.class).usingGetClass().verify();
     }
