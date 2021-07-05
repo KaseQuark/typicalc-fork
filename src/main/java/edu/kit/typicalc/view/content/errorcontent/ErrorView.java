@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import edu.kit.typicalc.model.parser.ExpectedInput;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.model.parser.Token;
 import edu.kit.typicalc.view.main.InfoContent;
@@ -80,6 +81,15 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
                 break;
             default:
                 throw new IllegalStateException(); // delete when updating to Java 12+
+        }
+
+        // state expected input, if available
+        Optional<ExpectedInput> expectedInput = error.getExpectedInput();
+        if (expectedInput.isPresent()) {
+            ExpectedInput e = expectedInput.get();
+            additionalInformation.add(new Span(new Pre(
+                    getTranslation("error.expectedToken",
+                            getTranslation("expectedinput." + e)))));
         }
 
         // add expected tokens, if available
