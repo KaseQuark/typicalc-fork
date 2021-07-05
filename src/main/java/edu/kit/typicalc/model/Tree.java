@@ -172,6 +172,7 @@ public class Tree implements TermVisitorTree {
 
             TypeAbstraction newTypeAbstraction = new TypeAbstraction(
                     typeInfererLet.getType().orElseThrow(IllegalStateException::new), extendedTypeAssumptions);
+            extendedTypeAssumptions.remove(letTerm.getVariable());
             extendedTypeAssumptions.put(letTerm.getVariable(), newTypeAbstraction);
 
             constraints.add(newConstraint);
