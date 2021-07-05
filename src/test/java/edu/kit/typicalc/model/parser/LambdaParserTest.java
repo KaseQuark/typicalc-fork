@@ -124,6 +124,7 @@ class LambdaParserTest {
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
         assertEquals(new Token(TokenType.DOT, ".", "λx..", 3), error.getCause().get());
+        assertEquals(ExpectedInput.TERM, error.getExpectedInput().get());
         parser = new LambdaParser("let ) =");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
