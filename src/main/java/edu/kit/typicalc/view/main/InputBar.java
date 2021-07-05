@@ -107,7 +107,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     /**
-     * Sets the provided string as the value of the inputField.
+     * Sets the provided string as the value of the termInputField.
      *
      * @param term the provided string
      */
@@ -127,8 +127,14 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
                         .collect(Collectors.joining("; ")));
     }
 
-    protected void setTermAndClickTypeInfer(String term) {
-        setTerm(term);
+    /**
+     * Set to provided input as the value of the termInputField and assumptionInputField.
+     * 
+     * @param input pair of a term (left) and type assumptions (right)
+     */
+    protected void setInputAndClickTypeInfer(Pair<String, String> input) {
+        setTerm(input.getLeft());
+        assumptionInputField.setValue(input.getRight());
         onTypeInferButtonClick();
     }
 
@@ -149,7 +155,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onExampleButtonClick() {
-        Dialog exampleDialog = new ExampleDialog(this::setTermAndClickTypeInfer);
+        Dialog exampleDialog = new ExampleDialog(this::setInputAndClickTypeInfer);
         exampleDialog.open();
     }
 
