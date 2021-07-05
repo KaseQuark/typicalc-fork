@@ -1,8 +1,7 @@
 package edu.kit.typicalc.model;
 
 import edu.kit.typicalc.model.parser.ParseError;
-import edu.kit.typicalc.model.step.AbsStepDefault;
-import edu.kit.typicalc.model.step.VarStepDefault;
+import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.AbsTerm;
 import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.model.term.VarTerm;
@@ -89,5 +88,16 @@ class ModelImplTest {
                 )),
                 typeInference.getMGU().get().get(3)
         );
+    }
+
+    @Test
+    void letTermTypeAssumptions() {
+        Model model = new ModelImpl();
+        TypeInfererInterface typer = model.getTypeInferer("(let g = λx.x in g) g", new HashMap<>()).unwrap();
+        AppStep first = (AppStep) typer.getFirstInferenceStep();
+        LetStep second = (LetStep) first.getPremise1();
+        VarStep third = (VarStep) second.getPremise();
+        VarTerm[] vars = third.getConclusion().getTypeAssumptions().keySet().toArray(new VarTerm[1]);
+        assertEquals(0, vars[0].uniqueIndex());
     }
 }
