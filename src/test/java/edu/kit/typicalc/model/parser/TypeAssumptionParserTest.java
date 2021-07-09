@@ -229,6 +229,17 @@ class TypeAssumptionParserTest {
     }
 
     @Test
+    void doesntAcceptDuplicateQuantifiedVariables() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id: ∀ t1, t1 : t1 -> t1");
+        assertTrue(type.isError());
+        ParseError error = type.unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(Token.TokenType.VARIABLE, error.getCause().get().getType());
+        assertEquals(10, error.getCause().get().getPos());
+    }
+
+    @Test
     void errors() {
         Map<String, ParseError> tests = new HashMap<>();
         tests.put("",

@@ -441,7 +441,12 @@ public class TypeAssumptionParser {
                                 .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
                     int i = Integer.parseInt(input.substring(1));
-                    variables.add(new TypeVariable(TypeVariableKind.USER_INPUT, i));
+                    TypeVariable variable = new TypeVariable(TypeVariableKind.USER_INPUT, i);
+                    if (variables.contains(variable)) {
+                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                    }
+                    variables.add(variable);
                     expectCommaOrDot = true;
                     return new ParserResult<>(this);
                 case COMMA:
