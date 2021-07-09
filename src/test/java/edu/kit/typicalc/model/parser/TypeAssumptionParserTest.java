@@ -240,6 +240,24 @@ class TypeAssumptionParserTest {
     }
 
     @Test
+    void correctlyScopesQuantifiedTypeVariables() {
+        TypeAssumptionParser parser = new TypeAssumptionParser();
+        Result<Map<VarTerm, TypeAbstraction>, ParseError> type =
+                parser.parse("id: ∀ t1 . t1 -> t1, fun: ∀t1,t2.t1->t2 ");
+        assertTrue(type.isOk());
+        Map<VarTerm, TypeAbstraction> res = type.unwrap();
+        TypeAbstraction id = res.get(new VarTerm("id"));
+        TypeVariable[] idVariables = id.getQuantifiedVariables().toArray(new TypeVariable[0]);
+        assertEquals(0, idVariables[0].getUniqueIndex());
+        TypeAbstraction fun = res.get(new VarTerm("fun"));
+        TypeVariable[] funVariables = fun.getQuantifiedVariables().toArray(new TypeVariable[0]);
+        assertEquals(1, funVariables[0].getUniqueIndex());
+        assertEquals(1, funVariables[1].getUniqueIndex());
+        assertEquals(1, ((TypeVariable) ((FunctionType) fun.getInnerType()).getParameter()).getUniqueIndex());
+        assertEquals(1, ((TypeVariable) ((FunctionType) fun.getInnerType()).getOutput()).getUniqueIndex());
+    }
+
+    @Test
     void errors() {
         Map<String, ParseError> tests = new HashMap<>();
         tests.put("",

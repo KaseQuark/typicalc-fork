@@ -213,7 +213,7 @@ public class TypeAssumptionParser {
                         }
                     }
                     // attempt to parse as type
-                    ParserResult<Type> result = new ParseTypeState1().handle(t);
+                    ParserResult<Type> result = new ParseTypeState1(alreadyParsed.size()).handle(t);
                     if (result.isError()) {
                         return result.castError();
                     }
@@ -254,6 +254,15 @@ public class TypeAssumptionParser {
         private int parenthesisInitial = 0;
         private int openParens = 0;
 
+        /**
+         * Attached to any parsed type variables.
+         */
+        private final int typeVariableUniqueIndex;
+
+        ParseTypeState1(int typeVariableUniqueIndex) {
+            this.typeVariableUniqueIndex = typeVariableUniqueIndex;
+        }
+
         @Override
         public ParserResult<Type> handle(Token t) {
             switch (t.getType()) {
@@ -284,7 +293,7 @@ public class TypeAssumptionParser {
                                 .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
                     // parse function type
-                    state = Optional.of(new ParseTypeStateExpectArrow().handle(t).getState());
+                    state = Optional.of(new ParseTypeStateExpectArrow(typeVariableUniqueIndex).handle(t).getState());
                     return new ParserResult<>(this);
                 case LEFT_PARENTHESIS:
                     openParens += 1;
@@ -294,7 +303,7 @@ public class TypeAssumptionParser {
                     if (stateParenthesis.isPresent()) {
                         return handleInnerParenthesis(t);
                     }
-                    stateParenthesis = Optional.of(new ParseTypeState1());
+                    stateParenthesis = Optional.of(new ParseTypeState1(typeVariableUniqueIndex));
                     parenthesisInitial = openParens - 1;
                     return new ParserResult<>(this);
                 case RIGHT_PARENTHESIS:
@@ -372,11 +381,13 @@ public class TypeAssumptionParser {
             }
         }
 
-        private static Type parseLiteral(String text) {
+        private Type parseLiteral(String text) {
             Matcher typeVariableMatcher = TYPE_VARIABLE_PATTERN.matcher(text);
             if (typeVariableMatcher.matches()) {
                 int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(1));
-                return new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
+                TypeVariable var = new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
+                var.setUniqueIndex(typeVariableUniqueIndex);
+                return var;
             } else {
                 return new NamedType(text);
             }
@@ -386,13 +397,22 @@ public class TypeAssumptionParser {
     private static class ParseTypeStateExpectArrow implements ParserState<Type> {
         private Optional<ParserState<Type>> state = Optional.empty();
 
+        /**
+         * Attached to any parsed type variables.
+         */
+        private final int typeVariableUniqueIndex;
+
+        ParseTypeStateExpectArrow(int typeVariableUniqueIndex) {
+            this.typeVariableUniqueIndex = typeVariableUniqueIndex;
+        }
+
         @Override
         public ParserResult<Type> handle(Token t) {
             switch (t.getType()) {
                 case ARROW:
                     if (state.isEmpty()) {
                         // try parsing remainder as type
-                        state = Optional.of(new ParseTypeState1());
+                        state = Optional.of(new ParseTypeState1(typeVariableUniqueIndex));
                         return new ParserResult<>(this);
                     }
                 default:
@@ -446,6 +466,7 @@ public class TypeAssumptionParser {
                         return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
                                 .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
                     }
+                    variable.setUniqueIndex(alreadyParsed.size());
                     variables.add(variable);
                     expectCommaOrDot = true;
                     return new ParserResult<>(this);

@@ -14,6 +14,11 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     private final int index;
 
     /**
+     * The same type variable can be universally quantified multiple times, but this index will differ.
+     */
+    private int uniqueIndex;
+
+    /**
      * Initializes a new TypeVariable with the given index.
      *
      * @param kind  the kind of type variable
@@ -40,6 +45,14 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
      */
     public int getIndex() {
         return index;
+    }
+
+    public void setUniqueIndex(int uniqueIndex) {
+        this.uniqueIndex = uniqueIndex;
+    }
+
+    public int getUniqueIndex() {
+        return uniqueIndex;
     }
 
     /**
