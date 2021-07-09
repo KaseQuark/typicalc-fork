@@ -78,6 +78,8 @@ public class LatexCreatorType implements TypeVisitor {
             // this class is used in frontend/src/mathjax-setup.js
             latex.append("\\class{typicalc-type typicalc-type-")
                     .append(variable.hashCode())
+                    .append("-")
+                    .append(variable.getUniqueIndex())
                     .append("}{");
         }
         latex.append(name);
