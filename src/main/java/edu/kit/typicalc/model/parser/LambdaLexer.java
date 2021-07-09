@@ -93,7 +93,9 @@ public class LambdaLexer {
                                 .withCharacter(term.charAt(pos + 1), pos + 1, term, ParseError.ErrorType.TERM_ERROR));
                     }
                 } else {
-                    return new Result<>(null, ParseError.TOO_FEW_TOKENS); // actually too few *characters* ..
+                    return new Result<>(null,
+                            ParseError.UNEXPECTED_CHARACTER
+                                    .withCharacter(' ', term.length(), term, ParseError.ErrorType.TERM_ERROR));
                 }
             // bunch of single-character tokens
             case '.':

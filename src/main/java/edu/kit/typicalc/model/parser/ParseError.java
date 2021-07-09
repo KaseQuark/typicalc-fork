@@ -18,14 +18,6 @@ public enum ParseError {
     UNEXPECTED_TOKEN,
 
     /**
-     * some tokens were required, but not provided
-     *
-     * DEPRECATED: use UNEXPECTED_TOKEN with TokenType.EOF instead
-     */
-    @Deprecated
-    TOO_FEW_TOKENS,
-
-    /**
      * the string contained a character not allowed in that context
      */
     UNEXPECTED_CHARACTER;

@@ -91,7 +91,7 @@ public class LambdaParser {
             return t;
         }
         return new Result<>(null,
-                (last.getType() == TokenType.EOF ? ParseError.TOO_FEW_TOKENS : ParseError.UNEXPECTED_TOKEN)
+                ParseError.UNEXPECTED_TOKEN
                     .withToken(last, ParseError.ErrorType.TERM_ERROR)
                     .expectedTypes(ATOM_START_TOKENS));
     }
@@ -109,7 +109,9 @@ public class LambdaParser {
             }
         }
         if (token.getType() == TokenType.EOF) {
-            return new Result<>(null, ParseError.TOO_FEW_TOKENS);
+            return new Result<>(null, ParseError.UNEXPECTED_TOKEN
+                            .withToken(token, ParseError.ErrorType.TERM_ERROR)
+                            .expectedInput(ExpectedInput.TERM));
         }
         return parseApplication();
     }

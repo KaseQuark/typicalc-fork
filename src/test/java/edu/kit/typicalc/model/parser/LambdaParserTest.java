@@ -91,12 +91,20 @@ class LambdaParserTest {
                 term.unwrap()
         );
     }
+
     @Test
     void errorHandling() {
         LambdaParser parser = new LambdaParser("");
-        assertEquals(ParseError.TOO_FEW_TOKENS, parser.parse().unwrapError());
-        parser = new LambdaParser("x)");
         ParseError error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(TokenType.EOF, error.getCause().get().getType());
+        parser = new LambdaParser("λx.");
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(new Token(TokenType.EOF, "", "λx.", 3), error.getCause().get());
+        assertEquals(ExpectedInput.TERM, error.getExpectedInput().get());
+        parser = new LambdaParser("x)");
+        error = parser.parse().unwrapError();
         assertEquals(ParseError.UNEXPECTED_TOKEN, error);
         assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", "x)", 1), error.getCause().get());
         parser = new LambdaParser("??");
