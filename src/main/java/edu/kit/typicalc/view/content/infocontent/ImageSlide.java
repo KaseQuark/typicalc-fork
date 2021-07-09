@@ -1,7 +1,5 @@
 package edu.kit.typicalc.view.content.infocontent;
 
-import org.apache.commons.lang3.StringUtils;
-
 import com.flowingcode.vaadin.addons.carousel.Slide;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.html.Image;
