@@ -65,16 +65,19 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
             descriptionForError = "error";
         }
         switch (error) {
-            case TOO_FEW_TOKENS:
-                additionalInformation.add(new Span(getTranslation("error.tooFewTokensHelp")));
-                break;
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
                 if (cause.isPresent()) {
+                    String errorText;
+                    if (cause.get().getType() != Token.TokenType.EOF) {
+                        errorText = getTranslation("error.wrongCharacter") + cause.get().getText();
+                    } else {
+                        errorText = getTranslation("error.tooFewTokensHelp");
+                    }
                     additionalInformation.add(new Span(new Pre(getTranslation(descriptionForError) + term
                             + "\n" + " ".repeat(Math.max(getTranslation(descriptionForError).length(),
                             cause.get().getPos() + getTranslation(descriptionForError).length()))
-                            + "^ " + getTranslation("error.wrongCharacter") + cause.get().getText())));
+                            + "^ " + errorText)));
                 }
                 break;
             case UNEXPECTED_CHARACTER:
