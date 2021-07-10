@@ -47,6 +47,14 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         add(container, infoContent);
     }
 
+    private String errorMessageForToken(Token token) {
+        if (token.getType() != Token.TokenType.EOF) {
+            return getTranslation("error.wrongCharacter") + token.getText();
+        } else {
+            return getTranslation("error.tooFewTokensHelp");
+        }
+    }
+
     private Component buildErrorMessage(ParseError error) {
         VerticalLayout additionalInformation = new VerticalLayout();
         additionalInformation.setId(ADDITIONAL_INFO_ID);
@@ -54,26 +62,21 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         Paragraph summary = new Paragraph(getTranslation("root." + error.toString()));
         summary.setId(ERROR_SUMMARY_ID);
         String term = error.getTerm();
-        String descriptionForError;
-        ParseError.ErrorType errorType = error.getErrorType();
-        if (errorType == ParseError.ErrorType.TERM_ERROR) {
+        String descriptionForError = null;
+        Optional<ParseError.ErrorType> errorType = error.getErrorType();
+        if (errorType.isEmpty()) {
+            throw new IllegalStateException();
+        }
+        if (errorType.get() == ParseError.ErrorType.TERM_ERROR) {
             descriptionForError = "error.termForError";
-        } else if (errorType == ParseError.ErrorType.TYPE_ASSUMPTION_ERROR) {
+        } else if (errorType.get() == ParseError.ErrorType.TYPE_ASSUMPTION_ERROR) {
             descriptionForError = "error.typeAssumptionForError";
-        } else {
-            //should never happen
-            descriptionForError = "error";
         }
         switch (error) {
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
                 if (cause.isPresent()) {
-                    String errorText;
-                    if (cause.get().getType() != Token.TokenType.EOF) {
-                        errorText = getTranslation("error.wrongCharacter") + cause.get().getText();
-                    } else {
-                        errorText = getTranslation("error.tooFewTokensHelp");
-                    }
+                    String errorText = errorMessageForToken(cause.get());
                     additionalInformation.add(new Span(new Pre(getTranslation(descriptionForError) + term
                             + "\n" + " ".repeat(Math.max(getTranslation(descriptionForError).length(),
                             cause.get().getPos() + getTranslation(descriptionForError).length()))

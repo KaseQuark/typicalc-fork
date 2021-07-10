@@ -7,5 +7,10 @@ public enum ExpectedInput {
     /**
      * Any kind of lambda term.
      */
-    TERM
+    TERM,
+
+    /**
+     * Any kind of type.
+     */
+    TYPE
 }

@@ -6,7 +6,6 @@ import edu.kit.typicalc.util.Result;
 import org.junit.jupiter.api.Test;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static edu.kit.typicalc.model.type.NamedType.BOOLEAN;
 import static edu.kit.typicalc.model.type.NamedType.INT;
@@ -327,5 +326,24 @@ class TypeAssumptionParserTest {
             assertTrue(type.isOk());
             assertEquals(entry.getValue(), type.unwrap().get(new VarTerm("type1")));
         }
+    }
+
+    @Test
+    void errorCase1() {
+        ParseError e = parse("id: a ->");
+        assertEquals(ExpectedInput.TYPE, e.getExpectedInput().get());
+        assertEquals(Token.TokenType.EOF, e.getCause().get().getType());
+    }
+
+    @Test
+    void errorCase2() {
+        ParseError e = parse("id: ");
+        assertEquals(ExpectedInput.TYPE, e.getExpectedInput().get());
+        assertTrue(e.getExpected().get().contains(Token.TokenType.UNIVERSAL_QUANTIFIER));
+        assertEquals(Token.TokenType.EOF, e.getCause().get().getType());
+    }
+
+    static ParseError parse(String input) {
+        return new TypeAssumptionParser().parse(input).unwrapError();
     }
 }

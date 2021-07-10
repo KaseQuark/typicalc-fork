@@ -31,12 +31,7 @@ public enum ParseError {
         /**
          * This error was created when parsing the type assumptions
          */
-        TYPE_ASSUMPTION_ERROR,
-
-        /**
-         * initial error type
-         */
-        INITIAL_ERROR
+        TYPE_ASSUMPTION_ERROR
     }
 
     private Optional<Token> cause = Optional.empty();
@@ -46,7 +41,7 @@ public enum ParseError {
     private char wrongChar = '\0';
     private char correctChar = '\0';
     private int position = -1;
-    private ErrorType errorType = ErrorType.INITIAL_ERROR;
+    private Optional<ErrorType> errorType = Optional.empty();
 
     /**
      * Attach a token to this error.
@@ -58,7 +53,7 @@ public enum ParseError {
         this.cause = Optional.of(cause);
         this.term = cause.getSourceText();
         this.position = cause.getPos();
-        this.errorType = errorType;
+        this.errorType = Optional.of(errorType);
         return this;
     }
 
@@ -123,7 +118,7 @@ public enum ParseError {
         this.wrongChar = cause;
         this.position = position;
         this.term = term;
-        this.errorType = errorType;
+        this.errorType = Optional.of(errorType);
         return this;
     }
 
@@ -172,12 +167,12 @@ public enum ParseError {
     /**
      * @return the error type
      */
-    public ErrorType getErrorType() {
+    public Optional<ErrorType> getErrorType() {
         return errorType;
     }
 
     protected void setErrorType(ErrorType errorType) {
-        this.errorType = errorType;
+        this.errorType = Optional.of(errorType);
     }
 
     ParseError() {

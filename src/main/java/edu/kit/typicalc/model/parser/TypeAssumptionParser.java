@@ -6,6 +6,7 @@ import edu.kit.typicalc.model.type.*;
 import edu.kit.typicalc.util.Result;
 
 import java.util.*;
+import java.util.function.UnaryOperator;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -119,6 +120,13 @@ public class TypeAssumptionParser {
             return this;
         }
 
+        ParserResult<T> modifyError(UnaryOperator<ParseError> fun) {
+            if (error.isPresent()) {
+                error = Optional.of(fun.apply(error.get()));
+            }
+            return this;
+        }
+
         Optional<Token> extraToken() {
             return this.extraToken;
         }
@@ -129,7 +137,7 @@ public class TypeAssumptionParser {
     }
 
     private static class InitialState implements ParserState<Map<VarTerm, TypeAbstraction>> {
-        private Map<VarTerm, TypeAbstraction> alreadyParsed = new LinkedHashMap<>();
+        private final Map<VarTerm, TypeAbstraction> alreadyParsed;
 
         InitialState(Map<VarTerm, TypeAbstraction> alreadyParsed) {
             this.alreadyParsed = alreadyParsed;
@@ -150,8 +158,9 @@ public class TypeAssumptionParser {
     }
 
     private static class ExpectingColon implements ParserState<Map<VarTerm, TypeAbstraction>> {
-        private Map<VarTerm, TypeAbstraction> alreadyParsed;
+        private final Map<VarTerm, TypeAbstraction> alreadyParsed;
         private final VarTerm var;
+
         ExpectingColon(Map<VarTerm, TypeAbstraction> alreadyParsed, VarTerm var) {
             this.alreadyParsed = alreadyParsed;
             this.var = var;
@@ -159,12 +168,11 @@ public class TypeAssumptionParser {
 
         @Override
         public ParserResult<Map<VarTerm, TypeAbstraction>> handle(Token t) {
-            switch (t.getType()) {
-                case COLON:
-                    return new ParserResult<>(new ExpectingTypeDef(alreadyParsed, var));
-                default:
-                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
-                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+            if (t.getType() == TokenType.COLON) {
+                return new ParserResult<>(new ExpectingTypeDef(alreadyParsed, var));
+            } else {
+                return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                        .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
     }
@@ -174,6 +182,7 @@ public class TypeAssumptionParser {
         private final Set<TypeVariable> typeVariables;
         private final VarTerm var;
         private Optional<ParserState<Type>> state = Optional.empty();
+
         ExpectingTypeDef(Map<VarTerm, TypeAbstraction> alreadyParsed, VarTerm var) {
             this.alreadyParsed = alreadyParsed;
             this.typeVariables = new TreeSet<>();
@@ -188,38 +197,36 @@ public class TypeAssumptionParser {
 
         @Override
         public ParserResult<Map<VarTerm, TypeAbstraction>> handle(Token t) {
-            switch (t.getType()) {
-                case UNIVERSAL_QUANTIFIER:
-                    if (typeVariables.isEmpty()) {
-                        return new ParserResult<>(new ExpectingTypeVariables(alreadyParsed, var));
-                    } else {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
-                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
-                    }
-                default:
-                    if (state.isPresent()) {
-                        ParserState<Type> status = state.get();
-                        // already parsing type
-                        ParserResult<Type> result = status.handle(t);
-                        if (result.isResult()) {
-                            alreadyParsed.put(var, new TypeAbstraction(result.getResult(), typeVariables));
-                            return new ParserResult<>(new ExpectingCommaBeforeNextType(alreadyParsed))
-                                    .copyToken(result);
-                        } else if (result.isError()) {
-                            return result.castError();
-                        } else {
-                            state = Optional.of(result.getState());
-                            return new ParserResult<>(this);
-                        }
-                    }
-                    // attempt to parse as type
-                    ParserResult<Type> result = new ParseTypeState1(alreadyParsed.size()).handle(t);
-                    if (result.isError()) {
-                        return result.castError();
-                    }
+            if (t.getType() == TokenType.UNIVERSAL_QUANTIFIER) {
+                if (typeVariables.isEmpty()) {
+                    return new ParserResult<>(new ExpectingTypeVariables(alreadyParsed, var));
+                } else {
+                    return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                }
+            }
+            if (state.isPresent()) {
+                ParserState<Type> status = state.get();
+                // already parsing type
+                ParserResult<Type> result = status.handle(t);
+                if (result.isResult()) {
+                    alreadyParsed.put(var, new TypeAbstraction(result.getResult(), typeVariables));
+                    return new ParserResult<>(new ExpectingCommaBeforeNextType(alreadyParsed))
+                            .copyToken(result);
+                } else if (result.isError()) {
+                    return result.castError();
+                } else {
                     state = Optional.of(result.getState());
                     return new ParserResult<>(this);
+                }
             }
+            // attempt to parse as type
+            ParserResult<Type> result = new ParseTypeState1(alreadyParsed.size()).handle(t);
+            if (result.isError()) {
+                return result.modifyError(error -> error.expectedType(TokenType.UNIVERSAL_QUANTIFIER)).castError();
+            }
+            state = Optional.of(result.getState());
+            return new ParserResult<>(this);
         }
     }
 
@@ -343,7 +350,8 @@ public class TypeAssumptionParser {
                         return new ParserResult<>(parsedType.get()).attachToken(t);
                     }
                     return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
-                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                            .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                            .expectedInput(ExpectedInput.TYPE));
                 default:
                     if (state.isPresent()) {
                         return handleInner(t);
@@ -408,30 +416,26 @@ public class TypeAssumptionParser {
 
         @Override
         public ParserResult<Type> handle(Token t) {
-            switch (t.getType()) {
-                case ARROW:
-                    if (state.isEmpty()) {
-                        // try parsing remainder as type
-                        state = Optional.of(new ParseTypeState1(typeVariableUniqueIndex));
-                        return new ParserResult<>(this);
-                    }
-                default:
-                    if (state.isPresent()) {
-                        ParserState<Type> status = state.get();
-                        // already parsing type
-                        ParserResult<Type> result = status.handle(t);
-                        if (result.isResult()) {
-                            return result;
-                        } else if (result.isError()) {
-                            return result.castError();
-                        } else {
-                            state = Optional.of(result.getState());
-                            return new ParserResult<>(this);
-                        }
-                    } else {
-                        return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
-                                .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
-                    }
+            if (t.getType() == TokenType.ARROW && state.isEmpty()) {
+                // try parsing remainder as type
+                state = Optional.of(new ParseTypeState1(typeVariableUniqueIndex));
+                return new ParserResult<>(this);
+            }
+            if (state.isPresent()) {
+                ParserState<Type> status = state.get();
+                // already parsing type
+                ParserResult<Type> result = status.handle(t);
+                if (result.isResult()) {
+                    return result;
+                } else if (result.isError()) {
+                    return result.castError();
+                } else {
+                    state = Optional.of(result.getState());
+                    return new ParserResult<>(this);
+                }
+            } else {
+                return new ParserResult<>(ParseError.UNEXPECTED_TOKEN
+                        .withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
             }
         }
     }
@@ -441,6 +445,7 @@ public class TypeAssumptionParser {
         private final VarTerm var;
         private final Set<TypeVariable> variables = new TreeSet<>();
         private boolean expectCommaOrDot = false;
+
         ExpectingTypeVariables(Map<VarTerm, TypeAbstraction> alreadyParsed, VarTerm var) {
             this.alreadyParsed = alreadyParsed;
             this.var = var;
