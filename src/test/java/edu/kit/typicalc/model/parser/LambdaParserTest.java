@@ -230,7 +230,20 @@ class LambdaParserTest {
     }
 
     @Test
+    void errorCase3() {
+        ParseError err = getParseError("let k = λx.λy.x in .k k w");
+        assertEquals(TokenType.DOT, err.getCause().get().getType());
+        assertEquals(19, err.getCause().get().getPos());
+        assertEquals(ExpectedInput.TERM, err.getExpectedInput().get());
+    }
+
+    @Test
     void equality() {
         EqualsVerifier.forClass(Token.class).usingGetClass().verify();
+    }
+
+    static ParseError getParseError(String term) {
+        LambdaParser parser = new LambdaParser(term);
+        return parser.parse().unwrapError();
     }
 }
