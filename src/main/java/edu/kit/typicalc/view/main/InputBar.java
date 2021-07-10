@@ -15,9 +15,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 import org.apache.commons.lang3.tuple.Pair;
 
-import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 /**
  * Contains components which allow the user to enter a lambda term and start the type inference algorithm.
@@ -41,7 +39,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
-    private final transient Consumer<Pair<String, Map<String, String>>> callback;
+    private final transient Consumer<Pair<String, String>> callback;
     private final Button infoIcon;
     private final TextField termInputField;
     private final AssumptionInputField assumptionInputField;
@@ -54,7 +52,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      *
      * @param callback Consumer to call the inferType()-method in UpperBar
      */
-    protected InputBar(Consumer<Pair<String, Map<String, String>>> callback) {
+    protected InputBar(Consumer<Pair<String, String>> callback) {
         this.callback = callback;
 
         setId(INPUT_BAR_ID);
@@ -126,7 +124,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
 
     /**
      * Set to provided input as the value of the termInputField and assumptionInputField.
-     * 
+     *
      * @param input pair of a term (left) and type assumptions (right)
      */
     protected void setInputAndClickTypeInfer(Pair<String, String> input) {
@@ -138,17 +136,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private void onTypeInferButtonClick() {
         termInputField.blur();
         String assumptions = assumptionInputField.getValue();
-        Map<String, String> assumptionsMap = Arrays.stream(assumptions.split(";"))
-                .filter(entry -> entry.length() > 0).map(entry -> {
-            if (entry.contains(":")) {
-                String[] parts = entry.split(":", 2);
-                return Pair.of(parts[0].trim(), parts[1].trim());
-            } else {
-                return Pair.of(entry, "");
-            }
-        }).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
-                (existing, replacement) -> existing, LinkedHashMap::new));
-        callback.accept(Pair.of(termInputField.getValue(), assumptionsMap));
+        callback.accept(Pair.of(termInputField.getValue(), assumptions));
     }
 
     private void onExampleButtonClick() {

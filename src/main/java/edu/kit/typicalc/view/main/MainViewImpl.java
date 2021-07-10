@@ -20,7 +20,6 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Contains all the displayed components and builds the applications user interface (UI).
@@ -43,6 +42,7 @@ public class MainViewImpl extends AppLayout
      * The title of the application
      */
     public static final String PAGE_TITLE = "Typicalc";
+    private static final String ASSUMPTION_PARAMETER = "assumptions";
 
     private final UpperBar upperBar;
 
@@ -74,10 +74,9 @@ public class MainViewImpl extends AppLayout
         if (url.getPath().matches(TypeInferenceView.ROUTE + "/.*")) {
             List<String> segments = url.getSegments();
             String term = segments.get(segments.size() - 1);
-            String types = url.getQueryParameters().getParameters()
-                    .entrySet().stream().map(kv -> kv.getKey() + ": " + kv.getValue().get(0))
-                    .collect(Collectors.joining(", "));
-            upperBar.inferTerm(decodeURL(term), types);
+            List<String> types = url.getQueryParameters().getParameters().get(ASSUMPTION_PARAMETER);
+            String assumptions = types != null && types.size() == 1 ? types.get(0) : "";
+            upperBar.inferTerm(decodeURL(term), assumptions);
         } else if (url.getPath().equals(TypeInferenceView.ROUTE)) {
             setContent(new StartPageView());
             upperBar.inferTerm(StringUtils.EMPTY, "");
@@ -86,18 +85,22 @@ public class MainViewImpl extends AppLayout
         }
     }
 
-    private void processInput(Pair<String, Map<String, String>> lambdaTermAndAssumptions) {
+    private void processInput(Pair<String, String> lambdaTermAndAssumptions) {
         String lambdaTerm = lambdaTermAndAssumptions.getLeft();
         if (lambdaTerm.isBlank()) {
             UI.getCurrent().navigate("./");
             return;
         }
-        QueryParameters qp = new QueryParameters(lambdaTermAndAssumptions.getRight().entrySet().stream().map(entry ->
-                Pair.of(entry.getKey(), List.of(entry.getValue()))
-        ).collect(Collectors.toMap(Pair::getLeft, Pair::getRight,
-                (existing, replacement) -> existing, LinkedHashMap::new)));
-        UI.getCurrent().navigate(TypeInferenceView.ROUTE + "/"
-                + URLEncoder.encode(lambdaTerm, StandardCharsets.UTF_8), qp);
+        String assumptions = lambdaTermAndAssumptions.getRight();
+        if (assumptions.isEmpty()) {
+            UI.getCurrent().navigate(TypeInferenceView.ROUTE + "/"
+                    + URLEncoder.encode(lambdaTerm, StandardCharsets.UTF_8));
+        } else {
+            QueryParameters qp = new QueryParameters(
+                    Map.of(ASSUMPTION_PARAMETER, List.of(lambdaTermAndAssumptions.getRight())));
+            UI.getCurrent().navigate(TypeInferenceView.ROUTE + "/"
+                    + URLEncoder.encode(lambdaTerm, StandardCharsets.UTF_8), qp);
+        }
     }
 
     private String decodeURL(String encodedUrl) {

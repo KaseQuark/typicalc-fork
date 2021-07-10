@@ -19,7 +19,6 @@ import edu.kit.typicalc.view.main.MainView.MainViewListener;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.Locale;
-import java.util.Map;
 import java.util.function.Consumer;
 
 
@@ -48,7 +47,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
     private final ItemLabelGenerator<Locale> renderer;
 
     private final transient MainViewListener presenter;
-    private final transient Consumer<Pair<String, Map<String, String>>> inputConsumer;
+    private final transient Consumer<Pair<String, String>> inputConsumer;
 
     /**
      * Initializes a new UpperBar with the provided mainViewListener.
@@ -56,7 +55,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
      * @param presenter     the listener used to communicate with the model
      * @param inputConsumer function to handle user input
      */
-    protected UpperBar(MainViewListener presenter, Consumer<Pair<String, Map<String, String>>> inputConsumer) {
+    protected UpperBar(MainViewListener presenter, Consumer<Pair<String, String>> inputConsumer) {
 
         this.presenter = presenter;
         this.inputConsumer = inputConsumer;
@@ -90,7 +89,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
      *
      * @param termAndAssumptions the lambda term to be type-inferred and the type assumptions to use
      */
-    protected void typeInfer(Pair<String, Map<String, String>> termAndAssumptions) {
+    protected void typeInfer(Pair<String, String> termAndAssumptions) {
         inputConsumer.accept(termAndAssumptions);
     }
 
