@@ -7,6 +7,7 @@ import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class LambdaParserTest {
     private static final VarTerm X = new VarTerm("x");
@@ -200,6 +201,15 @@ class LambdaParserTest {
         ParseError error = parser.parse().unwrapError();
         assertEquals(ExpectedInput.TERM, error.getExpectedInput().get());
         assertEquals(3, error.getPosition());
+    }
+
+    @Test
+    void errorCase1() {
+        LambdaParser parser = new LambdaParser("(λx.x)(λ");
+        ParseError error = parser.parse().unwrapError();
+        assertEquals(TokenType.EOF, error.getCause().get().getType());
+        assertEquals(1, error.getExpected().get().size());
+        assertTrue(error.getExpected().get().contains(TokenType.VARIABLE));
     }
 
     @Test

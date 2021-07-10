@@ -224,6 +224,9 @@ public class LambdaParser {
                     return new Result<>(null, error.get().expectedInput(ExpectedInput.TERM));
                 }
                 Result<LambdaTerm, ParseError> term = parseTerm(false);
+                if (term.isError()) {
+                    return term; // return error early
+                }
                 error = expect(TokenType.RIGHT_PARENTHESIS);
                 if (error.isEmpty()) {
                     return term;
