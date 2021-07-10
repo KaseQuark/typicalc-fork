@@ -213,6 +213,23 @@ class LambdaParserTest {
     }
 
     @Test
+    void doesntAcceptEmptyParens() {
+        LambdaParser parser = new LambdaParser("()");
+        ParseError error = parser.parse().unwrapError();
+        assertEquals(TokenType.RIGHT_PARENTHESIS, error.getCause().get().getType());
+        assertEquals(ExpectedInput.TERM, error.getExpectedInput().get());
+    }
+
+    @Test
+    void errorCase2() {
+        LambdaParser parser = new LambdaParser(")()");
+        ParseError error = parser.parse().unwrapError();
+        assertEquals(TokenType.RIGHT_PARENTHESIS, error.getCause().get().getType());
+        assertEquals(0, error.getCause().get().getPos());
+        assertEquals(ExpectedInput.TERM, error.getExpectedInput().get());
+    }
+
+    @Test
     void equality() {
         EqualsVerifier.forClass(Token.class).usingGetClass().verify();
     }
