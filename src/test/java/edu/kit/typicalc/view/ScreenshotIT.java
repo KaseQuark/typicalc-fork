@@ -1,7 +1,5 @@
 package edu.kit.typicalc.view;
 
-import com.vaadin.flow.component.button.testbench.ButtonElement;
-import com.vaadin.flow.component.orderedlayout.testbench.HorizontalLayoutElement;
 import com.vaadin.testbench.Parameters;
 import com.vaadin.testbench.commands.TestBenchCommandExecutor;
 import edu.kit.typicalc.view.pageobjects.*;
@@ -72,9 +70,9 @@ public class ScreenshotIT extends AbstractIT {
     @Test
     public void basicExecution() throws Exception {
         InputBarElement inputBar = $(InputBarElement.class).first();
-        inputBar.setCurrentValue(IDENTITY_TERM);
+        inputBar.setTerm(IDENTITY_TERM);
 
-        assertEquals(IDENTITY_TERM, inputBar.getCurrentValue());
+        assertEquals(IDENTITY_TERM, inputBar.getTerm());
 
         inputBar.typeInfer();
         TestBenchCommandExecutor executer = getCommandExecutor();
@@ -89,9 +87,9 @@ public class ScreenshotIT extends AbstractIT {
     @Test
     public void createPermalink() throws IOException {
         InputBarElement inputBar = $(InputBarElement.class).first();
-        inputBar.setCurrentValue(LET_TERM);
+        inputBar.setTerm(LET_TERM);
 
-        assertEquals(LET_TERM, inputBar.getCurrentValue());
+        assertEquals(LET_TERM, inputBar.getTerm());
 
         inputBar.typeInfer();
         TestBenchCommandExecutor executor = getCommandExecutor();
@@ -114,23 +112,26 @@ public class ScreenshotIT extends AbstractIT {
 
     @Test
     public void chooseExample() throws IOException {
+        TestBenchCommandExecutor executor = getCommandExecutor();
+        
         InputBarElement inputBar = $(InputBarElement.class).first();
         inputBar.openExampleDialog();
 
         ExampleDialogElement exampleDialog = $(ExampleDialogElement.class).waitForFirst();
         String term = "λx.x";
         exampleDialog.insertExample(term);
-
-        matches.add(term.equals(inputBar.getCurrentValue()));
-
-        TestBenchCommandExecutor executor = getCommandExecutor();
+        executor.waitForVaadin();
+        
+        String typeAssumptions = "x: int";
+        exampleDialog.insertAssumptions(typeAssumptions);
         executor.waitForVaadin();
 
+        matches.add(term.equals(inputBar.getTerm()));
+        matches.add(typeAssumptions.equals(inputBar.getTypeAssumptions()));
+        
         // check that the example is copied to the input bar
         matches.add(testBench().compareScreen("chooseExample1"));
 
-        inputBar.typeInfer();
-        executor.waitForVaadin();
         ControlPanelElement control = $(ControlPanelElement.class).waitForFirst();
         control.lastStep();
         executor.waitForVaadin();
@@ -150,27 +151,16 @@ public class ScreenshotIT extends AbstractIT {
 
         InputBarElement inputBar = $(InputBarElement.class).first();
         String term = "λx. f x";
-        inputBar.setCurrentValue(term);
+        inputBar.setTerm(term);
 
         // check if the correct term is entered
-        matches.add(term.equals(inputBar.getCurrentValue()));
-
-        inputBar.openTypeAssumptionsArea();
-        TypeAssumptionsAreaElement assumptionsArea = $(TypeAssumptionsAreaElement.class).waitForFirst();
-        assumptionsArea.addTypeAssumption();
-        executor.waitForVaadin();
-        TypeAssumptionFieldElement assumptionField =  assumptionsArea.getLastTypeAssumption();
-
-        String variable = "f";
-        String type = "int -> y";
-        assumptionField.setVariable(variable);
-        assumptionField.setType(type);
-        assumptionsArea.$(HorizontalLayoutElement.class).first().$(ButtonElement.class).last().focus();
-
-        executor.waitForVaadin();
-        // check if type assumption is added correctly
-        matches.add(testBench().compareScreen("exportLatexWithAssumptions1"));
-        assumptionsArea.closeDialog();
+        matches.add(term.equals(inputBar.getTerm()));
+        
+        String typeAssumptions = "f: int -> y";
+        inputBar.setTypeAssumptions(typeAssumptions);
+        
+        // check if the correct type assumptions are entered
+        matches.add(typeAssumptions.equals(inputBar.getTypeAssumptions()));
 
         inputBar.typeInfer();
         executor.waitForVaadin();
@@ -193,10 +183,10 @@ public class ScreenshotIT extends AbstractIT {
 
         InputBarElement inputBar = $(InputBarElement.class).first();
         String term = "λx. f x";
-        inputBar.setCurrentValue(term);
+        inputBar.setTerm(term);
 
         // check if the correct term is entered
-        Assert.assertEquals(term, inputBar.getCurrentValue());
+        Assert.assertEquals(term, inputBar.getTerm());
         inputBar.typeInfer();
 
         ControlPanelElement controlPanelElement = $(ControlPanelElement.class).first();
@@ -252,8 +242,8 @@ public class ScreenshotIT extends AbstractIT {
         InputBarElement inputBar = $(InputBarElement.class).first();
         String term = "λ5.x";
         
-        inputBar.setCurrentValue(term);
-        assertEquals(term, inputBar.getCurrentValue());
+        inputBar.setTerm(term);
+        assertEquals(term, inputBar.getTerm());
         inputBar.typeInfer();
         executor.waitForVaadin();
         

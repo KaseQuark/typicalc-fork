@@ -14,9 +14,13 @@ public class ExampleDialogElement extends DialogElement {
     /**
      * Click on an example of the example dialog.
      * 
-     * @param example the example
+     * @param exampleTerm the example
      */
-    public void insertExample(String example) {
-        $(VerticalLayoutElement.class).first().$(ButtonElement.class).id(example).click();
+    public void insertExample(String exampleTerm) {
+        $(VerticalLayoutElement.class).first().$(ButtonElement.class).id(exampleTerm).click();
+    }
+    
+    public void insertAssumptions(String exampleAssumptions) {
+        $(VerticalLayoutElement.class).first().$(ButtonElement.class).id(exampleAssumptions).click();
     }
 }

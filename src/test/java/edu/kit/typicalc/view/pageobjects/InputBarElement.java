@@ -19,21 +19,39 @@ public class InputBarElement extends HorizontalLayoutElement {
     }
 
     /**
-     * Set the current value of the inputField.
+     * Set the current value of the termInputField.
      * 
      * @param value the value
      */
-    public void setCurrentValue(String value) {
-        $(TextFieldElement.class).id("inputField").setValue(value);
+    public void setTerm(String value) {
+        $(TextFieldElement.class).id("term-input-field").setValue(value);
     }
 
     /**
-     * Get the current value of the inputField.
+     * Get the current value of the termInputField.
      * 
      * @return the current value
      */
-    public String getCurrentValue() {
-        return $(TextFieldElement.class).id("inputField").getValue();
+    public String getTerm() {
+        return $(TextFieldElement.class).id("term-input-field").getValue();
+    }
+    
+    /**
+     * Set the current value of the assumptionInputField.
+     * 
+     * @param assumptions the value
+     */
+    public void setTypeAssumptions(String assumptions) {
+        $(TextFieldElement.class).id("ass-input-field").setValue(assumptions);
+    }
+    
+    /**
+     * Get the current value of the assumptionInputField.
+     * 
+     * @return the current value
+     */
+    public String getTypeAssumptions() {
+        return $(TextFieldElement.class).id("ass-input-field").getValue();
     }
 
     /**

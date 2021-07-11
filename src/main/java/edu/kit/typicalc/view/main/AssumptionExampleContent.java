@@ -12,8 +12,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
 /**
- * 
- *
+ * Contains all the predefined type assumptions for the selected term as buttons.
+ * Clicking on a button starts the type inference algorithm with the selected term and the selected type
+ * assumptions.
  */
 @CssImport("./styles/view/main/assumption-example-content.css")
 public class AssumptionExampleContent extends VerticalLayout {
@@ -48,6 +49,7 @@ public class AssumptionExampleContent extends VerticalLayout {
             Button button = new Button(assumptions);
             button.addClickListener(click -> forwardCallback.accept(assumptions.
                     replace(getTranslation("root.emptySet"), StringUtils.EMPTY)));
+            button.setId(assumptions);
             this.add(button);
         }
     }
