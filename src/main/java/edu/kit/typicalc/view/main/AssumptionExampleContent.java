@@ -20,7 +20,7 @@ import com.vaadin.flow.component.textfield.TextField;
 public class AssumptionExampleContent extends VerticalLayout {
     private static final long serialVersionUID = -8157345417001452273L;
     
-    private static final String SELECTED_TERM_BAR_ID = "selected-term-bar"; // exchange with better name
+    private static final String SELECTED_TERM_BAR_ID = "selected-term-bar";
     private static final String SELCETED_TERM_ID = "selected-term";
     
     /**
@@ -37,10 +37,11 @@ public class AssumptionExampleContent extends VerticalLayout {
         selectedTerm.setReadOnly(true);
         selectedTerm.setId(SELCETED_TERM_ID);
         
-        Icon goBack = VaadinIcon.ANGLE_DOUBLE_LEFT.create();
-        goBack.addClickListener(event -> backwardsCallback.run());
+        Icon backButton = VaadinIcon.ANGLE_DOUBLE_LEFT.create();
+        backButton.addClickListener(event -> backwardsCallback.run());
+        backButton.getElement().setAttribute("title", getTranslation("root.backButtonTooltip"));
         
-        VerticalLayout selectedTermBar = new VerticalLayout(goBack, selectedTerm);
+        VerticalLayout selectedTermBar = new VerticalLayout(backButton, selectedTerm);
         selectedTermBar.setId(SELECTED_TERM_BAR_ID);
         this.add(selectedTermBar);
         
