@@ -135,7 +135,11 @@ public class LatexCreatorConstraints implements StepVisitor {
     private String createSingleConstraint(Constraint constraint) {
         String firstType = new LatexCreatorType(constraint.getFirstType(), mode).getLatex();
         String secondType = new LatexCreatorType(constraint.getSecondType(), mode).getLatex();
-        return firstType + EQUALS + secondType;
+        String latex = firstType + EQUALS + secondType;
+        if (mode == LatexCreatorMode.MATHJAX && constraint.getStepIndex() != -1) {
+            return "\\class{typicalc-step-" + constraint.getStepIndex()  + "}{" + latex + "}";
+        }
+        return latex;
     }
 
     private void addConstraint(InferenceStep step) {

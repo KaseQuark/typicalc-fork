@@ -31,7 +31,7 @@ public class LatexCreator implements StepVisitor {
      *
      * @param typeInferer         theTypeInfererInterface to create the LaTeX-code from
      * @param translationProvider translation text provider for {@link UnificationError}
-     *                            @param mode                LaTeX creation mode
+     * @param mode                LaTeX creation mode
      */
     public LatexCreator(TypeInfererInterface typeInferer, Function<UnificationError, String> translationProvider,
                         LatexCreatorMode mode) {
@@ -115,7 +115,9 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(AbsStepDefault absD) {
         tree.insert(0, generateConclusion(absD,
-                mode == LatexCreatorMode.MATHJAX ? LABEL_ABS_WITH_CLASS : LABEL_ABS,
+                mode == LatexCreatorMode.MATHJAX
+                        ? "\\LeftLabel{\\class{typicalc-label typicalc-label-abs typicalc-step-" + absD.getStepIndex()
+                            + "}{\\textrm A{\\small BS}}}" : LABEL_ABS,
                 UIC));
         absD.getPremise().accept(this);
     }
@@ -123,7 +125,9 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(AbsStepWithLet absL) {
         tree.insert(0, generateConclusion(absL,
-                mode == LatexCreatorMode.MATHJAX ? LABEL_ABS_WITH_CLASS : LABEL_ABS, // TODO: differentiate with let
+                mode == LatexCreatorMode.MATHJAX
+                        ? "\\LeftLabel{\\class{typicalc-label typicalc-label-abs typicalc-step-" + absL.getStepIndex()
+                                + "}{\\textrm A{\\small BS}}}" : LABEL_ABS, // TODO: differentiate with let
                 UIC));
         absL.getPremise().accept(this);
     }
@@ -131,7 +135,9 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(AppStepDefault appD) {
         tree.insert(0, generateConclusion(appD,
-                mode == LatexCreatorMode.MATHJAX ? LABEL_APP_WITH_CLASS : LABEL_APP,
+                mode == LatexCreatorMode.MATHJAX
+                        ? "\\LeftLabel{\\class{typicalc-label typicalc-label-app typicalc-step-" + appD.getStepIndex()
+                                + "}{\\textrm A{\\small PP}}}" : LABEL_APP,
                 BIC));
         appD.getPremise2().accept(this);
         appD.getPremise1().accept(this);
@@ -140,7 +146,9 @@ public class LatexCreator implements StepVisitor {
     @Override
     public void visit(ConstStepDefault constD) {
         tree.insert(0, generateConclusion(constD,
-                mode == LatexCreatorMode.MATHJAX ? LABEL_CONST_WITH_CLASS : LABEL_CONST,
+                mode == LatexCreatorMode.MATHJAX
+                        ? "\\LeftLabel{\\class{typicalc-label typicalc-label-const typicalc-step-"
+                                + constD.getStepIndex() + "}{\\textrm C{\\small ONST}}}" : LABEL_CONST,
                 UIC));
         String visitorBuffer = new LatexCreatorTerm(constD.getConclusion().getLambdaTerm(), mode).getLatex();
         String step = AXC + CURLY_LEFT + DOLLAR_SIGN + visitorBuffer + SPACE + LATEX_IN + SPACE + CONST
@@ -150,18 +158,29 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(VarStepDefault varD) {
-        tree.insert(0, generateConclusion(varD,
-                mode == LatexCreatorMode.MATHJAX ? LABEL_VAR_WITH_CLASS : LABEL_VAR,
-                UIC));
+        String latex = "";
+        if (mode == LatexCreatorMode.MATHJAX) {
+            latex = "\\LeftLabel{\\class{typicalc-label typicalc-label-var "
+                    + "typicalc-step-" + varD.getStepIndex() + "}{\\textrm V{\\small AR}}}";
+        } else {
+            latex = LABEL_VAR;
+        }
+        tree.insert(0, generateConclusion(varD, latex, UIC));
         tree.insert(0, AXC + CURLY_LEFT + DOLLAR_SIGN + generateVarStepPremise(varD)
                 + DOLLAR_SIGN + CURLY_RIGHT + NEW_LINE);
     }
 
     @Override
     public void visit(VarStepWithLet varL) {
-        tree.insert(0, generateConclusion(varL,
-                mode == LatexCreatorMode.MATHJAX ? LABEL_VAR_WITH_CLASS : LABEL_VAR, // TODO: differentiate with let
-                UIC));
+        String latex = "";
+        if (mode == LatexCreatorMode.MATHJAX) {
+            latex = "\\LeftLabel{\\class{typicalc-label typicalc-label-var "
+                    + "typicalc-step-" + varL.getStepIndex() + "}{\\textrm V{\\small AR}}}";
+            // TODO: differentiate with let
+        } else {
+            latex = LABEL_VAR;
+        }
+        tree.insert(0, generateConclusion(varL, latex, UIC));
         String typeAbstraction = generateTypeAbstraction(varL.getTypeAbsInPremise(), mode);
         String instantiatedType = new LatexCreatorType(varL.getInstantiatedTypeAbs(), mode).getLatex();
         String premiseRight = typeAbstraction + INSTANTIATE_SIGN + instantiatedType;
@@ -175,8 +194,15 @@ public class LatexCreator implements StepVisitor {
 
     @Override
     public void visit(LetStepDefault letD) {
+        String latex = "";
+        if (mode == LatexCreatorMode.MATHJAX) {
+            latex = "\\LeftLabel{\\class{typicalc-label typicalc-label-let "
+                    + "typicalc-step-" + letD.getStepIndex() + "}{\\textrm L{\\small ET}}}";
+        } else {
+            latex = LABEL_LET;
+        }
         tree.insert(0, generateConclusion(letD,
-                mode == LatexCreatorMode.MATHJAX ? LABEL_LET_WITH_CLASS : LABEL_LET,
+                latex,
                 BIC));
         letD.getPremise().accept(this);
         letD.getTypeInferer().getFirstInferenceStep().accept(this);

@@ -44,17 +44,9 @@ public final class LatexCreatorConstants {
     protected static final String LABEL_ABS_WITH_CLASS =
             "\\LeftLabel{\\class{typicalc-label typicalc-label-abs}{\\textrm A{\\small BS}}}";
     protected static final String LABEL_APP = "\\LeftLabel{\\textrm A{\\small PP}}";
-    protected static final String LABEL_APP_WITH_CLASS =
-            "\\LeftLabel{\\class{typicalc-label typicalc-label-app}{\\textrm A{\\small PP}}}";
     protected static final String LABEL_CONST = "\\LeftLabel{\\textrm C{\\small ONST}}";
-    protected static final String LABEL_CONST_WITH_CLASS =
-            "\\LeftLabel{\\class{typicalc-label typicalc-label-const}{\\textrm C{\\small ONST}}}";
     protected static final String LABEL_VAR = "\\LeftLabel{\\textrm V{\\small AR}}";
-    protected static final String LABEL_VAR_WITH_CLASS =
-            "\\LeftLabel{\\class{typicalc-label typicalc-label-var}{\\textrm V{\\small AR}}}";
     protected static final String LABEL_LET = "\\LeftLabel{\\textrm L{\\small ET}}";
-    protected static final String LABEL_LET_WITH_CLASS =
-            "\\LeftLabel{\\class{typicalc-label typicalc-label-let}{\\textrm L{\\small ET}}}";
 
     protected static final String UIC = "\\UnaryInfC";
     protected static final String BIC = "\\BinaryInfC";

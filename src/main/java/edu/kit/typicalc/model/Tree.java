@@ -116,6 +116,7 @@ public class Tree implements TermVisitorTree {
 
         Type function = new FunctionType(rightType, conclusionType);
         Constraint newConstraint = new Constraint(leftType, function);
+        newConstraint.setStepIndex(stepNr);
         constraints.add(newConstraint);
 
         InferenceStep leftPremise = appTerm.getFunction().accept(this, typeAssumptions, leftType);
@@ -147,6 +148,7 @@ public class Tree implements TermVisitorTree {
 
         Type function = new FunctionType(assType, premiseType);
         Constraint newConstraint = new Constraint(conclusionType, function);
+        newConstraint.setStepIndex(stepNr);
         constraints.add(newConstraint);
 
         InferenceStep premise = absTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
@@ -163,6 +165,7 @@ public class Tree implements TermVisitorTree {
 
         Type premiseType = typeVarFactory.nextTypeVariable();
         Constraint newConstraint = new Constraint(conclusionType, premiseType);
+        newConstraint.setStepIndex(stepNr); // TODO: also set on other let constraints?
         InferenceStep premise;
 
         if (typeInfererLet.getType().isPresent()) {
@@ -200,6 +203,7 @@ public class Tree implements TermVisitorTree {
     public InferenceStep visit(ConstTerm constant, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
         int stepNr = stepNumberFactory.nextStepIndex();
         Constraint newConstraint = new Constraint(conclusionType, constant.getType());
+        newConstraint.setStepIndex(stepNr);
         constraints.add(newConstraint);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, constant, conclusionType);
@@ -217,6 +221,7 @@ public class Tree implements TermVisitorTree {
         Type instantiation = premiseAbs.instantiate(typeVarFactory);
 
         Constraint newConstraint = new Constraint(conclusionType, instantiation);
+        newConstraint.setStepIndex(stepNr);
         constraints.add(newConstraint);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, varTerm, conclusionType);

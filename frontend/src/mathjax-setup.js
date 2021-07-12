@@ -189,6 +189,11 @@ window.MathJax = {
                             defElBackground.setAttribute("x", -transform.e - svgRect.width + offsetX);
                             defElBackground.setAttribute("y", -transform.f - 7000 + offsetY);
                             defElBackground.setAttribute("fill", "yellow");
+
+                            if (typeTarget.classList.length >= 3) {
+                                const stepId = typeTarget.classList[2];
+                                hoverStylesUnification.innerHTML = "." + stepId + " { color: red; }";
+                            }
                         }
                     } else {
                         if (isType) {
@@ -200,6 +205,9 @@ window.MathJax = {
                             let defElBackground = root.getElementById(defId + "-background");
                             defElBackground.setAttribute("y", 10000);
                             defElBackground.setAttribute("fill", "transparent");
+                            if (typeTarget.classList.length >= 3) {
+                                hoverStylesUnification.innerHTML = "";
+                            }
                         }
                     }
                 };

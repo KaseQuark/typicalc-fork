@@ -50,6 +50,10 @@ public abstract class InferenceStep {
         return constraint;
     }
 
+    public int getStepIndex() {
+        return stepIndex;
+    }
+
     /**
      * Accepts a visitor.
      *
