@@ -35,32 +35,26 @@ class AppStepDefaultTest {
         NamedType type1 = new NamedType("a");
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
-        premise1 = new ConstStepDefault(conclusion, constraint);
-        premise2 = new ConstStepDefault(conclusion, constraint);
+        premise1 = new ConstStepDefault(conclusion, constraint, 0);
+        premise2 = new ConstStepDefault(conclusion, constraint, 0);
     }
 
     @Test
     void equalsTest() {
-        AppStepDefault step1 = new AppStepDefault(premise1, premise2, conclusion, constraint);
-        AppStepDefault step2 = new AppStepDefault(premise1, premise2, conclusion, constraint);
-        AppStepDefault step3 = new AppStepDefault(premise1, premise2, conclusion, null);
-        AppStepDefault step4 = new AppStepDefault(premise1, null, conclusion, constraint);
-        AppStepDefault step5 = new AppStepDefault(null, premise2, conclusion, constraint);
+        AppStepDefault step1 = new AppStepDefault(premise1, premise2, conclusion, constraint, 0);
+        AppStepDefault step2 = new AppStepDefault(premise1, premise2, conclusion, constraint, 0);
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(new EmptyStep(), step1);
         assertNotEquals(null, step1);
-        assertNotEquals(step1, step3);
-        assertNotEquals(step1, step4);
-        assertNotEquals(step1, step5);
 
     }
 
     @Test
     void hashCodeTest() {
-        AppStepDefault step1 = new AppStepDefault(premise1, premise2, conclusion, constraint);
-        AppStepDefault step2 = new AppStepDefault(premise1, premise2, conclusion, constraint);
+        AppStepDefault step1 = new AppStepDefault(premise1, premise2, conclusion, constraint, 0);
+        AppStepDefault step2 = new AppStepDefault(premise1, premise2, conclusion, constraint, 0);
 
         assertEquals(step1.hashCode(), step2.hashCode());
     }
@@ -68,7 +62,7 @@ class AppStepDefaultTest {
     @Test
     void acceptTest() {
         TestStepVisitor testStepVisitor = new TestStepVisitor();
-        AppStepDefault step = new AppStepDefault(premise1, premise2, conclusion, constraint);
+        AppStepDefault step = new AppStepDefault(premise1, premise2, conclusion, constraint, 0);
         step.accept(testStepVisitor);
         assertEquals("AppDef", testStepVisitor.visited);
     }

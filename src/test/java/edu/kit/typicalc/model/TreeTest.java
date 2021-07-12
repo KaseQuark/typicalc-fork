@@ -42,7 +42,7 @@ class TreeTest {
             factory.nextTypeVariable();
             factoryRef.nextTypeVariable();
         }
-        Tree tree = new Tree(TYPE_ASSUMPTIONS, VAR, factory, false);
+        Tree tree = new Tree(TYPE_ASSUMPTIONS, VAR, factory, false, new StepNumberFactory());
         assertEquals(tree.getFirstTypeVariable(), factoryRef.nextTypeVariable());
     }
 
@@ -63,15 +63,15 @@ class TreeTest {
 
         Conclusion varLeftConclusion = new Conclusion(TYPE_ASSUMPTIONS, VAR, variable2);
         Constraint varLeftConstraint = new Constraint(variable2, TYPE);
-        InferenceStep varLeftStep = new VarStepDefault(TYPE_ABS, TYPE, varLeftConclusion, varLeftConstraint);
+        InferenceStep varLeftStep = new VarStepDefault(TYPE_ABS, TYPE, varLeftConclusion, varLeftConstraint, 1);
 
         Conclusion varRightConclusion = new Conclusion(TYPE_ASSUMPTIONS, VAR, variable3);
         Constraint varRightConstraint = new Constraint(variable3, TYPE);
-        InferenceStep varRightStep = new VarStepDefault(TYPE_ABS, TYPE, varRightConclusion, varRightConstraint);
+        InferenceStep varRightStep = new VarStepDefault(TYPE_ABS, TYPE, varRightConclusion, varRightConstraint, 2);
 
         Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, APP, tree.getFirstTypeVariable());
         Constraint appConstraint = new Constraint(variable2, new FunctionType(variable3, tree.getFirstTypeVariable()));
-        InferenceStep expectedStep = new AppStepDefault(varLeftStep, varRightStep, conclusion, appConstraint);
+        InferenceStep expectedStep = new AppStepDefault(varLeftStep, varRightStep, conclusion, appConstraint, 0);
 
         assertEquals(expectedStep, tree.getFirstInferenceStep());
 
@@ -94,11 +94,11 @@ class TreeTest {
         Conclusion varConclusion = new Conclusion(varTypeAss, VAR, variable3);
         Constraint varConstraint = new Constraint(variable2, variable3);
         InferenceStep varStep = new VarStepDefault(new TypeAbstraction(variable2), variable2, varConclusion,
-                varConstraint);
+                varConstraint, 1);
 
         Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, ABS, tree.getFirstTypeVariable());
         Constraint absConstraint = new Constraint(tree.getFirstTypeVariable(), new FunctionType(variable2, variable3));
-        InferenceStep expectedStep = new AbsStepDefault(varStep, conclusion, absConstraint);
+        InferenceStep expectedStep = new AbsStepDefault(varStep, conclusion, absConstraint, 0);
 
         assertEquals(expectedStep, tree.getFirstInferenceStep());
 
@@ -113,7 +113,7 @@ class TreeTest {
         Tree tree = new Tree(TYPE_ASSUMPTIONS, CONST);
         Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, CONST, tree.getFirstTypeVariable());
         Constraint constraint = new Constraint(NamedType.INT, tree.getFirstTypeVariable());
-        InferenceStep expectedStep = new ConstStepDefault(conclusion, constraint);
+        InferenceStep expectedStep = new ConstStepDefault(conclusion, constraint, 0);
         assertEquals(expectedStep, tree.getFirstInferenceStep());
         assertEquals(Collections.singletonList(constraint), tree.getConstraints());
     }
@@ -123,7 +123,7 @@ class TreeTest {
         Tree tree = new Tree(TYPE_ASSUMPTIONS, VAR);
         Conclusion conclusion = new Conclusion(TYPE_ASSUMPTIONS, VAR, tree.getFirstTypeVariable());
         Constraint constraint = new Constraint(TYPE, tree.getFirstTypeVariable());
-        InferenceStep expectedStep = new VarStepDefault(TYPE_ABS, TYPE, conclusion, constraint);
+        InferenceStep expectedStep = new VarStepDefault(TYPE_ABS, TYPE, conclusion, constraint, 0);
         assertEquals(expectedStep, tree.getFirstInferenceStep());
         assertEquals(Collections.singletonList(constraint), tree.getConstraints());
     }
@@ -144,8 +144,11 @@ class TreeTest {
         Tree tree = new Tree(typeAssumptions, letTerm);
 
         TypeVariableFactory refFac = new TypeVariableFactory(TypeVariableKind.TREE);
+        StepNumberFactory nrFactory = new StepNumberFactory();
         refFac.nextTypeVariable();
-        TypeInfererLet typeInfererLet = new TypeInfererLet(x, typeAssumptions, refFac);
+        nrFactory.nextStepIndex();
+        TypeInfererLet typeInfererLet = new TypeInfererLet(x, typeAssumptions, refFac, nrFactory);
+        nrFactory.nextStepIndex();
 
 
         Map<VarTerm, TypeAbstraction> varRightTypeAss = new LinkedHashMap<>(typeAssumptions);
@@ -153,11 +156,11 @@ class TreeTest {
         Conclusion varRightConclusion = new Conclusion(varRightTypeAss, f, variable3);
         Constraint varRightConstraint = new Constraint(variable3, generated1);
         InferenceStep varRightStep = new VarStepWithLet(generated1Abs, generated1,
-                varRightConclusion, varRightConstraint);
+                varRightConclusion, varRightConstraint, 2);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, letTerm, tree.getFirstTypeVariable());
         Constraint letConstraint = new Constraint(tree.getFirstTypeVariable(), variable3);
-        InferenceStep expectedStep = new LetStepDefault(conclusion, letConstraint, varRightStep, typeInfererLet);
+        InferenceStep expectedStep = new LetStepDefault(conclusion, letConstraint, varRightStep, typeInfererLet, 0);
 
         assertEquals(expectedStep, tree.getFirstInferenceStep());
 

@@ -19,7 +19,8 @@ public class EmptyStep extends InferenceStep {
     public EmptyStep() {
         super(
                 new Conclusion(Collections.emptyMap(), new VarTerm(""), new NamedType("")),
-                new Constraint(new NamedType(""), new NamedType(""))
+                new Constraint(new NamedType(""), new NamedType("")),
+                -1 // TODO: check if this actually works
         );
     }
 

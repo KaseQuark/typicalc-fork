@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class VarStepDefaultTest {
-    static InferenceStep premise = null;
     static Conclusion conclusion = null;
     static Constraint constraint = null;
     static NamedType namedType = null;
@@ -38,26 +37,20 @@ class VarStepDefaultTest {
 
     @Test
     void equalsTest() {
-        VarStepDefault step1 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
-        VarStepDefault step2 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
-        VarStepDefault step3 = new VarStepDefault(typeAbstraction, namedType, conclusion, null);
-        VarStepDefault step4 = new VarStepDefault(null, namedType, conclusion, constraint);
-        VarStepDefault step5 = new VarStepDefault(typeAbstraction, null, conclusion, constraint);
+        VarStepDefault step1 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint, 0);
+        VarStepDefault step2 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint, 0);
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(new EmptyStep(), step1);
         assertNotEquals(null, step1);
-        assertNotEquals(step1, step3);
-        assertNotEquals(step1, step4);
-        assertNotEquals(step1, step5);
 
     }
 
     @Test
     void hashCodeTest() {
-        VarStepDefault step1 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
-        VarStepDefault step2 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
+        VarStepDefault step1 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint, 0);
+        VarStepDefault step2 = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint, 0);
 
         assertEquals(step1.hashCode(), step2.hashCode());
     }
@@ -65,7 +58,7 @@ class VarStepDefaultTest {
     @Test
     void acceptTest() {
         TestStepVisitor testStepVisitor = new TestStepVisitor();
-        VarStepDefault step = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint);
+        VarStepDefault step = new VarStepDefault(typeAbstraction, namedType, conclusion, constraint, 0);
         step.accept(testStepVisitor);
         assertEquals("VarDef", testStepVisitor.visited);
     }

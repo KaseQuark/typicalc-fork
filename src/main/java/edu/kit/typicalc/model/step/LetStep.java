@@ -27,9 +27,11 @@ public abstract class LetStep extends InferenceStep {
      * @param premise     the right premise of this step
      * @param typeInferer the typeInferer that performs the Type Inference for the premise
      *                    that needs its own type Inference.
+     * @param stepIndex   step number
      */
-    protected LetStep(Conclusion conclusion, Constraint constraint, InferenceStep premise, TypeInfererLet typeInferer) {
-        super(conclusion, constraint);
+    protected LetStep(Conclusion conclusion, Constraint constraint, InferenceStep premise, TypeInfererLet typeInferer,
+                      int stepIndex) {
+        super(conclusion, constraint, stepIndex);
         this.premise = premise;
         this.typeInferer = typeInferer;
     }

@@ -19,7 +19,8 @@ public class OnlyConclusionStep extends InferenceStep {
     public OnlyConclusionStep(Conclusion conclusion) {
         super(
                 conclusion,
-                new Constraint(new NamedType(""), new NamedType(""))
+                new Constraint(new NamedType(""), new NamedType("")),
+                -1 // TODO: check whether this is correct
         );
     }
 

@@ -51,10 +51,12 @@ class ModelImplTest {
                                         x, new TypeAbstraction(NamedType.INT),
                                         y, new TypeAbstraction(a2)),
                                         x, a3),
-                                new Constraint(a3, NamedType.INT)
+                                new Constraint(a3, NamedType.INT),
+                                1
                         ),
                         new Conclusion(Map.of(x, new TypeAbstraction(NamedType.INT)), term, a1),
-                        new Constraint(a1, new FunctionType(a2, a3))
+                        new Constraint(a1, new FunctionType(a2, a3)),
+                        0
                 ), typeInference.getFirstInferenceStep()
         );
     }

@@ -11,6 +11,7 @@ public class Constraint {
 
     private final Type a;
     private final Type b;
+    private int stepIndex = -1;
 
     /**
      * Creates a new constraint using the two types.
@@ -24,8 +25,6 @@ public class Constraint {
     }
 
     /**
-     * Returns the first type
-     *
      * @return the first type
      */
     public Type getFirstType() {
@@ -33,12 +32,25 @@ public class Constraint {
     }
 
     /**
-     * Returns the second type
-     *
      * @return the second type
      */
     public Type getSecondType() {
         return b;
+    }
+
+    /**
+     * Set the number of the step that caused this constraint.
+     * @param index step number
+     */
+    public void setStepIndex(int index) {
+        this.stepIndex = index;
+    }
+
+    /**
+     * @return the step index
+     */
+    public int getStepIndex() {
+        return stepIndex;
     }
 
     @Override

@@ -17,16 +17,19 @@ import java.util.Objects;
 public abstract class InferenceStep {
     private final Conclusion conclusion;
     private final Constraint constraint;
+    private final int stepIndex;
 
     /**
      * Initializes a new InferenceStep with the given values.
      *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
+     * @param stepIndex step number
      */
-    protected InferenceStep(Conclusion conclusion, Constraint constraint) {
+    protected InferenceStep(Conclusion conclusion, Constraint constraint, int stepIndex) {
         this.conclusion = conclusion;
         this.constraint = constraint;
+        this.stepIndex = stepIndex;
     }
 
     /**
@@ -63,11 +66,11 @@ public abstract class InferenceStep {
             return false;
         }
         InferenceStep that = (InferenceStep) o;
-        return conclusion.equals(that.conclusion) && constraint.equals(that.constraint);
+        return conclusion.equals(that.conclusion) && constraint.equals(that.constraint) && stepIndex == that.stepIndex;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(conclusion, constraint);
+        return Objects.hash(conclusion, constraint, stepIndex);
     }
 }

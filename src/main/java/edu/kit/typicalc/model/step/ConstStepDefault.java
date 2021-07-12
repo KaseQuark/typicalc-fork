@@ -14,9 +14,10 @@ public class ConstStepDefault extends ConstStep {
      *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
+     * @param stepIndex  step number
      */
-    public ConstStepDefault(Conclusion conclusion, Constraint constraint) {
-        super(conclusion, constraint);
+    public ConstStepDefault(Conclusion conclusion, Constraint constraint, int stepIndex) {
+        super(conclusion, constraint, stepIndex);
     }
 
     /**

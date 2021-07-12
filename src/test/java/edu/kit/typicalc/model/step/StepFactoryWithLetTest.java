@@ -35,13 +35,13 @@ class StepFactoryWithLetTest {
         NamedType type1 = new NamedType("a");
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
-        premise = new ConstStepDefault(conclusion, constraint);
+        premise = new ConstStepDefault(conclusion, constraint, 0);
     }
 
     @Test
     void createAbsStepTest() {
         StepFactoryWithLet factory = new StepFactoryWithLet();
-        AbsStepWithLet step = factory.createAbsStep(premise, conclusion, constraint);
+        AbsStepWithLet step = factory.createAbsStep(premise, conclusion, constraint, 0);
         assertEquals(premise, step.getPremise());
         assertEquals(conclusion, step.getConclusion());
         assertEquals(constraint, step.getConstraint());
@@ -50,7 +50,7 @@ class StepFactoryWithLetTest {
     @Test
     void createAppStepTest() {
         StepFactoryWithLet factory = new StepFactoryWithLet();
-        AppStepDefault step = factory.createAppStep(premise, premise, conclusion, constraint);
+        AppStepDefault step = factory.createAppStep(premise, premise, conclusion, constraint, 0);
         assertEquals(premise, step.getPremise1());
         assertEquals(premise, step.getPremise2());
         assertEquals(conclusion, step.getConclusion());
@@ -60,7 +60,7 @@ class StepFactoryWithLetTest {
     @Test
     void createConstStepTest() {
         StepFactoryWithLet factory = new StepFactoryWithLet();
-        ConstStepDefault step = factory.createConstStep(conclusion, constraint);
+        ConstStepDefault step = factory.createConstStep(conclusion, constraint, 0);
         assertEquals(conclusion, step.getConclusion());
         assertEquals(constraint, step.getConstraint());
     }
@@ -68,19 +68,9 @@ class StepFactoryWithLetTest {
     @Test
     void createVarStepTest() {
         StepFactoryWithLet factory = new StepFactoryWithLet();
-        VarStepWithLet step = factory.createVarStep(typeAbstraction, namedType, conclusion, constraint);
+        VarStepWithLet step = factory.createVarStep(typeAbstraction, namedType, conclusion, constraint, 0);
         assertEquals(typeAbstraction, step.getTypeAbsInPremise());
         assertEquals(namedType, step.getInstantiatedTypeAbs());
-        assertEquals(conclusion, step.getConclusion());
-        assertEquals(constraint, step.getConstraint());
-    }
-
-    @Test
-    void createLetStepTest() {
-        StepFactoryWithLet factory = new StepFactoryWithLet();
-        LetStep step = factory.createLetStep(conclusion, constraint, premise, null);
-        assertEquals(premise, step.getPremise());
-        assertNull(step.getTypeInferer());
         assertEquals(conclusion, step.getConclusion());
         assertEquals(constraint, step.getConstraint());
     }

@@ -33,25 +33,23 @@ class AbsStepDefaultTest {
         NamedType type1 = new NamedType("a");
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
-        premise = new ConstStepDefault(conclusion, constraint);
+        premise = new ConstStepDefault(conclusion, constraint, 0);
     }
     @Test
     void equalsTest() {
-        AbsStepDefault step1 = new AbsStepDefault(premise, conclusion, constraint);
-        AbsStepDefault step2 = new AbsStepDefault(premise, conclusion, constraint);
-        AbsStepDefault step3 = new AbsStepDefault(premise, conclusion, null);
+        AbsStepDefault step1 = new AbsStepDefault(premise, conclusion, constraint, 0);
+        AbsStepDefault step2 = new AbsStepDefault(premise, conclusion, constraint, 0);
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(new EmptyStep(), step1);
         assertNotEquals(null, step1);
-        assertNotEquals(step1, step3);
 
     }
     @Test
     void hashCodeTest() {
-        AbsStepDefault step1 = new AbsStepDefault(premise, conclusion, constraint);
-        AbsStepDefault step2 = new AbsStepDefault(premise, conclusion, constraint);
+        AbsStepDefault step1 = new AbsStepDefault(premise, conclusion, constraint, 0);
+        AbsStepDefault step2 = new AbsStepDefault(premise, conclusion, constraint, 0);
 
         assertEquals(step1.hashCode(), step2.hashCode());
     }
@@ -59,7 +57,7 @@ class AbsStepDefaultTest {
     @Test
     void acceptTest() {
         TestStepVisitor testStepVisitor = new TestStepVisitor();
-        AbsStepDefault step = new AbsStepDefault(premise, conclusion, constraint);
+        AbsStepDefault step = new AbsStepDefault(premise, conclusion, constraint, 0);
         step.accept(testStepVisitor);
         assertEquals("AbsDef", testStepVisitor.visited);
     }

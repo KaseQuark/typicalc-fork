@@ -14,9 +14,10 @@ public class AbsStepWithLet extends AbsStep {
      * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint constraint that can be derived from this step
+     * @param stepIndex  step number
      */
-    public AbsStepWithLet(InferenceStep premise, Conclusion conclusion, Constraint constraint) {
-        super(premise, conclusion, constraint);
+    public AbsStepWithLet(InferenceStep premise, Conclusion conclusion, Constraint constraint, int stepIndex) {
+        super(premise, conclusion, constraint, stepIndex);
     }
 
     /**

@@ -28,10 +28,11 @@ public class TypeInfererLet implements TypeInfererInterface {
      * @param typeAssumptions the type assumptions to consider when generating the tree
      * @param typeVarFactory  the type variable factory that should be used in this inference to guarantee consistency
      *                        with the outer inference
+     * @param factory         the step number factory to pass to the Tree
      */
     protected TypeInfererLet(LambdaTerm lambdaTerm, Map<VarTerm, TypeAbstraction> typeAssumptions,
-                             TypeVariableFactory typeVarFactory) {
-        tree = new Tree(typeAssumptions, lambdaTerm, typeVarFactory, true);
+                             TypeVariableFactory typeVarFactory, StepNumberFactory factory) {
+        tree = new Tree(typeAssumptions, lambdaTerm, typeVarFactory, true, factory);
 
         // cancel algorithm if a sub-inference failed
         if (tree.hasFailedSubInference()) {

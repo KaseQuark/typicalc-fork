@@ -16,15 +16,17 @@ public abstract class AppStep extends InferenceStep {
     private final InferenceStep premise2;
 
     /**
-     * Initializes a new AbsStepWithLet with the given values.
+     * Initializes a new AbsStep with the given values.
      *
      * @param premise1   the first premise of this step
      * @param premise2   the second premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint constraint that can be derived from this step
+     * @param stepIndex  step number
      */
-    protected AppStep(InferenceStep premise1, InferenceStep premise2, Conclusion conclusion, Constraint constraint) {
-        super(conclusion, constraint);
+    protected AppStep(InferenceStep premise1, InferenceStep premise2, Conclusion conclusion, Constraint constraint,
+                      int stepIndex) {
+        super(conclusion, constraint, stepIndex);
         this.premise1 = premise1;
         this.premise2 = premise2;
     }

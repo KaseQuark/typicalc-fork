@@ -68,9 +68,14 @@ class TypeInfererTest {
         TypeInferer typeInferer = new TypeInferer(let, givenTypeAssumptions);
 
         TypeVariableFactory refFac = new TypeVariableFactory(TypeVariableKind.TREE);
+        StepNumberFactory nrFactory = new StepNumberFactory();
         refFac.nextTypeVariable();
-        TypeInfererLet expectedTypeInfererLet = new TypeInfererLet(lxlyx, givenTypeAssumptions, refFac);
-
+        nrFactory.nextStepIndex();
+        TypeInfererLet expectedTypeInfererLet = new TypeInfererLet(lxlyx, givenTypeAssumptions, refFac,
+                nrFactory);
+        for (int i = 4; i <= 12; i++) {
+            nrFactory.nextStepIndex();
+        }
         TypeAbstraction resultingAbs = new TypeAbstraction(new FunctionType(a3, new FunctionType(a5, a3)),
                 new HashSet<>(Arrays.asList(a3, a5)));
         Map<VarTerm, TypeAbstraction> typeAssumptionsRight = new LinkedHashMap<>(givenTypeAssumptions);
@@ -80,48 +85,49 @@ class TypeInfererTest {
         Conclusion varStepKLeftConc = new Conclusion(typeAssumptionsRight, k, a10);
         Constraint varStepKLeftConst = new Constraint(a10, varStepKLeftInst);
         InferenceStep varStepKLeft = new VarStepWithLet(resultingAbs, varStepKLeftInst,
-                varStepKLeftConc, varStepKLeftConst);
+                varStepKLeftConc, varStepKLeftConst, 6);
 
         Conclusion varStepAConc = new Conclusion(typeAssumptionsRight, a, a11);
         Constraint varStepAConst = new Constraint(a11, intT);
-        InferenceStep varStepA = new VarStepWithLet(intAbs, intT, varStepAConc, varStepAConst);
+        InferenceStep varStepA = new VarStepWithLet(intAbs, intT, varStepAConc, varStepAConst, 7);
 
         Conclusion appStepKAConc = new Conclusion(typeAssumptionsRight, ka, a8);
         Constraint appStepKAConst = new Constraint(a10, new FunctionType(a11, a8));
-        InferenceStep appStepKA = new AppStepDefault(varStepKLeft, varStepA, appStepKAConc, appStepKAConst);
+        InferenceStep appStepKA = new AppStepDefault(varStepKLeft, varStepA, appStepKAConc, appStepKAConst, 5);
 
         Type varStepKRightInst = new FunctionType(a18, new FunctionType(a19, a18));
         Conclusion varStepKRightConc = new Conclusion(typeAssumptionsRight, k, a16);
         Constraint varStepKRightConst = new Constraint(a16, varStepKRightInst);
         InferenceStep varStepKRight = new VarStepWithLet(resultingAbs, varStepKRightInst,
-                varStepKRightConc, varStepKRightConst);
+                varStepKRightConc, varStepKRightConst, 10);
 
         Conclusion varStepBConc = new Conclusion(typeAssumptionsRight, b, a17);
         Constraint varStepBConst = new Constraint(a17, boolT);
-        InferenceStep varStepB = new VarStepWithLet(boolAbs, boolT, varStepBConc, varStepBConst);
+        InferenceStep varStepB = new VarStepWithLet(boolAbs, boolT, varStepBConc, varStepBConst, 11);
 
         Conclusion appStepKBConc = new Conclusion(typeAssumptionsRight, kb, a14);
         Constraint appStepKBConst = new Constraint(a16, new FunctionType(a17, a14));
-        InferenceStep appStepKB = new AppStepDefault(varStepKRight, varStepB, appStepKBConc, appStepKBConst);
+        InferenceStep appStepKB = new AppStepDefault(varStepKRight, varStepB, appStepKBConc, appStepKBConst, 9);
 
         Conclusion varStepCConc = new Conclusion(typeAssumptionsRight, c, a15);
         Constraint varStepCConst = new Constraint(a15, charT);
-        InferenceStep varStepC = new VarStepWithLet(charAbs, charT, varStepCConc, varStepCConst);
+        InferenceStep varStepC = new VarStepWithLet(charAbs, charT, varStepCConc, varStepCConst, 12);
 
         Conclusion appStepKBCConc = new Conclusion(typeAssumptionsRight, kbc, a9);
         Constraint appStepKBCConst = new Constraint(a14, new FunctionType(a15, a9));
-        InferenceStep appStepKBC = new AppStepDefault(appStepKB, varStepC, appStepKBCConc, appStepKBCConst);
+        InferenceStep appStepKBC = new AppStepDefault(appStepKB, varStepC, appStepKBCConc, appStepKBCConst, 8);
 
         Conclusion appStepKAKBCConc = new Conclusion(typeAssumptionsRight, kakbc, a7);
         Constraint appStepKAKBCConst = new Constraint(a8, new FunctionType(a9, a7));
-        InferenceStep appStepKAKBC = new AppStepDefault(appStepKA, appStepKBC, appStepKAKBCConc, appStepKAKBCConst);
+        InferenceStep appStepKAKBC = new AppStepDefault(appStepKA, appStepKBC, appStepKAKBCConc, appStepKAKBCConst, 4);
 
         Conclusion letConc = new Conclusion(givenTypeAssumptions, let, a1);
         Constraint letConst = new Constraint(a1, a7);
         InferenceStep expectedFirstInferenceStep
-                = new LetStepDefault(letConc, letConst, appStepKAKBC, expectedTypeInfererLet);
+                = new LetStepDefault(letConc, letConst, appStepKAKBC, expectedTypeInfererLet, 0);
 
-        assertEquals(expectedFirstInferenceStep, typeInferer.getFirstInferenceStep());
+        InferenceStep actual = typeInferer.getFirstInferenceStep();
+        assertEquals(expectedFirstInferenceStep, actual);
 
         List<Constraint> expectedConstraints = new ArrayList<>();
         expectedConstraints.add(letConst);

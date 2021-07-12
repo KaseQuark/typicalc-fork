@@ -34,13 +34,13 @@ class StepFactoryDefaultTest {
         NamedType type1 = new NamedType("a");
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
-        premise = new ConstStepDefault(conclusion, constraint);
+        premise = new ConstStepDefault(conclusion, constraint, 0);
     }
 
     @Test
     void createAbsStepTest() {
         StepFactoryDefault factory = new StepFactoryDefault();
-        AbsStepDefault step = factory.createAbsStep(premise, conclusion, constraint);
+        AbsStepDefault step = factory.createAbsStep(premise, conclusion, constraint, 0);
         assertEquals(premise, step.getPremise());
         assertEquals(conclusion, step.getConclusion());
         assertEquals(constraint, step.getConstraint());
@@ -49,7 +49,7 @@ class StepFactoryDefaultTest {
     @Test
     void createAppStepTest() {
         StepFactoryDefault factory = new StepFactoryDefault();
-        AppStepDefault step = factory.createAppStep(premise, premise,  conclusion, constraint);
+        AppStepDefault step = factory.createAppStep(premise, premise,  conclusion, constraint, 0);
         assertEquals(premise, step.getPremise1());
         assertEquals(premise, step.getPremise2());
         assertEquals(conclusion, step.getConclusion());
@@ -59,7 +59,7 @@ class StepFactoryDefaultTest {
     @Test
     void createConstStepTest() {
         StepFactoryDefault factory = new StepFactoryDefault();
-        ConstStepDefault step = factory.createConstStep(conclusion, constraint);
+        ConstStepDefault step = factory.createConstStep(conclusion, constraint, 0);
         assertEquals(conclusion, step.getConclusion());
         assertEquals(constraint, step.getConstraint());
     }
@@ -67,23 +67,11 @@ class StepFactoryDefaultTest {
     @Test
     void createVarStepTest() {
         StepFactoryDefault factory = new StepFactoryDefault();
-        VarStepDefault step = factory.createVarStep(typeAbstraction, namedType, conclusion, constraint);
+        VarStepDefault step = factory.createVarStep(typeAbstraction, namedType, conclusion, constraint, 0);
         assertEquals(typeAbstraction, step.getTypeAbsInPremise());
         assertEquals(namedType, step.getInstantiatedTypeAbs());
         assertEquals(conclusion, step.getConclusion());
         assertEquals(constraint, step.getConstraint());
-    }
-
-    @Test
-    void createLetStepTest() {
-        StepFactoryDefault factory = new StepFactoryDefault();
-        boolean thrown = false;
-        try {
-            LetStep step = factory.createLetStep(conclusion, constraint, premise, null);
-        } catch (UnsupportedOperationException e) {
-            thrown = true;
-        }
-        assertTrue(thrown);
     }
 
 }

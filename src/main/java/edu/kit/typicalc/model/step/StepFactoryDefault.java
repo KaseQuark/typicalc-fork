@@ -11,17 +11,10 @@ import edu.kit.typicalc.model.type.TypeAbstraction;
  */
 public class StepFactoryDefault implements StepFactory {
 
-    /**
-     * Creates an AbsStepDefault.
-     *
-     * @param premise    the premise of this step
-     * @param conclusion the conclusion of this step
-     * @param constraint the constraint that can be derived from this step
-     * @return the created AbsStepDefault
-     */
     @Override
-    public AbsStepDefault createAbsStep(InferenceStep premise, Conclusion conclusion, Constraint constraint) {
-        return new AbsStepDefault(premise, conclusion, constraint);
+    public AbsStepDefault createAbsStep(InferenceStep premise, Conclusion conclusion, Constraint constraint,
+                                        int stepIndex) {
+        return new AbsStepDefault(premise, conclusion, constraint, stepIndex);
     }
 
     /**
@@ -35,8 +28,8 @@ public class StepFactoryDefault implements StepFactory {
      */
     @Override
     public AppStepDefault createAppStep(InferenceStep premise1, InferenceStep premise2,
-                                        Conclusion conclusion, Constraint constraint) {
-        return new AppStepDefault(premise1, premise2, conclusion, constraint);
+                                        Conclusion conclusion, Constraint constraint, int stepIndex) {
+        return new AppStepDefault(premise1, premise2, conclusion, constraint, stepIndex);
     }
 
     /**
@@ -47,8 +40,8 @@ public class StepFactoryDefault implements StepFactory {
      * @return the created ConstStepDefault
      */
     @Override
-    public ConstStepDefault createConstStep(Conclusion conclusion, Constraint constraint) {
-        return new ConstStepDefault(conclusion, constraint);
+    public ConstStepDefault createConstStep(Conclusion conclusion, Constraint constraint, int stepIndex) {
+        return new ConstStepDefault(conclusion, constraint, stepIndex);
     }
 
     /**
@@ -62,8 +55,8 @@ public class StepFactoryDefault implements StepFactory {
      */
     @Override
     public VarStepDefault createVarStep(TypeAbstraction typeAbstraction, Type instantiatedTypeAbs,
-                                        Conclusion conclusion, Constraint constraint) {
-        return new VarStepDefault(typeAbstraction, instantiatedTypeAbs, conclusion, constraint);
+                                        Conclusion conclusion, Constraint constraint, int stepIndex) {
+        return new VarStepDefault(typeAbstraction, instantiatedTypeAbs, conclusion, constraint, stepIndex);
     }
 
     /**
@@ -80,7 +73,7 @@ public class StepFactoryDefault implements StepFactory {
      */
     @Override
     public LetStep createLetStep(Conclusion conclusion, Constraint constraint,
-                                 InferenceStep premise, TypeInfererLet typeInferer) {
+                                 InferenceStep premise, TypeInfererLet typeInferer, int stepIndex) {
         throw new UnsupportedOperationException("Not possible to create LetStep when no let is present in the term");
     }
 }

@@ -16,10 +16,11 @@ public class LetStepDefault extends LetStep {
      * @param premise     the right premise of this step
      * @param typeInferer the typeInferer that performs the Type Inference for the premise
      *                    that needs its own type Inference.
+     * @param stepIndex   step number
      */
     public LetStepDefault(Conclusion conclusion, Constraint constraint, InferenceStep premise,
-                          TypeInfererLet typeInferer) {
-        super(conclusion, constraint, premise, typeInferer);
+                          TypeInfererLet typeInferer, int stepIndex) {
+        super(conclusion, constraint, premise, typeInferer, stepIndex);
     }
 
     /**

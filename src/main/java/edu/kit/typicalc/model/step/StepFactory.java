@@ -18,7 +18,7 @@ public interface StepFactory {
      * @param constraint the constraint that can be derived from this step
      * @return the created AbsStep
      */
-    AbsStep createAbsStep(InferenceStep premise, Conclusion conclusion, Constraint constraint);
+    AbsStep createAbsStep(InferenceStep premise, Conclusion conclusion, Constraint constraint, int stepIndex);
 
     /**
      * Creates an AppStep.
@@ -30,7 +30,7 @@ public interface StepFactory {
      * @return the created AppStep
      */
     AppStep createAppStep(InferenceStep premise1, InferenceStep premise2,
-                          Conclusion conclusion, Constraint constraint);
+                          Conclusion conclusion, Constraint constraint, int stepIndex);
 
     /**
      * Creates an ConstStep.
@@ -39,7 +39,7 @@ public interface StepFactory {
      * @param constraint the constraint that can be derived from this step
      * @return the created ConstStep
      */
-    ConstStep createConstStep(Conclusion conclusion, Constraint constraint);
+    ConstStep createConstStep(Conclusion conclusion, Constraint constraint, int stepIndex);
 
     /**
      * Creates a VarStep.
@@ -51,7 +51,7 @@ public interface StepFactory {
      * @return the created AbsStep
      */
     VarStep createVarStep(TypeAbstraction typeAbstraction, Type instantiatedTypeAbs,
-                          Conclusion conclusion, Constraint constraint);
+                          Conclusion conclusion, Constraint constraint, int stepIndex);
 
     /**
      * Creates a LetStep.
@@ -63,5 +63,5 @@ public interface StepFactory {
      * @return the created AppStep
      */
     LetStep createLetStep(Conclusion conclusion, Constraint constraint,
-                          InferenceStep premise, TypeInfererLet typeInferer);
+                          InferenceStep premise, TypeInfererLet typeInferer, int stepIndex);
 }

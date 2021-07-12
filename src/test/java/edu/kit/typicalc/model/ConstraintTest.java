@@ -15,7 +15,7 @@ class ConstraintTest {
 
     @Test
     void equalsTest() {
-        EqualsVerifier.forClass(Constraint.class).usingGetClass().verify();
+        EqualsVerifier.forClass(Constraint.class).usingGetClass().withIgnoredFields("stepIndex").verify();
     }
 
     @Test

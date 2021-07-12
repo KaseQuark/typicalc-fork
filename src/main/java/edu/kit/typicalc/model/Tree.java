@@ -15,6 +15,7 @@ import java.util.*;
 public class Tree implements TermVisitorTree {
 
     private final TypeVariableFactory typeVarFactory;
+    private final StepNumberFactory stepNumberFactory;
     private final StepFactory stepFactory;
 
     private final TypeVariable firstTypeVariable;
@@ -32,7 +33,8 @@ public class Tree implements TermVisitorTree {
      * @param lambdaTerm      the lambda term to generate the tree for
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm) {
-        this(typeAssumptions, lambdaTerm, new TypeVariableFactory(TypeVariableKind.TREE), false);
+        this(typeAssumptions, lambdaTerm, new TypeVariableFactory(TypeVariableKind.TREE), false,
+                new StepNumberFactory());
     }
 
     /**
@@ -46,10 +48,13 @@ public class Tree implements TermVisitorTree {
      * @param lambdaTerm          the lambda term to generate the tree for
      * @param typeVariableFactory the type variable factory to use
      * @param partOfLetTerm       indicates whether the tree is generated for a sub-inference that is part of a let term
+     * @param factory step number factory
      */
     protected Tree(Map<VarTerm, TypeAbstraction> typeAssumptions, LambdaTerm lambdaTerm,
-                   TypeVariableFactory typeVariableFactory, boolean partOfLetTerm) {
+                   TypeVariableFactory typeVariableFactory, boolean partOfLetTerm,
+                   StepNumberFactory factory) {
         this.typeVarFactory = typeVariableFactory;
+        this.stepNumberFactory = factory;
         this.constraints = new ArrayList<>();
 
         // quantified type assumptions have the same effect as let terms
@@ -105,6 +110,7 @@ public class Tree implements TermVisitorTree {
 
     @Override
     public InferenceStep visit(AppTerm appTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
+        int stepNr = stepNumberFactory.nextStepIndex();
         Type leftType = typeVarFactory.nextTypeVariable();
         Type rightType = typeVarFactory.nextTypeVariable();
 
@@ -125,11 +131,12 @@ public class Tree implements TermVisitorTree {
         }
 
         Conclusion conclusion = new Conclusion(typeAssumptions, appTerm, conclusionType);
-        return stepFactory.createAppStep(leftPremise, rightPremise, conclusion, newConstraint);
+        return stepFactory.createAppStep(leftPremise, rightPremise, conclusion, newConstraint, stepNr);
     }
 
     @Override
     public InferenceStep visit(AbsTerm absTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
+        int stepNr = stepNumberFactory.nextStepIndex();
         Map<VarTerm, TypeAbstraction> extendedTypeAssumptions = new LinkedHashMap<>(typeAssumptions);
         Type assType = typeVarFactory.nextTypeVariable();
         TypeAbstraction assAbs = new TypeAbstraction(assType);
@@ -145,13 +152,14 @@ public class Tree implements TermVisitorTree {
         InferenceStep premise = absTerm.getInner().accept(this, extendedTypeAssumptions, premiseType);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, absTerm, conclusionType);
-        return stepFactory.createAbsStep(premise, conclusion, newConstraint);
+        return stepFactory.createAbsStep(premise, conclusion, newConstraint, stepNr);
     }
 
     @Override
     public InferenceStep visit(LetTerm letTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
+        int stepNr = stepNumberFactory.nextStepIndex();
         TypeInfererLet typeInfererLet = new TypeInfererLet(
-                letTerm.getVariableDefinition(), typeAssumptions, typeVarFactory);
+                letTerm.getVariableDefinition(), typeAssumptions, typeVarFactory, stepNumberFactory);
 
         Type premiseType = typeVarFactory.nextTypeVariable();
         Constraint newConstraint = new Constraint(conclusionType, premiseType);
@@ -185,20 +193,22 @@ public class Tree implements TermVisitorTree {
         }
 
         Conclusion conclusion = new Conclusion(typeAssumptions, letTerm, conclusionType);
-        return stepFactory.createLetStep(conclusion, newConstraint, premise, typeInfererLet);
+        return stepFactory.createLetStep(conclusion, newConstraint, premise, typeInfererLet, stepNr);
     }
 
     @Override
     public InferenceStep visit(ConstTerm constant, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
+        int stepNr = stepNumberFactory.nextStepIndex();
         Constraint newConstraint = new Constraint(conclusionType, constant.getType());
         constraints.add(newConstraint);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, constant, conclusionType);
-        return stepFactory.createConstStep(conclusion, newConstraint);
+        return stepFactory.createConstStep(conclusion, newConstraint, stepNr);
     }
 
     @Override
     public InferenceStep visit(VarTerm varTerm, Map<VarTerm, TypeAbstraction> typeAssumptions, Type conclusionType) {
+        int stepNr = stepNumberFactory.nextStepIndex();
         TypeAbstraction premiseAbs = typeAssumptions.get(varTerm);
         if (premiseAbs == null) {
             throw new IllegalStateException("Cannot create VarStep for VarTerm '"
@@ -210,7 +220,7 @@ public class Tree implements TermVisitorTree {
         constraints.add(newConstraint);
 
         Conclusion conclusion = new Conclusion(typeAssumptions, varTerm, conclusionType);
-        return stepFactory.createVarStep(premiseAbs, instantiation, conclusion, newConstraint);
+        return stepFactory.createVarStep(premiseAbs, instantiation, conclusion, newConstraint, stepNr);
     }
 
     @Override
@@ -223,11 +233,12 @@ public class Tree implements TermVisitorTree {
         }
         Tree tree = (Tree) o;
         return failedSubInference == tree.failedSubInference && firstTypeVariable.equals(tree.firstTypeVariable)
-                && firstInferenceStep.equals(tree.firstInferenceStep) && constraints.equals(tree.constraints);
+                && firstInferenceStep.equals(tree.firstInferenceStep) && constraints.equals(tree.constraints)
+                && stepNumberFactory.equals(tree.stepNumberFactory);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(firstTypeVariable, firstInferenceStep, constraints, failedSubInference);
+        return Objects.hash(firstTypeVariable, firstInferenceStep, constraints, failedSubInference, stepNumberFactory);
     }
 }

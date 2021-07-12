@@ -12,8 +12,9 @@ public abstract class ConstStep extends InferenceStep {
      *
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
+     * @param stepIndex  step number
      */
-    protected ConstStep(Conclusion conclusion, Constraint constraint) {
-        super(conclusion, constraint);
+    protected ConstStep(Conclusion conclusion, Constraint constraint, int stepIndex) {
+        super(conclusion, constraint, stepIndex);
     }
 }

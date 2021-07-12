@@ -14,9 +14,10 @@ public class AbsStepDefault extends AbsStep {
      * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
+     * @param stepIndex  step number
      */
-    public AbsStepDefault(InferenceStep premise, Conclusion conclusion, Constraint constraint) {
-        super(premise, conclusion, constraint);
+    public AbsStepDefault(InferenceStep premise, Conclusion conclusion, Constraint constraint, int stepIndex) {
+        super(premise, conclusion, constraint, stepIndex);
     }
 
     /**

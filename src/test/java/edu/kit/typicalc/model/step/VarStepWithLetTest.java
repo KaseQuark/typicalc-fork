@@ -16,7 +16,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 class VarStepWithLetTest {
-    static InferenceStep premise = null;
     static Conclusion conclusion = null;
     static Constraint constraint = null;
     static NamedType namedType = null;
@@ -34,35 +33,11 @@ class VarStepWithLetTest {
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
     }
-    @Test
-    void equalsTest() {
-        VarStepWithLet step1 = new VarStepWithLet(typeAbstraction, namedType, conclusion, constraint);
-        VarStepWithLet step2 = new VarStepWithLet(typeAbstraction, namedType, conclusion, constraint);
-        VarStepWithLet step3 = new VarStepWithLet(typeAbstraction, namedType, conclusion, null);
-        VarStepWithLet step4 = new VarStepWithLet(null, namedType, conclusion, constraint);
-        VarStepWithLet step5 = new VarStepWithLet(typeAbstraction, null, conclusion, constraint);
-
-        assertEquals(step1, step1);
-        assertEquals(step1, step2);
-        assertNotEquals(new EmptyStep(), step1);
-        assertNotEquals(null, step1);
-        assertNotEquals(step1, step3);
-        assertNotEquals(step1, step4);
-        assertNotEquals(step1, step5);
-
-    }
-    @Test
-    void hashCodeTest() {
-        VarStepWithLet step1 = new VarStepWithLet(typeAbstraction, namedType, conclusion, constraint);
-        VarStepWithLet step2 = new VarStepWithLet(typeAbstraction, namedType, conclusion, constraint);
-
-        assertEquals(step1.hashCode(), step2.hashCode());
-    }
 
     @Test
     void acceptTest() {
         TestStepVisitor testStepVisitor = new TestStepVisitor();
-        VarStepWithLet step = new VarStepWithLet(typeAbstraction, namedType, conclusion, constraint);
+        VarStepWithLet step = new VarStepWithLet(typeAbstraction, namedType, conclusion, constraint, 0);
         step.accept(testStepVisitor);
         assertEquals("VarLet", testStepVisitor.visited);
     }

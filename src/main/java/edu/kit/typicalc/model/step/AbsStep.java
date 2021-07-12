@@ -18,9 +18,10 @@ public abstract class AbsStep extends InferenceStep {
      * @param premise    the premise of this step
      * @param conclusion the conclusion of this step
      * @param constraint the constraint added in this step
+     * @param stepIndex  step number
      */
-    protected AbsStep(InferenceStep premise, Conclusion conclusion, Constraint constraint) {
-        super(conclusion, constraint);
+    protected AbsStep(InferenceStep premise, Conclusion conclusion, Constraint constraint, int stepIndex) {
+        super(conclusion, constraint, stepIndex);
         this.premise = premise;
     }
 

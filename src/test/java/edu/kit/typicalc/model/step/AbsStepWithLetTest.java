@@ -33,26 +33,24 @@ class AbsStepWithLetTest {
         NamedType type1 = new NamedType("a");
         NamedType type2 = new NamedType("b");
         constraint = new Constraint(type1, type2);
-        premise = new ConstStepDefault(conclusion, constraint);
+        premise = new ConstStepDefault(conclusion, constraint, 0);
     }
 
     @Test
     void equalsTest() {
-        AbsStepWithLet step1 = new AbsStepWithLet(premise, conclusion, constraint);
-        AbsStepWithLet step2 = new AbsStepWithLet(premise, conclusion, constraint);
-        AbsStepWithLet step3 = new AbsStepWithLet(premise, conclusion, null);
+        AbsStepWithLet step1 = new AbsStepWithLet(premise, conclusion, constraint, 0);
+        AbsStepWithLet step2 = new AbsStepWithLet(premise, conclusion, constraint, 0);
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(new EmptyStep(), step1);
         assertNotEquals(null, step1);
-        assertNotEquals(step1, step3);
 
     }
     @Test
     void hashCodeTest() {
-        AbsStepWithLet step1 = new AbsStepWithLet(premise, conclusion, constraint);
-        AbsStepWithLet step2 = new AbsStepWithLet(premise, conclusion, constraint);
+        AbsStepWithLet step1 = new AbsStepWithLet(premise, conclusion, constraint, 0);
+        AbsStepWithLet step2 = new AbsStepWithLet(premise, conclusion, constraint, 0);
 
         assertEquals(step1.hashCode(), step2.hashCode());
     }
@@ -60,7 +58,7 @@ class AbsStepWithLetTest {
     @Test
     void acceptTest() {
         TestStepVisitor testStepVisitor = new TestStepVisitor();
-        AbsStepWithLet step = new AbsStepWithLet(premise, conclusion, constraint);
+        AbsStepWithLet step = new AbsStepWithLet(premise, conclusion, constraint, 0);
         step.accept(testStepVisitor);
         assertEquals("AbsLet", testStepVisitor.visited);
     }

@@ -37,21 +37,19 @@ class ConstStepDefaultTest {
 
     @Test
     void equalsTest() {
-        ConstStepDefault step1 = new ConstStepDefault(conclusion, constraint);
-        ConstStepDefault step2 = new ConstStepDefault(conclusion, constraint);
-        ConstStepDefault step3 = new ConstStepDefault(conclusion, null);
+        ConstStepDefault step1 = new ConstStepDefault(conclusion, constraint, 0);
+        ConstStepDefault step2 = new ConstStepDefault(conclusion, constraint, 0);
 
         assertEquals(step1, step1);
         assertEquals(step1, step2);
         assertNotEquals(step1, new EmptyStep());
-        assertNotEquals(step1, step3);
 
     }
 
     @Test
     void hashCodeTest() {
-        ConstStepDefault step1 = new ConstStepDefault(conclusion, constraint);
-        ConstStepDefault step2 = new ConstStepDefault(conclusion, constraint);
+        ConstStepDefault step1 = new ConstStepDefault(conclusion, constraint, 0);
+        ConstStepDefault step2 = new ConstStepDefault(conclusion, constraint, 0);
 
         assertEquals(step1.hashCode(), step2.hashCode());
     }
@@ -59,7 +57,7 @@ class ConstStepDefaultTest {
     @Test
     void acceptTest() {
         TestStepVisitor testStepVisitor = new TestStepVisitor();
-        ConstStepDefault step = new ConstStepDefault(conclusion, constraint);
+        ConstStepDefault step = new ConstStepDefault(conclusion, constraint, 0);
         step.accept(testStepVisitor);
         assertEquals("ConstDef", testStepVisitor.visited);
     }

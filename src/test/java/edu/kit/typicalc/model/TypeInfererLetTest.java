@@ -28,12 +28,12 @@ class TypeInfererLetTest {
 
         TypeVariableFactory refFac = new TypeVariableFactory(TypeVariableKind.TREE);
         refFac.nextTypeVariable();
-        TypeInfererLet typeInfererLet = new TypeInfererLet(x, typeAssumptions, refFac);
+        TypeInfererLet typeInfererLet = new TypeInfererLet(x, typeAssumptions, refFac, new StepNumberFactory());
 
         Conclusion varLeftConclusion = new Conclusion(typeAssumptions, x, variable2);
         Constraint varLeftConstraint = new Constraint(variable2, generated1);
         InferenceStep varLeftStep = new VarStepWithLet(generated1Abs, generated1,
-                varLeftConclusion, varLeftConstraint);
+                varLeftConclusion, varLeftConstraint, 0);
 
         assertEquals(varLeftStep, typeInfererLet.getFirstInferenceStep());
         assertTrue(typeInfererLet.getType().isPresent());
