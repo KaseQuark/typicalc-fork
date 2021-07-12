@@ -10,7 +10,7 @@ build:
   stage: Build
   script:
     - nix-shell --pure --run "file src/main/resources/language/translation_de.properties | rg UTF-8"
-    - nix-shell --pure --run "mvn --no-transfer-progress -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp compile"
+    - nix-shell --pure --run "mvn --no-transfer-progress -Dmaven.repo.local=/tmp/m2/repository -Duser.home=/tmp compile test-compile"
 
 test:
   stage: Test
