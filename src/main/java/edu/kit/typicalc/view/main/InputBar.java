@@ -35,7 +35,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     private static final String EXAMPLE_BUTTON_ID = "exampleButton";
     private static final String LAMBDA_BUTTON_ID = "lambdaButton";
     private static final String QUANTIFIER_BUTTON_ID = "quantifier-button";
-    private static final String ASS_INPUT_FIELD_ID = "ass-input-field";
+    public static final String ASS_INPUT_FIELD_ID = "ass-input-field";
 
     private static final short MAX_INPUT_LENGTH = 1000;
 
