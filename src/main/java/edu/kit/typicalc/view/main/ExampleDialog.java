@@ -61,7 +61,7 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
         add(headingLayout, container);
         setId(EXAMPLE_DIALOG_ID);
         setWidth("392px");
-        setHeight("661px");
+        setHeight("670px");
     }
     
     private void setAssumptionExamples(String term) {
