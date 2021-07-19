@@ -135,7 +135,8 @@ window.MathJax = {
                         .typicalc-type, g[semantics='bspr_prooflabel:left'] {\
                             stroke: transparent; stroke-width: 600px; pointer-events: all;\
                         }\
-                        #typicalc-definition-abs, #typicalc-definition-app, #typicalc-definition-const, #typicalc-definition-var, #typicalc-definition-let {\
+                        #typicalc-definition-abs, #typicalc-definition-abs-let, #typicalc-definition-app,\
+                        #typicalc-definition-const, #typicalc-definition-var, #typicalc-definition-var-let, #typicalc-definition-let {\
                             display: none;\
                             border: 2px solid red;\
                         }";

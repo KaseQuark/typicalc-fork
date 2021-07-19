@@ -36,6 +36,9 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
                 + "\\cssId{typicalc-definition-abs}{"
                 + getTranslation("root.absLatex")
                 + "}"
+                + "\\cssId{typicalc-definition-abs-let}{"
+                + getTranslation("root.absLetLatex")
+                + "}"
                 + "\\cssId{typicalc-definition-app}{"
                 + getTranslation("root.appLatex")
                 + "}"
@@ -44,6 +47,9 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
                 + "}"
                 + "\\cssId{typicalc-definition-var}{"
                 + getTranslation("root.varLatex")
+                + "}"
+                + "\\cssId{typicalc-definition-var-let}{"
+                + getTranslation("root.varLetLatex")
                 + "}"
                 + "\\cssId{typicalc-definition-let}{"
                 + getTranslation("root.letLatex")

@@ -126,8 +126,8 @@ public class LatexCreator implements StepVisitor {
     public void visit(AbsStepWithLet absL) {
         tree.insert(0, generateConclusion(absL,
                 mode == LatexCreatorMode.MATHJAX
-                        ? "\\LeftLabel{\\class{typicalc-label typicalc-label-abs typicalc-step-" + absL.getStepIndex()
-                                + "}{\\textrm A{\\small BS}}}" : LABEL_ABS, // TODO: differentiate with let
+                        ? "\\LeftLabel{\\class{typicalc-label typicalc-label-abs-let typicalc-step-" + absL.getStepIndex()
+                                + "}{\\textrm A{\\small BS}}}" : LABEL_ABS,
                 UIC));
         absL.getPremise().accept(this);
     }
@@ -174,9 +174,8 @@ public class LatexCreator implements StepVisitor {
     public void visit(VarStepWithLet varL) {
         String latex = "";
         if (mode == LatexCreatorMode.MATHJAX) {
-            latex = "\\LeftLabel{\\class{typicalc-label typicalc-label-var "
+            latex = "\\LeftLabel{\\class{typicalc-label typicalc-label-var-let "
                     + "typicalc-step-" + varL.getStepIndex() + "}{\\textrm V{\\small AR}}}";
-            // TODO: differentiate with let
         } else {
             latex = LABEL_VAR;
         }
