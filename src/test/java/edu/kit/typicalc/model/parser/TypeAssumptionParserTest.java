@@ -349,6 +349,16 @@ class TypeAssumptionParserTest {
         assertEquals(Token.TokenType.EOF, e.getCause().get().getType());
     }
 
+    @Test
+    void errorCase3() {
+        ParseError e = parse("s");
+        assertEquals(ParseError
+                .unexpectedToken(new Token(Token.TokenType.EOF, "", "s", 1),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                .expectedType(Token.TokenType.COLON),
+                e);
+    }
+
     static ParseError parse(String input) {
         return new TypeAssumptionParser().parse(input).unwrapError();
     }

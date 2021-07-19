@@ -172,7 +172,9 @@ public class TypeAssumptionParser {
             if (t.getType() == TokenType.COLON) {
                 return new ParserResult<>(new ExpectingTypeDef(alreadyParsed, var));
             } else {
-                return new ParserResult<>(ParseError.unexpectedToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                return new ParserResult<>(ParseError
+                        .unexpectedToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedType(TokenType.COLON));
             }
         }
     }
