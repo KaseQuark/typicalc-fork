@@ -92,7 +92,7 @@ public class LambdaParser {
         }
         return new Result<>(null,
                 ParseError.unexpectedToken(last, ParseError.ErrorType.TERM_ERROR)
-                    .expectedTypes(ATOM_START_TOKENS));
+                    .expectedInput(ExpectedInput.TERM));
     }
 
     /**

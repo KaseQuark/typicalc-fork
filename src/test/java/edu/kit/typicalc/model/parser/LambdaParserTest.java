@@ -21,6 +21,7 @@ class LambdaParserTest {
         term = parser.parse();
         assertEquals(new AppTerm(new VarTerm("b1"), new VarTerm("a1")), term.unwrap());
     }
+
     @Test
     void absTerm() {
         LambdaParser parser = new LambdaParser("λx.x");
@@ -28,6 +29,7 @@ class LambdaParserTest {
         assertEquals(new AbsTerm(new VarTerm("x"), new VarTerm("x")), term);
         assertEquals("λx.x", term.toString());
     }
+
     @Test
     void appTerm() {
         LambdaParser parser = new LambdaParser("(λx.x)(λx.x)");
@@ -39,6 +41,7 @@ class LambdaParserTest {
         );
         assertEquals("(λx.x)(λx.x)", term.toString());
     }
+
     @Test
     void letTerm() {
         LambdaParser parser = new LambdaParser("let id = λx.x in id 1");
@@ -57,6 +60,7 @@ class LambdaParserTest {
                 parser.parse().unwrap()
         );
     }
+
     @Test
     void complicatedTerm() {
         LambdaParser parser = new LambdaParser("(λx.λy.x y 5)(λz.z)(true)");
@@ -144,7 +148,7 @@ class LambdaParserTest {
         parser = new LambdaParser("let x = )");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.ErrorCause.UNEXPECTED_TOKEN, error.getCauseEnum());
-        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", "let x = )",8), error.getCause().get());
+        assertEquals(new Token(TokenType.RIGHT_PARENTHESIS, ")", "let x = )", 8), error.getCause().get());
         parser = new LambdaParser("let x = y )");
         error = parser.parse().unwrapError();
         assertEquals(ParseError.ErrorCause.UNEXPECTED_TOKEN, error.getCauseEnum());
@@ -177,8 +181,8 @@ class LambdaParserTest {
             System.err.println(term.unwrapError().getCause());
         }
         assertEquals(new AppTerm(
-                new AbsTerm(X, X),
-                new LetTerm(new VarTerm("id"), new AbsTerm(Y, Y), new VarTerm("id"))
+                        new AbsTerm(X, X),
+                        new LetTerm(new VarTerm("id"), new AbsTerm(Y, Y), new VarTerm("id"))
                 ),
                 term.unwrap());
     }
@@ -244,6 +248,16 @@ class LambdaParserTest {
         ParseError err3 = getParseError("λx.λ");
         assertEquals(err1, err3);
         assertNotEquals(err2, err3);
+    }
+
+    @Test
+    void errorCase4() {
+        ParseError err = getParseError("λx.x in x");
+        assertEquals(ParseError
+                .unexpectedToken(
+                        new Token(TokenType.IN, "in", "λx.x in x", 5),
+                        ParseError.ErrorType.TERM_ERROR)
+                .expectedInput(ExpectedInput.TERM), err);
     }
 
     @Test
