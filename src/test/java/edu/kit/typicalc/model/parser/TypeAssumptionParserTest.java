@@ -359,6 +359,16 @@ class TypeAssumptionParserTest {
                 e);
     }
 
+    @Test
+    void errorCase4() {
+        ParseError e = parse("s:()");
+        assertEquals(ParseError
+                        .unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "s:()", 3),
+                                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedInput(ExpectedInput.TYPE),
+                e);
+    }
+
     static ParseError parse(String input) {
         return new TypeAssumptionParser().parse(input).unwrapError();
     }

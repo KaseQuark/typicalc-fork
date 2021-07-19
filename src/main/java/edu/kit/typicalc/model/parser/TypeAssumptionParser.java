@@ -331,7 +331,11 @@ public class TypeAssumptionParser {
                             ParserResult<Type> result = handleInnerParenthesis(
                                     new Token(TokenType.EOF, "", "", -1));
                             if (result.isError()) {
-                                return result.castError();
+                                return result
+                                        // replace dummy EOF token
+                                        .modifyError(err ->
+                                                err.withToken(t, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR))
+                                        .castError();
                             } else {
                                 parsedType = Optional.of(result.getResult());
                                 stateParenthesis = Optional.empty();
