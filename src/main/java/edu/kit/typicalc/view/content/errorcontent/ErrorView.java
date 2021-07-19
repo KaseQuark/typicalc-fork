@@ -32,6 +32,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     private final Paragraph hint;
 
     public ErrorView(ParseError error) {
+        System.out.println(error);
         this.error = error;
         VerticalLayout container = new VerticalLayout();
         container.setId(ERROR_CONTENT_ID);
@@ -72,7 +73,7 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         } else if (errorType.get() == ParseError.ErrorType.TYPE_ASSUMPTION_ERROR) {
             descriptionForError = "error.typeAssumptionForError";
         }
-        switch (error) {
+        switch (error.getCauseEnum()) {
             case UNEXPECTED_TOKEN:
                 Optional<Token> cause = error.getCause();
                 if (cause.isPresent()) {

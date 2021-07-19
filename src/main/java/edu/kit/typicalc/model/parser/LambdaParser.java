@@ -42,7 +42,7 @@ public class LambdaParser {
      * @param term String to parse
      */
     public LambdaParser(String term) {
-        this.lexer = new LambdaLexer(term);
+        this.lexer = new LambdaLexer(term, ParseError.ErrorType.TERM_ERROR);
     }
 
     /**
@@ -69,7 +69,7 @@ public class LambdaParser {
         TokenType current = token.getType();
         Optional<ParseError> error = nextToken();
         if (current != type) {
-            return Optional.of(ParseError.UNEXPECTED_TOKEN.withToken(lastToken,
+            return Optional.of(ParseError.unexpectedToken(lastToken,
                     ParseError.ErrorType.TERM_ERROR).expectedType(type));
         }
         return error;
@@ -91,8 +91,7 @@ public class LambdaParser {
             return t;
         }
         return new Result<>(null,
-                ParseError.UNEXPECTED_TOKEN
-                    .withToken(last, ParseError.ErrorType.TERM_ERROR)
+                ParseError.unexpectedToken(last, ParseError.ErrorType.TERM_ERROR)
                     .expectedTypes(ATOM_START_TOKENS));
     }
 
@@ -109,8 +108,7 @@ public class LambdaParser {
             }
         }
         if (token.getType() == TokenType.EOF) {
-            return new Result<>(null, ParseError.UNEXPECTED_TOKEN
-                            .withToken(token, ParseError.ErrorType.TERM_ERROR)
+            return new Result<>(null, ParseError.unexpectedToken(token, ParseError.ErrorType.TERM_ERROR)
                             .expectedInput(ExpectedInput.TERM));
         }
         return parseApplication();
@@ -210,7 +208,7 @@ public class LambdaParser {
                 try {
                     n = Integer.parseInt(number);
                 } catch (NumberFormatException e) {
-                    return new Result<>(null, ParseError.UNEXPECTED_CHARACTER.withToken(
+                    return new Result<>(null, ParseError.unexpectedCharacter(
                             token, ParseError.ErrorType.TERM_ERROR));
                 }
                 error = nextToken();

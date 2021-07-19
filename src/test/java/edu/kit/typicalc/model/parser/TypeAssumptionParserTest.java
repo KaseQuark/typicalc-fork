@@ -219,7 +219,7 @@ class TypeAssumptionParserTest {
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id: ∀ t1");
         assertTrue(type.isError());
         ParseError error = type.unwrapError();
-        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(ParseError.ErrorCause.UNEXPECTED_TOKEN, error.getCauseEnum());
         assertEquals(Token.TokenType.EOF, error.getCause().get().getType());
         Collection<Token.TokenType> expected = error.getExpected().get();
         assertEquals(2, expected.size());
@@ -233,7 +233,7 @@ class TypeAssumptionParserTest {
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("id: ∀ t1, t1 : t1 -> t1");
         assertTrue(type.isError());
         ParseError error = type.unwrapError();
-        assertEquals(ParseError.UNEXPECTED_TOKEN, error);
+        assertEquals(ParseError.ErrorCause.UNEXPECTED_TOKEN, error.getCauseEnum());
         assertEquals(Token.TokenType.VARIABLE, error.getCause().get().getType());
         assertEquals(10, error.getCause().get().getPos());
     }
@@ -258,25 +258,31 @@ class TypeAssumptionParserTest {
 
     @Test
     void errors() {
-        Map<String, ParseError> tests = new HashMap<>();
+        Map<String, ParseError> tests = new LinkedHashMap<>();
         tests.put("",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "", 0),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
-        tests.put("ö", ParseError.UNEXPECTED_CHARACTER);
+                ParseError.unexpectedToken(new Token(Token.TokenType.EOF, "", "type1:", 6),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedInput(ExpectedInput.TYPE)
+                        .expectedType(Token.TokenType.UNIVERSAL_QUANTIFIER));
+        tests.put("ö", ParseError.unexpectedCharacter2('ö', 6, "type1:ö", ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
         tests.put("(x",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.EOF, "", "(x", 2),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                ParseError.unexpectedToken(new Token(Token.TokenType.EOF, "", "type1:(x", 8),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedTypes(List.of(Token.TokenType.ARROW, Token.TokenType.RIGHT_PARENTHESIS)));
         tests.put("-> x",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.ARROW, "->", "-> x", 0),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                ParseError.unexpectedToken(new Token(Token.TokenType.ARROW, "->", "type1:-> x", 6),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedInput(ExpectedInput.TYPE)
+                        .expectedType(Token.TokenType.UNIVERSAL_QUANTIFIER)
+        );
         tests.put("x 11",
-                ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.NUMBER, "11", "x 11", 2),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
-        tests.put("x )", ParseError.UNEXPECTED_TOKEN.withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x )", 2),
+                ParseError.unexpectedToken(new Token(Token.TokenType.NUMBER, "11", "type1:x 11", 8),
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedType(Token.TokenType.ARROW));
+        tests.put("x )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x )", 8),
                 ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
-        tests.put("x -> (x) )", ParseError.UNEXPECTED_TOKEN
-                .withToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "x -> (x) )", 9),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+        tests.put("x -> (x) )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x -> (x) )", 15),
+                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
         for (Map.Entry<String, ParseError> entry : tests.entrySet()) {
             TypeAssumptionParser parser = new TypeAssumptionParser();
             Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("type1:" + entry.getKey());
@@ -289,12 +295,12 @@ class TypeAssumptionParserTest {
         TypeAssumptionParser parser = new TypeAssumptionParser();
         Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("föhn: int");
         assertTrue(type.isError());
-        assertEquals(ParseError.UNEXPECTED_CHARACTER, type.unwrapError());
+        assertEquals(ParseError.ErrorCause.UNEXPECTED_CHARACTER, type.unwrapError().getCauseEnum());
         assertEquals(1, type.unwrapError().getPosition());
         parser = new TypeAssumptionParser();
         type = parser.parse("1typ:int");
         assertTrue(type.isError());
-        assertEquals(ParseError.UNEXPECTED_TOKEN, type.unwrapError());
+        assertEquals(ParseError.ErrorCause.UNEXPECTED_TOKEN, type.unwrapError().getCauseEnum());
         assertEquals(0, type.unwrapError().getPosition());
     }
 

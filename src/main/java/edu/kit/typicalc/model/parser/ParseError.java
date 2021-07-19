@@ -1,8 +1,6 @@
 package edu.kit.typicalc.model.parser;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * Errors that can occur when parsing a lambda term or type assumption.
@@ -10,17 +8,44 @@ import java.util.Optional;
  * @see LambdaLexer
  * @see LambdaParser
  */
-public enum ParseError {
+public final class ParseError {
 
-    /**
-     * the lambda term didn't meet the specified syntax
-     */
-    UNEXPECTED_TOKEN,
+    private ParseError(ErrorCause unexpectedToken) {
+        this.causeEnum = unexpectedToken;
+    }
 
-    /**
-     * the string contained a character not allowed in that context
-     */
-    UNEXPECTED_CHARACTER;
+    public enum ErrorCause {
+        /**
+         * the lambda term didn't meet the specified syntax
+         */
+        UNEXPECTED_TOKEN,
+
+        /**
+         * the string contained a character not allowed in that context
+         */
+        UNEXPECTED_CHARACTER
+    }
+
+    private final ErrorCause causeEnum;
+
+    public ErrorCause getCauseEnum() {
+        return causeEnum;
+    }
+
+    public static ParseError unexpectedToken(Token cause, ErrorType source) {
+        var self = new ParseError(ErrorCause.UNEXPECTED_TOKEN);
+        return self.withToken(cause, source);
+    }
+
+    public static ParseError unexpectedCharacter(Token cause, ErrorType source) {
+        var self = new ParseError(ErrorCause.UNEXPECTED_CHARACTER);
+        return self.withToken(cause, source);
+    }
+
+    public static ParseError unexpectedCharacter2(char cause, int position, String term, ErrorType errorType) {
+        var self = new ParseError(ErrorCause.UNEXPECTED_CHARACTER);
+        return self.withCharacter(cause, position, term, errorType);
+    }
 
     public enum ErrorType {
         /**
@@ -64,18 +89,32 @@ public enum ParseError {
      * @return this object
      */
     public ParseError expectedType(Token.TokenType needed) {
-        this.needed = Optional.of(List.of(needed));
+        this.needed = Optional.of(new ArrayList<>(List.of(needed)));
         return this;
     }
 
     /**
-     * Attach expected token types to this error.
+     * Set expected token types of this error.
      *
      * @param needed the possible token types
      * @return this object
      */
     public ParseError expectedTypes(Collection<Token.TokenType> needed) {
-        this.needed = Optional.of(needed);
+        this.needed = Optional.of(new ArrayList<>(needed));
+        return this;
+    }
+
+    /**
+     * Add an expected token type to this error.
+     *
+     * @param needed the possible token type
+     * @return this object
+     */
+    public ParseError attachExpectedType(Token.TokenType needed) {
+        if (this.needed.isEmpty()) {
+            this.needed = Optional.of(new ArrayList<>());
+        }
+        this.needed.get().add(needed);
         return this;
     }
 
@@ -109,9 +148,9 @@ public enum ParseError {
     /**
      * Attach a character and position to this error.
      *
-     * @param cause the character
+     * @param cause    the character
      * @param position it's position
-     * @param term the term that is parsed
+     * @param term     the term that is parsed
      * @return this object
      */
     public ParseError withCharacter(char cause, int position, String term, ErrorType errorType) {
@@ -175,7 +214,36 @@ public enum ParseError {
         this.errorType = Optional.of(errorType);
     }
 
-    ParseError() {
+    @Override
+    public String toString() {
+        return "ParseError{"
+                + "cause=" + cause
+                + ", needed=" + needed
+                + ", expected=" + expected
+                + ", term='" + term + '\''
+                + ", wrongChar=" + wrongChar
+                + ", correctChar=" + correctChar
+                + ", position=" + position
+                + ", errorType=" + errorType
+                + '}';
+    }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        ParseError that = (ParseError) o;
+        return wrongChar == that.wrongChar && correctChar == that.correctChar && position == that.position
+                && causeEnum == that.causeEnum && cause.equals(that.cause) && needed.equals(that.needed)
+                && expected.equals(that.expected) && term.equals(that.term) && errorType.equals(that.errorType);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(causeEnum, cause, needed, expected, term, wrongChar, correctChar, position, errorType);
     }
 }
