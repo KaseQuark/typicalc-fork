@@ -22,9 +22,11 @@ public class StepAnnotator implements StepVisitor {
         var t2 = ((FunctionType) absD.getConstraint().getSecondType()).getOutput();
         annotations.add("$$\\begin{align}"
                 + "&" + LatexCreatorConstants.RULE_VARIABLE + "_1 := "
-                + new LatexCreatorType(t1, LatexCreatorMode.NORMAL).getLatex() + LatexCreatorConstants.LATEX_NEW_LINE + "\n"
+                + new LatexCreatorType(t1, LatexCreatorMode.NORMAL).getLatex() + LatexCreatorConstants.LATEX_NEW_LINE
+                + "\n"
                 + "&" + LatexCreatorConstants.RULE_VARIABLE + "_2 := "
-                + new LatexCreatorType(t2, LatexCreatorMode.NORMAL).getLatex() + LatexCreatorConstants.LATEX_NEW_LINE + "\n"
+                + new LatexCreatorType(t2, LatexCreatorMode.NORMAL).getLatex() + LatexCreatorConstants.LATEX_NEW_LINE
+                + "\n"
                 + "&" + LatexCreatorConstraints.createSingleConstraint(absD.getConstraint(), LatexCreatorMode.NORMAL)
                 + "\\end{align}$$");
         absD.getPremise().accept(this);
