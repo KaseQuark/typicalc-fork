@@ -28,11 +28,10 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
 
     private final H3 heading;
     private final Div errorMessage;
-    private final ParseError error;
+    private final transient ParseError error;
     private final Paragraph hint;
 
     public ErrorView(ParseError error) {
-        System.out.println(error);
         this.error = error;
         VerticalLayout container = new VerticalLayout();
         container.setId(ERROR_CONTENT_ID);

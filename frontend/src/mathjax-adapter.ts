@@ -10,18 +10,19 @@ declare let window: {
 };
 
 export abstract class MathjaxAdapter extends LitElement {
-	private execTypeset(shadowRoot: ShadowRoot) {
+	private execTypeset(shadowRoot: ShadowRoot, extraData: any) {
 		if (window.MathJax) {
-			window.MathJax.typesetShadow(shadowRoot, () => this.calculateSteps());
+			window.MathJax.typesetShadow(shadowRoot, () => this.calculateSteps(extraData));
 		}
 	}
 
-	protected requestTypeset() {
+	protected requestTypeset(extraData: any) {
 		this.updateComplete.then(() => {
 			if (window.MathJax === undefined || !window.MathJax.isInitialized) {
-				window.addEventListener('mathjax-initialized', () => this.execTypeset(this.shadowRoot!));
+				window.addEventListener('mathjax-initialized',
+					() => this.execTypeset(this.shadowRoot!, extraData));
 			} else {
-				this.execTypeset(this.shadowRoot!);
+				this.execTypeset(this.shadowRoot!, extraData);
 			}
 		});
 	}
@@ -36,6 +37,6 @@ export abstract class MathjaxAdapter extends LitElement {
 		/* ignore by default */
 	}
 
-	protected calculateSteps(): void {
+	protected calculateSteps(_extraData: any): void {
 	}
 }

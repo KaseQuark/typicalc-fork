@@ -73,4 +73,6 @@ tc-proof-tree {
 
 	border-style: solid;
 	border-color: #37485f;
+
+	position: relative;
 }

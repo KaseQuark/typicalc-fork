@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.google.gson.Gson;
 import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -7,6 +8,8 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.littemplate.LitTemplate;
 import com.vaadin.flow.component.template.Id;
 import edu.kit.typicalc.view.MathjaxAdapter;
+
+import java.util.List;
 
 /**
  * Renders a tree from LaTeX using MathJax and allows step-by-step revealing of
@@ -30,8 +33,9 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
      * In other cases unexpected behaviour may occur.
      *
      * @param latex the LaTeX code to render with MathJax
+     * @param extraData extra data to pass to the frontend script
      */
-    public MathjaxProofTree(String latex) {
+    public MathjaxProofTree(String latex, List<String> extraData) {
         content.add("\\[\\cssId{typicalc-prooftree}{" + latex + "}"
                 + "\\cssId{typicalc-definition-abs}{"
                 + getTranslation("root.absLatex")
@@ -55,7 +59,7 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
                 + getTranslation("root.letLatex")
                 + "}"
                 + "\\]");
-        getElement().callJsFunction("requestTypeset");
+        getElement().callJsFunction("requestTypeset", new Gson().toJson(extraData));
     }
 
     /**

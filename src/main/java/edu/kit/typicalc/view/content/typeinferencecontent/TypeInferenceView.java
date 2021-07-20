@@ -17,6 +17,7 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import edu.kit.typicalc.model.TypeInfererInterface;
+import edu.kit.typicalc.model.step.StepAnnotator;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
@@ -65,6 +66,7 @@ public class TypeInferenceView extends VerticalLayout
     private transient LatexCreator lc;
     private transient LatexCreator lcUser;
     private final transient TypeInfererInterface typeInferer;
+    private final List<String> stepAnnotations;
     private final Div content;
     private final ControlPanel controlPanel;
     private String term = "?";
@@ -72,6 +74,7 @@ public class TypeInferenceView extends VerticalLayout
     // used by Spring
     public TypeInferenceView() {
         this.typeInferer = null;
+        this.stepAnnotations = null;
         this.content = null;
         this.controlPanel = null;
         this.treeNumbers = null;
@@ -85,6 +88,9 @@ public class TypeInferenceView extends VerticalLayout
      */
     public TypeInferenceView(TypeInfererInterface typeInferer) {
         this.typeInferer = typeInferer;
+        var annotator = new StepAnnotator();
+        typeInferer.getFirstInferenceStep().accept(annotator);
+        this.stepAnnotations = annotator.getAnnotations();
 
         setId(ID);
         addAttachListener(this);
@@ -113,7 +119,7 @@ public class TypeInferenceView extends VerticalLayout
         unification = new MathjaxUnification(lc.getUnification());
 
         if (tree == null) {
-            tree = new MathjaxProofTree(lc.getTree());
+            tree = new MathjaxProofTree(lc.getTree(), stepAnnotations);
         }
 
         Div treeDiv = new Div();

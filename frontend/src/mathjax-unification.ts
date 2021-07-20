@@ -3,7 +3,7 @@ import {MathjaxAdapter} from "./mathjax-adapter";
 class MathjaxUnification extends MathjaxAdapter {
 	connectedCallback() {
 		super.connectedCallback();
-		this.requestTypeset();
+		this.requestTypeset(null);
 	}
 
 	static get properties() {
@@ -13,7 +13,7 @@ class MathjaxUnification extends MathjaxAdapter {
 	}
 
 	protected showStep(_n: number): void {
-		this.requestTypeset();
+		this.requestTypeset(null);
 	}
 }
 

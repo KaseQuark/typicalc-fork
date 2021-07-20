@@ -132,7 +132,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         return numberGenerator.getNumbers();
     }
 
-    private String createSingleConstraint(Constraint constraint) {
+    public static String createSingleConstraint(Constraint constraint, LatexCreatorMode mode) {
         String firstType = new LatexCreatorType(constraint.getFirstType(), mode).getLatex();
         String secondType = new LatexCreatorType(constraint.getSecondType(), mode).getLatex();
         String latex = firstType + EQUALS + secondType;
@@ -143,7 +143,7 @@ public class LatexCreatorConstraints implements StepVisitor {
     }
 
     private void addConstraint(InferenceStep step) {
-        String currentSingleConstraint = createSingleConstraint(step.getConstraint());
+        String currentSingleConstraint = createSingleConstraint(step.getConstraint(), mode);
         if (!prevStep.equals("")) {
             prevStep += COMMA;
         }
@@ -231,7 +231,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                         .append(AMPERSAND);
                 constraintsInCurrLine = 0;
             }
-            result.append(createSingleConstraint(constraint)).append(COMMA);
+            result.append(createSingleConstraint(constraint, mode)).append(COMMA);
             constraintsInCurrLine++;
         });
         if (!letConstraints.isEmpty()) {
