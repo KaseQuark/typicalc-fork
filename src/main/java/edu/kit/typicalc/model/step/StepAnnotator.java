@@ -1,7 +1,10 @@
 package edu.kit.typicalc.model.step;
 
+import edu.kit.typicalc.model.type.FunctionType;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstraints;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorMode;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +18,15 @@ public class StepAnnotator implements StepVisitor {
 
     @Override
     public void visit(AbsStepDefault absD) {
-        annotations.add("$"
-                + LatexCreatorConstraints.createSingleConstraint(absD.getConstraint(), LatexCreatorMode.NORMAL) + "$");
+        var t1 = ((FunctionType) absD.getConstraint().getSecondType()).getParameter();
+        var t2 = ((FunctionType) absD.getConstraint().getSecondType()).getOutput();
+        annotations.add("$$\\begin{align}"
+                + "&" + LatexCreatorConstants.RULE_VARIABLE + "_1 := "
+                + new LatexCreatorType(t1, LatexCreatorMode.NORMAL).getLatex() + LatexCreatorConstants.LATEX_NEW_LINE + "\n"
+                + "&" + LatexCreatorConstants.RULE_VARIABLE + "_2 := "
+                + new LatexCreatorType(t2, LatexCreatorMode.NORMAL).getLatex() + LatexCreatorConstants.LATEX_NEW_LINE + "\n"
+                + "&" + LatexCreatorConstraints.createSingleConstraint(absD.getConstraint(), LatexCreatorMode.NORMAL)
+                + "\\end{align}$$");
         absD.getPremise().accept(this);
     }
 

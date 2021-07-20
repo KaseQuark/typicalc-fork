@@ -55,10 +55,11 @@ public final class LatexCreatorConstants {
     protected static final String TREE_VARIABLE = "\\alpha";
     protected static final String GENERATED_ASSUMPTION_VARIABLE = "\\beta";
     protected static final String USER_VARIABLE = "\\tau";
+    public static final String RULE_VARIABLE = "\\tau";
     protected static final String SIGMA = "\\sigma";
     protected static final String GAMMA = "\\Gamma";
 
-    protected static final String LATEX_NEW_LINE = "\\\\";
+    public static final String LATEX_NEW_LINE = "\\\\";
     protected static final String CIRC = "\\circ";
     protected static final String COLOR_RED = "\\color{Red}";
     protected static final String COLOR_HIGHLIGHTED = "\\color{RoyalBlue}";

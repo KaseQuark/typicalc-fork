@@ -27,7 +27,7 @@ public class LatexCreatorType implements TypeVisitor {
      *
      * @param type the type
      */
-    protected LatexCreatorType(Type type, LatexCreatorMode mode) {
+    public LatexCreatorType(Type type, LatexCreatorMode mode) {
         this.type = type;
         this.mode = mode;
         type.accept(this);
@@ -36,7 +36,7 @@ public class LatexCreatorType implements TypeVisitor {
     /**
      * @return the generated LaTeX code
      */
-    protected String getLatex() {
+    public String getLatex() {
         return latex.toString();
     }
 
