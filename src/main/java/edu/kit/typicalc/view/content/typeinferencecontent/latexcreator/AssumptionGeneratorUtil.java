@@ -37,7 +37,7 @@ public final class AssumptionGeneratorUtil {
         }
     }
 
-    protected static String generateTypeAbstraction(TypeAbstraction abs, LatexCreatorMode mode) {
+    public static String generateTypeAbstraction(TypeAbstraction abs, LatexCreatorMode mode) {
         StringBuilder abstraction = new StringBuilder();
         if (abs.hasQuantifiedVariables()) {
             abstraction.append(FOR_ALL);
