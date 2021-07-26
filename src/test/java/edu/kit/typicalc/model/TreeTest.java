@@ -1,5 +1,6 @@
 package edu.kit.typicalc.model;
 
+import edu.kit.typicalc.model.parser.LambdaParser;
 import edu.kit.typicalc.model.step.*;
 import edu.kit.typicalc.model.term.*;
 import edu.kit.typicalc.model.type.*;
@@ -10,8 +11,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class TreeTest {
 
@@ -169,6 +169,20 @@ class TreeTest {
         constraints.add(new Constraint(variable2, generated1));
         constraints.add(varRightConstraint);
         assertEquals(constraints, tree.getConstraints());
+    }
+
+    @Test
+    void derivedLetTypeHasNewUniqueIndex() {
+        var term = "let id = λx.x in id 5";
+        var tree = new Tree(new HashMap<>(), new LambdaParser(term).parse().unwrap());
+        var ls = (LetStep) tree.getFirstInferenceStep();
+        var as = (AbsStepWithLet) ls.getTypeInferer().getFirstInferenceStep();
+        var vs = (VarStep) as.getPremise();
+        var tv = (TypeVariable) vs.getInstantiatedTypeAbs();
+        var as2 = (AppStep) ls.getPremise();
+        var types = as2.getConclusion().getTypeAssumptions().get(new VarTerm("id")).getQuantifiedVariables().toArray(new TypeVariable[0]);
+        assertEquals(1, types.length);
+        assertNotEquals(tv.getUniqueIndex(), types[0].getUniqueIndex());
     }
 
     @Test
