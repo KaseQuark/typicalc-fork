@@ -276,6 +276,10 @@ class MathjaxProofTree extends MathjaxAdapter {
             (svg.children[1] as SVGGraphicsElement).transform.baseVal[0].matrix.e += offset.e + svgWidth / 2 - conclusionWidth / 2;
             console.timeEnd('stepCalculation');
 
+            const thisShadowRoot = this.shadowRoot;
+            const hoverTextElID = "typicalc-hover-explainer";
+            let defElBackground: SVGRectElement | null;
+
             if (nodeIterator.length >= 3) {
                 // should not be used on empty SVGs
                 window.svgPanZoomFun(svg, {
@@ -316,6 +320,20 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
                                 pannedX = ev.deltaX
                                 pannedY = ev.deltaY
+                                // also move the tooltip
+                                let explainer = thisShadowRoot.getElementById(hoverTextElID);
+                                if (explainer) {
+                                    const ctm1 = svg.getBoundingClientRect();
+                                    const ctm2 = defElBackground!.getBoundingClientRect();
+                                    explainer.style.left = (ctm2.left - ctm1.left) + "px";
+                                    explainer.style.top = (ctm2.bottom - ctm1.top) + "px";
+                                    // TODO(performance): this should be more efficient, but somehow flickers
+                                    /*
+                                    const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
+                                    const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
+                                    explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
+                                     */
+                                }
                             });
 
                             let initialScale = 1;
@@ -361,7 +379,6 @@ class MathjaxProofTree extends MathjaxAdapter {
             const viewport = svg.querySelector("#step0")!.parentNode as SVGGraphicsElement;
             const handleMouseEvent = (e: MouseEvent, mouseIn: boolean) => {
                 // remove previous tooltip, if possible
-                const hoverTextElID = "typicalc-hover-explainer";
                 let explainer = this.shadowRoot!.getElementById(hoverTextElID);
                 if (explainer) {
                     explainer.parentNode!.removeChild(explainer);
@@ -400,7 +417,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                         const svgRect = defEl.getBBox();
                         defEl.transform.baseVal[0].matrix.e = -transform.e - svgRect.width + offsetX + 1000;
                         defEl.transform.baseVal[0].matrix.f = -transform.f - 5500 + offsetY;
-                        let defElBackground = this.shadowRoot!.getElementById(defId + "-background") as SVGRectElement | null;
+                        defElBackground = this.shadowRoot!.getElementById(defId + "-background") as SVGRectElement | null;
                         if (!defElBackground) {
                             defElBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                             defElBackground.id = defId + "-background";
