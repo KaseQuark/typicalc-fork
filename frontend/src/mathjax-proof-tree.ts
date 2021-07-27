@@ -379,11 +379,6 @@ class MathjaxProofTree extends MathjaxAdapter {
 
             const viewport = svg.querySelector("#step0")!.parentNode as SVGGraphicsElement;
             const handleMouseEvent = (e: MouseEvent, mouseIn: boolean) => {
-                // remove previous tooltip, if possible
-                let explainer = this.shadowRoot!.getElementById(hoverTextElID);
-                if (explainer) {
-                    explainer.parentNode!.removeChild(explainer);
-                }
                 let typeTarget = e.target! as SVGGraphicsElement;
                 let counter = 0;
                 while (!typeTarget.classList.contains("typicalc-type")
@@ -440,9 +435,46 @@ class MathjaxProofTree extends MathjaxAdapter {
                         p.style.position = "absolute";
                         p.style.left = (ctm2.left - ctm1.left) + "px";
                         p.style.top = (ctm2.bottom - ctm1.top) + "px";
+                        p.style.backgroundColor = "white";
+                        p.style.border = "5px yellow ridge";
+                        p.style.padding = "5px";
                         p.innerText = data[stepIndex];
                         // @ts-ignore
-                        window.MathJax.typesetPromise([p]);
+                        window.MathJax.typesetPromise([p])
+                            .then(() => {
+                                const svgP = p.getElementsByTagName("svg")[0];
+                                const relevantElement = svgP.childNodes[1]! as SVGGraphicsElement;
+                                const relevantDefs = svgP.childNodes[0]!;
+                                const ourDefs = svg.getElementsByTagName("defs")[0];
+                                while (relevantDefs.childNodes.length > 0) {
+                                    ourDefs.appendChild(relevantDefs.childNodes[0]);
+                                }
+                                const insertionTarget = svg.getElementsByClassName("svg-pan-zoom_viewport")[0];
+                                // remove previous tooltip, if possible
+                                let explainers = svg.getElementsByClassName(hoverTextElID);
+                                for (const explainer of explainers) {
+                                    explainer.parentNode!.removeChild(explainer);
+                                }
+                                relevantElement.classList.add(hoverTextElID);
+                                const x = String(-transform.e - svgRect.width + 30500);
+                                const y = -transform.f - 4000;
+                                const prevTransform = relevantElement.getAttribute("transform");
+                                const newTranslate = "translate(" + x + ", " + y + ")";
+                                const newTransform = prevTransform + " " + newTranslate;
+                                relevantElement.setAttribute("transform", newTransform);
+                                let ttBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                ttBackground.classList.add(hoverTextElID);
+                                const bbox = relevantElement.getBBox();
+                                const newTranslate2 = "translate(" + x + ", " + (y - bbox.height / 2) + ")";
+                                const newTransform2 = prevTransform + " " + newTranslate2;
+                                ttBackground.setAttribute("transform", newTransform2);
+                                ttBackground.setAttribute("width", String(bbox.width + 2000));
+                                ttBackground.setAttribute("height", String(bbox.height + 1000));
+                                ttBackground.setAttribute("fill", "yellow");
+                                insertionTarget.appendChild(ttBackground);
+                                insertionTarget.appendChild(relevantElement);
+                                thisShadowRoot.removeChild(p);
+                            });
                         this.shadowRoot!.appendChild(p);
 
                         if (typeTarget.classList.length >= 3) {
@@ -455,6 +487,13 @@ class MathjaxProofTree extends MathjaxAdapter {
                         hoverStyles!.innerHTML = "";
                         hoverStylesUnification!.innerHTML = "";
                     } else if (isLabel) {
+                        // remove previous tooltip, if possible
+                        let explainers = svg.getElementsByClassName(hoverTextElID);
+                        // do not use a for..of loop, it won't work
+                        while (explainers.length > 0) {
+                            const exp = explainers[0];
+                            exp.parentNode!.removeChild(exp);
+                        }
                         const defId = typeTarget.classList[1].replace("-label-", "-definition-");
                         this.shadowRoot!.getElementById(defId)!.style.display = "none";
                         let defElBackground = this.shadowRoot!.getElementById(defId + "-background");
