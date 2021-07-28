@@ -436,7 +436,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                         p.style.left = (ctm2.left - ctm1.left) + "px";
                         p.style.top = (ctm2.bottom - ctm1.top) + "px";
                         p.style.backgroundColor = "white";
-                        p.style.border = "5px yellow ridge";
                         p.style.padding = "5px";
                         p.innerText = data[stepIndex];
                         // @ts-ignore

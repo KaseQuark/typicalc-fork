@@ -99,7 +99,6 @@ window.MathJax = {
                 const OutputJax = startup.getOutputJax();
                 const html = mathjax.document(root, {InputJax, OutputJax});
                 html.render();
-                const hostTag = root.host.tagName.toLowerCase();
                 if (callback) {
                     callback(html);
                 }
