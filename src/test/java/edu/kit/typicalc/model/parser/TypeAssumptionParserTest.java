@@ -280,9 +280,11 @@ class TypeAssumptionParserTest {
                         ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
                         .expectedType(Token.TokenType.ARROW));
         tests.put("x )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x )", 8),
-                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                .expectedType(Token.TokenType.COMMA));
         tests.put("x -> (x) )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x -> (x) )", 15),
-                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                .expectedType(Token.TokenType.COMMA));
         for (Map.Entry<String, ParseError> entry : tests.entrySet()) {
             TypeAssumptionParser parser = new TypeAssumptionParser();
             Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("type1:" + entry.getKey());
