@@ -81,7 +81,8 @@ class MathjaxProofTree extends MathjaxAdapter {
                             margin: 0 !important;\
                         }\
                         .typicalc-type, g[semantics='bspr_prooflabel:left'] {\
-                            stroke: transparent; stroke-width: 600px; pointer-events: all;\
+                            /* cross-browser-compatibility: Chrome does not support the stroke trick, but instead bounding-box (which is not supported by Firefox..) */\
+                            stroke: transparent; stroke-width: 600px; pointer-events: all; pointer-events: bounding-box;\
                         }\
                         #typicalc-definition-abs, #typicalc-definition-abs-let, #typicalc-definition-app,\
                         #typicalc-definition-const, #typicalc-definition-var, #typicalc-definition-var-let, #typicalc-definition-let {\
@@ -276,6 +277,10 @@ class MathjaxProofTree extends MathjaxAdapter {
             (svg.children[1] as SVGGraphicsElement).transform.baseVal[0].matrix.e += offset.e + svgWidth / 2 - conclusionWidth / 2;
             console.timeEnd('stepCalculation');
 
+            const thisShadowRoot = this.shadowRoot;
+            const hoverTextElID = "typicalc-hover-explainer";
+            let defElBackground: SVGRectElement | null;
+
             if (nodeIterator.length >= 3) {
                 // should not be used on empty SVGs
                 window.svgPanZoomFun(svg, {
@@ -316,6 +321,20 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
                                 pannedX = ev.deltaX
                                 pannedY = ev.deltaY
+                                // also move the tooltip
+                                let explainer = thisShadowRoot.getElementById(hoverTextElID);
+                                if (explainer) {
+                                    const ctm1 = svg.getBoundingClientRect();
+                                    const ctm2 = defElBackground!.getBoundingClientRect();
+                                    explainer.style.left = (ctm2.left - ctm1.left) + "px";
+                                    explainer.style.top = (ctm2.bottom - ctm1.top) + "px";
+                                    // TODO(performance): this should be more efficient, but somehow flickers
+                                    /*
+                                    const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
+                                    const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
+                                    explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
+                                     */
+                                }
                             });
 
                             let initialScale = 1;
@@ -360,12 +379,6 @@ class MathjaxProofTree extends MathjaxAdapter {
 
             const viewport = svg.querySelector("#step0")!.parentNode as SVGGraphicsElement;
             const handleMouseEvent = (e: MouseEvent, mouseIn: boolean) => {
-                // remove previous tooltip, if possible
-                const hoverTextElID = "typicalc-hover-explainer";
-                let explainer = this.shadowRoot!.getElementById(hoverTextElID);
-                if (explainer) {
-                    explainer.parentNode!.removeChild(explainer);
-                }
                 let typeTarget = e.target! as SVGGraphicsElement;
                 let counter = 0;
                 while (!typeTarget.classList.contains("typicalc-type")
@@ -400,7 +413,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                         const svgRect = defEl.getBBox();
                         defEl.transform.baseVal[0].matrix.e = -transform.e - svgRect.width + offsetX + 1000;
                         defEl.transform.baseVal[0].matrix.f = -transform.f - 5500 + offsetY;
-                        let defElBackground = this.shadowRoot!.getElementById(defId + "-background") as SVGRectElement | null;
+                        defElBackground = this.shadowRoot!.getElementById(defId + "-background") as SVGRectElement | null;
                         if (!defElBackground) {
                             defElBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
                             defElBackground.id = defId + "-background";
@@ -422,9 +435,45 @@ class MathjaxProofTree extends MathjaxAdapter {
                         p.style.position = "absolute";
                         p.style.left = (ctm2.left - ctm1.left) + "px";
                         p.style.top = (ctm2.bottom - ctm1.top) + "px";
+                        p.style.backgroundColor = "white";
+                        p.style.padding = "5px";
                         p.innerText = data[stepIndex];
                         // @ts-ignore
-                        window.MathJax.typesetPromise([p]);
+                        window.MathJax.typesetPromise([p])
+                            .then(() => {
+                                const svgP = p.getElementsByTagName("svg")[0];
+                                const relevantElement = svgP.childNodes[1]! as SVGGraphicsElement;
+                                const relevantDefs = svgP.childNodes[0]!;
+                                const ourDefs = svg.getElementsByTagName("defs")[0];
+                                while (relevantDefs.childNodes.length > 0) {
+                                    ourDefs.appendChild(relevantDefs.childNodes[0]);
+                                }
+                                const insertionTarget = svg.getElementsByClassName("svg-pan-zoom_viewport")[0];
+                                // remove previous tooltip, if possible
+                                let explainers = svg.getElementsByClassName(hoverTextElID);
+                                for (const explainer of explainers) {
+                                    explainer.parentNode!.removeChild(explainer);
+                                }
+                                relevantElement.classList.add(hoverTextElID);
+                                const x = String(-transform.e - svgRect.width + 30500);
+                                const y = -transform.f - 4000;
+                                const prevTransform = relevantElement.getAttribute("transform");
+                                const newTranslate = "translate(" + x + ", " + y + ")";
+                                const newTransform = prevTransform + " " + newTranslate;
+                                relevantElement.setAttribute("transform", newTransform);
+                                let ttBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                ttBackground.classList.add(hoverTextElID);
+                                const bbox = relevantElement.getBBox();
+                                const newTranslate2 = "translate(" + x + ", " + (y - bbox.height / 2) + ")";
+                                const newTransform2 = prevTransform + " " + newTranslate2;
+                                ttBackground.setAttribute("transform", newTransform2);
+                                ttBackground.setAttribute("width", String(bbox.width + 2000));
+                                ttBackground.setAttribute("height", String(bbox.height + 1000));
+                                ttBackground.setAttribute("fill", "yellow");
+                                insertionTarget.appendChild(ttBackground);
+                                insertionTarget.appendChild(relevantElement);
+                                thisShadowRoot.removeChild(p);
+                            });
                         this.shadowRoot!.appendChild(p);
 
                         if (typeTarget.classList.length >= 3) {
@@ -437,6 +486,13 @@ class MathjaxProofTree extends MathjaxAdapter {
                         hoverStyles!.innerHTML = "";
                         hoverStylesUnification!.innerHTML = "";
                     } else if (isLabel) {
+                        // remove previous tooltip, if possible
+                        let explainers = svg.getElementsByClassName(hoverTextElID);
+                        // do not use a for..of loop, it won't work
+                        while (explainers.length > 0) {
+                            const exp = explainers[0];
+                            exp.parentNode!.removeChild(exp);
+                        }
                         const defId = typeTarget.classList[1].replace("-label-", "-definition-");
                         this.shadowRoot!.getElementById(defId)!.style.display = "none";
                         let defElBackground = this.shadowRoot!.getElementById(defId + "-background");

@@ -181,8 +181,14 @@ public class Tree implements TermVisitorTree {
                 return new TypeAbstraction(newType, value.getQuantifiedVariables());
             });
 
-            TypeAbstraction newTypeAbstraction = new TypeAbstraction(
-                    typeInfererLet.getType().orElseThrow(IllegalStateException::new), extendedTypeAssumptions);
+            Type letType = typeInfererLet.getType().orElseThrow(IllegalStateException::new);
+            // increase ID of type variables to highlight them separately
+            for (TypeVariable t : letType.getFreeTypeVariables()) {
+                TypeVariable t2 = new TypeVariable(t.getKind(), t.getIndex());
+                t2.setUniqueIndex(t.getUniqueIndex() + 1);
+                letType = letType.substitute(t, t2);
+            }
+            TypeAbstraction newTypeAbstraction = new TypeAbstraction(letType, extendedTypeAssumptions);
             extendedTypeAssumptions.remove(letTerm.getVariable());
             extendedTypeAssumptions.put(letTerm.getVariable(), newTypeAbstraction);
 

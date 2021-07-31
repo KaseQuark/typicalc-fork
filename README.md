@@ -109,3 +109,11 @@ PORT=80 java -jar target/typicalc-1.0-SNAPSHOT.jar
 ### Deploying using systemd
 
 Copy the `typicalc.service` file into your systemd configuration and enable the service.
+
+## License
+
+Check the third-party libraries in `frontend/src/` for their respective license.
+
+Typicalc itself is licensed under the GPL 3.0 or (at your option) any later version.
+
+© Robin Böhne, Moritz Dieing, Thomas Heinen, Arne Keller, Johanna Stuber
