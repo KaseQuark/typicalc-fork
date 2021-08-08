@@ -75,14 +75,13 @@ public class StepAnnotator implements StepVisitor {
 
     @Override
     public void visit(ConstStepDefault constD) {
-        visitGeneric2(List.of(Pair.of("_c", constD.getConclusion().getType())), constD.getConstraint());
+        visitGeneric2(List.of(Pair.of("", constD.getConstraint().getSecondType())), constD.getConstraint());
     }
 
     @Override
     public void visit(VarStepDefault varD) {
         visitGeneric2(List.of(
-                Pair.of("", varD.getInstantiatedTypeAbs()),
-                Pair.of("'", varD.getConclusion().getType())),
+                Pair.of("", varD.getInstantiatedTypeAbs())),
                 varD.getConstraint());
     }
 

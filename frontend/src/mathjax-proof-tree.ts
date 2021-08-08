@@ -443,6 +443,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                             .then(() => {
                                 const svgP = p.getElementsByTagName("svg")[0];
                                 const relevantElement = svgP.childNodes[1]! as SVGGraphicsElement;
+                                const relevantElementBox = relevantElement.getBBox();
                                 const relevantDefs = svgP.childNodes[0]!;
                                 const ourDefs = svg.getElementsByTagName("defs")[0];
                                 while (relevantDefs.childNodes.length > 0) {
@@ -454,24 +455,19 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 for (const explainer of explainers) {
                                     explainer.parentNode!.removeChild(explainer);
                                 }
-                                relevantElement.classList.add(hoverTextElID);
-                                const x = String(-transform.e - svgRect.width + 30500);
-                                const y = -transform.f - 4000;
-                                const prevTransform = relevantElement.getAttribute("transform");
-                                const newTranslate = "translate(" + x + ", " + y + ")";
-                                const newTransform = prevTransform + " " + newTranslate;
-                                relevantElement.setAttribute("transform", newTransform);
+                                const g = insertionTarget.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "g");
+                                g.setAttribute("transform", "matrix(1 0 0 -1 0 0)");
+                                g.transform.baseVal[0].matrix.f -= relevantElementBox.height / 2 + svgRect.height;
                                 let ttBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-                                ttBackground.classList.add(hoverTextElID);
+                                g.classList.add(hoverTextElID);
                                 const bbox = relevantElement.getBBox();
-                                const newTranslate2 = "translate(" + x + ", " + (y - bbox.height / 2) + ")";
-                                const newTransform2 = prevTransform + " " + newTranslate2;
-                                ttBackground.setAttribute("transform", newTransform2);
                                 ttBackground.setAttribute("width", String(bbox.width + 2000));
                                 ttBackground.setAttribute("height", String(bbox.height + 1000));
+                                ttBackground.setAttribute("transform", "translate(0 " + String(-bbox.height + 600) + ")");
                                 ttBackground.setAttribute("fill", "yellow");
-                                insertionTarget.appendChild(ttBackground);
-                                insertionTarget.appendChild(relevantElement);
+                                g.appendChild(ttBackground);
+                                g.appendChild(relevantElement);
+                                defEl.appendChild(g);
                                 thisShadowRoot.removeChild(p);
                             });
                         this.shadowRoot!.appendChild(p);
