@@ -92,11 +92,12 @@ public class LambdaLexer {
                         return new Result<>(t);
                     } else {
                         return new Result<>(null, ParseError.unexpectedCharacter2(
-                                term.charAt(pos + 1), pos + 1, term, errorType));
+                                term.charAt(pos + 1), pos + 1, term, errorType).expectedCharacter('>'));
                     }
                 } else {
                     return new Result<>(null,
-                            ParseError.unexpectedCharacter2(' ', term.length(), term, errorType));
+                            ParseError.unexpectedCharacter2(' ', term.length(), term, errorType)
+                                    .expectedCharacter('>'));
                 }
             // bunch of single-character tokens
             case '.':

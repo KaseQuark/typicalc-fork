@@ -281,10 +281,10 @@ class TypeAssumptionParserTest {
                         .expectedType(Token.TokenType.ARROW));
         tests.put("x )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x )", 8),
                 ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
-                .expectedType(Token.TokenType.COMMA));
+                .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)));
         tests.put("x -> (x) )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x -> (x) )", 15),
                 ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
-                .expectedType(Token.TokenType.COMMA));
+                .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)));
         for (Map.Entry<String, ParseError> entry : tests.entrySet()) {
             TypeAssumptionParser parser = new TypeAssumptionParser();
             Result<Map<VarTerm, TypeAbstraction>, ParseError> type = parser.parse("type1:" + entry.getKey());
@@ -355,9 +355,9 @@ class TypeAssumptionParserTest {
     void errorCase3() {
         ParseError e = parse("s");
         assertEquals(ParseError
-                .unexpectedToken(new Token(Token.TokenType.EOF, "", "s", 1),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
-                .expectedType(Token.TokenType.COLON),
+                        .unexpectedToken(new Token(Token.TokenType.EOF, "", "s", 1),
+                                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedType(Token.TokenType.COLON),
                 e);
     }
 
@@ -368,6 +368,25 @@ class TypeAssumptionParserTest {
                         .unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "s:()", 3),
                                 ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
                         .expectedInput(ExpectedInput.TYPE),
+                e);
+    }
+
+    @Test
+    void errorCase5() {
+        ParseError e = parse("g: boolean-");
+        assertEquals(ParseError
+                        .unexpectedCharacter2(' ', 11, "g: boolean-", ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedCharacter('>'),
+                e);
+    }
+
+    @Test
+    void errorCase6() {
+        ParseError e = parse("g: boolean:");
+        assertEquals(ParseError
+                        .unexpectedToken(new Token(Token.TokenType.COLON, ":", "g: boolean:", 10),
+                                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)),
                 e);
     }
 

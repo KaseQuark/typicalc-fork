@@ -78,7 +78,8 @@ public class TypeAssumptionParser {
             typeVariableUniqueIndex++;
             if (currentToken.getType() != Token.TokenType.COMMA) {
                 return new Result<>(null, ParseError.unexpectedToken(currentToken,
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR).expectedType(Token.TokenType.COMMA));
+                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)));
             }
         }
     }
