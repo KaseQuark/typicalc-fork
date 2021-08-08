@@ -111,7 +111,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
 
     @Override
     public void localeChange(LocaleChangeEvent event) {
-        helpButton.getElement().setAttribute("title", getTranslation("root.helpIconTooltip"));
+        helpButton.setText(getTranslation("root.helpIcon"));
         languageSelect.setTextRenderer(renderer);
     }
 }

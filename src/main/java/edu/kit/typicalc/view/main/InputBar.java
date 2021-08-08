@@ -155,6 +155,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         termInputField.setLabel(getTranslation("root.termLabel"));
         exampleButton.setText(getTranslation("root.exampleButton"));
         inferTypeButton.setText(getTranslation("root.typeInfer"));
+        infoIcon.setText(getTranslation("root.inputSyntaxShort"));
         infoIcon.getElement().setAttribute("title", getTranslation("root.inputSyntax"));
         exampleButton.getElement().setAttribute("title", getTranslation("root.exampleTooltip"));
         assumptionInputField.setPlaceholder(getTranslation("root.typeInputFieldPlaceholder"));
