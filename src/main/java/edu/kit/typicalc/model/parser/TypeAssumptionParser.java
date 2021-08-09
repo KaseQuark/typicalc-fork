@@ -10,6 +10,14 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 /**
  * Parser for type assumptions.
+ * Parses according to the following grammar:
+ *
+ * TypeEnvironment --> ɛ | TypeAbstraction, TypeEnvironment | TypeAbstraction
+ * TypeAbstraction --> Variable | Type
+ * Type --> ∀ VarType.SingleType | SingleType
+ * SingleType --> SimpleType Rest
+ * SimpleType --> Variable | (SingleType)
+ * Rest --> ɛ | -> SingleType
  */
 public class TypeAssumptionParser {
 
@@ -47,14 +55,14 @@ public class TypeAssumptionParser {
     public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(String assumptions) {
         lexer = new LambdaLexer(
                 cleanAssumptionText(assumptions), ParseError.ErrorType.TYPE_ASSUMPTION_ERROR);
-        return parseTU();
+        return parseTE();
     }
 
     /**
      * parses Type Environment
      * @return if successful, a map of the type assumptions, otherwise an error
      */
-    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parseTU() {
+    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parseTE() {
         HashMap<VarTerm, TypeAbstraction> map = new HashMap<>();
         while (true) {
             Result<Token, ParseError> nextLexerToken = lexer.nextToken();
@@ -115,6 +123,11 @@ public class TypeAssumptionParser {
         return new Result<>(new MapEntry<>(term, result.unwrap()));
     }
 
+
+    /**
+     * Parses a Type
+     * @return if successful a type abstraction, otherwise an error.
+     */
     public Result<TypeAbstraction, ParseError> parseType() {
         Result<Token, ParseError> nextLexerToken = lexer.nextToken();
         if (nextLexerToken.isError()) {
@@ -139,7 +152,8 @@ public class TypeAssumptionParser {
                 String input = currentToken.getText();
                 if (!TYPE_VARIABLE_PATTERN.matcher(input).matches()) {
                     return new Result<>(null,
-                            ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                            ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                    .expectedInput(ExpectedInput.VARTYPE));
                 }
                 int i = Integer.parseInt(input.substring(1));
                 TypeVariable v = new TypeVariable(TypeVariableKind.USER_INPUT, i);
@@ -148,7 +162,8 @@ public class TypeAssumptionParser {
                 for (TypeVariable var : quantifiedVariables) {
                     if (var.equals(v)) {
                         return new Result<>(null,
-                                ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+                                ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                        .additionalInformation(AdditionalInformation.DUPLICATETYPE));
                     }
                 }
                 quantifiedVariables.add(v);
@@ -190,6 +205,10 @@ public class TypeAssumptionParser {
         return new Result<>(new TypeAbstraction(result.unwrap(), quantifiedVariables));
     }
 
+    /**
+     * parses a single Type
+     * @return if successful a type, otherwise an error
+     */
     public Result<Type, ParseError> parseSingleType() {
 
         Result<Type, ParseError> result = parseSimpleType();
@@ -216,6 +235,10 @@ public class TypeAssumptionParser {
         }
     }
 
+    /**
+     * parses a simple type
+     * @return if successful a type, otherwise an error
+     */
     public Result<Type, ParseError> parseSimpleType() {
         if (currentToken.getType() == Token.TokenType.VARIABLE) {
             Type type = parseLiteral(currentToken.getText());
@@ -244,6 +267,10 @@ public class TypeAssumptionParser {
                 ParseError.ErrorType.TYPE_ASSUMPTION_ERROR).expectedInput(ExpectedInput.TYPE));
     }
 
+    /**
+     * parses the rest of a single type
+     * @return if successful a type or an empty optional, otherwise an error
+     */
     public Result<Optional<Type>, ParseError> parseRest() {
         switch (currentToken.getType()) {
             case ARROW:

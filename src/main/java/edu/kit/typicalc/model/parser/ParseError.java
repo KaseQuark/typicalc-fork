@@ -62,6 +62,7 @@ public final class ParseError {
     private Optional<Token> cause = Optional.empty();
     private Optional<Collection<Token.TokenType>> needed = Optional.empty();
     private Optional<ExpectedInput> expected = Optional.empty();
+    private Optional<AdditionalInformation> additional = Optional.empty();
     private String term = "";
     private char wrongChar = '\0';
     private char correctChar = '\0';
@@ -90,6 +91,17 @@ public final class ParseError {
      */
     public ParseError expectedType(Token.TokenType needed) {
         this.needed = Optional.of(new ArrayList<>(List.of(needed)));
+        return this;
+    }
+
+    /**
+     * Attach additional information to this error.
+     *
+     * @param additional the additional information
+     * @return this object
+     */
+    public ParseError additionalInformation(AdditionalInformation additional) {
+        this.additional = Optional.of(additional);
         return this;
     }
 
@@ -208,6 +220,13 @@ public final class ParseError {
      */
     public Optional<ErrorType> getErrorType() {
         return errorType;
+    }
+
+    /**
+     * @return the additional information
+     */
+    public Optional<AdditionalInformation> getAdditionalInformation() {
+        return additional;
     }
 
     protected void setErrorType(ErrorType errorType) {

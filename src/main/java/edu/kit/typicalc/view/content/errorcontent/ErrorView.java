@@ -10,6 +10,7 @@ import com.vaadin.flow.component.html.Pre;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
+import edu.kit.typicalc.model.parser.AdditionalInformation;
 import edu.kit.typicalc.model.parser.ExpectedInput;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.model.parser.Token;
@@ -128,6 +129,15 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         if (correct != '\0') {
             additionalInformation.add(new Span(new Pre(
                     getTranslation("error.expectedToken", correct))));
+        }
+
+        // state more additional information, if available
+        Optional<AdditionalInformation> moreAdditionalInformation = error.getAdditionalInformation();
+        if (moreAdditionalInformation.isPresent()) {
+            AdditionalInformation e = moreAdditionalInformation.get();
+            additionalInformation.add(new Span(new Pre(
+                    getTranslation("error.additionalInformation",
+                            getTranslation("additionalInformation." + e)))));
         }
 
         return new Div(additionalInformation);

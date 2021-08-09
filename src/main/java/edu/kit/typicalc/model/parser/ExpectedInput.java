@@ -12,5 +12,9 @@ public enum ExpectedInput {
     /**
      * Any kind of type.
      */
-    TYPE
+    TYPE,
+    /**
+     * // t[0-9]+
+     */
+    VARTYPE
 }
