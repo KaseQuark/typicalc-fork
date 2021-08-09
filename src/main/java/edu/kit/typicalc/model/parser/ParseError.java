@@ -258,11 +258,13 @@ public final class ParseError {
         ParseError that = (ParseError) o;
         return wrongChar == that.wrongChar && correctChar == that.correctChar && position == that.position
                 && causeEnum == that.causeEnum && cause.equals(that.cause) && needed.equals(that.needed)
-                && expected.equals(that.expected) && additional.equals(that.additional) && term.equals(that.term) && errorType.equals(that.errorType);
+                && expected.equals(that.expected) && additional.equals(that.additional) && term.equals(that.term)
+                && errorType.equals(that.errorType);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(causeEnum, cause, needed, expected, additional, term, wrongChar, correctChar, position, errorType);
+        return Objects.hash(causeEnum, cause, needed, expected, additional,
+                term, wrongChar, correctChar, position, errorType);
     }
 }
