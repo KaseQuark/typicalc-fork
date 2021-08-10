@@ -492,7 +492,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                         const defId = typeTarget.classList[1].replace("-label-", "-definition-");
                         this.shadowRoot!.getElementById(defId)!.style.display = "none";
                         let defElBackground = this.shadowRoot!.getElementById(defId + "-background");
-                        defElBackground!.setAttribute("y", String(10000));
+                        defElBackground!.setAttribute("y", String(-10000));
                         defElBackground!.setAttribute("fill", "transparent");
                         if (typeTarget.classList.length >= 3) {
                             hoverStylesUnification!.innerHTML = "";
