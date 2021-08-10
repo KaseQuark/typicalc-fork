@@ -98,6 +98,12 @@ public class StepAnnotator implements StepVisitor {
 
     @Override
     public void visit(LetStepDefault letD) {
+        // account for failed sub-inference
+        if (letD.getPremise() instanceof EmptyStep) { // TODO: there must be a better way to solve this!
+            annotations.add("");
+            letD.getTypeInferer().getFirstInferenceStep().accept(this);
+            return;
+        }
         visitGeneric2(List.of(
                 Pair.of("_1", letD.getTypeInferer().getFirstInferenceStep().getConclusion().getType()),
                 Pair.of("_2", letD.getPremise().getConclusion().getType())),
