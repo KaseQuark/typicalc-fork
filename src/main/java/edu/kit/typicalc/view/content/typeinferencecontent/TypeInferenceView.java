@@ -20,6 +20,7 @@ import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.step.StepAnnotator;
 import edu.kit.typicalc.view.content.ControlPanel;
 import edu.kit.typicalc.view.content.ControlPanelView;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.ExplanationCreator;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
 import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorMode;
 import edu.kit.typicalc.view.main.TypeInferenceRules;
@@ -51,6 +52,7 @@ public class TypeInferenceView extends VerticalLayout
     private static final String CONTENT_ID = "content";
     private static final String CONTENT_ID2 = "content2";
     private static final String CONTENT_ID3 = "content3";
+    private static final String CONTENT_ID4 = "content4";
     private static final String RULES_ID = "rules";
     private static final String RULES_BUTTON_ID = "rules-button";
     private static final String H_LINE_ID = "horizontalLine";
@@ -63,6 +65,7 @@ public class TypeInferenceView extends VerticalLayout
 
     private MathjaxUnification unification;
     private MathjaxProofTree tree = null;
+    private MathjaxExplanation explanation = null;
     private transient LatexCreator lc;
     private transient LatexCreator lcUser;
     private final transient TypeInfererInterface typeInferer;
@@ -114,9 +117,13 @@ public class TypeInferenceView extends VerticalLayout
         Button button = new Button(getTranslation("root.inferenceRules"));
         button.setId(RULES_BUTTON_ID);
 
+        Div horizontalContainer = new Div();
+        horizontalContainer.setId(CONTENT_ID4);
         Div container = new Div();
         container.setId(CONTENT_ID2);
         unification = new MathjaxUnification(lc.getUnification());
+        var explainer = new ExplanationCreator(typeInferer, getLocale());
+        this.explanation = new MathjaxExplanation(explainer.getExplanationTexts());
 
         if (tree == null) {
             tree = new MathjaxProofTree(lc.getTree(), stepAnnotations);
@@ -126,6 +133,7 @@ public class TypeInferenceView extends VerticalLayout
         treeDiv.setId(CONTENT_ID3);
         treeDiv.add(tree, button);
         container.add(unification, treeDiv);
+        horizontalContainer.add(container, explanation);
 
         TypeInferenceRules rules = new TypeInferenceRules();
         rules.setId(RULES_ID);
@@ -136,7 +144,7 @@ public class TypeInferenceView extends VerticalLayout
             rules.getElement().setVisible(rulesVisible);
         });
 
-        content.add(rules, container);
+        content.add(rules, horizontalContainer);
     }
 
     @Override
@@ -152,6 +160,7 @@ public class TypeInferenceView extends VerticalLayout
     private void refreshElements() {
         unification.showStep(currentStep);
         tree.showStep(treeNumbers.get(currentStep));
+        explanation.showStep(currentStep);
 
         if (currentStep == 0) {
             controlPanel.setEnabledFirstStep(false);

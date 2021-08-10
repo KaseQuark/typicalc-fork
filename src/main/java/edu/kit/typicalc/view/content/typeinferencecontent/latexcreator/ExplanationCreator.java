@@ -38,14 +38,14 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
 
 public class ExplanationCreator implements StepVisitor {
     private static final String KEY_PREFIX = "explanationTree.";
-    
+
     private final I18NProvider provider = new TypicalcI18NProvider();
     private final TermArgumentVisitor termArgumentVisitor = new TermArgumentVisitor();
     private final TypeArgumentVisitor typeArgumentVisitor = new TypeArgumentVisitor();
     private final Locale locale;
-    
+
     private final List<String> explanationTexts = new ArrayList<>();
-    
+
     private static final LatexCreatorMode MODE = LatexCreatorMode.MATHJAX;
     private boolean errorOccurred; // true if one unification was not successful
     private int letCounter = 0; // count number of lets for unification indices
@@ -54,34 +54,31 @@ public class ExplanationCreator implements StepVisitor {
     public ExplanationCreator(TypeInfererInterface typeInferer, Locale locale) {
         this.locale = locale;
         errorOccurred = false;
-        
+
         explanationTexts.add(createInitialText(typeInferer));
         typeInferer.getFirstInferenceStep().accept(this);
         if (!errorOccurred) {
-            explanationTexts.addAll(new ExplanationCreatorUnification(typeInferer, locale, provider, MODE, 
+            explanationTexts.addAll(new ExplanationCreatorUnification(typeInferer, locale, provider, MODE,
                     letCounter, false, Optional.empty()).getUnificationsTexts().getLeft());
         }
     }
-    
+
     public List<String> getExplanationTexts() {
         return explanationTexts;
     }
-        
+
     private String getDefaultTextLatex(String textKey) {
-        return new StringBuilder(TEXT + CURLY_LEFT).
-                append(provider.getTranslation(textKey, locale)).
-                append(CURLY_RIGHT)
-                .toString();
+        return provider.getTranslation(textKey, locale);
     }
-    
+
     private String toLatex(String latex) {
         return SPACE + DOLLAR_SIGN + latex + DOLLAR_SIGN + SPACE;
     }
-    
+
     private String createInitialText(TypeInfererInterface typeInferer) {
         String typeLatex = new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), MODE).
                 getLatex();
-        
+
         return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "initial1")).
                 append(toLatex(new LatexCreatorTerm(
                         typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(), MODE).getLatex())).
@@ -92,23 +89,23 @@ public class ExplanationCreator implements StepVisitor {
                 append(getDefaultTextLatex(KEY_PREFIX + "initial4")).
                 toString();
     }
-    
+
     @Override
     public void visit(AbsStepDefault absD) {
         explanationTexts.add(createLatexAbsStep(absD));
         absD.getPremise().accept(this);
     }
-    
+
     @Override
     public void visit(AbsStepWithLet absL) {
         explanationTexts.add(createLatexAbsStep(absL));
         absL.getPremise().accept(this);
     }
-    
+
     private String createLatexAbsStep(AbsStep abs) {
         Queue<LambdaTerm> termArguments = termArgumentVisitor.getArguments(abs.getConclusion().getLambdaTerm());
         Queue<Type> typeArguments = typeArgumentVisitor.getArguments(abs.getConstraint().getSecondType());
-        
+
         return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "absStep1")).
                 append(toLatex(new LatexCreatorTerm(abs.getConclusion().getLambdaTerm(), MODE).getLatex())).
                 append(getDefaultTextLatex(KEY_PREFIX + "absStep2")).
@@ -135,11 +132,11 @@ public class ExplanationCreator implements StepVisitor {
         appD.getPremise1().accept(this);
         appD.getPremise2().accept(this);
     }
-    
+
     private String createLatexAppStep(AppStep app) {
         Queue<LambdaTerm> termArguments = termArgumentVisitor.getArguments(app.getConclusion().getLambdaTerm());
         Queue<Type> typeArguments = typeArgumentVisitor.getArguments(app.getConstraint().getSecondType());
-        
+
         return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "appStep1")).
                 append(toLatex(new LatexCreatorTerm(app.getConclusion().getLambdaTerm(), MODE).getLatex())).
                 append(getDefaultTextLatex(KEY_PREFIX + "appStep2")).
@@ -159,15 +156,15 @@ public class ExplanationCreator implements StepVisitor {
                 append(getDefaultTextLatex(KEY_PREFIX + "appStep9")).
                 toString();
     }
-    
+
 
     @Override
     public void visit(ConstStepDefault constD) {
         explanationTexts.add(createLatexConstStep(constD));
     }
-    
+
     private String createLatexConstStep(ConstStep constS) {
-        
+
         return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "constStep1")).
                 append(toLatex(new LatexCreatorTerm(constS.getConclusion().getLambdaTerm(), MODE).getLatex())).
                 append(getDefaultTextLatex(KEY_PREFIX + "constStep2")).
@@ -194,10 +191,10 @@ public class ExplanationCreator implements StepVisitor {
         explanationTexts.add(createLatexVarStep(varL));
         // TODO: maybe create slightly different text
     }
-    
+
     private String createLatexVarStep(VarStep varS) {
         String termLatex = new LatexCreatorTerm(varS.getConclusion().getLambdaTerm(), MODE).getLatex();
-        
+
         return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "varStep1")).
                 append(toLatex(termLatex)).
                 append(getDefaultTextLatex(KEY_PREFIX + "varStep2")).
@@ -222,23 +219,23 @@ public class ExplanationCreator implements StepVisitor {
         LambdaTerm variableDefinition = termArguments.poll();
         letCounter++;
         explanationTexts.add(createLatexLetStep(letD, variable, innerTerm, variableDefinition));
-        
+
         letD.getTypeInferer().getFirstInferenceStep().accept(this);
-        ExplanationCreatorUnification unification = 
-                new ExplanationCreatorUnification(letD.getTypeInferer(), locale, provider, MODE, letCounter, true, 
+        ExplanationCreatorUnification unification =
+                new ExplanationCreatorUnification(letD.getTypeInferer(), locale, provider, MODE, letCounter, true,
                         Optional.of(variable));
         explanationTexts.addAll(unification.getUnificationsTexts().getLeft());
         errorOccurred = unification.getUnificationsTexts().getRight();
         letCounter--;
-        
+
         if (!errorOccurred) {
             letD.getPremise().accept(this);
         }
     }
-    
+
     private String createLatexLetStep(LetStep letS, LambdaTerm variable, LambdaTerm innerTerm,
             LambdaTerm variableDefinition) {
-        
+
         return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "letStep1")).
                 append(toLatex(new LatexCreatorTerm(letS.getConclusion().getLambdaTerm(), MODE).getLatex())).
                 append(getDefaultTextLatex(KEY_PREFIX + "letStep2")).
@@ -258,14 +255,14 @@ public class ExplanationCreator implements StepVisitor {
                 append(getDefaultTextLatex(KEY_PREFIX + "letStep9")).
                 toString();
     }
-    
+
 
     @Override
-    public void visit(EmptyStep empty) {        
+    public void visit(EmptyStep empty) {
     }
 
     @Override
-    public void visit(OnlyConclusionStep onlyConc) {        
+    public void visit(OnlyConclusionStep onlyConc) {
     }
 
 }
