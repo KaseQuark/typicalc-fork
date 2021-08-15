@@ -1,7 +1,6 @@
 package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.AssumptionGeneratorUtil.typeAssumptionsToLatex;
-import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.AMPERSAND;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.BRACKET_LEFT;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.BRACKET_RIGHT;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.COMMA;
@@ -17,12 +16,13 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.CONSTRAINT_SET;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.GAMMA;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.SIGMA;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.DOLLAR_SIGN;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.SPACE;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
-import java.util.Queue;
 
 import org.apache.commons.lang3.tuple.Pair;
 
@@ -39,7 +39,9 @@ import edu.kit.typicalc.model.type.TypeArgumentVisitor;
 import edu.kit.typicalc.util.Result;
 
 public class ExplanationCreatorUnification {
-
+    private static final String KEY_PREFIX = "expUnification.";
+    private static final String LET_KEY_PREFIX = "expLetUnification.";    
+    
     private final TypeArgumentVisitor typeDeterminer = new TypeArgumentVisitor();
     private final TypeInfererInterface typeInferer;
     private final Locale locale;
@@ -68,8 +70,8 @@ public class ExplanationCreatorUnification {
    }
 
    private void buildTexts(boolean isLetUnification) {
-       String initialStepKey = isLetUnification ? "key1" : "key2";
-       unificationTexts.add(getDefaultTextLatex(initialStepKey));
+       String initialPrefix = isLetUnification ? LET_KEY_PREFIX : KEY_PREFIX;
+       unificationTexts.add(getDefaultTextLatex(initialPrefix + "initial1"));
        createUnficationTexts();
 
        if (!errorOccurred) {
@@ -86,30 +88,31 @@ public class ExplanationCreatorUnification {
                typeAssumptionsToLatex(typeInferer.getFirstInferenceStep().getConclusion().getTypeAssumptions(), mode);
        String letVariableLatex = new LatexCreatorTerm(this.letVariable.get(), mode).getLatex();
 
-       StringBuilder latex = new StringBuilder(getDefaultTextLatex("key")).
+       StringBuilder latex = new StringBuilder(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss1")).
                append(toLatex(GAMMA)).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss2")).
                append(toLatex(letCounterToLatex(SIGMA))).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss3")).
                append(toLatex(GAMMA)).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss4")).
                append(toLatex(letVariableLatex)).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss5")).
                append(toLatex(createTypeAbstraction(typeAssumptions))).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss6")).
                append(toLatex(letVariableLatex)).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss7")).
                append(toLatex(GAMMA)).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss8")).
                append(new LatexCreatorType(typeInferer.getType().get(), mode).getLatex()).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss9")).
                append(toLatex(letCounterToLatex(SIGMA) + PAREN_LEFT + typeAssumptions + "" + PAREN_RIGHT)).
-               append(getDefaultTextLatex("key"));
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss10"));
        unificationTexts.add(latex.toString());
 
        // add "second part" of let step here, so that the letCounterToLatex method can still be used
-       latex = new StringBuilder(getDefaultTextLatex("key")).
+       latex = new StringBuilder(getDefaultTextLatex(LET_KEY_PREFIX + "letStep1")).
                append(toLatex(letCounterToLatex(CONSTRAINT_SET))).
-               append(getDefaultTextLatex("key"));
+               append(getDefaultTextLatex(LET_KEY_PREFIX + "letStep2"));
        unificationTexts.add(latex.toString());
    }
 
@@ -123,33 +126,30 @@ public class ExplanationCreatorUnification {
    }
 
    private void createFinalType(boolean isLetUnification) {
-       String keyPrefix = isLetUnification ? "let" : "";
+       String keyPrefix = isLetUnification ? LET_KEY_PREFIX : KEY_PREFIX;
 
-       StringBuilder latex = new StringBuilder(getDefaultTextLatex(keyPrefix + "key")).
+       StringBuilder latex = new StringBuilder(getDefaultTextLatex(keyPrefix + "finalType1")).
                append(toLatex(letCounterToLatex(SIGMA))).
-               append(getDefaultTextLatex(keyPrefix + "key")).
+               append(getDefaultTextLatex(keyPrefix + "finalType2")).
                append(toLatex(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode)
                        .getLatex())).
-               append(getDefaultTextLatex(keyPrefix + "key")).
+               append(getDefaultTextLatex(keyPrefix + "finalType3")).
                append(toLatex(new LatexCreatorType(typeInferer.getType().get(), mode).getLatex())).
-               append(getDefaultTextLatex(keyPrefix + "key"));
+               append(getDefaultTextLatex(keyPrefix + "finalType4"));
        unificationTexts.add(latex.toString());
    }
 
    private void createMGU() {
-       StringBuilder latex =  new StringBuilder(getDefaultTextLatex("key")).
+       StringBuilder latex =  new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "mgu1")).
                append(toLatex(letCounterToLatex(SIGMA))).
-               append(getDefaultTextLatex("key")).
+               append(getDefaultTextLatex(KEY_PREFIX + "mgu2")).
                append(toLatex(letCounterToLatex(CONSTRAINT_SET))).
-               append(getDefaultTextLatex("key"));
+               append(getDefaultTextLatex(KEY_PREFIX + "mgu3"));
        unificationTexts.add(latex.toString());
    }
 
    private String getDefaultTextLatex(String textKey) {
-       return new StringBuilder(LatexCreatorConstants.TEXT + LatexCreatorConstants.CURLY_LEFT).
-               append(provider.getTranslation(textKey, locale)).
-               append(LatexCreatorConstants.CURLY_RIGHT)
-               .toString();
+       return provider.getTranslation(textKey, locale);
    }
 
    // WARNING: call toLatex() before to get proper latex code
@@ -166,7 +166,7 @@ public class ExplanationCreatorUnification {
    }
 
    private String toLatex(String latex) {
-       return LatexCreatorConstants.DOLLAR_SIGN + latex + LatexCreatorConstants.DOLLAR_SIGN;
+       return SPACE + DOLLAR_SIGN + latex + DOLLAR_SIGN + SPACE;
    }
 
    private String getSubstitutionLatex(Substitution sub) {
@@ -197,75 +197,75 @@ public class ExplanationCreatorUnification {
            }
 
            List<Constraint> constraints = step.getConstraints();
-           Queue<Type> leftTypeArgs = typeDeterminer.getArguments(currentConstraint.getFirstType());
-           Queue<Type> rightTypeArgs = typeDeterminer.getArguments(currentConstraint.getSecondType());
-           if (leftTypeArgs.isEmpty()) {
+           if (currentConstraint.getFirstType().equals(currentConstraint.getSecondType())) {
+               // trivial constraint
+               createTrivialConstraintText(currentConstraint);
+           } else if (typeDeterminer.getArguments(currentConstraint.getFirstType()).isEmpty()) {
                // left side is a variable
                createVariableText(currentConstraint.getFirstType(), currentConstraint.getSecondType(),
                        currentConstraint, subs.unwrap().get(0));
-           } else if (rightTypeArgs.isEmpty()) {
+           } else if (typeDeterminer.getArguments(currentConstraint.getSecondType()).isEmpty()) {
                // right side is a variable
                createVariableText(currentConstraint.getSecondType(), currentConstraint.getFirstType(),
                        currentConstraint, subs.unwrap().get(0));
            } else {
                // both sides are functions
-               createFunctionText(leftTypeArgs, rightTypeArgs, currentConstraint,
+               createFunctionText(currentConstraint,
                        constraints.get(constraints.size() - 1), constraints.get(constraints.size() - 2));
            }
 
            currentConstraint = constraints.get(constraints.size() - 1);
        }
    }
-
-   private void createFunctionText(Queue<Type> leftTypeArgs, Queue<Type> rightTypeArgs, Constraint currentConstraint,
-           Constraint newConstraint1, Constraint newConstraint2) {
+   
+   private void createTrivialConstraintText(Constraint currentConstraint) {
        StringBuilder latex = new StringBuilder();
-       latex.append(getDefaultTextLatex("key")).
+       latex.append(getDefaultTextLatex(KEY_PREFIX + "trivial1")).
        append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "trivial2"));
+       unificationTexts.add(latex.toString());
+   }
+
+   private void createFunctionText(Constraint currentConstraint, Constraint newConstraint1, Constraint newConstraint2) {
+       StringBuilder latex = new StringBuilder();
+       latex.append(getDefaultTextLatex(KEY_PREFIX + "function1")).
+       append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
+       append(getDefaultTextLatex(KEY_PREFIX + "function2")).
        append(toLatex(new LatexCreatorType(currentConstraint.getFirstType(), mode).getLatex())).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "function3")).
        append(toLatex(new LatexCreatorType(currentConstraint.getSecondType(), mode).getLatex())).
-       append(getDefaultTextLatex("key")).
-       append(toLatex(new LatexCreatorType(leftTypeArgs.poll(), mode).getLatex())).
-       append(getDefaultTextLatex("key")).
-       append(toLatex(new LatexCreatorType(rightTypeArgs.poll(), mode).getLatex())).
-       append(getDefaultTextLatex("key")).
-       append(toLatex(new LatexCreatorType(leftTypeArgs.poll(), mode).getLatex())).
-       append(getDefaultTextLatex("key")).
-       append(toLatex(new LatexCreatorType(rightTypeArgs.poll(), mode).getLatex())).
-       append(getDefaultTextLatex("key")).
-       append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "function4")).
        append(toLatex(LatexCreatorConstraints.createSingleConstraint(newConstraint1, mode))).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "function5")).
        append(toLatex(LatexCreatorConstraints.createSingleConstraint(newConstraint2, mode))).
-       append(getDefaultTextLatex("key")).toString();
+       append(getDefaultTextLatex(KEY_PREFIX + "function6")).
+       append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
+       append(getDefaultTextLatex(KEY_PREFIX + "function7"));
        unificationTexts.add(latex.toString());
    }
 
    private void createVariableText(Type variable, Type anyType, Constraint currentConstraint,
            Substitution newSubstitution) {
        StringBuilder latex = new StringBuilder();
-       latex.append(getDefaultTextLatex("key")).
+       latex.append(getDefaultTextLatex(KEY_PREFIX + "variable1")).
        append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "variable2")).
        append(toLatex(new LatexCreatorType(variable, mode).getLatex())).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "variable3")).
        append(toLatex(new LatexCreatorType(variable, mode).getLatex())).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "variable4")).
        append(toLatex(new LatexCreatorType(anyType, mode).getLatex())).
-       append(getDefaultTextLatex("key")).
+       append(getDefaultTextLatex(KEY_PREFIX + "variable5")).
        append(toLatex(getSubstitutionLatex(newSubstitution))).
-       append(getDefaultTextLatex("key"));
+       append(getDefaultTextLatex(KEY_PREFIX + "variable6"));
        unificationTexts.add(latex.toString());
    }
 
    private void createErrorText(UnificationError errorType) {
        if (errorType == UnificationError.DIFFERENT_TYPES) {
-           unificationTexts.add(getDefaultTextLatex("key"));
+           unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "infiniteType"));
        } else if (errorType == UnificationError.INFINITE_TYPE) {
-           unificationTexts.add(getDefaultTextLatex("key"));
+           unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "differentTypes"));
        }
    }
 

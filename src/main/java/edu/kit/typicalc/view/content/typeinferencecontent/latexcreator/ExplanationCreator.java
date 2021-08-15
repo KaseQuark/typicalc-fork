@@ -30,9 +30,6 @@ import edu.kit.typicalc.model.type.TypeArgumentVisitor;
 import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.view.TypicalcI18NProvider;
 
-import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.TEXT;
-import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.CURLY_LEFT;
-import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.CURLY_RIGHT;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.DOLLAR_SIGN;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.SPACE;
 
