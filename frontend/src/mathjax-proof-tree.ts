@@ -420,11 +420,13 @@ class MathjaxProofTree extends MathjaxAdapter {
                             defElBackground.setAttribute("x", "0");
                             defElBackground.setAttribute("y", "0");
                             defElBackground.setAttribute("width", String(svgRect.width + 2000));
-                            defElBackground.setAttribute("height", String(svgRect.height + 1000));
                             defEl.parentElement!.insertBefore(defElBackground, defEl);
                         }
                         defElBackground.setAttribute("x", String(-transform.e - svgRect.width + offsetX));
-                        defElBackground.setAttribute("y", String(-transform.f - 7000 + offsetY));
+                        const defElBackgroundY = -transform.f - 7000 + offsetY;
+                        defElBackground.setAttribute("y", String(defElBackgroundY));
+                        const defElBackgroundHeight = svgRect.height + 1000;
+                        defElBackground.setAttribute("height", String(defElBackgroundHeight));
                         defElBackground.setAttribute("fill", "yellow");
                         // calculate screen coordinates
                         const ctm1 = svg.getBoundingClientRect();
@@ -441,6 +443,8 @@ class MathjaxProofTree extends MathjaxAdapter {
                         // @ts-ignore
                         window.MathJax.typesetPromise([p])
                             .then(() => {
+                                const svgRect2 = defElBackground!.getBBox();
+
                                 const svgP = p.getElementsByTagName("svg")[0];
                                 const relevantElement = svgP.childNodes[1]! as SVGGraphicsElement;
                                 const relevantElementBox = relevantElement.getBBox();
@@ -457,17 +461,15 @@ class MathjaxProofTree extends MathjaxAdapter {
                                 }
                                 const g = insertionTarget.ownerDocument.createElementNS("http://www.w3.org/2000/svg", "g");
                                 g.setAttribute("transform", "matrix(1 0 0 -1 0 0)");
-                                g.transform.baseVal[0].matrix.f -= relevantElementBox.height / 2 + svgRect.height;
-                                let ttBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+                                g.transform.baseVal[0].matrix.f -= svgRect2.height;
                                 g.classList.add(hoverTextElID);
-                                const bbox = relevantElement.getBBox();
-                                ttBackground.setAttribute("width", String(bbox.width + 2000));
-                                ttBackground.setAttribute("height", String(bbox.height + 1000));
-                                ttBackground.setAttribute("transform", "translate(0 " + String(-bbox.height + 600) + ")");
-                                ttBackground.setAttribute("fill", "yellow");
-                                g.appendChild(ttBackground);
                                 g.appendChild(relevantElement);
                                 defEl.appendChild(g);
+                                // increase size of tooltip background
+                                const padY = 1000;
+                                defElBackground!.setAttribute("y", String(defElBackgroundY - relevantElementBox.height - padY));
+                                defElBackground!.setAttribute("height",
+                                    String(defElBackgroundHeight + relevantElementBox.height + padY));
                                 thisShadowRoot.removeChild(p);
                             });
                         this.shadowRoot!.appendChild(p);
