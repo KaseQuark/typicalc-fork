@@ -24,7 +24,8 @@ public class Unification {
         steps = new ArrayList<>();
         List<Substitution> substitutions = new ArrayList<>();
 
-        steps.add(new UnificationStep(new Result<>(Collections.emptyList()), new ArrayList<>(constraints)));
+        steps.add(new UnificationStep(
+                new Result<>(Collections.emptyList()), new ArrayList<>(constraints), Optional.empty()));
         while (!constraints.isEmpty()) {
             Constraint c = constraints.removeFirst();
             // calculate the result of this constraint
@@ -32,7 +33,7 @@ public class Unification {
             Type b = c.getSecondType();
             Result<UnificationActions, UnificationError> actions = a.constrainEqualTo(b);
             if (actions.isError()) {
-                steps.add(new UnificationStep(new Result<>(actions), new ArrayList<>(constraints)));
+                steps.add(new UnificationStep(new Result<>(actions), new ArrayList<>(constraints), Optional.of(c)));
                 substitutionsResult = new Result<>(actions);
                 return;
             }
@@ -56,7 +57,8 @@ public class Unification {
             for (Constraint constraint : thisStep.getConstraints()) {
                 constraints.addFirst(constraint);
             }
-            steps.add(new UnificationStep(new Result<>(new ArrayList<>(substitutions)), new ArrayList<>(constraints)));
+            steps.add(new UnificationStep(
+                    new Result<>(new ArrayList<>(substitutions)), new ArrayList<>(constraints), Optional.of(c)));
         }
 
         substitutionsResult = new Result<>(substitutions);

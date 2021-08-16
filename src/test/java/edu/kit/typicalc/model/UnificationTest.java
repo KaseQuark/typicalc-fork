@@ -7,10 +7,7 @@ import edu.kit.typicalc.util.Result;
 import nl.jqno.equalsverifier.EqualsVerifier;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Deque;
-import java.util.List;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -32,11 +29,11 @@ class UnificationTest {
         List<UnificationStep> steps = u.getUnificationSteps();
         assertEquals(2, steps.size());
         assertEquals(new UnificationStep(new Result<>(new ArrayList<>()),
-                new ArrayList<>(initialConstraints)), steps.get(0));
+                new ArrayList<>(initialConstraints), Optional.empty()), steps.get(0));
         List<Substitution> substitutions = new ArrayList<>(List.of(new Substitution(a, new FunctionType(b, c))));
         assertEquals(new UnificationStep(new Result<>(
                 substitutions
-        ), new ArrayList<>()), steps.get(1));
+        ), new ArrayList<>(), Optional.of(constraints.getFirst())), steps.get(1));
         assertEquals(substitutions, u.getSubstitutions().unwrap());
     }
 
@@ -54,39 +51,39 @@ class UnificationTest {
         List<UnificationStep> steps = u.getUnificationSteps();
         assertEquals(6, steps.size());
         assertEquals(new UnificationStep(new Result<>(new ArrayList<>()),
-                new ArrayList<>(initialConstraints)), steps.get(0));
+                new ArrayList<>(initialConstraints), Optional.empty()), steps.get(0));
 
-        initialConstraints.removeFirst();
+        var constraint = initialConstraints.removeFirst();
         List<Substitution> substitutions = new ArrayList<>(List.of(new Substitution(a, new FunctionType(b, c))));
         assertEquals(new UnificationStep(new Result<>(
                 substitutions
-        ), new ArrayList<>(initialConstraints)), steps.get(1));
+        ), new ArrayList<>(initialConstraints), Optional.of(constraint)), steps.get(1));
 
-        initialConstraints.removeFirst();
+        constraint = initialConstraints.removeFirst();
         substitutions.add(new Substitution(c, new FunctionType(a4, a5)));
         assertEquals(new UnificationStep(new Result<>(
                 substitutions
-        ), new ArrayList<>(initialConstraints)), steps.get(2));
+        ), new ArrayList<>(initialConstraints), Optional.of(constraint)), steps.get(2));
 
-        initialConstraints.removeFirst();
+        constraint = initialConstraints.removeFirst();
         initialConstraints.removeFirst();
         initialConstraints.addFirst(new Constraint(new FunctionType(a7, a5), a4));
         substitutions.add(new Substitution(a6, new FunctionType(a7, a5)));
         assertEquals(new UnificationStep(new Result<>(
                 substitutions
-        ), new ArrayList<>(initialConstraints)), steps.get(3));
+        ), new ArrayList<>(initialConstraints), Optional.of(constraint)), steps.get(3));
 
-        initialConstraints.removeFirst();
+        constraint = initialConstraints.removeFirst();
         substitutions.add(new Substitution(a4, new FunctionType(a7, a5)));
         assertEquals(new UnificationStep(new Result<>(
                 substitutions
-        ), new ArrayList<>(initialConstraints)), steps.get(4));
+        ), new ArrayList<>(initialConstraints), Optional.of(constraint)), steps.get(4));
 
-        initialConstraints.removeFirst();
+        constraint = initialConstraints.removeFirst();
         substitutions.add(new Substitution(a7, b));
         assertEquals(new UnificationStep(new Result<>(
                 substitutions
-        ), new ArrayList<>(initialConstraints)), steps.get(5));
+        ), new ArrayList<>(initialConstraints), Optional.of(constraint)), steps.get(5));
 
         assertEquals(substitutions, u.getSubstitutions().unwrap());
     }
@@ -100,10 +97,10 @@ class UnificationTest {
         List<UnificationStep> steps = u.getUnificationSteps();
         assertEquals(2, steps.size());
         assertEquals(new UnificationStep(new Result<>(new ArrayList<>()),
-                new ArrayList<>(initialConstraints)), steps.get(0));
+                new ArrayList<>(initialConstraints), Optional.empty()), steps.get(0));
         assertEquals(new UnificationStep(new Result<>(null,
                 UnificationError.INFINITE_TYPE
-        ), new ArrayList<>()), steps.get(1));
+        ), new ArrayList<>(), Optional.of(initialConstraints.getFirst())), steps.get(1));
     }
 
     @Test

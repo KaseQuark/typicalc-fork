@@ -52,9 +52,9 @@ public class TypicalcI18NProvider implements I18NProvider {
                 return "?[" + key + "]?";
             }
         }
-        // replace placeholders {0} ...
+        // replace placeholders %0% ...
         for (int i = 0; i < params.length; i++) {
-            result = result.replace(String.format("{%d}", i), params[i].toString());
+            result = result.replace(String.format("%%%d%%", i), params[i].toString());
         }
         return result;
     }

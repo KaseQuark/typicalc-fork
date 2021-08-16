@@ -5,6 +5,7 @@ import edu.kit.typicalc.util.Result;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Models one step of the unification algorithm with a list of constraints and a list of substitutions.
@@ -15,6 +16,7 @@ import java.util.Objects;
 public class UnificationStep {
     private final Result<List<Substitution>, UnificationError> substitutions;
     private final List<Constraint> constraints;
+    private final Optional<Constraint> processedConstraint;
 
     /**
      * Initializes a new {@link UnificationStep} with the given lists of constraints and substitutions.
@@ -23,11 +25,14 @@ public class UnificationStep {
      *
      * @param substitutions list of substitutions, or an error
      * @param constraints   the list of all constraints of the unification (in the state resulting from this step)
+     * @param processedConstraint the constraint processed in this step, if any
      */
     protected UnificationStep(Result<List<Substitution>, UnificationError> substitutions,
-                              List<Constraint> constraints) {
+                              List<Constraint> constraints,
+                              Optional<Constraint> processedConstraint) {
         this.substitutions = substitutions;
         this.constraints = constraints;
+        this.processedConstraint = processedConstraint;
     }
 
     /**
@@ -50,11 +55,19 @@ public class UnificationStep {
         return constraints;
     }
 
+    /**
+     * @return the constraint processed in this step
+     */
+    public Optional<Constraint> getProcessedConstraint() {
+        return processedConstraint;
+    }
+
     @Override
     public String toString() {
         return "UnificationStep{"
                 + "substitutions=" + substitutions
                 + ", constraints=" + Arrays.toString(constraints.toArray())
+                + ", processed=" + processedConstraint
                 + '}';
     }
 
@@ -67,7 +80,8 @@ public class UnificationStep {
             return false;
         }
         UnificationStep that = (UnificationStep) o;
-        return substitutions.equals(that.substitutions) && constraints.equals(that.constraints);
+        return substitutions.equals(that.substitutions) && constraints.equals(that.constraints)
+                && processedConstraint.equals(that.processedConstraint);
     }
 
     @Override
