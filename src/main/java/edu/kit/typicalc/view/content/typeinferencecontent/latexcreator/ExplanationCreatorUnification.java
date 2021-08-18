@@ -71,7 +71,7 @@ public class ExplanationCreatorUnification {
 
    private void buildTexts(boolean isLetUnification) {
        String initialPrefix = isLetUnification ? LET_KEY_PREFIX : KEY_PREFIX;
-       unificationTexts.add(getDefaultTextLatex(initialPrefix + "initial1"));
+       unificationTexts.add(getDefaultTextLatex(initialPrefix + "initial"));
        createUnficationTexts();
 
        if (!errorOccurred) {
@@ -84,37 +84,22 @@ public class ExplanationCreatorUnification {
    }
 
    private void createLetUnficiationFinish() {
-       String typeAssumptions =
+       String typeAssumptions = 
                typeAssumptionsToLatex(typeInferer.getFirstInferenceStep().getConclusion().getTypeAssumptions(), mode);
-       String letVariableLatex = new LatexCreatorTerm(this.letVariable.get(), mode).getLatex();
-
-       // TODO: replace with parametrized translation text (see createVariableText)
-       StringBuilder latex = new StringBuilder(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss1")).
-               append(toLatex(GAMMA)).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss2")).
-               append(toLatex(letCounterToLatex(SIGMA))).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss3")).
-               append(toLatex(GAMMA)).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss4")).
-               append(toLatex(letVariableLatex)).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss5")).
-               append(toLatex(createTypeAbstraction(typeAssumptions))).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss6")).
-               append(toLatex(letVariableLatex)).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss7")).
-               append(toLatex(GAMMA)).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss8")).
-               append(new LatexCreatorType(typeInferer.getType().get(), mode).getLatex()).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss9")).
-               append(toLatex(letCounterToLatex(SIGMA) + PAREN_LEFT + typeAssumptions + "" + PAREN_RIGHT)).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "typeAss10"));
-       unificationTexts.add(latex.toString());
+       String letVariableLatex = toLatex(new LatexCreatorTerm(this.letVariable.get(), mode).getLatex());
+       String gamma = toLatex(GAMMA);
+       String sigma = toLatex(letCounterToLatex(SIGMA));
+       String finalType = toLatex(new LatexCreatorType(typeInferer.getType().get(), mode).getLatex());
+       String newAssumptions = toLatex(letCounterToLatex(SIGMA) + PAREN_LEFT + typeAssumptions + "" + PAREN_RIGHT);
+       String typeAbstraction = toLatex(createTypeAbstraction(typeAssumptions));
+       String finalText1 = provider.getTranslation(LET_KEY_PREFIX + "typeAss", locale, gamma, sigma, letVariableLatex,
+               typeAbstraction, finalType, newAssumptions);
+       unificationTexts.add(finalText1);
 
        // add "second part" of let step here, so that the letCounterToLatex method can still be used
-       latex = new StringBuilder(getDefaultTextLatex(LET_KEY_PREFIX + "letStep1")).
-               append(toLatex(letCounterToLatex(CONSTRAINT_SET))).
-               append(getDefaultTextLatex(LET_KEY_PREFIX + "letStep2"));
-       unificationTexts.add(latex.toString());
+       String constraintSet = toLatex(letCounterToLatex(CONSTRAINT_SET));
+       String finalText2 = provider.getTranslation(LET_KEY_PREFIX + "letStep", locale, constraintSet);
+       unificationTexts.add(finalText2);
    }
 
    private String createTypeAbstraction(String typeAssumptions) {
@@ -128,26 +113,19 @@ public class ExplanationCreatorUnification {
 
    private void createFinalType(boolean isLetUnification) {
        String keyPrefix = isLetUnification ? LET_KEY_PREFIX : KEY_PREFIX;
-
-       // TODO: replace with parametrized translation text (see createVariableText)
-       StringBuilder latex = new StringBuilder(getDefaultTextLatex(keyPrefix + "finalType1")).
-               append(toLatex(letCounterToLatex(SIGMA))).
-               append(getDefaultTextLatex(keyPrefix + "finalType2")).
-               append(toLatex(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode)
-                       .getLatex())).
-               append(getDefaultTextLatex(keyPrefix + "finalType3")).
-               append(toLatex(new LatexCreatorType(typeInferer.getType().get(), mode).getLatex())).
-               append(getDefaultTextLatex(keyPrefix + "finalType4"));
-       unificationTexts.add(latex.toString());
+       String sigma = toLatex(letCounterToLatex(SIGMA));
+       String initialType = toLatex(
+               new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode).getLatex());
+       String finalType = toLatex(new LatexCreatorType(typeInferer.getType().get(), mode).getLatex());
+       String finalText = provider.getTranslation(keyPrefix + "finalType", locale, sigma, initialType, finalType);
+       unificationTexts.add(finalText);
    }
 
    private void createMGU() {
-       StringBuilder latex =  new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "mgu1")).
-               append(toLatex(letCounterToLatex(SIGMA))).
-               append(getDefaultTextLatex(KEY_PREFIX + "mgu2")).
-               append(toLatex(letCounterToLatex(CONSTRAINT_SET))).
-               append(getDefaultTextLatex(KEY_PREFIX + "mgu3"));
-       unificationTexts.add(latex.toString());
+       String sigma = toLatex(letCounterToLatex(SIGMA));
+       String constraintSet = toLatex(letCounterToLatex(CONSTRAINT_SET));
+       String finalText = provider.getTranslation(KEY_PREFIX + "mgu", locale, sigma, constraintSet);
+       unificationTexts.add(finalText);
    }
 
    private String getDefaultTextLatex(String textKey) {
@@ -188,7 +166,8 @@ public class ExplanationCreatorUnification {
        // skip first step since the substitutions list is still empty (unification introduction is shown)
        for (int stepNum = 1; stepNum < unificationSteps.size(); stepNum++) {
            UnificationStep step = unificationSteps.get(stepNum);
-           Constraint currentConstraint = step.getProcessedConstraint().get(); // works because only step 0 has no constraint
+           // works because only step 0 has no constraint
+           Constraint currentConstraint = step.getProcessedConstraint().get();
            Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
 
            if (subs.isError()) {
@@ -219,31 +198,20 @@ public class ExplanationCreatorUnification {
    }
 
    private void createTrivialConstraintText(Constraint currentConstraint) {
-       StringBuilder latex = new StringBuilder();
-       // TODO: replace with parametrized translation text (see createVariableText)
-       latex.append(getDefaultTextLatex(KEY_PREFIX + "trivial1")).
-       append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
-       append(getDefaultTextLatex(KEY_PREFIX + "trivial2"));
-       unificationTexts.add(latex.toString());
+       String constraintLatex = toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode));
+       String finalText = provider.getTranslation(KEY_PREFIX + "trivial", locale, constraintLatex);
+       unificationTexts.add(finalText);
    }
 
    private void createFunctionText(Constraint currentConstraint, Constraint newConstraint1, Constraint newConstraint2) {
-       StringBuilder latex = new StringBuilder();
-       // TODO: replace with parametrized translation text (see createVariableText)
-       latex.append(getDefaultTextLatex(KEY_PREFIX + "function1")).
-       append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
-       append(getDefaultTextLatex(KEY_PREFIX + "function2")).
-       append(toLatex(new LatexCreatorType(currentConstraint.getFirstType(), mode).getLatex())).
-       append(getDefaultTextLatex(KEY_PREFIX + "function3")).
-       append(toLatex(new LatexCreatorType(currentConstraint.getSecondType(), mode).getLatex())).
-       append(getDefaultTextLatex(KEY_PREFIX + "function4")).
-       append(toLatex(LatexCreatorConstraints.createSingleConstraint(newConstraint1, mode))).
-       append(getDefaultTextLatex(KEY_PREFIX + "function5")).
-       append(toLatex(LatexCreatorConstraints.createSingleConstraint(newConstraint2, mode))).
-       append(getDefaultTextLatex(KEY_PREFIX + "function6")).
-       append(toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode))).
-       append(getDefaultTextLatex(KEY_PREFIX + "function7"));
-       unificationTexts.add(latex.toString());
+       String constraintLatex = toLatex(LatexCreatorConstraints.createSingleConstraint(currentConstraint, mode));
+       String firstType = toLatex(new LatexCreatorType(currentConstraint.getFirstType(), mode).getLatex());
+       String secondType = toLatex(new LatexCreatorType(currentConstraint.getSecondType(), mode).getLatex());
+       String firstNewConstraint = toLatex(LatexCreatorConstraints.createSingleConstraint(newConstraint1, mode));
+       String secondNewConstraint = toLatex(LatexCreatorConstraints.createSingleConstraint(newConstraint2, mode));
+       String finalText = provider.getTranslation(KEY_PREFIX + "function", locale, constraintLatex, firstType,
+               secondType, firstNewConstraint, secondNewConstraint);
+       unificationTexts.add(finalText);
    }
 
    private void createVariableText(Type variable, Type anyType, Constraint currentConstraint,

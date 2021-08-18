@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Locale;
 
 public class ExplanationTranslationProvider implements I18NProvider {
+    private static final long serialVersionUID = 5240864819723940755L;
+    
     private final I18NProvider innerProvider;
 
     public ExplanationTranslationProvider(I18NProvider provider) {
