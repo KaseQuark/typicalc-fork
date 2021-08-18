@@ -1,6 +1,7 @@
 package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.AssumptionGeneratorUtil.typeAssumptionsToLatex;
+import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.APOSTROPHE;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.BRACKET_LEFT;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.BRACKET_RIGHT;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.COMMA;
@@ -71,7 +72,11 @@ public class ExplanationCreatorUnification {
 
    private void buildTexts(boolean isLetUnification) {
        String initialPrefix = isLetUnification ? LET_KEY_PREFIX : KEY_PREFIX;
-       unificationTexts.add(getDefaultTextLatex(initialPrefix + "initial"));
+       String letVariable = isLetUnification 
+               ? toLatex(new LatexCreatorTerm(this.letVariable.get(), mode).getLatex()) : "";
+       String constraintSet = toLatex(letCounterToLatex(CONSTRAINT_SET));
+       String finalText = provider.getTranslation(initialPrefix + "initial", locale, constraintSet, letVariable);
+       unificationTexts.add(finalText);
        createUnficationTexts();
 
        if (!errorOccurred) {
@@ -87,7 +92,7 @@ public class ExplanationCreatorUnification {
        String typeAssumptions = 
                typeAssumptionsToLatex(typeInferer.getFirstInferenceStep().getConclusion().getTypeAssumptions(), mode);
        String letVariableLatex = toLatex(new LatexCreatorTerm(this.letVariable.get(), mode).getLatex());
-       String gamma = toLatex(GAMMA);
+       String gamma = toLatex(GAMMA + APOSTROPHE);
        String sigma = toLatex(letCounterToLatex(SIGMA));
        String finalType = toLatex(new LatexCreatorType(typeInferer.getType().get(), mode).getLatex());
        String newAssumptions = toLatex(letCounterToLatex(SIGMA) + PAREN_LEFT + typeAssumptions + "" + PAREN_RIGHT);
@@ -103,7 +108,7 @@ public class ExplanationCreatorUnification {
    }
 
    private String createTypeAbstraction(String typeAssumptions) {
-       return new StringBuilder(TYPE_ABSTRACTION + PAREN_LEFT + letCounterToLatex(SIGMA)).
+       return new StringBuilder(TYPE_ABSTRACTION + PAREN_LEFT + letCounterToLatex(SIGMA) + PAREN_LEFT).
                append(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode)
                        .getLatex()).
                append("" + PAREN_RIGHT + COMMA + letCounterToLatex(SIGMA) + PAREN_LEFT).
@@ -150,8 +155,8 @@ public class ExplanationCreatorUnification {
    }
 
    private String getSubstitutionLatex(Substitution sub) {
-       return new StringBuilder(BRACKET_LEFT)
-               //.append(AMPERSAND)
+       return new StringBuilder()
+               .append(BRACKET_LEFT)
                .append(new LatexCreatorType(sub.getVariable(), mode).getLatex())
                .append(SUBSTITUTION_SIGN)
                .append(new LatexCreatorType(sub.getType(), mode).getLatex())
@@ -226,9 +231,9 @@ public class ExplanationCreatorUnification {
    }
 
    private void createErrorText(UnificationError errorType) {
-       if (errorType == UnificationError.DIFFERENT_TYPES) {
+       if (errorType == UnificationError.INFINITE_TYPE) {
            unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "infiniteType"));
-       } else if (errorType == UnificationError.INFINITE_TYPE) {
+       } else if (errorType == UnificationError.DIFFERENT_TYPES) {
            unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "differentTypes"));
        }
    }

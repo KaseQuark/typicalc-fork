@@ -171,7 +171,7 @@ public class ExplanationCreator implements StepVisitor {
                 append(getDefaultTextLatex(KEY_PREFIX + "constStep4")).
                 append(toLatex(new LatexCreatorTerm(constS.getConclusion().getLambdaTerm(), MODE).getLatex())).
                 append(getDefaultTextLatex(KEY_PREFIX + "constStep5")).
-                append(toLatex(new LatexCreatorType(constS.getConclusion().getType(), MODE).getLatex())).
+                append(toLatex(new LatexCreatorType(constS.getConstraint().getSecondType(), MODE).getLatex())).
                 append(getDefaultTextLatex(KEY_PREFIX + "constStep6")).
                 append(toLatex(LatexCreatorConstraints.createSingleConstraint(constS.getConstraint(), MODE))).
                 append(getDefaultTextLatex(KEY_PREFIX + "constStep7")).
