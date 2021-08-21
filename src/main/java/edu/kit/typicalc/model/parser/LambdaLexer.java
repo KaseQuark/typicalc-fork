@@ -151,7 +151,9 @@ public class LambdaLexer {
             } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos))
                     && (int) term.charAt(pos) < 128);
             if (pos < term.length() && (int) term.charAt(pos) >= 128) {
-                return new Result<>(null, ParseError.unexpectedCharacter2(term.charAt(pos), pos, term, errorType));
+                return new Result<>(null,
+                        ParseError.unexpectedCharacter2(term.charAt(pos), pos, term, errorType)
+                                .expectedType(TokenType.VARIABLE));
             }
             String s = sb.toString();
             TokenType type;
