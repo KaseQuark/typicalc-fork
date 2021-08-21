@@ -43,7 +43,7 @@ public class ExplanationCreator implements StepVisitor {
 
     private final List<String> explanationTexts = new ArrayList<>();
 
-    private static final LatexCreatorMode MODE = LatexCreatorMode.MATHJAX;
+    private static final LatexCreatorMode MODE = LatexCreatorMode.NORMAL; // no highlighting here
     private boolean errorOccurred; // true if one unification was not successful
     private int letCounter = 0; // count number of lets for unification indices
 
@@ -64,10 +64,6 @@ public class ExplanationCreator implements StepVisitor {
         return explanationTexts;
     }
 
-    private String getDefaultTextLatex(String textKey) {
-        return provider.getTranslation(textKey, locale);
-    }
-
     private String toLatex(String latex) {
         return SPACE + DOLLAR_SIGN + latex + DOLLAR_SIGN + SPACE;
     }
@@ -76,15 +72,11 @@ public class ExplanationCreator implements StepVisitor {
         String typeLatex = new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), MODE).
                 getLatex();
 
-        return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "initial1")).
-                append(toLatex(new LatexCreatorTerm(
-                        typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "initial2")).
-                append(toLatex(typeLatex)).
-                append(getDefaultTextLatex(KEY_PREFIX + "initial3")).
-                append(toLatex(typeLatex)).
-                append(getDefaultTextLatex(KEY_PREFIX + "initial4")).
-                toString();
+        var arg1 = toLatex(new LatexCreatorTerm(
+                typeInferer.getFirstInferenceStep().getConclusion().getLambdaTerm(), MODE).getLatex());
+        var arg2 = toLatex(typeLatex);
+
+        return provider.getTranslation(KEY_PREFIX + "initial", locale, arg1, arg2);
     }
 
     @Override
@@ -103,24 +95,17 @@ public class ExplanationCreator implements StepVisitor {
         Queue<LambdaTerm> termArguments = termArgumentVisitor.getArguments(abs.getConclusion().getLambdaTerm());
         Queue<Type> typeArguments = typeArgumentVisitor.getArguments(abs.getConstraint().getSecondType());
 
-        return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "absStep1")).
-                append(toLatex(new LatexCreatorTerm(abs.getConclusion().getLambdaTerm(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep2")).
-                append(toLatex(new LatexCreatorType(abs.getConclusion().getType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep3")).
-                append(toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep4")).
-                append(toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep5")).
-                append(toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep6")).
-                append(toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep7")).
-                append(toLatex(new LatexCreatorType(abs.getConstraint().getSecondType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep8")).
-                append(toLatex(LatexCreatorConstraints.createSingleConstraint(abs.getConstraint(), MODE))).
-                append(getDefaultTextLatex(KEY_PREFIX + "absStep9")).
-                toString();
+        var arg1 = toLatex(new LatexCreatorTerm(abs.getConclusion().getLambdaTerm(), MODE).getLatex());
+        var arg2 = toLatex(new LatexCreatorType(abs.getConclusion().getType(), MODE).getLatex());
+        var arg3 = toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex());
+        var arg4 = toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex());
+        var arg5 = toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex());
+        var arg6 = toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex());
+        var arg7 = toLatex(new LatexCreatorType(abs.getConstraint().getSecondType(), MODE).getLatex());
+        var arg8 = toLatex(LatexCreatorConstraints.createSingleConstraint(abs.getConstraint(), MODE));
+
+        return provider.getTranslation(KEY_PREFIX + "absStep", locale,
+                arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
     }
 
     @Override
@@ -134,24 +119,17 @@ public class ExplanationCreator implements StepVisitor {
         Queue<LambdaTerm> termArguments = termArgumentVisitor.getArguments(app.getConclusion().getLambdaTerm());
         Queue<Type> typeArguments = typeArgumentVisitor.getArguments(app.getConstraint().getSecondType());
 
-        return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "appStep1")).
-                append(toLatex(new LatexCreatorTerm(app.getConclusion().getLambdaTerm(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep2")).
-                append(toLatex(new LatexCreatorType(app.getConclusion().getType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep3")).
-                append(toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep4")).
-                append(toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep5")).
-                append(toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep6")).
-                append(toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep7")).
-                append(toLatex(new LatexCreatorType(app.getConstraint().getSecondType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep8")).
-                append(toLatex(LatexCreatorConstraints.createSingleConstraint(app.getConstraint(), MODE))).
-                append(getDefaultTextLatex(KEY_PREFIX + "appStep9")).
-                toString();
+        var arg1 = toLatex(new LatexCreatorTerm(app.getConclusion().getLambdaTerm(), MODE).getLatex());
+        var arg2 = toLatex(new LatexCreatorType(app.getConclusion().getType(), MODE).getLatex());
+        var arg3 = toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex());
+        var arg4 = toLatex(new LatexCreatorTerm(termArguments.poll(), MODE).getLatex());
+        var arg5 = toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex());
+        var arg6 = toLatex(new LatexCreatorType(typeArguments.poll(), MODE).getLatex());
+        var arg7 = toLatex(new LatexCreatorType(app.getConstraint().getSecondType(), MODE).getLatex());
+        var arg8 = toLatex(LatexCreatorConstraints.createSingleConstraint(app.getConstraint(), MODE));
+
+        return provider.getTranslation(KEY_PREFIX + "appStep", locale,
+                arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8);
     }
 
 
@@ -162,20 +140,12 @@ public class ExplanationCreator implements StepVisitor {
 
     private String createLatexConstStep(ConstStep constS) {
 
-        return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "constStep1")).
-                append(toLatex(new LatexCreatorTerm(constS.getConclusion().getLambdaTerm(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "constStep2")).
-                append(toLatex(new LatexCreatorTerm(constS.getConclusion().getLambdaTerm(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "constStep3")).
-                append(toLatex(new LatexCreatorType(constS.getConclusion().getType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "constStep4")).
-                append(toLatex(new LatexCreatorTerm(constS.getConclusion().getLambdaTerm(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "constStep5")).
-                append(toLatex(new LatexCreatorType(constS.getConstraint().getSecondType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "constStep6")).
-                append(toLatex(LatexCreatorConstraints.createSingleConstraint(constS.getConstraint(), MODE))).
-                append(getDefaultTextLatex(KEY_PREFIX + "constStep7")).
-                toString();
+        var arg1 = toLatex(new LatexCreatorTerm(constS.getConclusion().getLambdaTerm(), MODE).getLatex());
+        var arg2 = toLatex(new LatexCreatorType(constS.getConclusion().getType(), MODE).getLatex());
+        var arg3 = toLatex(new LatexCreatorType(constS.getConstraint().getSecondType(), MODE).getLatex());
+        var arg4 = toLatex(LatexCreatorConstraints.createSingleConstraint(constS.getConstraint(), MODE));
+
+        return provider.getTranslation(KEY_PREFIX + "constStep", locale, arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -192,20 +162,12 @@ public class ExplanationCreator implements StepVisitor {
     private String createLatexVarStep(VarStep varS) {
         String termLatex = new LatexCreatorTerm(varS.getConclusion().getLambdaTerm(), MODE).getLatex();
 
-        return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "varStep1")).
-                append(toLatex(termLatex)).
-                append(getDefaultTextLatex(KEY_PREFIX + "varStep2")).
-                append(toLatex(termLatex)).
-                append(getDefaultTextLatex(KEY_PREFIX + "varStep3")).
-                append(toLatex(new LatexCreatorType(varS.getConclusion().getType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "varStep4")).
-                append(toLatex(termLatex)).
-                append(getDefaultTextLatex(KEY_PREFIX + "varStep5")).
-                append(toLatex(new LatexCreatorType(varS.getConstraint().getSecondType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "varStep6")).
-                append(toLatex(LatexCreatorConstraints.createSingleConstraint(varS.getConstraint(), MODE))).
-                append(getDefaultTextLatex(KEY_PREFIX + "varStep7")).
-                toString();
+        var arg1 = toLatex(termLatex);
+        var arg2 = toLatex(new LatexCreatorType(varS.getConclusion().getType(), MODE).getLatex());
+        var arg3 = toLatex(new LatexCreatorType(varS.getConstraint().getSecondType(), MODE).getLatex());
+        var arg4 = toLatex(LatexCreatorConstraints.createSingleConstraint(varS.getConstraint(), MODE));
+
+        return provider.getTranslation(KEY_PREFIX + "varStep", locale, arg1, arg2, arg3, arg4);
     }
 
     @Override
@@ -231,26 +193,17 @@ public class ExplanationCreator implements StepVisitor {
     }
 
     private String createLatexLetStep(LetStep letS, LambdaTerm variable, LambdaTerm innerTerm,
-            LambdaTerm variableDefinition) {
+                                      LambdaTerm variableDefinition) {
 
-        return new StringBuilder(getDefaultTextLatex(KEY_PREFIX + "letStep1")).
-                append(toLatex(new LatexCreatorTerm(letS.getConclusion().getLambdaTerm(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep2")).
-                append(toLatex(new LatexCreatorType(letS.getConclusion().getType(), MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep3")).
-                append(toLatex(new LatexCreatorTerm(variable, MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep4")).
-                append(toLatex(new LatexCreatorTerm(variableDefinition, MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep5")).
-                append(toLatex(new LatexCreatorTerm(innerTerm, MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep6")).
-                append(toLatex(new LatexCreatorTerm(variableDefinition, MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep7")).
-                append(toLatex(new LatexCreatorTerm(variable, MODE).getLatex())).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep8")).
-                append(toLatex(LatexCreatorConstraints.createSingleConstraint(letS.getConstraint(), MODE))).
-                append(getDefaultTextLatex(KEY_PREFIX + "letStep9")).
-                toString();
+        var arg1 = toLatex(new LatexCreatorTerm(letS.getConclusion().getLambdaTerm(), MODE).getLatex());
+        var arg2 = toLatex(new LatexCreatorType(letS.getConclusion().getType(), MODE).getLatex());
+        var arg3 = toLatex(new LatexCreatorTerm(variable, MODE).getLatex());
+        var arg4 = toLatex(new LatexCreatorTerm(variableDefinition, MODE).getLatex());
+        var arg5 = toLatex(new LatexCreatorTerm(innerTerm, MODE).getLatex());
+        var arg6 = toLatex(LatexCreatorConstraints.createSingleConstraint(letS.getConstraint(), MODE));
+
+        return provider.getTranslation(KEY_PREFIX + "letStep", locale,
+                arg1, arg2, arg3, arg4, arg5, arg6);
     }
 
 
