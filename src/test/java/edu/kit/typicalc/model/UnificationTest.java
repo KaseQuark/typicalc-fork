@@ -25,7 +25,7 @@ class UnificationTest {
         Deque<Constraint> constraints = new ArrayDeque<>();
         constraints.add(new Constraint(a, new FunctionType(b, c)));
         Deque<Constraint> initialConstraints = new ArrayDeque<>(constraints);
-        Unification u = new Unification(constraints);
+        Unification u = new Unification(new ArrayDeque<>(constraints));
         List<UnificationStep> steps = u.getUnificationSteps();
         assertEquals(2, steps.size());
         assertEquals(new UnificationStep(new Result<>(new ArrayList<>()),
