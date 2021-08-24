@@ -57,6 +57,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      * @param latexCodeTree     LaTeX code for the tree for users to copy into their own LaTeX document(s)
      * @param latexCodeUnification     LaTeX code for the unification for users to copy into their own LaTeX document(s)
      */
+    @SuppressWarnings("checkstyle:ExecutableStatementCount")
     public ShareDialog(String url, String latexCodeTree, String latexCodeUnification) {
         HorizontalLayout headingLayout = new HorizontalLayout();
         headingLayout.setId(HEADING_LAYOUT_ID);
