@@ -27,3 +27,23 @@
 	position: absolute;
 	bottom: 2.1em;
 }
+
+#url-area-layout {
+    width: 100%;
+}
+
+#package-area-tree-layout {
+    width: 100%;
+}
+
+#package-area-unification-layout {
+    width: 100%;
+}
+
+#latex-area-tree-layout {
+    width: 100%;
+}
+
+#latex-area-unification-layout {
+    width: 100%;
+}

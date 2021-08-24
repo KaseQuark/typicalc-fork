@@ -1,12 +1,15 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.UI;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -29,6 +32,11 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
     private static final String LAYOUT_ID = "share-dialog-layout";
     private static final String FIELD_CLASS = "share-dialog-field";
     private static final String CLOSE_ICON_ID = "closeIcon";
+    private static final String URL_AREA_LAYOUT_ID = "url-area-layout";
+    private static final String PACKAGE_AREA_TREE_LAYOUT_ID = "package-area-tree-layout";
+    private static final String PACKAGE_AREA_UNIFICATION_LAYOUT_ID = "package-area-unification-layout";
+    private static final String LATEX_AREA_TREE_LAYOUT_ID = "latex-area-tree-layout";
+    private static final String LATEX_AREA_UNIFICATION_LAYOUT_ID = "latex-area-unification-layout";
 
     private static final String RIGHT_ARROW_WHITE = "\\\\rightwhitearrow";
     private static final String MATH_OPEN = "\\[";
@@ -47,6 +55,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
      *
      * @param url           a permalink to share with other users
      * @param latexCodeTree     LaTeX code for the tree for users to copy into their own LaTeX document(s)
+     * @param latexCodeUnification     LaTeX code for the unification for users to copy into their own LaTeX document(s)
      */
     public ShareDialog(String url, String latexCodeTree, String latexCodeUnification) {
         HorizontalLayout headingLayout = new HorizontalLayout();
@@ -75,7 +84,31 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
 
         setReadOnly();
 
-        layout.add(urlField, packageAreaTree, latexAreaTree, packageAreaUnification, latexAreaUnification);
+        Button copyButtonUrl = makeCopyButton(urlField.getValue());
+        Button copyButtonPackageAreaTree = makeCopyButton(packageAreaTree.getValue());
+        Button copyButtonPackageAreaUnification = makeCopyButton(packageAreaUnification.getValue());
+        Button copyButtonLatexAreaTree = makeCopyButton(latexAreaTree.getValue());
+        Button copyButtonLatexAreaUnification = makeCopyButton(latexAreaUnification.getValue());
+
+        HorizontalLayout urlLayout = new HorizontalLayout();
+        urlLayout.setId(URL_AREA_LAYOUT_ID);
+        HorizontalLayout packageAreaTreeLayout = new HorizontalLayout();
+        packageAreaTreeLayout.setId(PACKAGE_AREA_TREE_LAYOUT_ID);
+        HorizontalLayout latexAreaTreeLayout = new HorizontalLayout();
+        latexAreaTreeLayout.setId(LATEX_AREA_TREE_LAYOUT_ID);
+        HorizontalLayout packageAreaUnificationLayout = new HorizontalLayout();
+        packageAreaUnificationLayout.setId(PACKAGE_AREA_UNIFICATION_LAYOUT_ID);
+        HorizontalLayout latexAreaUnificationLayout = new HorizontalLayout();
+        latexAreaUnificationLayout.setId(LATEX_AREA_UNIFICATION_LAYOUT_ID);
+
+        urlLayout.add(urlField, copyButtonUrl);
+        packageAreaTreeLayout.add(packageAreaTree, copyButtonPackageAreaTree);
+        latexAreaTreeLayout.add(latexAreaTree, copyButtonLatexAreaTree);
+        packageAreaUnificationLayout.add(packageAreaUnification, copyButtonPackageAreaUnification);
+        latexAreaUnificationLayout.add(latexAreaUnification, copyButtonLatexAreaUnification);
+
+        layout.add(urlLayout, packageAreaTreeLayout, latexAreaTreeLayout, packageAreaUnificationLayout,
+                latexAreaUnificationLayout);
 
         add(headingLayout, layout);
     }
@@ -111,5 +144,14 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         latexAreaTree.setReadOnly(true);
         packageAreaUnification.setReadOnly(true);
         latexAreaUnification.setReadOnly(true);
+    }
+
+    private Button makeCopyButton(String value) {
+       Button newButton = new Button(new Icon(VaadinIcon.CLIPBOARD));
+        newButton.addClickListener(event -> {
+            UI.getCurrent().getPage().executeJs("window.copyToClipboard($0)", value);
+            Notification.show(getTranslation("root.copied")).addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+        });
+        return newButton;
     }
 }
