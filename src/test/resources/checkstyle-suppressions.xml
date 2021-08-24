@@ -9,5 +9,7 @@
   <suppress
           files="src/main/java/edu/kit/typicalc/view/content/typeinferencecontent/latexcreator/LatexCreatorConstraints.java"
           checks="ParameterNumber" />
+  <suppress files="src/main/java/edu/kit/typicalc/view/content/typeinferencecontent/ShareDialog.java"
+            checks="ExecutableStatementCount" />
 </suppressions>
 
