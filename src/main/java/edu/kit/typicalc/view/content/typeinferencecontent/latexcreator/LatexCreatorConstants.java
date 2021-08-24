@@ -24,6 +24,8 @@ public final class LatexCreatorConstants {
     protected static final String TYPE_ABSTRACTION = "ta";
 
     protected static final String DOLLAR_SIGN = "$";
+    protected static final String MATH_START = "\\[";
+    protected static final String MATH_END = "\\]";
     protected static final char NEW_LINE = '\n';
     protected static final char SPACE = ' ';
     protected static final char APOSTROPHE = '\'';
@@ -82,4 +84,9 @@ public final class LatexCreatorConstants {
     protected static final String ALIGN_END = "\\end{aligned}";
     protected static final String SPLIT_BEGIN = "\\begin{split}";
     protected static final String SPLIT_END = "\\end{split}";
+
+    /**
+     * Not actually a LaTeX command, but understood by MathJax.
+     */
+    protected static final String BREAK_ROW = "<br>";
 }

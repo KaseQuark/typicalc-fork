@@ -24,7 +24,6 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
 public class LatexCreatorConstraints implements StepVisitor {
 
     private static final String FIRST_PREFIX = "";
-    private static final int BREAK_AFTER = 10;
 
     private final List<String> constraints;
     private final TypeInfererInterface typeInferer;
@@ -36,7 +35,6 @@ public class LatexCreatorConstraints implements StepVisitor {
     private final Optional<Map<VarTerm, TypeAbstraction>> newTypeAssumption;
     private String prevStep;
     private final Function<UnificationError, String> translationProvider;
-    private int constraintsInCurrLine;
     private final LatexCreatorMode mode;
 
     /**
@@ -71,10 +69,9 @@ public class LatexCreatorConstraints implements StepVisitor {
         this.constraintSetIndex = constraintSetIndexFactory.nextConstraintSetIndex();
         this.typeInferer = typeInferer;
         this.translationProvider = translationProvider;
-        this.constraintsInCurrLine = 0;
         constraints = new ArrayList<>();
         if (FIRST_PREFIX.equals(prefix)) {
-            constraints.add(AMPERSAND + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT);
+            constraints.add(DOLLAR_SIGN + CONSTRAINT_SET + EQUALS + LATEX_CURLY_LEFT + LATEX_CURLY_RIGHT + DOLLAR_SIGN);
             numberGenerator.incrementPush();
         }
         this.mode = mode;
@@ -91,7 +88,7 @@ public class LatexCreatorConstraints implements StepVisitor {
     protected List<String> getEverything() {
         List<String> result = new ArrayList<>(constraints);
 
-        String constraintSets = constraints.get(constraints.size() - 1) + LATEX_NEW_LINE;
+        String constraintSets = constraints.get(constraints.size() - 1);
         if (typeInferer.getUnificationSteps().isPresent()) {
             generateUnification(constraintSets).forEach(step -> {
                 result.add(step);
@@ -103,13 +100,11 @@ public class LatexCreatorConstraints implements StepVisitor {
                     result.add(generateMGU(constraintSets));
                     numberGenerator.push();
                 }
-                result.add(generateMGU(constraintSets) + LATEX_NEW_LINE + generateFinalType());
+                result.add(generateMGU(constraintSets) + generateFinalType());
                 numberGenerator.push();
             });
         }
-        if (FIRST_PREFIX.equals(prefix)) {
-            result.replaceAll(content -> ALIGN_BEGIN + content + ALIGN_END);
-        } else {
+        if (!FIRST_PREFIX.equals(prefix)) {
             // add the new type assumptions only during a let sub inference where
             // the unification was successful
             typeInferer.getMGU().ifPresent(mgu -> {
@@ -145,19 +140,14 @@ public class LatexCreatorConstraints implements StepVisitor {
     private void addConstraint(InferenceStep step) {
         String currentSingleConstraint = createSingleConstraint(step.getConstraint(), mode);
         if (!prevStep.equals("")) {
-            prevStep += COMMA;
-        }
-        if (constraintsInCurrLine >= BREAK_AFTER) {
-            prevStep += LATEX_NEW_LINE + AMPERSAND;
-            constraintsInCurrLine = 0;
+            prevStep += DOLLAR_SIGN + COMMA + DOLLAR_SIGN;
         }
         prevStep += currentSingleConstraint;
 
-        String currentConstraints = prefix + AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + constraintSetIndex
-                + EQUALS + LATEX_CURLY_LEFT + AMPERSAND + prevStep + LATEX_CURLY_RIGHT + SPLIT_END;
+        String currentConstraints = prefix + DOLLAR_SIGN + CONSTRAINT_SET + constraintSetIndex
+                + EQUALS + LATEX_CURLY_LEFT + prevStep + LATEX_CURLY_RIGHT + DOLLAR_SIGN;
         constraints.add(currentConstraints);
         numberGenerator.incrementPush();
-        constraintsInCurrLine++;
     }
 
     @Override
@@ -204,7 +194,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         }
         LatexCreatorConstraints subCreator = new LatexCreatorConstraints(letD.getTypeInferer(),
                 constraintSetIndexFactory, numberGenerator,
-                constraints.get(constraints.size() - 1) + LATEX_NEW_LINE + NEW_LINE, Optional.of(term.getVariable()),
+                constraints.get(constraints.size() - 1) + BREAK_ROW, Optional.of(term.getVariable()),
                 newTypeAss, translationProvider, mode);
         constraints.addAll(subCreator.getEverything());
 
@@ -214,9 +204,9 @@ public class LatexCreatorConstraints implements StepVisitor {
         }
         // adds one step in which all let constraints are added to 'outer' constraint set
         String letConstraints = createLetConstraints(letD.getTypeInferer().getLetConstraints());
-        prevStep = prevStep.equals("") ? letConstraints : prevStep + COMMA + letConstraints;
-        letConstraints = prefix + AMPERSAND + SPLIT_BEGIN + CONSTRAINT_SET + constraintSetIndex + EQUALS
-                + LATEX_CURLY_LEFT + AMPERSAND + prevStep + LATEX_CURLY_RIGHT + SPLIT_END;
+        prevStep = prevStep.equals("") ? letConstraints : prevStep + DOLLAR_SIGN + COMMA + DOLLAR_SIGN + letConstraints;
+        letConstraints = prefix + DOLLAR_SIGN + CONSTRAINT_SET + constraintSetIndex + EQUALS
+                + LATEX_CURLY_LEFT + prevStep + LATEX_CURLY_RIGHT + DOLLAR_SIGN;
         constraints.add(letConstraints);
         numberGenerator.push();
 
@@ -226,15 +216,12 @@ public class LatexCreatorConstraints implements StepVisitor {
     private String createLetConstraints(List<Constraint> letConstraints) {
         StringBuilder result = new StringBuilder();
         letConstraints.forEach(constraint -> {
-            if (constraintsInCurrLine >= BREAK_AFTER) {
-                result.append(LATEX_NEW_LINE)
-                        .append(AMPERSAND);
-                constraintsInCurrLine = 0;
-            }
-            result.append(createSingleConstraint(constraint, mode)).append(COMMA);
-            constraintsInCurrLine++;
+            result.append(createSingleConstraint(constraint, mode))
+                    .append(DOLLAR_SIGN).append(COMMA).append(DOLLAR_SIGN);
         });
         if (!letConstraints.isEmpty()) {
+            // remove comma and dollar sign
+            result.deleteCharAt(result.length() - 1);
             result.deleteCharAt(result.length() - 1);
         }
         return result.toString();
@@ -280,7 +267,8 @@ public class LatexCreatorConstraints implements StepVisitor {
             List<Substitution> substitutions = subs.unwrap();
             StringBuilder latex = new StringBuilder();
             latex.append(constraintSets);
-            latex.append(AMPERSAND + SPLIT_BEGIN);
+            latex.append(BREAK_ROW + MATH_START);
+            latex.append(ALIGN_BEGIN + SPLIT_BEGIN);
             latex.append(generateUnificationName());
 
             boolean markError = error.isPresent();
@@ -358,6 +346,7 @@ public class LatexCreatorConstraints implements StepVisitor {
                 latex.append(translationProvider.apply(error.get()));
                 latex.append(CURLY_RIGHT);
             }
+            latex.append(ALIGN_END + MATH_END);
             steps.add(latex.toString());
         }
         return steps;
@@ -367,7 +356,9 @@ public class LatexCreatorConstraints implements StepVisitor {
     private String generateMGU(String constraintSets) {
         StringBuilder latex = new StringBuilder();
         latex.append(constraintSets);
-        latex.append(AMPERSAND + SPLIT_BEGIN);
+        latex.append(BREAK_ROW);
+        latex.append(MATH_START);
+        latex.append(ALIGN_BEGIN + AMPERSAND + SPLIT_BEGIN);
         latex.append(generateUnificationName());
         latex.append(BRACKET_LEFT);
         typeInferer.getMGU().ifPresent(mgu -> mgu.forEach(substitution -> {
@@ -380,13 +371,13 @@ public class LatexCreatorConstraints implements StepVisitor {
         }));
         latex.delete(latex.length() - (COMMA + LATEX_NEW_LINE).length(), latex.length());
         latex.append(BRACKET_RIGHT);
-        latex.append(SPLIT_END);
+        latex.append(SPLIT_END + ALIGN_END + MATH_END);
         return latex.toString();
     }
 
     private String generateFinalType() {
         StringBuilder latex = new StringBuilder();
-        latex.append(AMPERSAND);
+        latex.append(DOLLAR_SIGN);
         latex.append(SIGMA);
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
@@ -395,6 +386,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append("" + PAREN_RIGHT + EQUALS);
         latex.append(
                 new LatexCreatorType(typeInferer.getType().orElseThrow(IllegalStateException::new), mode).getLatex());
+        latex.append(DOLLAR_SIGN);
         return latex.toString();
     }
 
@@ -408,7 +400,7 @@ public class LatexCreatorConstraints implements StepVisitor {
 
         StringBuilder latex = new StringBuilder();
         latex.append(subPrefix);
-        latex.append(LATEX_NEW_LINE + AMPERSAND + GAMMA + APOSTROPHE + EQUALS + SIGMA);
+        latex.append(BREAK_ROW + DOLLAR_SIGN + GAMMA + APOSTROPHE + EQUALS + SIGMA);
         latex.append(constraintSetIndex);
         latex.append(PAREN_LEFT);
         latex.append(typeAssumptions);
@@ -426,6 +418,7 @@ public class LatexCreatorConstraints implements StepVisitor {
         latex.append(typeAssumptions);
         latex.append("" + PAREN_RIGHT + PAREN_RIGHT + EQUALS);
         latex.append(typeAssumptionsToLatex(newTypeAssumption.orElseThrow(IllegalSelectorException::new), mode));
+        latex.append(DOLLAR_SIGN);
         return latex.toString();
     }
 }

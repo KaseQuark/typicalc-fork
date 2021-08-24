@@ -24,7 +24,7 @@
 #type-inference-view #content2 {
 	display: flex;
 	flex-direction: column;
-	flex-grow: 1;
+	flex-grow: 0;
 	height: 100%;
 	overflow-y: auto;
 }
@@ -37,6 +37,7 @@
 #type-inference-view #content4 {
 	display: flex;
 	flex-direction: row;
+	max-width: 100%;
 }
 
 tc-explanation {

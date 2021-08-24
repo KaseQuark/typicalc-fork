@@ -2,6 +2,7 @@ package edu.kit.typicalc.view.content.typeinferencecontent;
 
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.Tag;
+import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.littemplate.LitTemplate;
@@ -17,7 +18,7 @@ import java.util.List;
 @Tag("tc-explanation")
 @JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-explanation.ts")
-//@CssImport("./styles/view/unification.css")
+@CssImport("./styles/view/explanation.css")
 public class MathjaxExplanation extends LitTemplate implements MathjaxAdapter {
 
     private final List<String> latex;

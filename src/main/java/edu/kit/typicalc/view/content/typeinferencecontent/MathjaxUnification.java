@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
@@ -44,7 +45,8 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
     public void showStep(int n) {
         if (n < latex.length) {
             content.removeAll();
-            content.add(latex[n]);
+            // add latex as HTML because <br> is used in the latex code
+            content.add(new Html("<div>" + latex[n] + "</div>"));
         }
         getElement().callJsFunction("showStep", n);
     }
