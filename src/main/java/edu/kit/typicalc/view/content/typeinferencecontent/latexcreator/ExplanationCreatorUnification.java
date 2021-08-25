@@ -182,7 +182,6 @@ public class ExplanationCreatorUnification {
            }
            List<Substitution> substitutions = subs.unwrap();
 
-           List<Constraint> constraints = step.getConstraints();
            if (currentConstraint.getFirstType().equals(currentConstraint.getSecondType())) {
                // trivial constraint
                createTrivialConstraintText(currentConstraint);
@@ -196,8 +195,7 @@ public class ExplanationCreatorUnification {
                        currentConstraint, substitutions.get(substitutions.size() - 1));
            } else {
                // both sides are functions
-               createFunctionText(currentConstraint,
-                       constraints.get(constraints.size() - 1), constraints.get(constraints.size() - 2));
+               createFunctionText(currentConstraint, step.getConstraints().get(0), step.getConstraints().get(1));
            }
        }
    }
