@@ -43,12 +43,7 @@ public class MathjaxUnification extends LitTemplate implements MathjaxAdapter {
 
     @Override
     public void showStep(int n) {
-        if (n < latex.length) {
-            content.removeAll();
-            // add latex as HTML because <br> is used in the latex code
-            content.add(new Html("<div>" + latex[n] + "</div>"));
-        }
-        getElement().callJsFunction("showStep", n);
+        getElement().callJsFunction("showLatex", latex[n]);
     }
 }
 

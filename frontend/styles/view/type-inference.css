@@ -41,7 +41,7 @@
 }
 
 tc-explanation {
-	max-width: 40em;
+	width: 100em;
 	padding-left: 1em;
 	padding-right: 1em;
 	overflow-y: auto;

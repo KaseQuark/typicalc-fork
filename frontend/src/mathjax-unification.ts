@@ -13,9 +13,7 @@ class MathjaxUnification extends MathjaxAdapter {
 		}
 	}
 
-	protected showStep(_n: number): void {
-		this.requestTypeset(null);
-	}
+	protected showStep(_n: number): void {}
 
 	protected calculateSteps(_extraData: any) {
 		const root = this.shadowRoot!;
@@ -36,6 +34,16 @@ class MathjaxUnification extends MathjaxAdapter {
 			// @ts-ignore
 			prooftree.handleHoverEvent(e as MouseEvent, false);
 		});
+	}
+
+	protected showLatex(code: string): void {
+		let el = this.shadowRoot!.getElementById("tc-content");
+		if (!el) {
+			setTimeout(() => this.showLatex(code), 50);
+			return;
+		}
+		el.innerHTML = code;
+		this.requestTypeset(null);
 	}
 }
 
