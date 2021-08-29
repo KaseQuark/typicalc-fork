@@ -1,4 +1,5 @@
 import {MathjaxAdapter} from "./mathjax-adapter";
+import {hoverAreaAroundElements} from "./mathjax-style-hacks";
 
 declare let window: {
     svgPanZoomFun: (svg: SVGElement, options: {
@@ -51,7 +52,6 @@ class MathjaxProofTree extends MathjaxAdapter {
     }
 
     protected calculateSteps(extraData: any): void {
-        console.log(extraData);
         const data = typeof extraData === "string" ? JSON.parse(extraData) : [];
         const root = this.shadowRoot!;
         // setup style container for styles applied on hover
@@ -69,8 +69,6 @@ class MathjaxProofTree extends MathjaxAdapter {
             unificationEl.shadowRoot!.querySelector("mjx-head")!.appendChild(hoverStylesUnification);
         }
         // set the size of the rendered SVG to the size of the container element
-        // enlarge hover area of certain elements
-        //console.log(unificationEl);
         if (!root.querySelector("#style-fixes")) {
             const style = document.createElement('style');
             style.innerHTML = "\
@@ -80,15 +78,11 @@ class MathjaxProofTree extends MathjaxAdapter {
                         mjx-container {\
                             margin: 0 !important;\
                         }\
-                        .typicalc-type, g[semantics='bspr_prooflabel:left'] {\
-                            /* cross-browser-compatibility: Chrome does not support the stroke trick, but instead bounding-box (which is not supported by Firefox..) */\
-                            stroke: transparent; stroke-width: 600px; pointer-events: all; pointer-events: bounding-box;\
-                        }\
                         #typicalc-definition-abs, #typicalc-definition-abs-let, #typicalc-definition-app,\
                         #typicalc-definition-const, #typicalc-definition-var, #typicalc-definition-var-let, #typicalc-definition-let {\
                             display: none;\
                             border: 2px solid red;\
-                        }";
+                        }" + hoverAreaAroundElements;
             style.innerHTML += "svg { width: 100%; }";
             style.id = "style-fixes";
             root.querySelector("mjx-head")!.appendChild(style);
@@ -270,7 +264,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                 }
             }
             const conclusion0 = root.querySelector<SVGElement>(inferenceRuleSelector)!.children[1].children[0].children[0].children[1] as SVGGraphicsElement;
-            console.log(conclusion0);
             const conclusionWidth = conclusion0.getBBox().width;
             const svgWidth = svg.viewBox.baseVal.width;
             const offset = (svg.children[1] as SVGGraphicsElement).getTransformToElement(conclusion0);
@@ -389,12 +382,6 @@ class MathjaxProofTree extends MathjaxAdapter {
                         return;
                     }
                 }
-                let stepTarget = typeTarget;
-                while (stepTarget.getAttribute("typicalc") !== "step" && counter < 15) {
-                    stepTarget = stepTarget.parentNode! as SVGGraphicsElement;
-                    counter++;
-                }
-                let stepIndex = stepTarget.getAttribute("typicalc") === "step" ? Number(stepTarget.id.substring(4)) : - 1;
                 let isType = typeTarget.classList.contains("typicalc-type");
                 let isLabel = typeTarget.classList.contains("typicalc-label");
                 if (mouseIn) {
@@ -404,6 +391,13 @@ class MathjaxProofTree extends MathjaxAdapter {
                         hoverStyles!.innerHTML = css;
                         hoverStylesUnification!.innerHTML = css;
                     } else if (isLabel) {
+                        let stepTarget = typeTarget;
+                        while (stepTarget.getAttribute("typicalc") !== "step" && counter < 15) {
+                            stepTarget = stepTarget.parentNode! as SVGGraphicsElement;
+                            counter++;
+                        }
+                        let stepIndex = stepTarget.getAttribute("typicalc") === "step" ? Number(stepTarget.id.substring(4)) : - 1;
+
                         const defId = typeTarget.classList[1].replace("-label-", "-definition-");
                         const defEl = this.shadowRoot!.getElementById(defId)! as unknown as SVGGraphicsElement;
                         const transform = viewport.getTransformToElement(typeTarget);
@@ -510,6 +504,10 @@ class MathjaxProofTree extends MathjaxAdapter {
             svg.querySelector("#step0")!.addEventListener("mouseout", e => {
                 handleMouseEvent(e as MouseEvent, false);
             });
+            // @ts-ignore
+            this.shadowRoot.host.handleHoverEvent = (e: MouseEvent, mouseIn: boolean) => {
+                handleMouseEvent(e, mouseIn);
+            }
 
             this.$server!.setStepCount(steps.length);
         }

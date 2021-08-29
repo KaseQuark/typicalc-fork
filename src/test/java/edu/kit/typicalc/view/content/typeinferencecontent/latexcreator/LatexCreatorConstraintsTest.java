@@ -3,12 +3,9 @@ package edu.kit.typicalc.view.content.typeinferencecontent.latexcreator;
 import edu.kit.typicalc.model.Model;
 import edu.kit.typicalc.model.ModelImpl;
 import edu.kit.typicalc.model.TypeInfererInterface;
-import org.junit.Ignore;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.*;
