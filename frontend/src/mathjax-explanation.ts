@@ -33,13 +33,27 @@ class MathjaxExplanation extends MathjaxAdapter {
 	}
 
 	protected showStep(n: number): void {
-		let el = this.getElementForStep(this.lastStepShown);
-		if (el) {
-			el.style.opacity = "0.5";
+		let lastEl = this.getElementForStep(this.lastStepShown);
+		if (lastEl) {
+			lastEl.style.opacity = "0.5";
 		}
-		el = this.getElementForStep(n);
+		let el = this.getElementForStep(n);
 		if (el) {
 			this.lastStepShown = n;
+			// scroll to element if needed
+			/* TODO: this works, but Vaadin still resets the scroll position when updating the unification text...
+			const hostEl = this.shadowRoot!.host as HTMLElement;
+			const dy = el.offsetTop - hostEl.offsetTop - hostEl.scrollTop;
+			if (dy > hostEl.offsetHeight || dy < 0) {
+				console.log("doing it!");
+				console.log(dy);
+				console.log(hostEl.scrollTop);
+				console.log(hostEl.offsetTop);
+				console.log(el.offsetTop);
+				console.log("scrolling by " + (-hostEl.scrollTop + el.offsetTop - hostEl.offsetTop));
+				hostEl.scrollBy(0, -hostEl.scrollTop + el.offsetTop - hostEl.offsetTop);
+			}
+			 */
 			el.style.opacity = "1.0";
 		}
 	}
