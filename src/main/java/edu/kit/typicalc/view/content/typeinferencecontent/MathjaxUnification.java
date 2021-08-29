@@ -1,6 +1,5 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
-import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.CssImport;
 import com.vaadin.flow.component.dependency.JsModule;
