@@ -16,7 +16,14 @@ class MathjaxExplanation extends MathjaxAdapter {
 
 	protected calculateSteps(_extraData: any) {
 		let first = true;
+		let stepIdx = 0;
 		for (let text of this.shadowRoot!.querySelectorAll<SVGGraphicsElement>(".tc-text")) {
+			let thisStepIdx = stepIdx;
+			stepIdx++;
+			text.onclick = () => {
+				// @ts-ignore
+				this.$server!.switchToStep(thisStepIdx);
+			};
 			if (first) {
 				first = false; // show first step
 				continue;

@@ -1,5 +1,6 @@
 package edu.kit.typicalc.view.content.typeinferencecontent;
 
+import com.vaadin.flow.component.ClientCallable;
 import com.vaadin.flow.component.Html;
 import com.vaadin.flow.component.Tag;
 import com.vaadin.flow.component.dependency.CssImport;
@@ -21,6 +22,7 @@ import java.util.List;
 @CssImport("./styles/view/explanation.css")
 public class MathjaxExplanation extends LitTemplate implements MathjaxAdapter {
 
+    private final TypeInferenceView typeInferenceView;
     private final List<String> latex;
 
     // initialized by Vaadin
@@ -30,13 +32,15 @@ public class MathjaxExplanation extends LitTemplate implements MathjaxAdapter {
     /**
      * Creates a new HTML element that renders the provided texts.
      *
+     * @param view the type inference view this explanation text is attached to
      * @param latex the latex texts for all steps
      */
-    public MathjaxExplanation(List<String> latex) {
+    public MathjaxExplanation(TypeInferenceView view, List<String> latex) {
+        this.typeInferenceView = view;
         this.latex = latex;
         StringBuilder finalTex = new StringBuilder("<div>");
         for (int i = 0; i < latex.size(); i++) {
-            finalTex.append("<p class='tc-text' id='tc-text-").append(i).append("'>");
+            finalTex.append(String.format("<p class='tc-text' id='tc-text-%d'>", i));
             finalTex.append(latex.get(i));
             finalTex.append("</p>");
         }
@@ -53,6 +57,11 @@ public class MathjaxExplanation extends LitTemplate implements MathjaxAdapter {
     @Override
     public void showStep(int n) {
         getElement().callJsFunction("showStep", n);
+    }
+
+    @ClientCallable
+    private void switchToStep(int unificationStepIdx) {
+        typeInferenceView.setCurrentStep(unificationStepIdx);
     }
 }
 
