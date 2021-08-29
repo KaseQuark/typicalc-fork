@@ -374,13 +374,17 @@ class MathjaxProofTree extends MathjaxAdapter {
             const handleMouseEvent = (e: MouseEvent, mouseIn: boolean) => {
                 let typeTarget = e.target! as SVGGraphicsElement;
                 let counter = 0;
-                while (!typeTarget.classList.contains("typicalc-type")
+                while (typeTarget.classList
+                && !typeTarget.classList.contains("typicalc-type")
                 && !typeTarget.classList.contains("typicalc-label")) {
                     typeTarget = typeTarget.parentNode! as SVGGraphicsElement;
                     counter++;
                     if (counter > 3) {
                         return;
                     }
+                }
+                if (!typeTarget.classList) {
+                    return;
                 }
                 let isType = typeTarget.classList.contains("typicalc-type");
                 let isLabel = typeTarget.classList.contains("typicalc-label");
