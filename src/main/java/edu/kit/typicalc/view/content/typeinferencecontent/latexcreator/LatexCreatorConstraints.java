@@ -342,12 +342,8 @@ public class LatexCreatorConstraints implements StepVisitor {
             }
             latex.delete(latex.length() - LATEX_NEW_LINE.length(), latex.length());
             latex.append(SPLIT_END);
-            if (error.isPresent()) {
-                latex.append(LATEX_NEW_LINE + LATEX_NEW_LINE + AMPERSAND + TEXT + CURLY_LEFT);
-                latex.append(translationProvider.apply(error.get()));
-                latex.append(CURLY_RIGHT);
-            }
             latex.append(ALIGN_END + MATH_END);
+            error.ifPresent(unificationError -> latex.append(translationProvider.apply(unificationError)));
             steps.add(latex.toString());
         }
         return steps;
