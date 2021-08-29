@@ -220,7 +220,8 @@ public class LatexCreatorConstraints implements StepVisitor {
                     .append(DOLLAR_SIGN).append(COMMA).append(DOLLAR_SIGN);
         });
         if (!letConstraints.isEmpty()) {
-            // remove comma and dollar sign
+            // remove last comma and dollar signs
+            result.deleteCharAt(result.length() - 1);
             result.deleteCharAt(result.length() - 1);
             result.deleteCharAt(result.length() - 1);
         }
