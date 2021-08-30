@@ -165,7 +165,11 @@ public class TypeInferenceView extends VerticalLayout
         if (currentStep == 0) {
             controlPanel.setEnabledFirstStep(false);
             controlPanel.setEnabledPreviousStep(false);
+            controlPanel.setEnabledNextStep(true);
+            controlPanel.setEnabledLastStep(true);
         } else if (currentStep == unification.getStepCount() - 1) {
+            controlPanel.setEnabledFirstStep(true);
+            controlPanel.setEnabledPreviousStep(true);
             controlPanel.setEnabledNextStep(false);
             controlPanel.setEnabledLastStep(false);
         } else {
