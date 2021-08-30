@@ -12,7 +12,6 @@
 #type-inference-view #content {
 	display: flex;
 	flex-direction: row;
-	column-gap: 5mm;
 	width: 100%;
 	height: 100%;
 	padding: 10px 10px 0;
@@ -49,16 +48,23 @@ tc-explanation {
 	overflow-y: auto;
 }
 
-#rules-button {
+.hovering-button {
 	height: 9em;
 	position: fixed;
 	top: 50%;
-	left: 1em;
 	transform: translateY(-50%);
 	writing-mode: vertical-rl;
 	z-index: 1;
 	filter: drop-shadow(1px 1px 2px grey);
 	background-color: rgba(255,255,255,0.8);
+}
+
+#rules-button {
+	left: 1em;
+}
+
+#explanation-text-button {
+	right: 1em;
 }
 
 #type-inference-view #rules {

@@ -54,7 +54,9 @@ public class TypeInferenceView extends VerticalLayout
     private static final String CONTENT_ID3 = "content3";
     private static final String CONTENT_ID4 = "content4";
     private static final String RULES_ID = "rules";
+    private static final String HOVER_BUTTON_CLASS = "hovering-button";
     private static final String RULES_BUTTON_ID = "rules-button";
+    private static final String EXPLANATION_TEXT_BUTTON_ID = "explanation-text-button";
     private static final String H_LINE_ID = "horizontalLine";
     private static final String FOOTER_ID = "footer";
 
@@ -112,10 +114,15 @@ public class TypeInferenceView extends VerticalLayout
     }
 
     private boolean rulesVisible = false;
+    private boolean explanationTextsVisible = true;
 
     private void setContent() {
         Button button = new Button(getTranslation("root.inferenceRules"));
+        button.setClassName(HOVER_BUTTON_CLASS);
         button.setId(RULES_BUTTON_ID);
+        Button button2 = new Button(getTranslation("root.explanationTexts"));
+        button2.setClassName(HOVER_BUTTON_CLASS);
+        button2.setId(EXPLANATION_TEXT_BUTTON_ID);
 
         Div horizontalContainer = new Div();
         horizontalContainer.setId(CONTENT_ID4);
@@ -131,7 +138,7 @@ public class TypeInferenceView extends VerticalLayout
 
         Div treeDiv = new Div();
         treeDiv.setId(CONTENT_ID3);
-        treeDiv.add(tree, button);
+        treeDiv.add(tree, button, button2);
         container.add(unification, treeDiv);
         horizontalContainer.add(container, explanation);
 
@@ -142,6 +149,10 @@ public class TypeInferenceView extends VerticalLayout
         button.addClickListener(e -> {
             rulesVisible = !rulesVisible;
             rules.getElement().setVisible(rulesVisible);
+        });
+        button2.addClickListener(e -> {
+            explanationTextsVisible = !explanationTextsVisible;
+            explanation.getElement().setVisible(explanationTextsVisible);
         });
 
         content.add(rules, horizontalContainer);
