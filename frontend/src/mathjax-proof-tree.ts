@@ -39,6 +39,12 @@ class MathjaxProofTree extends MathjaxAdapter {
     private defElBackground: SVGRectElement | null = null;
     // CSS class used for the tooltip element
     private hoverTextElID: string = "typicalc-hover-explainer";
+    private hoverTextBackgroundElID: string = "typicalc-tooltip-background";
+    // true if the user is currently moving the proof tree around
+    private panningSvg: boolean = false;
+    private hoveringOnElement: SVGGraphicsElement | null = null;
+    private hoverStyles: HTMLElement | null = null;
+    private hoverStylesUnification: HTMLElement | null = null;
 
     protected showStep(n: number): void {
         for (let current = 0; current < this.steps.length; current++) {
@@ -266,8 +272,9 @@ class MathjaxProofTree extends MathjaxAdapter {
                         this.hammer.on('panstart panmove', ev => {
                             // On pan start reset panned variables
                             if (ev.type === 'panstart') {
-                                pannedX = 0
-                                pannedY = 0
+                                pannedX = 0;
+                                pannedY = 0;
+                                this.panningSvg = true;
                             }
 
                             // Pan only the difference
@@ -288,6 +295,10 @@ class MathjaxProofTree extends MathjaxAdapter {
 								explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
 								 */
                             }
+                        });
+                        // @ts-ignore
+                        this.hammer.on("panend", (e) => {
+                            this.panningSvg = false;
                         });
 
                         let initialScale = 1;
@@ -328,6 +339,20 @@ class MathjaxProofTree extends MathjaxAdapter {
             let matrix = svg.getElementById("svg-pan-zoom-controls")!.transform.baseVal[0].matrix;
             matrix.e = 0;
             matrix.f = 0;
+
+            svg.addEventListener("mousemove", (e) => {
+                if (!this.hoveringOnElement || this.panningSvg) {
+                    return;
+                }
+                const x1 = e.clientX;
+                const y1 = e.clientY;
+                const rect = this.hoveringOnElement.getBoundingClientRect();
+                const x2 = (rect.left + rect.right) / 2;
+                const y2 = (rect.top + rect.bottom) / 2;
+                if ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) > (rect.width*rect.width)) { // use relative distance
+                    this.destroyTooltip();
+                }
+            });
         }
         this.steps = steps;
         this.showStep(0);
@@ -343,18 +368,18 @@ class MathjaxProofTree extends MathjaxAdapter {
         const svg = root.querySelector<SVGElement>("svg")!;
 
         // setup style container for styles applied on hover
-        let hoverStyles = root.querySelector("#typicalc-hover-styles");
-        if (!hoverStyles) {
-            hoverStyles = document.createElement('style');
-            hoverStyles.id = "typicalc-hover-styles";
-            root.querySelector("mjx-head")!.appendChild(hoverStyles);
+        this.hoverStyles = root.querySelector<HTMLElement>("#typicalc-hover-styles");
+        if (!this.hoverStyles) {
+            this.hoverStyles = document.createElement('style');
+            this.hoverStyles.id = "typicalc-hover-styles";
+            root.querySelector("mjx-head")!.appendChild(this.hoverStyles);
         }
         const unificationEl = root.host.parentElement!.parentElement!.querySelector("tc-unification")!;
-        let hoverStylesUnification = unificationEl.shadowRoot!.querySelector("#typicalc-hover-styles");
-        if (!hoverStylesUnification) {
-            hoverStylesUnification = document.createElement('style');
-            hoverStylesUnification.id = "typicalc-hover-styles";
-            unificationEl.shadowRoot!.querySelector("mjx-head")!.appendChild(hoverStylesUnification);
+        this.hoverStylesUnification = unificationEl.shadowRoot!.querySelector("#typicalc-hover-styles");
+        if (!this.hoverStylesUnification) {
+            this.hoverStylesUnification = document.createElement('style');
+            this.hoverStylesUnification.id = "typicalc-hover-styles";
+            unificationEl.shadowRoot!.querySelector("mjx-head")!.appendChild(this.hoverStylesUnification);
         }
         // set the size of the rendered SVG to the size of the container element
         if (!root.querySelector("#style-fixes")) {
@@ -366,8 +391,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                         mjx-container {\
                             margin: 0 !important;\
                         }\
-                        #typicalc-definition-abs, #typicalc-definition-abs-let, #typicalc-definition-app,\
-                        #typicalc-definition-const, #typicalc-definition-var, #typicalc-definition-var-let, #typicalc-definition-let {\
+                        .typicalc-definition {\
                             display: none;\
                             border: 2px solid red;\
                         }" + hoverAreaAroundElements;
@@ -378,6 +402,9 @@ class MathjaxProofTree extends MathjaxAdapter {
 
         const viewport = svg.querySelector("#step0")!.parentNode as SVGGraphicsElement;
         const handleMouseEvent = (e: MouseEvent, mouseIn: boolean) => {
+            if (this.panningSvg) {
+                return; // do not add/remove the tooltip if the user is moving the proof tree around
+            }
             let typeTarget = e.target! as SVGGraphicsElement;
             let counter = 0;
             while (typeTarget.classList
@@ -395,11 +422,13 @@ class MathjaxProofTree extends MathjaxAdapter {
             let isType = typeTarget.classList.contains("typicalc-type");
             let isLabel = typeTarget.classList.contains("typicalc-label");
             if (mouseIn) {
+                this.destroyTooltip();
+                this.hoveringOnElement = typeTarget;
                 if (isType) {
                     const typeClass = typeTarget.classList[1];
                     const css = "." + typeClass + " { color: red; }";
-                    hoverStyles!.innerHTML = css;
-                    hoverStylesUnification!.innerHTML = css;
+                    this.hoverStyles!.innerHTML = css;
+                    this.hoverStylesUnification!.innerHTML = css;
                 } else if (isLabel) {
                     let stepTarget = typeTarget;
                     while (stepTarget.getAttribute("typicalc") !== "step" && counter < 15) {
@@ -417,19 +446,19 @@ class MathjaxProofTree extends MathjaxAdapter {
                     const svgRect = defEl.getBBox();
                     defEl.transform.baseVal[0].matrix.e = -transform.e - svgRect.width + offsetX + 1000;
                     defEl.transform.baseVal[0].matrix.f = -transform.f - 5500 + offsetY;
-                    this.defElBackground = root.getElementById(defId + "-background") as SVGRectElement | null;
+                    this.defElBackground = root.getElementById(this.hoverTextBackgroundElID) as SVGRectElement | null;
                     if (!this.defElBackground) {
                         this.defElBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-                        this.defElBackground.id = defId + "-background";
+                        this.defElBackground.id = this.hoverTextBackgroundElID;
                         this.defElBackground.setAttribute("x", "0");
                         this.defElBackground.setAttribute("y", "0");
-                        this.defElBackground.setAttribute("width", String(svgRect.width + 2000));
                         defEl.parentElement!.insertBefore(this.defElBackground, defEl);
                     }
                     this.defElBackground.setAttribute("x", String(-transform.e - svgRect.width + offsetX));
                     const defElBackgroundY = -transform.f - 7000 + offsetY;
                     this.defElBackground.setAttribute("y", String(defElBackgroundY));
                     const defElBackgroundHeight = svgRect.height + 1000;
+                    this.defElBackground.setAttribute("width", String(svgRect.width + 2000));
                     this.defElBackground.setAttribute("height", String(defElBackgroundHeight));
                     this.defElBackground.setAttribute("fill", "yellow");
                     // calculate screen coordinates
@@ -480,30 +509,12 @@ class MathjaxProofTree extends MathjaxAdapter {
 
                     if (typeTarget.classList.length >= 3) {
                         const stepId = typeTarget.classList[2];
-                        hoverStylesUnification!.innerHTML = "." + stepId + " { color: red; }";
+                        this.hoverStylesUnification!.innerHTML = "." + stepId + " { color: red; }";
                     }
                 }
             } else {
-                if (isType) {
-                    hoverStyles!.innerHTML = "";
-                    hoverStylesUnification!.innerHTML = "";
-                } else if (isLabel) {
-                    // remove previous tooltip, if possible
-                    let explainers = svg.getElementsByClassName(this.hoverTextElID);
-                    // do not use a for..of loop, it won't work
-                    while (explainers.length > 0) {
-                        const exp = explainers[0];
-                        exp.parentNode!.removeChild(exp);
-                    }
-                    const defId = typeTarget.classList[1].replace("-label-", "-definition-");
-                    this.shadowRoot!.getElementById(defId)!.style.display = "none";
-                    let defElBackground = this.shadowRoot!.getElementById(defId + "-background");
-                    defElBackground!.setAttribute("y", String(-10000));
-                    defElBackground!.setAttribute("fill", "transparent");
-                    if (typeTarget.classList.length >= 3) {
-                        hoverStylesUnification!.innerHTML = "";
-                    }
-                }
+                this.hoveringOnElement = null;
+                this.destroyTooltip();
             }
         };
         // listen for hover events on types
@@ -521,6 +532,32 @@ class MathjaxProofTree extends MathjaxAdapter {
         }
 
         this.$server!.setStepCount(this.steps.length);
+    }
+
+    private destroyTooltip() {
+        const svg = this.shadowRoot!.querySelector<SVGElement>("svg");
+        if (!svg) {
+            return;
+        }
+
+        // remove type highlighting
+        this.hoverStyles!.innerHTML = "";
+        this.hoverStylesUnification!.innerHTML = "";
+
+        // remove previous tooltip, if possible
+        let explainers = svg.getElementsByClassName(this.hoverTextElID);
+        // do not use a for..of loop, it won't work
+        while (explainers.length > 0) {
+            const exp = explainers[explainers.length - 1];
+            exp.parentNode!.removeChild(exp);
+        }
+        this.shadowRoot!
+            .querySelectorAll<SVGGraphicsElement>(".typicalc-definition")!
+            .forEach((it) => it.style.display = "none");
+        let defElBackground = this.shadowRoot!.getElementById(this.hoverTextBackgroundElID);
+        if (defElBackground) {
+            defElBackground.parentElement!.removeChild(defElBackground);
+        }
     }
 }
 

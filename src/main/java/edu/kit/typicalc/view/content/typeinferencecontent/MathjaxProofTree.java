@@ -36,27 +36,42 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
      * @param extraData extra data to pass to the frontend script
      */
     public MathjaxProofTree(String latex, List<String> extraData) {
+        // step definitions used for tooltips
         content.add("\\[\\cssId{typicalc-prooftree}{" + latex + "}"
+                + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-abs}{"
                 + getTranslation("root.absLatex")
                 + "}"
+                + "}"
+                + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-abs-let}{"
                 + getTranslation("root.absLetLatex")
                 + "}"
+                + "}"
+                + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-app}{"
                 + getTranslation("root.appLatex")
                 + "}"
+                + "}"
+                + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-const}{"
                 + getTranslation("root.constLatex")
                 + "}"
+                + "}"
+                + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-var}{"
                 + getTranslation("root.varLatex")
                 + "}"
+                + "}"
+                + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-var-let}{"
                 + getTranslation("root.varLetLatex")
                 + "}"
+                + "}"
+                + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-let}{"
                 + getTranslation("root.letLatex")
+                + "}"
                 + "}"
                 + "\\]");
         getElement().callJsFunction("requestTypeset", new Gson().toJson(extraData));
