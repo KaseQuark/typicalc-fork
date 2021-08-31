@@ -8,14 +8,16 @@ import edu.kit.typicalc.model.TypeInfererInterface;
 import edu.kit.typicalc.model.step.InferenceStep;
 import edu.kit.typicalc.model.term.LambdaTerm;
 import edu.kit.typicalc.util.Result;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreator;
+import edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorMode;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.HashMap;
 
 import com.pholser.junit.quickcheck.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @RunWith(JQF.class)
 public class LambdaParserFuzzTest {
@@ -30,6 +32,26 @@ public class LambdaParserFuzzTest {
         Model model = new ModelImpl();
         Result<TypeInfererInterface, ParseError> typer = model.getTypeInferer(term, "");
         InferenceStep first = typer.unwrap().getFirstInferenceStep();
+    }
+
+    /**
+     * Runs the type inference algorithm and exports the proof tree as latex.
+     * Validates that it ends with `\end{prooftree}`.
+     *
+     * @param term lambda term
+     */
+    @Fuzz
+    public void testInferenceLatex(@From(LambdaTermGenerator.class) String term) {
+        Model model = new ModelImpl();
+        Result<TypeInfererInterface, ParseError> typer = model.getTypeInferer(term, "");
+        if (typer.isError()) {
+            return; // don't care
+        }
+        var lc = new LatexCreator(typer.unwrap(),
+                error -> "root." + error.toString(),
+                LatexCreatorMode.NORMAL);
+        var latexCode = lc.getTree();
+        assertTrue(latexCode.endsWith("\\end{prooftree}"));
     }
 
     // this is how to rerun a specific fuzz result
