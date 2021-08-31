@@ -27,16 +27,12 @@ import java.util.regex.Pattern;
 @CssImport("./styles/view/share-dialog.css")
 public class ShareDialog extends Dialog implements LocaleChangeObserver {
 
-    private static final String HEADING_LAYOUT_ID = "headingLayout";
-    private static final String SHARE_DIALOG_ID = "shareDialog";
+    private static final String HEADING_LAYOUT_ID = "share-heading-layout";
+    private static final String SHARE_DIALOG_ID = "share-dialog";
     private static final String LAYOUT_ID = "share-dialog-layout";
     private static final String FIELD_CLASS = "share-dialog-field";
-    private static final String CLOSE_ICON_ID = "closeIcon";
-    private static final String URL_AREA_LAYOUT_ID = "url-area-layout";
-    private static final String PACKAGE_AREA_TREE_LAYOUT_ID = "package-area-tree-layout";
-    private static final String PACKAGE_AREA_UNIFICATION_LAYOUT_ID = "package-area-unification-layout";
-    private static final String LATEX_AREA_TREE_LAYOUT_ID = "latex-area-tree-layout";
-    private static final String LATEX_AREA_UNIFICATION_LAYOUT_ID = "latex-area-unification-layout";
+    private static final String CLOSE_ICON_CLASS = "close-icon";
+    private static final String COPY_BUTTON_LAYOUT_CLASS = "copy-button-layout";
 
     private static final String RIGHT_ARROW_WHITE = "\\\\rightwhitearrow";
 
@@ -62,7 +58,7 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         heading = new H3();
         Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
         closeIcon.addClickListener(event -> this.close());
-        closeIcon.setId(CLOSE_ICON_ID);
+        closeIcon.setClassName(CLOSE_ICON_CLASS);
 
         headingLayout.add(heading);
         headingLayout.add(closeIcon);
@@ -91,15 +87,15 @@ public class ShareDialog extends Dialog implements LocaleChangeObserver {
         Button copyButtonLatexAreaUnification = makeCopyButton(latexAreaUnification.getValue());
 
         HorizontalLayout urlLayout = new HorizontalLayout();
-        urlLayout.setId(URL_AREA_LAYOUT_ID);
+        urlLayout.setClassName(COPY_BUTTON_LAYOUT_CLASS);
         HorizontalLayout packageAreaTreeLayout = new HorizontalLayout();
-        packageAreaTreeLayout.setId(PACKAGE_AREA_TREE_LAYOUT_ID);
+        packageAreaTreeLayout.setClassName(COPY_BUTTON_LAYOUT_CLASS);
         HorizontalLayout latexAreaTreeLayout = new HorizontalLayout();
-        latexAreaTreeLayout.setId(LATEX_AREA_TREE_LAYOUT_ID);
+        latexAreaTreeLayout.setClassName(COPY_BUTTON_LAYOUT_CLASS);
         HorizontalLayout packageAreaUnificationLayout = new HorizontalLayout();
-        packageAreaUnificationLayout.setId(PACKAGE_AREA_UNIFICATION_LAYOUT_ID);
+        packageAreaUnificationLayout.setClassName(COPY_BUTTON_LAYOUT_CLASS);
         HorizontalLayout latexAreaUnificationLayout = new HorizontalLayout();
-        latexAreaUnificationLayout.setId(LATEX_AREA_UNIFICATION_LAYOUT_ID);
+        latexAreaUnificationLayout.setClassName(COPY_BUTTON_LAYOUT_CLASS);
 
         urlLayout.add(urlField, copyButtonUrl);
         packageAreaTreeLayout.add(packageAreaTree, copyButtonPackageAreaTree);

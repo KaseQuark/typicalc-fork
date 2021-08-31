@@ -8,7 +8,7 @@ function changeEvent(element: HTMLElement, inputID: string) {
 
 // @ts-ignore
 window.buttonListener = (buttonID: string, inputID: string) => {
-	let replacement = (buttonID === "lambdaButton") ? 'λ' : '∀';
+	let replacement = (buttonID === "lambda-button") ? 'λ' : '∀';
 	const button = document.getElementById(buttonID)!;
 	const input = document.getElementById(inputID)!;
 	button.addEventListener('click', () => {

@@ -57,7 +57,7 @@ public class TypeInferenceView extends VerticalLayout
     private static final String HOVER_BUTTON_CLASS = "hovering-button";
     private static final String RULES_BUTTON_ID = "rules-button";
     private static final String EXPLANATION_TEXT_BUTTON_ID = "explanation-text-button";
-    private static final String H_LINE_ID = "horizontalLine";
+    private static final String H_LINE_ID = "horizontal-line";
     private static final String FOOTER_ID = "footer";
 
     private List<Integer> treeNumbers;

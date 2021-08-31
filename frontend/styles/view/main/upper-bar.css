@@ -4,38 +4,30 @@
 	align-items: center;
 	overflow-x: auto;
 	overflow-y: hidden;
-	
 	padding: 0.25em;
 }
 
-
-#header img {
-	border-radius: 50%;
-	height: var(--lumo-size-s);
-	margin-left: auto;
-	margin-right: var(--lumo-space-m);
-	overflow: hidden;
-	background-color: var(--lumo-contrast);
-}
-
-#viewTitle {
+#view-title {
 	font-size: var(--lumo-font-size-l);
 	cursor: pointer;
 	align-self: center;
 	margin: 0 47% 0.5% 0;
 }
 
-#viewTitle a {
+#view-title a {
 	color: var(--lumo-header-text-color);
 }
 
-#inputBar {
+#input-bar {
 	width: 75%;
 	flex-grow: 1;
+	align-items: flex-end;
+	padding: 0 1em;
+	margin-top: -0.5em;
 	justify-content: end;
 }
 
-#helpIcon {
+#help-icon {
 	color: white;
 	align-self: center;
 }

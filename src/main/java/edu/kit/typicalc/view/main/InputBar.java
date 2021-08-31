@@ -30,10 +30,9 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      * IDs for the imported .css-file
      */
     public static final String TERM_INPUT_FIELD_ID = "term-input-field";
-    private static final String INPUT_BAR_ID = "inputBar";
-    private static final String INFER_BUTTON_ID = "inferButton";
-    private static final String EXAMPLE_BUTTON_ID = "exampleButton";
-    private static final String LAMBDA_BUTTON_ID = "lambdaButton";
+    private static final String INFER_BUTTON_ID = "infer-button";
+    private static final String EXAMPLE_BUTTON_ID = "example-button";
+    private static final String LAMBDA_BUTTON_ID = "lambda-button";
     private static final String QUANTIFIER_BUTTON_ID = "quantifier-button";
     public static final String ASS_INPUT_FIELD_ID = "ass-input-field";
 
@@ -54,8 +53,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
      */
     protected InputBar(Consumer<Pair<String, String>> callback) {
         this.callback = callback;
-
-        setId(INPUT_BAR_ID);
 
         infoIcon = new Button(new Icon(VaadinIcon.INFO_CIRCLE));
         infoIcon.addClickListener(event -> onInfoIconClick());

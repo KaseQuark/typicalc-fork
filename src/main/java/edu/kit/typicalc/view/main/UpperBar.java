@@ -34,9 +34,9 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
     /*
      * IDs for the imported .css-file
      */
-    private static final String VIEW_TITLE_ID = "viewTitle";
-    private static final String INPUT_BAR_ID = "inputBar";
-    private static final String HELP_ICON_ID = "helpIcon";
+    private static final String VIEW_TITLE_ID = "view-title";
+    private static final String INPUT_BAR_ID = "input-bar";
+    private static final String HELP_ICON_ID = "help-icon";
     private static final String UPPER_BAR_ID = "header";
     private static final String TOP_LINE_ID = "top-line";
     private static final String LANGUAGE_SELECT_ID = "language-select";

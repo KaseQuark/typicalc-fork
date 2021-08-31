@@ -18,9 +18,9 @@ public class InfoDialog extends Dialog {
     /*
      * IDs for the imported .css-file
      */
-    private static final String INFO_HEADER_ID = "infoHeader";
-    private static final String INFO_CONTENT_ID = "infoContent";
-    private static final String CLOSE_ICON_ID = "closeIcon";
+    private static final String INFO_HEADER_ID = "info-header";
+    private static final String INFO_CONTENT_ID = "info-content";
+    private static final String CLOSE_ICON_CLASS = "close-icon";
 
     /**
      * Creates new InfoDialog.
@@ -30,7 +30,7 @@ public class InfoDialog extends Dialog {
         HorizontalLayout infoHeader = new HorizontalLayout(heading);
         Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
         closeIcon.addClickListener(event -> this.close());
-        closeIcon.setId(CLOSE_ICON_ID);
+        closeIcon.setClassName(CLOSE_ICON_CLASS);
         infoHeader.setId(INFO_HEADER_ID);
         infoHeader.add(closeIcon);
 

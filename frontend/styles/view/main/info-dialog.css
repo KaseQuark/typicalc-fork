@@ -1,21 +1,15 @@
-#infoHeader {
+#info-header {
 	display: flex;
 	position: relative;
 	align-items: center;
 	justify-content: center;
 }
 
-#infoContent {
+#info-content {
 	align-items: flex-start;
 }
 
-#inputSyntax {
+#input-syntax {
 	font-family: "Courier";
 	margin-top: 1.5em;
-}
-
-#closeIcon {
-	right: 0;
-	position: absolute;
-	bottom: 2.1em;
 }

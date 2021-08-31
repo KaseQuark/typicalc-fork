@@ -4,12 +4,6 @@
 	padding-bottom: 0;
 }
 
-#inputBar {
-	align-items: flex-end;
-	padding: 0 1em;
-	margin-top: -0.5em;
-}
-
 #ass-input-field {
 	flex-grow: 1;
 	padding-top: 0;

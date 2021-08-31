@@ -7,7 +7,7 @@ import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
 public class InfoContent extends VerticalLayout implements LocaleChangeObserver {
-    private static final String GRAMMAR_ID = "inputSyntax";
+    private static final String GRAMMAR_ID = "input-syntax";
 
     private final Span termExplanation;
     private final Paragraph termSyntax;

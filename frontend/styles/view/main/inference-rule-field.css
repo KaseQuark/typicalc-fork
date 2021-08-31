@@ -1,4 +1,4 @@
-#inferenceRuleField {
+#inference-rule-field {
 	display: flex;
 	align-items: center;
 	border: 2px solid #e8e8e8;
@@ -9,7 +9,7 @@
 	padding: 0px;
 }
 
-#headerField {
+#inference-rule-header {
 	border-bottom: 2px solid #e8e8e8;
 	background-color: #f8f8f8;
 	display: grid;
@@ -20,16 +20,16 @@
 	border-radius: 5px 5px 0 0;
 }
 
-#ruleName {
+#rule-name {
 	margin: 1px;
 }
 
-#copyButton {
+#copy-button {
 	margin-left: auto;
 	margin-right: 10%;
 }
 
-#main {
+#inference-rule-content {
 	align-items: center;
 	justify-content: center;
 	width: 100%;

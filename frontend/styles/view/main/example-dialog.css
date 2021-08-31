@@ -1,4 +1,4 @@
-#headingLayout {
+#example-heading-layout {
 	width: 100%;
 	display: flex;
 	position: relative;
@@ -6,13 +6,7 @@
 	justify-content: center;
 }
 
-#closeIcon {
-	right: 0;
-	position: absolute;
-	bottom: 2.1em;
-}
-
-#exampleContainer {
+#example-container {
 	padding: 0;
 	margin: 0;
 }

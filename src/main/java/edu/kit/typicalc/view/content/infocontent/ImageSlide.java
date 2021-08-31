@@ -16,8 +16,8 @@ public class ImageSlide extends Slide implements LocaleChangeObserver {
 
     private static final long serialVersionUID = 232255503611054445L;
 
-    private static final String SLIDE_LAYOUT_ID = "slideLayout";
-    private static final String EXPLANATION_ID = "explanation";
+    private static final String SLIDE_LAYOUT_ID = "slide-layout";
+    private static final String EXPLANATION_ID = "slide-explanation";
 
     private final VerticalLayout slideLayout;
     private final Span explanation;

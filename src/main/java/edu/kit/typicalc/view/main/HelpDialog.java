@@ -23,11 +23,11 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
     /*
      * IDs for the imported .css-file
      */
-    private static final String HEADING_LAYOUT_ID = "headingLayout";
-    private static final String CONTENT_LAYOUT_ID = "contentLayout";
+    private static final String HEADING_LAYOUT_ID = "help-heading-layout";
+    private static final String CONTENT_LAYOUT_ID = "help-content-layout";
     private static final String ACCORDION_ID = "accordion";
-    private static final String CLOSE_ICON_ID = "closeIcon";
-    private static final String TYPICALC_INFO_ID = "typicalcInfo";
+    private static final String CLOSE_ICON_CLASS = "close-icon";
+    private static final String TYPICALC_INFO_ID = "typicalc-info";
 
     private final H3 heading;
     private final Paragraph typicalcInfo;
@@ -43,7 +43,7 @@ public class HelpDialog extends Dialog implements LocaleChangeObserver {
 
         Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
         closeIcon.addClickListener(event -> this.close());
-        closeIcon.setId(CLOSE_ICON_ID);
+        closeIcon.setClassName(CLOSE_ICON_CLASS);
 
         headingLayout.add(heading, closeIcon);
 

@@ -28,11 +28,11 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
     /*
      * IDs for the imported .css-file
      */
-    private static final String INFERENCE_RULE_FIELD_ID = "inferenceRuleField";
-    private static final String HEADER_ID = "headerField";
-    private static final String MAIN_ID = "main";
-    private static final String RULE_NAME_ID = "ruleName";
-    private static final String COPY_BUTTON_ID = "copyButton";
+    private static final String INFERENCE_RULE_FIELD_ID = "inference-rule-field";
+    private static final String HEADER_ID = "inference-rule-header";
+    private static final String MAIN_ID = "inference-rule-content";
+    private static final String RULE_NAME_ID = "rule-name";
+    private static final String COPY_BUTTON_ID = "copy-button";
 
     private final String nameKey;
     private final Button copyButton;
@@ -60,11 +60,10 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
         ruleName.setId(RULE_NAME_ID);
         header.add(ruleName, copyButton);
 
-        VerticalLayout main = new VerticalLayout();
-        main.setId(MAIN_ID);
         MathjaxDisplay rule = new MathjaxDisplay(latex);
-        main.add(rule);
-        add(header, main);
+        VerticalLayout content = new VerticalLayout(rule);
+        content.setId(MAIN_ID);
+        add(header, content);
         setId(INFERENCE_RULE_FIELD_ID);
     }
 

@@ -1,25 +1,25 @@
-#startPage-Heading {
+#start-page-heading {
 	margin-top: 20px;
 	margin-bottom: 10px;
 	font-size: 50px;
 }
 
-#horizontalLine {
+#horizontal-line {
 	align-self: center;
 	width: 55em;
 	max-width: 100%;
 	min-height: 1px;
 }
 
-#textContainer {
+#start-text-container {
 	max-width: 55em;
 }
 
-#linkContainer {
+#start-link-container {
 	margin: 0;
 }
 
-#slideProgress {
+#slide-progress {
 	width: 55em;
 	max-width: 100%;
 	min-height: 1px;
@@ -27,7 +27,7 @@
 	margin-bottom: 0;
 }
 
-#startPage {
+#start-page {
 	padding: 0;
 	display: flex;
 	justify-content: space-between;
@@ -36,16 +36,16 @@
 	height: 100%;
 }
 
-#slideShow {
+#slide-show {
 	height: var(--paper-slide-height);
 	width: 100%;
 }
 
-#startPage::before {
+#start-page::before {
 	position: absolute;
 }
 
-#startPage #content {
+#start-page #start-page-content {
 	width: 100%;
 	overflow-y: auto;
 	margin-top: 0;

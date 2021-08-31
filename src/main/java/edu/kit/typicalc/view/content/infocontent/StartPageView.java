@@ -27,15 +27,15 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
 
     private static final long serialVersionUID = 2502750919087936406L;
 
-    private static final String CONTENT_ID = "content";
-    private static final String HEADING_ID = "startPage-Heading";
-    private static final String H_LINE_ID = "horizontalLine";
-    private static final String TEXT_CONTAINER_ID = "textContainer";
-    private static final String LINK_CONTAINER_ID = "linkContainer";
-    private static final String SLIDE_PROGRESS_ID = "slideProgress";
-    private static final String CONTROL_PANEL_ID = "controlPanel";
-    private static final String START_PAGE_ID = "startPage";
-    private static final String SLIDE_SHOW_ID = "slideShow";
+    private static final String CONTENT_ID = "start-page-content";
+    private static final String HEADING_ID = "start-page-heading";
+    private static final String H_LINE_ID = "horizontal-line";
+    private static final String TEXT_CONTAINER_ID = "start-text-container";
+    private static final String LINK_CONTAINER_ID = "start-link-container";
+    private static final String SLIDE_PROGRESS_ID = "slide-progress";
+    private static final String CONTROL_PANEL_ID = "control-panel";
+    private static final String START_PAGE_ID = "start-page";
+    private static final String SLIDE_SHOW_ID = "slide-show";
 
     private static final String DOT = ".";
 
@@ -62,10 +62,8 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
 
         H1 heading = new H1(getTranslation("root.typicalc"));
         heading.setId(HEADING_ID);
-        Hr line1 = new Hr();
-        line1.setId(H_LINE_ID);
-        Hr line2 = new Hr();
-        line2.setId(H_LINE_ID);
+        Hr line = new Hr();
+        line.setId(H_LINE_ID);
         introduction = new Span();
 
         linkText = new Text(getTranslation("root.linkText"));
@@ -76,7 +74,7 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         slideProgress = new ProgressBar(slideShow.getStartPosition(), slideShow.getSlides().length - 1);
         slideProgress.setId(SLIDE_PROGRESS_ID);
 
-        content.add(heading, line1, textContainer, slideProgress, slideShow, line2);
+        content.add(heading, textContainer, slideProgress, slideShow, line);
 
         Footer footer = new Footer(controlPanel);
         add(content, footer);

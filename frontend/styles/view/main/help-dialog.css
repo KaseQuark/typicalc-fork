@@ -1,4 +1,4 @@
-#contentLayout {
+#help-content-layout {
 	width: 1000px !important;
 	padding-left: 0;
 	padding-right: 0;
@@ -7,7 +7,7 @@
 	align-items: center;
 }
 
-#headingLayout {
+#help-heading-layout {
 	width: 100%;
 	display: flex;
 	position: relative;
@@ -20,13 +20,7 @@
 	width: 100%;
 }
 
-#closeIcon {
-	right: 0;
-	position: absolute;
-	bottom: 2.1em;
-}
-
-#typicalcInfo {
+#typicalc-info {
     padding-top: 24px;
     padding-bottom: 24px;
     text-align: center;

@@ -23,9 +23,9 @@ import java.util.Optional;
 public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = 239587L;
 
-    private static final String ERROR_CONTENT_ID = "errorViewContent";
-    private static final String ADDITIONAL_INFO_ID = "errorAdditionalInfo";
-    private static final String ERROR_SUMMARY_ID = "errorSummary";
+    private static final String ERROR_CONTENT_ID = "error-view-content";
+    private static final String ADDITIONAL_INFO_ID = "error-additional-info";
+    private static final String ERROR_SUMMARY_ID = "error-summary";
 
     private final H3 heading;
     private final Div errorMessage;

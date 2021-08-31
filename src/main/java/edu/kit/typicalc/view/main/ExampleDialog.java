@@ -24,10 +24,10 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 public class ExampleDialog extends Dialog implements LocaleChangeObserver {
     private static final long serialVersionUID = -428675165625776559L;
     
-    private static final String HEADING_LAYOUT_ID = "headingLayout";
-    private static final String EXAMPLE_DIALOG_ID = "exampleDialog";
-    private static final String CLOSE_ICON_ID = "closeIcon";
-    private static final String EXAMPLE_CONTAINER_ID = "exampleContainer";
+    private static final String HEADING_LAYOUT_ID = "example-heading-layout";
+    private static final String EXAMPLE_DIALOG_ID = "example-dialog";
+    private static final String CLOSE_ICON_CLASS = "close-icon";
+    private static final String EXAMPLE_CONTAINER_ID = "example-container";
     
     private final H3 instruction;
     private final transient Consumer<Pair<String, String>> setExamples;
@@ -49,7 +49,7 @@ public class ExampleDialog extends Dialog implements LocaleChangeObserver {
 
         Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
         closeIcon.addClickListener(event -> this.close());
-        closeIcon.setId(CLOSE_ICON_ID);
+        closeIcon.setClassName(CLOSE_ICON_CLASS);
 
         headingLayout.add(instruction);
         headingLayout.add(closeIcon);
