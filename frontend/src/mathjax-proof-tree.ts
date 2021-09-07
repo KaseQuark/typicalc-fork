@@ -129,8 +129,18 @@ class MathjaxProofTree extends MathjaxAdapter {
             }
         }
         // limit start zoom
-        svg.viewBox.baseVal.width = Math.min(100000, svg.viewBox.baseVal.width);
+        svg.viewBox.baseVal.width = Math.min(50000, svg.viewBox.baseVal.width);
         svg.viewBox.baseVal.width = Math.max(20000, svg.viewBox.baseVal.width);
+        // center on first visible element
+        const finalConclusion = svg
+            .querySelector<SVGGraphicsElement>("#typicalc-prooftree > g[semantics='bspr_inferenceRule:down']")!
+            .children[1]! as SVGGraphicsElement;
+        const conclusionBBox = finalConclusion.getBBox();
+        const mainGroupElement = svg.children[1]! as SVGGraphicsElement;
+        const currentX = conclusionBBox.x + conclusionBBox.width / 2;
+        const desiredX = svg.viewBox.baseVal.width / 2;
+        mainGroupElement.setAttribute("transform",
+            mainGroupElement.getAttribute("transform") + " translate(" + (desiredX - currentX) + " 0)");
 
         // MathJax layout of bussproofs is sometimes wrong:
         // https://github.com/mathjax/MathJax/issues/2270
@@ -238,124 +248,130 @@ class MathjaxProofTree extends MathjaxAdapter {
         }
         console.timeEnd('stepCalculation');
 
-        const thisShadowRoot = this.shadowRoot!;
-
-        // should not be used on empty SVGs
+        // svg-pan-zoom should not be used on empty SVGs
         if (nodeIterator.length >= 3) {
-            window.svgPanZoomFun(svg, {
-                fit: false,
-                controlIconsEnabled: true,
-                customEventsHandler: {
-                    // Halt all touch events
-                    haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel'],
-
-                    // Init custom events handler
-                    init: (options) => {
-                        const instance = options.instance;
-                        // Init Hammer
-                        // @ts-ignore
-                        this.hammer = Hammer(options.svgElement);
-
-                        // @ts-ignore
-                        this.hammer.get('pinch').set({enable: true});
-
-                        // Handle double tap
-                        // @ts-ignore
-                        this.hammer.on('doubletap', () => {
-                            options.instance.zoomIn()
-                        });
-
-                        let pannedX = 0;
-                        let pannedY = 0;
-                        // Handle pan
-                        // @ts-ignore
-                        this.hammer.on('panstart panmove', ev => {
-                            // On pan start reset panned variables
-                            if (ev.type === 'panstart') {
-                                pannedX = 0;
-                                pannedY = 0;
-                                this.panningSvg = true;
-                            }
-
-                            // Pan only the difference
-                            instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
-                            pannedX = ev.deltaX
-                            pannedY = ev.deltaY
-                            // also move the tooltip
-                            let explainer = thisShadowRoot.getElementById(this.hoverTextElID);
-                            if (explainer) {
-                                const ctm1 = svg.getBoundingClientRect();
-                                const ctm2 = this.defElBackground!.getBoundingClientRect();
-                                explainer.style.left = (ctm2.left - ctm1.left) + "px";
-                                explainer.style.top = (ctm2.bottom - ctm1.top) + "px";
-                                // TODO(performance): this should be more efficient, but somehow flickers
-                                /*
-								const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
-								const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
-								explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
-								 */
-                            }
-                        });
-                        // @ts-ignore
-                        this.hammer.on("panend", (e) => {
-                            this.panningSvg = false;
-                        });
-
-                        let initialScale = 1;
-                        // Handle pinch
-                        // @ts-ignore
-                        this.hammer.on('pinchstart pinchmove', function (ev) {
-                            // On pinch start remember initial zoom
-                            if (ev.type === 'pinchstart') {
-                                initialScale = instance.getZoom()
-                                instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
-                            }
-
-                            instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
-                        });
-
-                        // Prevent moving the page on some devices when panning over SVG
-                        options.svgElement.addEventListener('touchmove', function (e: TouchEvent) {
-                            e.preventDefault();
-                        });
-                    },
-
-                    // Destroy custom events handler
-                    destroy: function () {
-                        // @ts-ignore
-                        this.hammer.destroy()
-                    }
-                }
-            });
-            // add tooltips to buttons
-            const zoomIn = document.createElementNS("http://www.w3.org/2000/svg", "title");
-            zoomIn.append(document.createTextNode("zoom in"));
-            svg.getElementById("svg-pan-zoom-zoom-in")!.appendChild(zoomIn);
-            const zoomOut = document.createElementNS("http://www.w3.org/2000/svg", "title");
-            zoomOut.append(document.createTextNode("zoom out"));
-            svg.getElementById("svg-pan-zoom-zoom-out")!.appendChild(zoomOut);
-
-            // move control to upper left corner
-            let matrix = svg.getElementById("svg-pan-zoom-controls")!.transform.baseVal[0].matrix;
-            matrix.e = 0;
-            matrix.f = 0;
-
-            svg.addEventListener("mousemove", (e) => {
-                if (!this.hoveringOnElement || this.panningSvg) {
-                    return;
-                }
-                const x1 = e.clientX;
-                const y1 = e.clientY;
-                const rect = this.hoveringOnElement.getBoundingClientRect();
-                const x2 = (rect.left + rect.right) / 2;
-                const y2 = (rect.top + rect.bottom) / 2;
-                if ((x1-x2)*(x1-x2) + (y1-y2)*(y1-y2) > (rect.width*rect.width)) { // use relative distance
-                    this.destroyTooltip();
-                }
-            });
+            // a timeout is required, otherwise the proof tree is moved around
+            setTimeout(() => {
+                this.setupPanZoom(this.shadowRoot!, svg);
+            }, 100);
         }
         this.steps = steps;
         this.showStep(0);
+    }
+
+    private setupPanZoom(thisShadowRoot: ShadowRoot, svg: SVGElement) {
+        window.svgPanZoomFun(svg, {
+            fit: false,
+            controlIconsEnabled: true,
+            customEventsHandler: {
+                // Halt all touch events
+                haltEventListeners: ['touchstart', 'touchend', 'touchmove', 'touchleave', 'touchcancel'],
+
+                // Init custom events handler
+                init: (options) => {
+                    const instance = options.instance;
+                    // Init Hammer
+                    // @ts-ignore
+                    this.hammer = Hammer(options.svgElement);
+
+                    // @ts-ignore
+                    this.hammer.get('pinch').set({enable: true});
+
+                    // Handle double tap
+                    // @ts-ignore
+                    this.hammer.on('doubletap', () => {
+                        options.instance.zoomIn()
+                    });
+
+                    let pannedX = 0;
+                    let pannedY = 0;
+                    // Handle pan
+                    // @ts-ignore
+                    this.hammer.on('panstart panmove', ev => {
+                        // On pan start reset panned variables
+                        if (ev.type === 'panstart') {
+                            pannedX = 0;
+                            pannedY = 0;
+                            this.panningSvg = true;
+                        }
+
+                        // Pan only the difference
+                        instance.panBy({x: ev.deltaX - pannedX, y: ev.deltaY - pannedY})
+                        pannedX = ev.deltaX
+                        pannedY = ev.deltaY
+                        // also move the tooltip
+                        let explainer = thisShadowRoot.getElementById(this.hoverTextElID);
+                        if (explainer) {
+                            const ctm1 = svg.getBoundingClientRect();
+                            const ctm2 = this.defElBackground!.getBoundingClientRect();
+                            explainer.style.left = (ctm2.left - ctm1.left) + "px";
+                            explainer.style.top = (ctm2.bottom - ctm1.top) + "px";
+                            // TODO(performance): this should be more efficient, but somehow flickers
+                            /*
+							const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
+							const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
+							explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
+							 */
+                        }
+                    });
+                    // @ts-ignore
+                    this.hammer.on("panend", (e) => {
+                        this.panningSvg = false;
+                    });
+
+                    let initialScale = 1;
+                    // Handle pinch
+                    // @ts-ignore
+                    this.hammer.on('pinchstart pinchmove', function (ev) {
+                        // On pinch start remember initial zoom
+                        if (ev.type === 'pinchstart') {
+                            initialScale = instance.getZoom()
+                            instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                        }
+
+                        instance.zoomAtPoint(initialScale * ev.scale, {x: ev.center.x, y: ev.center.y})
+                    });
+
+                    // Prevent moving the page on some devices when panning over SVG
+                    options.svgElement.addEventListener('touchmove', function (e: TouchEvent) {
+                        e.preventDefault();
+                    });
+                },
+
+                // Destroy custom events handler
+                destroy: function () {
+                    // @ts-ignore
+                    this.hammer.destroy()
+                }
+            }
+        });
+        // add tooltips to buttons
+        const zoomIn = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        zoomIn.append(document.createTextNode("zoom in"));
+        svg.getElementById("svg-pan-zoom-zoom-in")!.appendChild(zoomIn);
+        const zoomOut = document.createElementNS("http://www.w3.org/2000/svg", "title");
+        zoomOut.append(document.createTextNode("zoom out"));
+        svg.getElementById("svg-pan-zoom-zoom-out")!.appendChild(zoomOut);
+
+        // move control to upper left corner
+        let matrix = svg.getElementById("svg-pan-zoom-controls")!.transform.baseVal[0].matrix;
+        matrix.e = 0;
+        matrix.f = 0;
+
+        // this listener destroys tooltips if the mouse is moved away from the relevant element
+        svg.addEventListener("mousemove", (e) => {
+            if (!this.hoveringOnElement || this.panningSvg) {
+                return;
+            }
+            const x1 = e.clientX;
+            const y1 = e.clientY;
+            const rect = this.hoveringOnElement.getBoundingClientRect();
+            const x2 = (rect.left + rect.right) / 2;
+            const y2 = (rect.top + rect.bottom) / 2;
+            if ((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2) > (rect.width * rect.width)) { // use relative distance
+                this.destroyTooltip();
+            }
+        });
     }
 
     protected calculateSteps(extraData: any): void {
