@@ -34,8 +34,9 @@ public class MathjaxExplanation extends LitTemplate implements MathjaxAdapter {
      *
      * @param view the type inference view this explanation text is attached to
      * @param latex the latex texts for all steps
+     * @param initialStep the step to show initially
      */
-    public MathjaxExplanation(TypeInferenceView view, List<String> latex) {
+    public MathjaxExplanation(TypeInferenceView view, List<String> latex, int initialStep) {
         this.typeInferenceView = view;
         this.latex = latex;
         StringBuilder finalTex = new StringBuilder("<div>");
@@ -46,7 +47,7 @@ public class MathjaxExplanation extends LitTemplate implements MathjaxAdapter {
         }
         var finalString = finalTex.append("</div>").toString();
         content.add(new Html(finalString));
-        showStep(0);
+        showStep(initialStep);
     }
 
     @Override

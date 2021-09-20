@@ -15,17 +15,17 @@ class MathjaxExplanation extends MathjaxAdapter {
 	}
 
 	protected calculateSteps(_extraData: any) {
-		let first = true;
 		let stepIdx = 0;
-		for (let text of this.shadowRoot!.querySelectorAll<SVGGraphicsElement>(".tc-text")) {
+		for (let text of this.shadowRoot!.querySelectorAll<HTMLElement>(".tc-text")) {
 			let thisStepIdx = stepIdx;
 			stepIdx++;
 			text.onclick = () => {
 				// @ts-ignore
 				this.$server!.switchToStep(thisStepIdx);
 			};
-			if (first) {
-				first = false; // show first step
+			// show initial step
+			if (thisStepIdx === this.lastStepShown) {
+				this.scrollToElementIfNeeded(text);
 				continue;
 			}
 			text.style.opacity = "0.5";
@@ -38,16 +38,19 @@ class MathjaxExplanation extends MathjaxAdapter {
 			lastEl.style.opacity = "0.5";
 		}
 		let el = this.getElementForStep(n);
+		this.lastStepShown = n;
 		if (el) {
-			this.lastStepShown = n;
-			// scroll to element if needed
-			const hostEl = this.shadowRoot!.host as HTMLElement;
-			const dy = el.offsetTop - hostEl.offsetTop - hostEl.scrollTop;
-			// end of text is below the container or the start of the text is above the container:
-			if (dy + el.offsetHeight > hostEl.offsetHeight || dy < 0) {
-				hostEl.scrollBy(0, -hostEl.scrollTop + el.offsetTop - hostEl.offsetTop);
-			}
+			this.scrollToElementIfNeeded(el);
 			el.style.opacity = "1.0";
+		}
+	}
+
+	private scrollToElementIfNeeded(el: HTMLElement) {
+		const hostEl = this.shadowRoot!.host as HTMLElement;
+		const dy = el.offsetTop - hostEl.offsetTop - hostEl.scrollTop;
+		// end of text is below the container or the start of the text is above the container:
+		if (dy + el.offsetHeight > hostEl.offsetHeight || dy < 0) {
+			hostEl.scrollBy(0, -hostEl.scrollTop + el.offsetTop - hostEl.offsetTop);
 		}
 	}
 
