@@ -43,7 +43,8 @@ class MathjaxExplanation extends MathjaxAdapter {
 			// scroll to element if needed
 			const hostEl = this.shadowRoot!.host as HTMLElement;
 			const dy = el.offsetTop - hostEl.offsetTop - hostEl.scrollTop;
-			if (dy > hostEl.offsetHeight || dy < 0) {
+			// end of text is below the container or the start of the text is above the container:
+			if (dy + el.offsetHeight > hostEl.offsetHeight || dy < 0) {
 				hostEl.scrollBy(0, -hostEl.scrollTop + el.offsetTop - hostEl.offsetTop);
 			}
 			el.style.opacity = "1.0";
