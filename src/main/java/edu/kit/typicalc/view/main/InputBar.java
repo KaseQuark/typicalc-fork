@@ -63,9 +63,6 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
         termInputField.setClearButtonVisible(true);
         termInputField.setMaxLength(MAX_INPUT_LENGTH);
 
-        // attach a listener that replaces \ with λ
-        // JavaScript is used because this is a latency-sensitive operation
-        // (and Vaadin does not have APIs for selectionStart/selectionEnd)
         UI.getCurrent().getPage().executeJs("window.characterListener($0);", TERM_INPUT_FIELD_ID);
         Button lambdaButton = new Button(getTranslation("root.lambda"));
         lambdaButton.setId(LAMBDA_BUTTON_ID);

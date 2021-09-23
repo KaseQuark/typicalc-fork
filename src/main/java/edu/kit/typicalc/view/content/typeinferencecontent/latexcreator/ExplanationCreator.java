@@ -33,6 +33,10 @@ import edu.kit.typicalc.view.TypicalcI18NProvider;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.DOLLAR_SIGN;
 import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.LatexCreatorConstants.SPACE;
 
+/**
+ * Generates LaTeX code for explanatory texts in a specific language for every step of the type inference algorithm.
+ * To do this, text templates from the resource bundle are filled out with specific content for every input.
+ */
 public class ExplanationCreator implements StepVisitor {
     private static final String KEY_PREFIX = "explanationTree.";
 
@@ -47,7 +51,12 @@ public class ExplanationCreator implements StepVisitor {
     private boolean errorOccurred; // true if one unification was not successful
     private int letCounter = 0; // count number of lets for unification indices
 
-    // creates explanation texts for a specific language
+    /**
+     * Generate the LaTeX code from the type inferer for the language of the provided locale.
+     * 
+     * @param typeInferer the TypeInfererInterface to create the LaTeX-code from
+     * @param locale      the language of the explanatory texts
+     */
     public ExplanationCreator(TypeInfererInterface typeInferer, Locale locale) {
         this.locale = locale;
         errorOccurred = false;
@@ -60,6 +69,11 @@ public class ExplanationCreator implements StepVisitor {
         }
     }
 
+    /**
+     * Returns a list of strings with an entry for every step of the algorithm.
+     * 
+     * @return list of strings containing the explanatory texts
+     */
     public List<String> getExplanationTexts() {
         return explanationTexts;
     }
@@ -156,7 +170,6 @@ public class ExplanationCreator implements StepVisitor {
     @Override
     public void visit(VarStepWithLet varL) {
         explanationTexts.add(createLatexVarStep(varL));
-        // TODO: maybe create slightly different text
     }
 
     private String createLatexVarStep(VarStep varS) {
@@ -209,10 +222,12 @@ public class ExplanationCreator implements StepVisitor {
 
     @Override
     public void visit(EmptyStep empty) {
+        // no implementation since EmptyStep is not visible for the user
     }
 
     @Override
     public void visit(OnlyConclusionStep onlyConc) {
+        // no implementation since OnlyConclusionStep is not visible for the user
     }
 
 }

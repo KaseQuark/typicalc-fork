@@ -6,7 +6,12 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.i18n.LocaleChangeEvent;
 import com.vaadin.flow.i18n.LocaleChangeObserver;
 
+/**
+ * Component which contains information on the correct syntax of the term as well as the type assumptions.
+ */
 public class InfoContent extends VerticalLayout implements LocaleChangeObserver {
+    private static final long serialVersionUID = 7193916603756938225L;
+
     private static final String GRAMMAR_ID = "input-syntax";
 
     private final Span termExplanation;
@@ -15,6 +20,9 @@ public class InfoContent extends VerticalLayout implements LocaleChangeObserver 
     private final Span typeExplanation;
     private final Paragraph typeSyntax;
 
+    /**
+     * Creates a new InfoContent.
+     */
     public InfoContent() {
         termExplanation = new Span();
         termSyntax = new Paragraph();

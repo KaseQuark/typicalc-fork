@@ -29,7 +29,7 @@ public class LatexCreator implements StepVisitor {
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
      *
-     * @param typeInferer         theTypeInfererInterface to create the LaTeX-code from
+     * @param typeInferer         the TypeInfererInterface to create the LaTeX-code from
      * @param translationProvider translation text provider for {@link UnificationError}
      * @param mode                LaTeX creation mode
      */
@@ -41,7 +41,7 @@ public class LatexCreator implements StepVisitor {
     /**
      * Generate the pieces of LaTeX-code from the type inferer.
      *
-     * @param typeInferer         theTypeInfererInterface to create the LaTeX code from
+     * @param typeInferer         the TypeInfererInterface to create the LaTeX code from
      * @param stepLabels          turns step labels on or off
      * @param translationProvider translation text provider for {@link UnificationError}
      * @param mode                LaTeX creation mode
