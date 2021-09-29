@@ -105,8 +105,6 @@ public class ExplanationCreatorUnification {
            if (isLetUnification) {
                createLetUnficiationFinish();
            }
-       } else if (isLetUnification) {
-           unificationTexts.remove(unificationTexts.size() - 1);
        }
    }
 
@@ -159,7 +157,6 @@ public class ExplanationCreatorUnification {
        return provider.getTranslation(textKey, locale);
    }
 
-   // WARNING: call toLatex() before to get proper latex code
    private String letCounterToLatex(String setName) {
        switch (letCounter) {
            case 0:
@@ -187,13 +184,8 @@ public class ExplanationCreatorUnification {
    }
 
    private void createUnficationTexts() {
-       List<UnificationStep> unificationSteps;
-       if (typeInferer.getUnificationSteps().isPresent()) {
-           unificationSteps = typeInferer.getUnificationSteps().get();
-       } else {
-           errorOccurred = true;
-           return;
-       }
+       List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps()
+               .orElseThrow(IllegalStateException::new);
 
        // skip first step since the substitutions list is still empty (unification introduction is shown)
        for (int stepNum = 1; stepNum < unificationSteps.size(); stepNum++) {
@@ -258,9 +250,7 @@ public class ExplanationCreatorUnification {
    private void createErrorText(UnificationError errorType) {
        if (errorType == UnificationError.INFINITE_TYPE) {
            unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "infiniteType"));
-           unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "infiniteType"));
        } else if (errorType == UnificationError.DIFFERENT_TYPES) {
-           unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "differentTypes"));
            unificationTexts.add(getDefaultTextLatex(KEY_PREFIX + "differentTypes"));
        }
    }

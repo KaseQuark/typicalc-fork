@@ -193,13 +193,16 @@ public class ExplanationCreator implements StepVisitor {
         explanationTexts.add(createLatexLetStep(letD, variable, innerTerm, variableDefinition));
 
         letD.getTypeInferer().getFirstInferenceStep().accept(this);
-        ExplanationCreatorUnification unification =
-                new ExplanationCreatorUnification(letD.getTypeInferer(), locale, provider, MODE, letCounter, true,
-                        Optional.of(variable));
-        explanationTexts.addAll(unification.getUnificationsTexts().getLeft());
-        errorOccurred = unification.getUnificationsTexts().getRight();
-        letCounter--;
-
+        // skip creation of unification texts if nested let produced an error
+        if (!errorOccurred) {
+            ExplanationCreatorUnification unification =
+                    new ExplanationCreatorUnification(letD.getTypeInferer(), locale, provider, MODE, letCounter, true,
+                            Optional.of(variable));
+            explanationTexts.addAll(unification.getUnificationsTexts().getLeft());
+            errorOccurred = unification.getUnificationsTexts().getRight();
+            letCounter--;
+        }
+        
         if (!errorOccurred) {
             letD.getPremise().accept(this);
         }
