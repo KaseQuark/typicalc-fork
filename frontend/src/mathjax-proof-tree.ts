@@ -304,14 +304,9 @@ class MathjaxProofTree extends MathjaxAdapter {
                         if (explainer) {
                             const ctm1 = svg.getBoundingClientRect();
                             const ctm2 = this.defElBackground!.getBoundingClientRect();
-                            explainer.style.left = (ctm2.left - ctm1.left) + "px";
-                            explainer.style.top = (ctm2.bottom - ctm1.top) + "px";
-                            // TODO(performance): this should be more efficient, but somehow flickers
-                            /*
-							const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
-							const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
-							explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
-							 */
+                            const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
+                            const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
+                            explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
                         }
                     });
                     // @ts-ignore
@@ -569,7 +564,11 @@ class MathjaxProofTree extends MathjaxAdapter {
         }
         this.shadowRoot!
             .querySelectorAll<SVGGraphicsElement>(".typicalc-definition")!
-            .forEach((it) => it.style.display = "none");
+            .forEach((it) => {
+                if (it.style) {
+                    it.style.display = "none"
+                }
+            });
         let defElBackground = this.shadowRoot!.getElementById(this.hoverTextBackgroundElID);
         if (defElBackground) {
             defElBackground.parentElement!.removeChild(defElBackground);
