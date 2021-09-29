@@ -1,6 +1,7 @@
 import {MathjaxAdapter} from "./mathjax-adapter";
 import {hoverAreaAroundElements} from "./mathjax-style-hacks";
 
+// Typescript declaration of the svg-pan-zoom library used
 declare let window: {
     svgPanZoomFun: (svg: SVGElement, options: {
         fit: boolean;
@@ -28,11 +29,13 @@ declare global {
     }
 }
 
+// methods declared in the Java class
 interface ProofTreeServer {
     setStepCount: (count: number) => void;
 }
 
 class MathjaxProofTree extends MathjaxAdapter {
+    // list of the SVG elements that make up each step in the proof tree
     private steps: [SVGElement, SVGElement[]][] = [];
     private $server: ProofTreeServer | undefined;
     // the element used as tooltip background
@@ -43,7 +46,9 @@ class MathjaxProofTree extends MathjaxAdapter {
     // true if the user is currently moving the proof tree around
     private panningSvg: boolean = false;
     private hoveringOnElement: SVGGraphicsElement | null = null;
+    // CSS elements used to highlight types etc.
     private hoverStyles: HTMLElement | null = null;
+    // (in the unification element too)
     private hoverStylesUnification: HTMLElement | null = null;
 
     protected showStep(n: number): void {
@@ -62,6 +67,8 @@ class MathjaxProofTree extends MathjaxAdapter {
     }
 
     private analyzeSvgStructure() {
+        // this function process the MathJax output, performs some display corrections and finally determines which
+        // SVG elements belong to which step
         const semanticsMatch = (semantics: string) => semantics.indexOf("bspr_inference:") >= 0;
         const inferenceRuleSelector = 'g[semantics="bspr_inferenceRule:down"]';
         const labelSelector = 'g[semantics="bspr_prooflabel:left"]';
@@ -77,6 +84,7 @@ class MathjaxProofTree extends MathjaxAdapter {
             root = root.parentNode! as SVGElement;
         }
         // first, enumerate all of the steps
+        // and assign IDs
         let stepIdx = 0;
         for (const a of [root, ...root.querySelectorAll<SVGElement>("g[semantics]")]) {
             let semantics = a.getAttribute("semantics")!;
@@ -86,7 +94,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                 stepIdx++;
             }
         }
-        // then create the steps
+        // then create the steps list
         let steps: [SVGElement, SVGElement[]][] = [];
         stepIdx = 0;
         for (const a of [root, ...root.querySelectorAll<SVGElement>("g[semantics]")]) {
@@ -150,7 +158,6 @@ class MathjaxProofTree extends MathjaxAdapter {
         // in each row, the elements are arranged to not overlap
         // 2. place inference conclusions under the center of their line
         const nodeIterator = [...root.querySelectorAll<SVGGraphicsElement>("g[data-mml-node='mtr']," + inferenceRuleSelector)];
-        console.log(`working with ${nodeIterator.length} nodes`);
         // start layout fixes in the innermost part of the SVG
         nodeIterator.reverse();
         for (const row of nodeIterator) {
@@ -250,7 +257,7 @@ class MathjaxProofTree extends MathjaxAdapter {
 
         // svg-pan-zoom should not be used on empty SVGs
         if (nodeIterator.length >= 3) {
-            // a timeout is required, otherwise the proof tree is moved around
+            // a timeout is required, otherwise the proof tree is moved around..
             setTimeout(() => {
                 this.setupPanZoom(this.shadowRoot!, svg);
             }, 100);
@@ -280,7 +287,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                     // Handle double tap
                     // @ts-ignore
                     this.hammer.on('doubletap', () => {
-                        options.instance.zoomIn()
+                        options.instance.zoomIn();
                     });
 
                     let pannedX = 0;
@@ -304,14 +311,9 @@ class MathjaxProofTree extends MathjaxAdapter {
                         if (explainer) {
                             const ctm1 = svg.getBoundingClientRect();
                             const ctm2 = this.defElBackground!.getBoundingClientRect();
-                            explainer.style.left = (ctm2.left - ctm1.left) + "px";
-                            explainer.style.top = (ctm2.bottom - ctm1.top) + "px";
-                            // TODO(performance): this should be more efficient, but somehow flickers
-                            /*
-							const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
-							const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
-							explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
-							 */
+                            const dx = (ctm2.left - ctm1.left) - explainer.offsetLeft;
+                            const dy = (ctm2.bottom - ctm1.top) - explainer.offsetTop;
+                            explainer.style.transform = "translate(" + dx + "px," + dy + "px)";
                         }
                     });
                     // @ts-ignore
@@ -423,6 +425,7 @@ class MathjaxProofTree extends MathjaxAdapter {
             }
             let typeTarget = e.target! as SVGGraphicsElement;
             let counter = 0;
+            // try to find a relevant element in the tree
             while (typeTarget.classList
             && !typeTarget.classList.contains("typicalc-type")
             && !typeTarget.classList.contains("typicalc-label")) {
@@ -435,6 +438,8 @@ class MathjaxProofTree extends MathjaxAdapter {
             if (!typeTarget.classList) {
                 return;
             }
+            // hover over step label => show tooltip of definition, highlight constraints added
+            // hover over type => highlight it everywhere
             let isType = typeTarget.classList.contains("typicalc-type");
             let isLabel = typeTarget.classList.contains("typicalc-label");
             if (mouseIn) {
@@ -453,6 +458,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                     }
                     let stepIndex = stepTarget.getAttribute("typicalc") === "step" ? Number(stepTarget.id.substring(4)) : -1;
 
+                    // un-hide the definition text
                     const defId = typeTarget.classList[1].replace("-label-", "-definition-");
                     const defEl = this.shadowRoot!.getElementById(defId)! as unknown as SVGGraphicsElement;
                     const transform = viewport.getTransformToElement(typeTarget);
@@ -462,6 +468,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                     const svgRect = defEl.getBBox();
                     defEl.transform.baseVal[0].matrix.e = -transform.e - svgRect.width + offsetX + 1000;
                     defEl.transform.baseVal[0].matrix.f = -transform.f - 5500 + offsetY;
+                    // create the yellow tooltip background
                     this.defElBackground = root.getElementById(this.hoverTextBackgroundElID) as SVGRectElement | null;
                     if (!this.defElBackground) {
                         this.defElBackground = document.createElementNS("http://www.w3.org/2000/svg", "rect");
@@ -488,10 +495,11 @@ class MathjaxProofTree extends MathjaxAdapter {
                     p.style.top = (ctm2.bottom - ctm1.top) + "px";
                     p.style.backgroundColor = "white";
                     p.style.padding = "5px";
-                    p.innerText = data[stepIndex];
+                    p.innerText = data[stepIndex]; // add custom data to tooltip
                     // @ts-ignore
                     window.MathJax.typesetPromise([p])
                         .then(() => {
+                            // add rendered custom text to the main tooltip
                             const svgRect2 = this.defElBackground!.getBBox();
 
                             const svgP = p.getElementsByTagName("svg")[0];
@@ -567,9 +575,15 @@ class MathjaxProofTree extends MathjaxAdapter {
             const exp = explainers[explainers.length - 1];
             exp.parentNode!.removeChild(exp);
         }
+        // hide definition texts
         this.shadowRoot!
             .querySelectorAll<SVGGraphicsElement>(".typicalc-definition")!
-            .forEach((it) => it.style.display = "none");
+            .forEach((it) => {
+                if (it.style) {
+                    it.style.display = "none"
+                }
+            });
+        // remove the tooltip background
         let defElBackground = this.shadowRoot!.getElementById(this.hoverTextBackgroundElID);
         if (defElBackground) {
             defElBackground.parentElement!.removeChild(defElBackground);

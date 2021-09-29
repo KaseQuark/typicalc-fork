@@ -1,5 +1,6 @@
 // @ts-ignore
 window.autoSelect = (className: string) => {
+	// select entire text when the field is focused
 	let el = document.getElementsByClassName(className);
 	Array.from(el).forEach(field => {
 		field.addEventListener('focus', event => {

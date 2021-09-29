@@ -3,6 +3,7 @@
 SVGElement.prototype.getTransformToElement = SVGElement.prototype.getTransformToElement || function(elem) {
     return elem.getScreenCTM().inverse().multiply(this.getScreenCTM());
 };
+// MathJax configuration boilerplate and ShadowDOM adapter
 window.MathJax = {
     loader: {
         load: ['output/svg', '[tex]/ams', '[tex]/bussproofs', '[tex]/color', '[tex]/html', '[tex]/textmacros', '[tex]/unicode']
@@ -112,13 +113,13 @@ window.MathJax = {
                 bubbles: true,
                 composed: true,
                 detail: "composed"
-            })
+            });
             MathJax.startup.defaultReady();
             MathJax.startup.promise.then(() => {
                 console.log("MathJax initialized");
                 MathJax.isInitialized = true;
                 document.dispatchEvent(event);
-            })
+            });
         }
     }
 };

@@ -20,6 +20,8 @@
 
 #input-bar {
 	width: 75%;
+	/* require a larger width on small screens! */
+	min-width: min(100%, 1100px);
 	flex-grow: 1;
 	align-items: flex-end;
 	padding: 0 1em;
