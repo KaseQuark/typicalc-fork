@@ -2,6 +2,8 @@ import {MathjaxAdapter} from "./mathjax-adapter";
 
 class MathjaxExplanation extends MathjaxAdapter {
 	private lastStepShown: number = 0
+	static readonly opacityInactive: string = "0.5"
+	static readonly opacityActive: string = "1.0"
 
 	connectedCallback() {
 		super.connectedCallback();
@@ -16,6 +18,7 @@ class MathjaxExplanation extends MathjaxAdapter {
 
 	protected calculateSteps(_extraData: any) {
 		let stepIdx = 0;
+		// find all of the rendered steps and register click listeners
 		for (let text of this.shadowRoot!.querySelectorAll<HTMLElement>(".tc-text")) {
 			let thisStepIdx = stepIdx;
 			stepIdx++;
@@ -28,20 +31,21 @@ class MathjaxExplanation extends MathjaxAdapter {
 				this.scrollToElementIfNeeded(text);
 				continue;
 			}
-			text.style.opacity = "0.5";
+			text.style.opacity = MathjaxExplanation.opacityInactive;
 		}
 	}
 
 	protected showStep(n: number): void {
+		// lower the opacity of the previously active step and show the next one
 		let lastEl = this.getElementForStep(this.lastStepShown);
 		if (lastEl) {
-			lastEl.style.opacity = "0.5";
+			lastEl.style.opacity = MathjaxExplanation.opacityInactive;
 		}
 		let el = this.getElementForStep(n);
 		this.lastStepShown = n;
 		if (el) {
 			this.scrollToElementIfNeeded(el);
-			el.style.opacity = "1.0";
+			el.style.opacity = MathjaxExplanation.opacityActive;
 		}
 	}
 

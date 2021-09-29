@@ -1,3 +1,4 @@
+// utility function to copy e.g. the LaTeX code into the user's clipboard
 // @ts-ignore
 window.copyToClipboard = (text: string) => {
 	const textarea = document.createElement("textarea");
