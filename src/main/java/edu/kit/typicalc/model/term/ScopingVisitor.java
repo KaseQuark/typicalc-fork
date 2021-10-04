@@ -55,9 +55,11 @@ public class ScopingVisitor implements TermVisitor {
 
     @Override
     public void visit(IntegerTerm intTerm) {
+        /* constant term doesn't need to be scoped */
     }
 
     @Override
     public void visit(BooleanTerm boolTerm) {
+        /* constant term doesn't need to be scoped */
     }
 }

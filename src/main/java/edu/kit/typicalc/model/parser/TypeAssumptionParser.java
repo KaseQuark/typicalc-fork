@@ -44,9 +44,9 @@ public class TypeAssumptionParser {
         Matcher typeVariableMatcher = TYPE_VARIABLE_PATTERN.matcher(text);
         if (typeVariableMatcher.matches()) {
             int typeVariableIndex = Integer.parseInt(typeVariableMatcher.group(1));
-            TypeVariable var = new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
-            var.setUniqueIndex(typeVariableUniqueIndex);
-            return var;
+            TypeVariable variable = new TypeVariable(TypeVariableKind.USER_INPUT, typeVariableIndex);
+            variable.setUniqueIndex(typeVariableUniqueIndex);
+            return variable;
         } else {
             return new NamedType(text);
         }
@@ -159,8 +159,8 @@ public class TypeAssumptionParser {
                 TypeVariable v = new TypeVariable(TypeVariableKind.USER_INPUT, i);
                 v.setUniqueIndex(typeVariableUniqueIndex);
 
-                for (TypeVariable var : quantifiedVariables) {
-                    if (var.equals(v)) {
+                for (TypeVariable variable : quantifiedVariables) {
+                    if (variable.equals(v)) {
                         return new Result<>(null,
                                 ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
                                         .additionalInformation(AdditionalInformation.DUPLICATETYPE));

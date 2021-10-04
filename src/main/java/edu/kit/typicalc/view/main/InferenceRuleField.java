@@ -28,7 +28,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
     /*
      * IDs for the imported .css-file
      */
-    private static final String INFERENCE_RULE_FIELD_ID = "inference-rule-field";
+    private static final String INFERENCE_RULE_FIELD_CLASS = "inference-rule-field";
     private static final String HEADER_ID = "inference-rule-header";
     private static final String MAIN_ID = "inference-rule-content";
     private static final String RULE_NAME_ID = "rule-name";
@@ -64,7 +64,7 @@ public class InferenceRuleField extends VerticalLayout implements LocaleChangeOb
         VerticalLayout content = new VerticalLayout(rule);
         content.setId(MAIN_ID);
         add(header, content);
-        setId(INFERENCE_RULE_FIELD_ID);
+        setClassName(INFERENCE_RULE_FIELD_CLASS);
     }
 
     @Override

@@ -141,7 +141,7 @@ public class LambdaLexer {
 
     private Result<Token, ParseError> parseAtomToken(char c) {
         // only allow ascii characters in variable names
-        if (Character.isLetter(c) && (int) c < 128) {
+        if (Character.isLetter(c) && c < 128) {
             int startPos = pos;
             // identifier or keyword
             StringBuilder sb = new StringBuilder();
@@ -149,8 +149,8 @@ public class LambdaLexer {
                 sb.append(term.charAt(pos));
                 advance();
             } while (pos < term.length() && Character.isLetterOrDigit(term.charAt(pos))
-                    && (int) term.charAt(pos) < 128);
-            if (pos < term.length() && (int) term.charAt(pos) >= 128) {
+                    && term.charAt(pos) < 128);
+            if (pos < term.length() && term.charAt(pos) >= 128) {
                 return new Result<>(null,
                         ParseError.unexpectedCharacter2(term.charAt(pos), pos, term, errorType)
                                 .expectedType(TokenType.VARIABLE));

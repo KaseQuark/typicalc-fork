@@ -103,10 +103,10 @@ public class LatexCreator implements StepVisitor {
         return conclusion;
     }
 
-    private String generateVarStepPremise(VarStep var) {
-        String assumptions = typeAssumptionsToLatex(var.getConclusion().getTypeAssumptions(), mode);
-        String term = new LatexCreatorTerm(var.getConclusion().getLambdaTerm(), mode).getLatex();
-        String type = generateTypeAbstraction(var.getTypeAbsInPremise(), mode);
+    private String generateVarStepPremise(VarStep varStep) {
+        String assumptions = typeAssumptionsToLatex(varStep.getConclusion().getTypeAssumptions(), mode);
+        String term = new LatexCreatorTerm(varStep.getConclusion().getLambdaTerm(), mode).getLatex();
+        String type = generateTypeAbstraction(varStep.getTypeAbsInPremise(), mode);
         return PAREN_LEFT + assumptions + PAREN_RIGHT + PAREN_LEFT + term
                 + PAREN_RIGHT + EQUALS + type;
     }

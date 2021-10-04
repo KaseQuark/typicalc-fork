@@ -59,12 +59,12 @@ public class ExplanationCreatorUnification {
 
    /**
     * Generates LaTeX code from the provided type inferer for the unification algorithm.
-    * 
-    * @param typeInferer        the TypeInfererInterface to create the LaTeX-code from      
+    *
+    * @param typeInferer        the TypeInfererInterface to create the LaTeX-code from
     * @param locale             the language of the explanatory texts
     * @param provider           I18NProvider to get the templates from the resources bundle
     * @param mode               the used LaTeX generation method
-    * @param letCounter         counter needed for nested let terms 
+    * @param letCounter         counter needed for nested let terms
     * @param isLetUnification   variable to indicate if it is the final unification or a let unification
     * @param letVariable        optional containing the let variable in case of a let unification
     */
@@ -83,7 +83,7 @@ public class ExplanationCreatorUnification {
    /**
     * Returns a pair of a list of strings containing the explanatory texts and a boolean value.
     * The boolean value is true if an error occurred during the let unification.
-    * 
+    *
     * @return a pair of a list of strings and a boolean value
     */
    protected Pair<List<String>, Boolean> getUnificationsTexts() {
@@ -92,10 +92,10 @@ public class ExplanationCreatorUnification {
 
    private void buildTexts(boolean isLetUnification) {
        String initialPrefix = isLetUnification ? LET_KEY_PREFIX : KEY_PREFIX;
-       String letVariable = isLetUnification 
+       String letVariableName = isLetUnification
                ? toLatex(new LatexCreatorTerm(this.letVariable.get(), mode).getLatex()) : "";
        String constraintSet = toLatex(letCounterToLatex(CONSTRAINT_SET));
-       String finalText = provider.getTranslation(initialPrefix + "initial", locale, constraintSet, letVariable);
+       String finalText = provider.getTranslation(initialPrefix + "initial", locale, constraintSet, letVariableName);
        unificationTexts.add(finalText);
        createUnficationTexts();
 
@@ -103,13 +103,13 @@ public class ExplanationCreatorUnification {
            createMGU();
            createFinalType(isLetUnification);
            if (isLetUnification) {
-               createLetUnficiationFinish();
+               createLetUnificationFinish();
            }
        }
    }
 
-   private void createLetUnficiationFinish() {
-       String typeAssumptions = 
+   private void createLetUnificationFinish() {
+       String typeAssumptions =
                typeAssumptionsToLatex(typeInferer.getFirstInferenceStep().getConclusion().getTypeAssumptions(), mode);
        String letVariableLatex = toLatex(new LatexCreatorTerm(this.letVariable.get(), mode).getLatex());
        String gamma = toLatex(GAMMA + APOSTROPHE);
@@ -128,12 +128,11 @@ public class ExplanationCreatorUnification {
    }
 
    private String createTypeAbstraction(String typeAssumptions) {
-       return new StringBuilder(TYPE_ABSTRACTION + PAREN_LEFT + letCounterToLatex(SIGMA) + PAREN_LEFT).
-               append(new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode)
-                       .getLatex()).
-               append("" + PAREN_RIGHT + COMMA + letCounterToLatex(SIGMA) + PAREN_LEFT).
-               append(typeAssumptions).
-               append("" + PAREN_RIGHT + PAREN_RIGHT).toString();
+       return TYPE_ABSTRACTION + PAREN_LEFT + letCounterToLatex(SIGMA) + PAREN_LEFT
+               + new LatexCreatorType(typeInferer.getFirstInferenceStep().getConclusion().getType(), mode)
+                       .getLatex()
+               + PAREN_RIGHT + COMMA + letCounterToLatex(SIGMA) + PAREN_LEFT
+               + typeAssumptions + PAREN_RIGHT + PAREN_RIGHT;
    }
 
    private void createFinalType(boolean isLetUnification) {

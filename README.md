@@ -27,6 +27,16 @@ Do not worry if the debugger breaks at a `SilentExitException`. This is a Spring
 After the application has started, you can view your it at http://localhost:8080/ in your browser.
 You can now also attach break points in code for debugging purposes, by clicking next to a line number in any source file.
 
+### Running tests
+To run the unit tests and checkstyle: `mvn test`.
+
+To run the integration tests: `mvn integration-test` (note that due to OS platform differences, it is unlikely that
+you will get a 100% match on the first attempt.)
+
+## Technical documentation
+Documentation on the application is contained in this file and the Javadocs in each source file.
+A quick description of the UI layer can be found in `src/main/java/view/OVERVIEW.md`.
+
 ## Fuzzing with [JQF](https://github.com/rohanpadhye/JQF)
 
 ### [Zest](https://github.com/rohanpadhye/JQF/wiki/Fuzzing-with-Zest)

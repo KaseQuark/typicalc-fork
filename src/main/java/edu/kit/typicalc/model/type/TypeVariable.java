@@ -47,10 +47,20 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
         return index;
     }
 
+    /**
+     * Set the unique index of this type variable.
+     * Note that the caller is responsible for setting this variable correctly.
+     *
+     * @param uniqueIndex the unique index
+     * @see edu.kit.typicalc.model.term.ScopingVisitor
+     */
     public void setUniqueIndex(int uniqueIndex) {
         this.uniqueIndex = uniqueIndex;
     }
 
+    /**
+     * @return the unique index of this type variable
+     */
     public int getUniqueIndex() {
         return uniqueIndex;
     }
@@ -168,9 +178,9 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     }
 
     @Override
-    public int compareTo(TypeVariable var) {
+    public int compareTo(TypeVariable variable) {
         return Comparator.comparing(TypeVariable::getKind)
                 .thenComparing(TypeVariable::getIndex)
-                .compare(this, var);
+                .compare(this, variable);
     }
 }

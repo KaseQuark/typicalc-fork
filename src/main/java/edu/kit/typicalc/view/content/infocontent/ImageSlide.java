@@ -45,7 +45,7 @@ public class ImageSlide extends Slide implements LocaleChangeObserver {
     public void localeChange(LocaleChangeEvent event) {
         slideLayout.removeAll();
         explanation.setText(getTranslation(explanationKey));
-        slideLayout.add(new Image(getTranslation(imageKey), ""), explanation);
+        slideLayout.add(explanation, new Image(getTranslation(imageKey), ""));
     }
 
 }

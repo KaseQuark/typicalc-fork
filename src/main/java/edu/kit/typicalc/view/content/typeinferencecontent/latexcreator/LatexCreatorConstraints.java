@@ -215,10 +215,10 @@ public class LatexCreatorConstraints implements StepVisitor {
 
     private String createLetConstraints(List<Constraint> letConstraints) {
         StringBuilder result = new StringBuilder();
-        letConstraints.forEach(constraint -> {
+        letConstraints.forEach(constraint ->
             result.append(createSingleConstraint(constraint, mode))
-                    .append(DOLLAR_SIGN).append(COMMA).append(DOLLAR_SIGN);
-        });
+                    .append(DOLLAR_SIGN).append(COMMA).append(DOLLAR_SIGN)
+        );
         if (!letConstraints.isEmpty()) {
             // remove last comma and dollar signs
             result.deleteCharAt(result.length() - 1);

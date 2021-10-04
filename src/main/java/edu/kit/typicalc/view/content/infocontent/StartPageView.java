@@ -98,10 +98,8 @@ public class StartPageView extends VerticalLayout implements ControlPanelView, L
         Slide slide4 = new ImageSlide("root.image4", "root.text4");
         Slide slide5 = new ImageSlide("root.image5", "root.text5");
         Slide slide6 = new ImageSlide("root.image6", "root.text6");
-        Slide slide7 = new ImageSlide("root.image7", "root.text7");
-        Slide slide8 = new ImageSlide("root.image8", "root.text8");
 
-        return new Carousel(slide0, slide1, slide2, slide3, slide4, slide5, slide6, slide7, slide8).withoutNavigation()
+        return new Carousel(slide0, slide1, slide2, slide3, slide4, slide5, slide6).withoutNavigation()
                 .withoutSwipe();
     }
 

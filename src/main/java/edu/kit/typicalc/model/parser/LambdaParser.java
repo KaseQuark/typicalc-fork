@@ -116,9 +116,9 @@ public class LambdaParser {
 
     private Result<AbsTerm, ParseError> parseAbstraction() {
         nextToken();
-        Result<VarTerm, ParseError> var = parseVar();
-        if (var.isError()) {
-            return new Result<>(var);
+        Result<VarTerm, ParseError> varTerm = parseVar();
+        if (varTerm.isError()) {
+            return varTerm.castError();
         }
         Optional<ParseError> next = expect(TokenType.DOT);
         if (next.isPresent()) {
@@ -126,9 +126,9 @@ public class LambdaParser {
         }
         Result<LambdaTerm, ParseError> body = parseTerm(false);
         if (body.isError()) {
-            return new Result<>(body);
+            return body.castError();
         }
-        return new Result<>(new AbsTerm(var.unwrap(), body.unwrap()));
+        return new Result<>(new AbsTerm(varTerm.unwrap(), body.unwrap()));
     }
 
     /**
@@ -156,9 +156,9 @@ public class LambdaParser {
         if (error.isPresent()) {
             return new Result<>(null, error.get());
         }
-        Result<VarTerm, ParseError> var = parseVar();
-        if (var.isError()) {
-            return new Result<>(var);
+        Result<VarTerm, ParseError> varTerm = parseVar();
+        if (varTerm.isError()) {
+            return new Result<>(varTerm);
         }
         error = expect(TokenType.EQUALS);
         if (error.isPresent()) {
@@ -176,7 +176,7 @@ public class LambdaParser {
         if (body.isError()) {
             return new Result<>(body);
         }
-        return new Result<>(new LetTerm(var.unwrap(), def.unwrap(), body.unwrap()));
+        return new Result<>(new LetTerm(varTerm.unwrap(), def.unwrap(), body.unwrap()));
     }
 
     /**
@@ -187,8 +187,8 @@ public class LambdaParser {
     private Result<LambdaTerm, ParseError> parsePart() {
         switch (token.getType()) {
             case VARIABLE:
-                Result<VarTerm, ParseError> var = parseVar();
-                return new Result<>(var.unwrap()); // variable token can always be parsed
+                Result<VarTerm, ParseError> varTerm = parseVar();
+                return new Result<>(varTerm.unwrap()); // variable token can always be parsed
             case LAMBDA:
                 return new Result<>(parseAbstraction());
             case LET:

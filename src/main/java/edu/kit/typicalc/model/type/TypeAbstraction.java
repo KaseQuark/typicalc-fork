@@ -47,7 +47,7 @@ public class TypeAbstraction {
     public TypeAbstraction(Type type, Map<VarTerm, TypeAbstraction> typeAssumptions) {
         this.type = type;
         Set<TypeVariable> varsToBeQuantified = type.getFreeTypeVariables();
-        typeAssumptions.forEach((var, abs) -> varsToBeQuantified.removeAll(abs.getFreeTypeVariables()));
+        typeAssumptions.forEach((variable, abs) -> varsToBeQuantified.removeAll(abs.getFreeTypeVariables()));
         this.quantifiedVariables = new TreeSet<>(varsToBeQuantified);
     }
 
@@ -60,9 +60,9 @@ public class TypeAbstraction {
      */
     public Type instantiate(TypeVariableFactory typeVarFactory) {
         Type instantiatedType = this.type;
-        for (TypeVariable var : this.quantifiedVariables) {
+        for (TypeVariable variable : this.quantifiedVariables) {
             TypeVariable newVariable = typeVarFactory.nextTypeVariable();
-            instantiatedType = instantiatedType.substitute(var, newVariable);
+            instantiatedType = instantiatedType.substitute(variable, newVariable);
         }
         return instantiatedType;
     }

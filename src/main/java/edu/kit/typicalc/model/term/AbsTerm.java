@@ -13,18 +13,18 @@ import java.util.Set;
  * Representation of an abstraction term with its two sub-lambda terms.
  */
 public class AbsTerm extends LambdaTerm {
-    private final VarTerm var;
+    private final VarTerm varTerm;
     private final LambdaTerm body;
 
     /**
      * Initializes a new abstraction term with the variable bound
      * by the abstraction and the lambda term of the abstraction.
      *
-     * @param var  the variable bound by the abstraction
+     * @param varTerm  the variable bound by the abstraction
      * @param body the lambda term of the abstraction
      */
-    public AbsTerm(VarTerm var, LambdaTerm body) {
-        this.var = var;
+    public AbsTerm(VarTerm varTerm, LambdaTerm body) {
+        this.varTerm = varTerm;
         this.body = body;
     }
 
@@ -34,7 +34,7 @@ public class AbsTerm extends LambdaTerm {
      * @return the variable of this abstraction
      */
     public VarTerm getVariable() {
-        return var;
+        return varTerm;
     }
 
     /**
@@ -54,7 +54,7 @@ public class AbsTerm extends LambdaTerm {
     @Override
     public Set<VarTerm> getFreeVariables() {
         Set<VarTerm> set = new HashSet<>(this.body.getFreeVariables());
-        set.remove(this.var);
+        set.remove(this.varTerm);
         return set;
     }
 
@@ -70,7 +70,7 @@ public class AbsTerm extends LambdaTerm {
 
     @Override
     public String toString() {
-        return "λ" + var + "." + body;
+        return "λ" + varTerm + "." + body;
     }
 
     @Override
@@ -82,11 +82,11 @@ public class AbsTerm extends LambdaTerm {
             return false;
         }
         AbsTerm absTerm = (AbsTerm) o;
-        return Objects.equals(var, absTerm.var) && Objects.equals(body, absTerm.body);
+        return Objects.equals(varTerm, absTerm.varTerm) && Objects.equals(body, absTerm.body);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(var, body);
+        return Objects.hash(varTerm, body);
     }
 }
