@@ -392,13 +392,7 @@ class MathjaxProofTree extends MathjaxAdapter {
             this.hoverStyles.id = "typicalc-hover-styles";
             root.querySelector("mjx-head")!.appendChild(this.hoverStyles);
         }
-        const unificationEl = root.host.parentElement!.parentElement!.querySelector("tc-unification")!;
-        this.hoverStylesUnification = unificationEl.shadowRoot!.querySelector("#typicalc-hover-styles");
-        if (!this.hoverStylesUnification) {
-            this.hoverStylesUnification = document.createElement('style');
-            this.hoverStylesUnification.id = "typicalc-hover-styles";
-            unificationEl.shadowRoot!.querySelector("mjx-head")!.appendChild(this.hoverStylesUnification);
-        }
+        this.setupUnificationStyles();
         // set the size of the rendered SVG to the size of the container element
         if (!root.querySelector("#style-fixes")) {
             const style = document.createElement('style');
@@ -449,6 +443,7 @@ class MathjaxProofTree extends MathjaxAdapter {
                     const typeClass = typeTarget.classList[1];
                     const css = "." + typeClass + " { color: red; }";
                     this.hoverStyles!.innerHTML = css;
+                    this.setupUnificationStyles();
                     this.hoverStylesUnification!.innerHTML = css;
                 } else if (isLabel) {
                     let stepTarget = typeTarget;
@@ -556,6 +551,17 @@ class MathjaxProofTree extends MathjaxAdapter {
         }
 
         this.$server!.setStepCount(this.steps.length);
+    }
+
+    // creates the mirrored style document in the unification element
+    private setupUnificationStyles() {
+        const unificationEl = this.shadowRoot!.host.parentElement!.parentElement!.querySelector("tc-unification")!;
+        this.hoverStylesUnification = unificationEl.shadowRoot!.querySelector("#typicalc-hover-styles");
+        if (!this.hoverStylesUnification) {
+            this.hoverStylesUnification = document.createElement('style');
+            this.hoverStylesUnification.id = "typicalc-hover-styles";
+            unificationEl.shadowRoot!.querySelector("mjx-head")!.appendChild(this.hoverStylesUnification);
+        }
     }
 
     private destroyTooltip() {
