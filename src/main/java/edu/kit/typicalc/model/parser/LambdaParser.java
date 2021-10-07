@@ -42,7 +42,7 @@ public class LambdaParser {
      * @param term String to parse
      */
     public LambdaParser(String term) {
-        this.lexer = new LambdaLexer(term, ParseError.ErrorType.TERM_ERROR);
+        this.lexer = new LambdaLexer(term, ParseError.ErrorSource.TERM_ERROR);
     }
 
     /**
@@ -70,7 +70,7 @@ public class LambdaParser {
         Optional<ParseError> error = nextToken();
         if (current != type) {
             return Optional.of(ParseError.unexpectedToken(lastToken,
-                    ParseError.ErrorType.TERM_ERROR).expectedType(type));
+                    ParseError.ErrorSource.TERM_ERROR).expectedType(type));
         }
         return error;
     }
@@ -91,7 +91,7 @@ public class LambdaParser {
             return t;
         }
         return new Result<>(null,
-                ParseError.unexpectedToken(last, ParseError.ErrorType.TERM_ERROR)
+                ParseError.unexpectedToken(last, ParseError.ErrorSource.TERM_ERROR)
                     .expectedInput(ExpectedInput.TERM));
     }
 
@@ -108,7 +108,7 @@ public class LambdaParser {
             }
         }
         if (token.getType() == TokenType.EOF) {
-            return new Result<>(null, ParseError.unexpectedToken(token, ParseError.ErrorType.TERM_ERROR)
+            return new Result<>(null, ParseError.unexpectedToken(token, ParseError.ErrorSource.TERM_ERROR)
                             .expectedInput(ExpectedInput.TERM));
         }
         return parseApplication();
@@ -208,8 +208,9 @@ public class LambdaParser {
                 try {
                     n = Integer.parseInt(number);
                 } catch (NumberFormatException e) {
-                    return new Result<>(null, ParseError.unexpectedCharacter(
-                            token, ParseError.ErrorType.TERM_ERROR));
+                    return new Result<>(null, ParseError.unexpectedToken(
+                            token, ParseError.ErrorSource.TERM_ERROR)
+                            .additionalInformation(AdditionalInformation.INT_OVERFLOW));
                 }
                 error = nextToken();
                 if (error.isEmpty()) {

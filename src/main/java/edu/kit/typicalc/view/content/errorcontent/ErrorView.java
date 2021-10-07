@@ -64,13 +64,13 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         summary.setId(ERROR_SUMMARY_ID);
         String term = error.getTerm();
         String descriptionForError = null;
-        Optional<ParseError.ErrorType> errorType = error.getErrorType();
+        Optional<ParseError.ErrorSource> errorType = error.getErrorType();
         if (errorType.isEmpty()) {
             throw new IllegalStateException();
         }
-        if (errorType.get() == ParseError.ErrorType.TERM_ERROR) {
+        if (errorType.get() == ParseError.ErrorSource.TERM_ERROR) {
             descriptionForError = "error.termForError";
-        } else if (errorType.get() == ParseError.ErrorType.TYPE_ASSUMPTION_ERROR) {
+        } else if (errorType.get() == ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR) {
             descriptionForError = "error.typeAssumptionForError";
         }
         switch (error.getCauseEnum()) {

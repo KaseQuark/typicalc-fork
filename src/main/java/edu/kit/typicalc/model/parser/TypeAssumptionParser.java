@@ -54,7 +54,7 @@ public class TypeAssumptionParser {
 
     public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(String assumptions) {
         lexer = new LambdaLexer(
-                cleanAssumptionText(assumptions), ParseError.ErrorType.TYPE_ASSUMPTION_ERROR);
+                cleanAssumptionText(assumptions), ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR);
         return parseTE();
     }
 
@@ -86,7 +86,7 @@ public class TypeAssumptionParser {
             typeVariableUniqueIndex++;
             if (currentToken.getType() != Token.TokenType.COMMA) {
                 return new Result<>(null, ParseError.unexpectedToken(currentToken,
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)));
             }
         }
@@ -102,7 +102,7 @@ public class TypeAssumptionParser {
             term = new VarTerm(currentToken.getText());
         } else {
             return new Result<>(null, ParseError.unexpectedToken(currentToken,
-                    ParseError.ErrorType.TYPE_ASSUMPTION_ERROR).expectedType(Token.TokenType.VARIABLE));
+                    ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR).expectedType(Token.TokenType.VARIABLE));
         }
 
         Result<Token, ParseError> nextLexerToken = lexer.nextToken();
@@ -113,7 +113,7 @@ public class TypeAssumptionParser {
 
         if (currentToken.getType() != Token.TokenType.COLON) {
             return new Result<>(null, ParseError.unexpectedToken(currentToken,
-                    ParseError.ErrorType.TYPE_ASSUMPTION_ERROR).expectedType(Token.TokenType.COLON));
+                    ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR).expectedType(Token.TokenType.COLON));
         }
 
         Result<TypeAbstraction, ParseError> result = parseType();
@@ -146,13 +146,13 @@ public class TypeAssumptionParser {
 
                 if (currentToken.getType() != Token.TokenType.VARIABLE) {
                     return new Result<>(null,
-                            ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                            ParseError.unexpectedToken(currentToken, ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                                     .expectedType(Token.TokenType.VARIABLE));
                 }
                 String input = currentToken.getText();
                 if (!TYPE_VARIABLE_PATTERN.matcher(input).matches()) {
                     return new Result<>(null,
-                            ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                            ParseError.unexpectedToken(currentToken, ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                                     .expectedInput(ExpectedInput.VARTYPE));
                 }
                 int i = Integer.parseInt(input.substring(1));
@@ -162,7 +162,7 @@ public class TypeAssumptionParser {
                 for (TypeVariable variable : quantifiedVariables) {
                     if (variable.equals(v)) {
                         return new Result<>(null,
-                                ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                ParseError.unexpectedToken(currentToken, ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                                         .additionalInformation(AdditionalInformation.DUPLICATETYPE));
                     }
                 }
@@ -177,7 +177,7 @@ public class TypeAssumptionParser {
                 if (currentToken.getType() != Token.TokenType.COMMA) {
                     if (currentToken.getType() != Token.TokenType.DOT) {
                         return new Result<>(null,
-                                ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                ParseError.unexpectedToken(currentToken, ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                                         .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.DOT)));
                     }
                     nextLexerToken = lexer.nextToken();
@@ -193,7 +193,7 @@ public class TypeAssumptionParser {
         if (currentToken.getType() != Token.TokenType.VARIABLE && currentToken.getType()
                 != Token.TokenType.LEFT_PARENTHESIS) {
             return new Result<>(null,
-                    ParseError.unexpectedToken(currentToken, ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                    ParseError.unexpectedToken(currentToken, ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                             .expectedInput(ExpectedInput.TYPE)
                             .expectedType(Token.TokenType.UNIVERSAL_QUANTIFIER));
         }
@@ -258,13 +258,13 @@ public class TypeAssumptionParser {
 
             if (currentToken.getType() != Token.TokenType.RIGHT_PARENTHESIS) {
                 return new Result<>(null, ParseError.unexpectedToken(currentToken,
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedTypes(List.of(Token.TokenType.ARROW, Token.TokenType.RIGHT_PARENTHESIS)));
             }
             return new Result<>(type);
         }
         return new Result<>(null, ParseError.unexpectedToken(currentToken,
-                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR).expectedInput(ExpectedInput.TYPE));
+                ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR).expectedInput(ExpectedInput.TYPE));
     }
 
     /**
@@ -288,7 +288,7 @@ public class TypeAssumptionParser {
             case VARIABLE:
             case NUMBER:
                 return new Result<>(null, ParseError.unexpectedToken(currentToken,
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR).expectedType(Token.TokenType.ARROW));
+                        ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR).expectedType(Token.TokenType.ARROW));
                 default:
             return new Result<>(Optional.empty(), null);
         }

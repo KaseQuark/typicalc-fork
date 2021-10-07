@@ -14,9 +14,12 @@ public final class ParseError {
         this.causeEnum = unexpectedToken;
     }
 
+    /**
+     * The reason for this error.
+     */
     public enum ErrorCause {
         /**
-         * the lambda term didn't meet the specified syntax
+         * the input contains that a token that is not allowed in that context
          */
         UNEXPECTED_TOKEN,
 
@@ -28,26 +31,43 @@ public final class ParseError {
 
     private final ErrorCause causeEnum;
 
+    /**
+     * @return the cause of this parse error
+     */
     public ErrorCause getCauseEnum() {
         return causeEnum;
     }
 
-    public static ParseError unexpectedToken(Token cause, ErrorType source) {
+    /**
+     * Construct a new ParseError that signals an unexpected token.
+     *
+     * @param cause the incorrect token
+     * @param source kind of input parsed
+     * @return a new error
+     */
+    public static ParseError unexpectedToken(Token cause, ErrorSource source) {
         var self = new ParseError(ErrorCause.UNEXPECTED_TOKEN);
         return self.withToken(cause, source);
     }
 
-    public static ParseError unexpectedCharacter(Token cause, ErrorType source) {
-        var self = new ParseError(ErrorCause.UNEXPECTED_CHARACTER);
-        return self.withToken(cause, source);
-    }
-
-    public static ParseError unexpectedCharacter2(char cause, int position, String term, ErrorType errorType) {
+    /**
+     * Construct a new ParseError that signals an unexpected character.
+     *
+     * @param cause the invalid character
+     * @param position position in the input string
+     * @param term input string
+     * @param errorType kind of input parsed
+     * @return
+     */
+    public static ParseError unexpectedCharacter(char cause, int position, String term, ErrorSource errorType) {
         var self = new ParseError(ErrorCause.UNEXPECTED_CHARACTER);
         return self.withCharacter(cause, position, term, errorType);
     }
 
-    public enum ErrorType {
+    /**
+     * Indicates the error source.
+     */
+    public enum ErrorSource {
         /**
          * This error was created when parsing the input term
          */
@@ -67,7 +87,7 @@ public final class ParseError {
     private char wrongChar = '\0';
     private char correctChar = '\0';
     private int position = -1;
-    private Optional<ErrorType> errorType = Optional.empty();
+    private Optional<ErrorSource> errorType = Optional.empty();
 
     /**
      * Attach a token to this error.
@@ -75,7 +95,7 @@ public final class ParseError {
      * @param cause the token that caused the error
      * @return this object
      */
-    public ParseError withToken(Token cause, ErrorType errorType) {
+    public ParseError withToken(Token cause, ErrorSource errorType) {
         this.cause = Optional.of(cause);
         this.term = cause.getSourceText();
         this.position = cause.getPos();
@@ -165,7 +185,7 @@ public final class ParseError {
      * @param term     the term that is parsed
      * @return this object
      */
-    public ParseError withCharacter(char cause, int position, String term, ErrorType errorType) {
+    public ParseError withCharacter(char cause, int position, String term, ErrorSource errorType) {
         this.wrongChar = cause;
         this.position = position;
         this.term = term;
@@ -218,7 +238,7 @@ public final class ParseError {
     /**
      * @return the error type
      */
-    public Optional<ErrorType> getErrorType() {
+    public Optional<ErrorSource> getErrorType() {
         return errorType;
     }
 
@@ -227,10 +247,6 @@ public final class ParseError {
      */
     public Optional<AdditionalInformation> getAdditionalInformation() {
         return additional;
-    }
-
-    protected void setErrorType(ErrorType errorType) {
-        this.errorType = Optional.of(errorType);
     }
 
     @Override

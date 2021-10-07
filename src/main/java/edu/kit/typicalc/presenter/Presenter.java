@@ -39,7 +39,7 @@ public class Presenter implements MainViewListener {
             ParseError e = result.unwrapError();
             view.displayError(e);
             // focus the corresponding input field
-            String inputFieldId = e.getErrorType().equals(Optional.of(ParseError.ErrorType.TERM_ERROR))
+            String inputFieldId = e.getErrorType().equals(Optional.of(ParseError.ErrorSource.TERM_ERROR))
                     ? TERM_INPUT_FIELD_ID : ASS_INPUT_FIELD_ID;
             UI.getCurrent().getPage().executeJs(
                     "setTimeout(() => document.getElementById('" + inputFieldId + "').focus(), 0)");

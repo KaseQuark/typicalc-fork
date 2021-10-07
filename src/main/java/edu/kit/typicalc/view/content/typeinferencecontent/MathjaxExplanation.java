@@ -17,7 +17,6 @@ import java.util.List;
  * step revealing. Relies on MathjaxUnificationTS to interact with MathJax.
  */
 @Tag("tc-explanation")
-@JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-explanation.ts")
 @CssImport("./styles/view/explanation.css")
 public class MathjaxExplanation extends LitTemplate implements MathjaxAdapter {

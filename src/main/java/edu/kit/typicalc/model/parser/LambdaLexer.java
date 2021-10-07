@@ -16,7 +16,7 @@ public class LambdaLexer {
      * the given term as a String
      */
     private final String term;
-    private final ParseError.ErrorType errorType;
+    private final ParseError.ErrorSource errorType;
     /**
      * current position in the term
      */
@@ -28,7 +28,7 @@ public class LambdaLexer {
      *
      * @param term the term to lex
      */
-    public LambdaLexer(String term, ParseError.ErrorType errorType) {
+    public LambdaLexer(String term, ParseError.ErrorSource errorType) {
         this.term = term;
         this.errorType = errorType;
         Deque<Token> tokens = new ArrayDeque<>();
@@ -61,7 +61,7 @@ public class LambdaLexer {
      */
     public Result<Token, ParseError> nextToken() {
         if (result.isError()) {
-            return new Result<>(null, result.unwrapError());
+            return result.castError();
         }
         Deque<Token> tokens = result.unwrap();
         if (!tokens.isEmpty()) {
@@ -91,12 +91,12 @@ public class LambdaLexer {
                         advance();
                         return new Result<>(t);
                     } else {
-                        return new Result<>(null, ParseError.unexpectedCharacter2(
+                        return new Result<>(null, ParseError.unexpectedCharacter(
                                 term.charAt(pos + 1), pos + 1, term, errorType).expectedCharacter('>'));
                     }
                 } else {
                     return new Result<>(null,
-                            ParseError.unexpectedCharacter2(' ', term.length(), term, errorType)
+                            ParseError.unexpectedCharacter(' ', term.length(), term, errorType)
                                     .expectedCharacter('>'));
                 }
             // bunch of single-character tokens
@@ -152,7 +152,7 @@ public class LambdaLexer {
                     && term.charAt(pos) < 128);
             if (pos < term.length() && term.charAt(pos) >= 128) {
                 return new Result<>(null,
-                        ParseError.unexpectedCharacter2(term.charAt(pos), pos, term, errorType)
+                        ParseError.unexpectedCharacter(term.charAt(pos), pos, term, errorType)
                                 .expectedType(TokenType.VARIABLE));
             }
             String s = sb.toString();
@@ -185,15 +185,8 @@ public class LambdaLexer {
             } while (pos < term.length() && Character.isDigit(term.charAt(pos)));
             return new Result<>(new Token(TokenType.NUMBER, sb.toString(), term, startPos));
         } else {
-            return new Result<>(null, ParseError.unexpectedCharacter2(c, pos, term,
+            return new Result<>(null, ParseError.unexpectedCharacter(c, pos, term,
                     errorType));
         }
-    }
-
-    /**
-     * @return the term that is parsed
-     */
-    public String getTerm() {
-        return term;
     }
 }

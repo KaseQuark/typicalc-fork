@@ -53,7 +53,7 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
      * Initializes a new UpperBar with the provided mainViewListener.
      *
      * @param presenter     the listener used to communicate with the model
-     * @param inputConsumer function to handle user input
+     * @param inputConsumer callback to handle user input
      */
     protected UpperBar(MainViewListener presenter, Consumer<Pair<String, String>> inputConsumer) {
 

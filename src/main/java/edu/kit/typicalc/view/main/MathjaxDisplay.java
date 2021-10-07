@@ -12,12 +12,12 @@ import edu.kit.typicalc.view.MathjaxAdapter;
  * Relies on MathjaxDisplayTS to interact with MathJax.
  */
 @Tag("tc-display")
-@JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-display.ts")
 public class MathjaxDisplay extends LitTemplate implements MathjaxAdapter {
 
+    // initialized by Vaadin
     @Id("tc-content")
-    private Div content; // initialized by Vaadin
+    private Div content;
 
     /**
      * Creates a new HTML element that renders the LaTeX code.

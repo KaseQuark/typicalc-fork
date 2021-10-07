@@ -17,7 +17,6 @@ import java.util.List;
  * with MathJax.
  */
 @Tag("tc-proof-tree")
-@JsModule("./src/mathjax-adapter.ts")
 @JsModule("./src/mathjax-proof-tree.ts")
 public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
 

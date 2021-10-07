@@ -53,7 +53,7 @@ public class ExplanationCreator implements StepVisitor {
 
     /**
      * Generate the LaTeX code from the type inferer for the language of the provided locale.
-     * 
+     *
      * @param typeInferer the TypeInfererInterface to create the LaTeX-code from
      * @param locale      the language of the explanatory texts
      */
@@ -65,13 +65,13 @@ public class ExplanationCreator implements StepVisitor {
         typeInferer.getFirstInferenceStep().accept(this);
         if (!errorOccurred) {
             explanationTexts.addAll(new ExplanationCreatorUnification(typeInferer, locale, provider, MODE,
-                    letCounter, false, Optional.empty()).getUnificationsTexts().getLeft());
+                    letCounter, Optional.empty()).getUnificationsTexts().getLeft());
         }
     }
 
     /**
      * Returns a list of strings with an entry for every step of the algorithm.
-     * 
+     *
      * @return list of strings containing the explanatory texts
      */
     public List<String> getExplanationTexts() {
@@ -196,13 +196,13 @@ public class ExplanationCreator implements StepVisitor {
         // skip creation of unification texts if nested let produced an error
         if (!errorOccurred) {
             ExplanationCreatorUnification unification =
-                    new ExplanationCreatorUnification(letD.getTypeInferer(), locale, provider, MODE, letCounter, true,
+                    new ExplanationCreatorUnification(letD.getTypeInferer(), locale, provider, MODE, letCounter,
                             Optional.of(variable));
             explanationTexts.addAll(unification.getUnificationsTexts().getLeft());
             errorOccurred = unification.getUnificationsTexts().getRight();
             letCounter--;
         }
-        
+
         if (!errorOccurred) {
             letD.getPremise().accept(this);
         }

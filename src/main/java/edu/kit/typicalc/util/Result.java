@@ -116,6 +116,13 @@ public class Result<T, E> {
         return new Result<>(value != null ? mapping.apply(value) : null, error);
     }
 
+    /**
+     * This function should only be used on error results and will change the second type parameter to any desired
+     * value.
+     *
+     * @param <U> the desired type
+     * @return a copy of this object
+     */
     public <U> Result<U, E> castError() {
         return new Result<>(null, this.error);
     }

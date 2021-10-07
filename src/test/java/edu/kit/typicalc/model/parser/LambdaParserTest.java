@@ -118,10 +118,12 @@ class LambdaParserTest {
         parser = new LambdaParser("ä");
         assertEquals(ParseError.ErrorCause.UNEXPECTED_CHARACTER, parser.parse().unwrapError().getCauseEnum());
         parser = new LambdaParser("123333333333333");
-        assertEquals(ParseError.ErrorCause.UNEXPECTED_CHARACTER, parser.parse().unwrapError().getCauseEnum());
+        error = parser.parse().unwrapError();
+        assertEquals(ParseError.ErrorCause.UNEXPECTED_TOKEN, error.getCauseEnum());
+        assertEquals(AdditionalInformation.INT_OVERFLOW, error.getAdditionalInformation().get());
         parser = new LambdaParser("x 123333333333333");
         error = parser.parse().unwrapError();
-        assertEquals(ParseError.ErrorCause.UNEXPECTED_CHARACTER, error.getCauseEnum());
+        assertEquals(ParseError.ErrorCause.UNEXPECTED_TOKEN, error.getCauseEnum());
         assertEquals(new Token(TokenType.NUMBER, "123333333333333", "x 123333333333333", 2),
                 error.getCause().get());
         parser = new LambdaParser("λ)");
@@ -256,7 +258,7 @@ class LambdaParserTest {
         assertEquals(ParseError
                 .unexpectedToken(
                         new Token(TokenType.IN, "in", "λx.x in x", 5),
-                        ParseError.ErrorType.TERM_ERROR)
+                        ParseError.ErrorSource.TERM_ERROR)
                 .expectedInput(ExpectedInput.TERM), err);
     }
 

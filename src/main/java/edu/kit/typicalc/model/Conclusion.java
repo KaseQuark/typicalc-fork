@@ -32,8 +32,6 @@ public class Conclusion {
     }
 
     /**
-     * Returns the type assumptions used in the conclusion
-     *
      * @return the type assumptions used in the conclusion
      */
     public Map<VarTerm, TypeAbstraction> getTypeAssumptions() {
@@ -41,8 +39,6 @@ public class Conclusion {
     }
 
     /**
-     * Returns the lambda term in the conclusion
-     *
      * @return the lambda term in the conclusion
      */
     public LambdaTerm getLambdaTerm() {
@@ -50,8 +46,6 @@ public class Conclusion {
     }
 
     /**
-     * Returns the type assigned to the lambda term in the conclusion
-     *
      * @return the type assigned to the lambda term in the conclusion
      */
     public Type getType() {

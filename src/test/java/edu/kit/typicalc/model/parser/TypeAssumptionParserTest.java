@@ -261,29 +261,29 @@ class TypeAssumptionParserTest {
         Map<String, ParseError> tests = new LinkedHashMap<>();
         tests.put("",
                 ParseError.unexpectedToken(new Token(Token.TokenType.EOF, "", "type1:", 6),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedInput(ExpectedInput.TYPE)
                         .expectedType(Token.TokenType.UNIVERSAL_QUANTIFIER));
-        tests.put("ö", ParseError.unexpectedCharacter2('ö', 6, "type1:ö", ParseError.ErrorType.TYPE_ASSUMPTION_ERROR));
+        tests.put("ö", ParseError.unexpectedCharacter('ö', 6, "type1:ö", ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR));
         tests.put("(x",
                 ParseError.unexpectedToken(new Token(Token.TokenType.EOF, "", "type1:(x", 8),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedTypes(List.of(Token.TokenType.ARROW, Token.TokenType.RIGHT_PARENTHESIS)));
         tests.put("-> x",
                 ParseError.unexpectedToken(new Token(Token.TokenType.ARROW, "->", "type1:-> x", 6),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedInput(ExpectedInput.TYPE)
                         .expectedType(Token.TokenType.UNIVERSAL_QUANTIFIER)
         );
         tests.put("x 11",
                 ParseError.unexpectedToken(new Token(Token.TokenType.NUMBER, "11", "type1:x 11", 8),
-                        ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedType(Token.TokenType.ARROW));
         tests.put("x )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x )", 8),
-                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                 .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)));
         tests.put("x -> (x) )", ParseError.unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "type1:x -> (x) )", 15),
-                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                 .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)));
         for (Map.Entry<String, ParseError> entry : tests.entrySet()) {
             TypeAssumptionParser parser = new TypeAssumptionParser();
@@ -356,7 +356,7 @@ class TypeAssumptionParserTest {
         ParseError e = parse("s");
         assertEquals(ParseError
                         .unexpectedToken(new Token(Token.TokenType.EOF, "", "s", 1),
-                                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedType(Token.TokenType.COLON),
                 e);
     }
@@ -366,7 +366,7 @@ class TypeAssumptionParserTest {
         ParseError e = parse("s:()");
         assertEquals(ParseError
                         .unexpectedToken(new Token(Token.TokenType.RIGHT_PARENTHESIS, ")", "s:()", 3),
-                                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedInput(ExpectedInput.TYPE),
                 e);
     }
@@ -375,7 +375,7 @@ class TypeAssumptionParserTest {
     void errorCase5() {
         ParseError e = parse("g: boolean-");
         assertEquals(ParseError
-                        .unexpectedCharacter2(' ', 11, "g: boolean-", ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                        .unexpectedCharacter(' ', 11, "g: boolean-", ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedCharacter('>'),
                 e);
     }
@@ -385,7 +385,7 @@ class TypeAssumptionParserTest {
         ParseError e = parse("g: boolean:");
         assertEquals(ParseError
                         .unexpectedToken(new Token(Token.TokenType.COLON, ":", "g: boolean:", 10),
-                                ParseError.ErrorType.TYPE_ASSUMPTION_ERROR)
+                                ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR)
                         .expectedTypes(List.of(Token.TokenType.COMMA, Token.TokenType.EOF)),
                 e);
     }

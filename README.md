@@ -122,7 +122,7 @@ Copy the `typicalc.service` file into your systemd configuration and enable the 
 
 ## License
 
-Check the third-party libraries in `frontend/src/` for their respective license.
+Check the third-party libraries ([MathJax](https://www.mathjax.org/), [svg-pan-zoom](https://github.com/bumbu/svg-pan-zoom), [Hammer.JS](https://hammerjs.github.io/)) in `frontend/src/` for their respective license.
 
 Typicalc itself is licensed under the GPL 3.0 or (at your option) any later version.
 
