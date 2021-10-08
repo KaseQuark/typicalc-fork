@@ -139,7 +139,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onInfoIconClick() {
-        Dialog infoDialog = new InfoDialog();
+        Dialog infoDialog = new SyntaxDialog();
         infoDialog.open();
     }
 

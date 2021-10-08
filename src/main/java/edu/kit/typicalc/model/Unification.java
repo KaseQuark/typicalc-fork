@@ -33,8 +33,8 @@ public class Unification {
             Type b = c.getSecondType();
             Result<UnificationActions, UnificationError> actions = a.constrainEqualTo(b);
             if (actions.isError()) {
-                steps.add(new UnificationStep(new Result<>(actions), new ArrayList<>(constraints), Optional.of(c)));
-                substitutionsResult = new Result<>(actions);
+                steps.add(new UnificationStep(actions.castError(), new ArrayList<>(constraints), Optional.of(c)));
+                substitutionsResult = actions.castError();
                 return;
             }
             UnificationActions thisStep = actions.unwrap();

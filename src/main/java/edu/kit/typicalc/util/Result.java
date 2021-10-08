@@ -24,17 +24,6 @@ public class Result<T, E> {
     }
 
     /**
-     * Creates a new result by copying another one.
-     *
-     * @param other the result
-     */
-    @SuppressWarnings("unchecked")
-    public Result(Result<?, ?> other) {
-        this.value = (T) other.value;
-        this.error = (E) other.error;
-    }
-
-    /**
      * Creates a new result containing the given value or error.
      * Only one of the parameters may be non-null.
      *
@@ -79,19 +68,6 @@ public class Result<T, E> {
     }
 
     /**
-     * If the result contains a regular value, returns that value.
-     * Otherwise return the supplied alternative value.
-     *
-     * @return the value or the alternative
-     */
-    public T unwrapOr(T alternative) {
-        if (value == null) {
-            return alternative;
-        }
-        return value;
-    }
-
-    /**
      * If the result contains an error, returns that error.
      * Otherwise an IllegalStateException is thrown.
      *
@@ -123,8 +99,9 @@ public class Result<T, E> {
      * @param <U> the desired type
      * @return a copy of this object
      */
+    @SuppressWarnings("unchecked")
     public <U> Result<U, E> castError() {
-        return new Result<>(null, this.error);
+        return new Result<>((U) this.value, this.error);
     }
 
     @Override

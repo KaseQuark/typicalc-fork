@@ -43,8 +43,6 @@ public final class LatexCreatorConstants {
     protected static final char BRACKET_RIGHT = ']';
 
     protected static final String LABEL_ABS = "\\LeftLabel{\\textrm A{\\small BS}}";
-    protected static final String LABEL_ABS_WITH_CLASS =
-            "\\LeftLabel{\\class{typicalc-label typicalc-label-abs}{\\textrm A{\\small BS}}}";
     protected static final String LABEL_APP = "\\LeftLabel{\\textrm A{\\small PP}}";
     protected static final String LABEL_CONST = "\\LeftLabel{\\textrm C{\\small ONST}}";
     protected static final String LABEL_VAR = "\\LeftLabel{\\textrm V{\\small AR}}";
@@ -73,7 +71,6 @@ public final class LatexCreatorConstants {
     protected static final String FOR_ALL = "\\forall";
     protected static final String MONO_TEXT = "\\texttt";
     protected static final String BOLD_TEXT = "\\textbf";
-    protected static final String TEXT = "\\text";
     protected static final String RIGHT_ARROW = "\\rightarrow";
     protected static final String INSTANTIATE_SIGN = "\\succeq";
     protected static final String LATEX_IN = "\\in";
@@ -86,7 +83,7 @@ public final class LatexCreatorConstants {
     protected static final String SPLIT_END = "\\end{split}";
 
     /**
-     * Not actually a LaTeX command, but understood by MathJax.
+     * Not actually a LaTeX command, but understood by MathJax / the browser.
      */
     protected static final String BREAK_ROW = "<br>";
 }

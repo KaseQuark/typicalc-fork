@@ -32,18 +32,18 @@ public class ModelImpl implements Model {
         LambdaParser parser = new LambdaParser(lambdaTerm);
         Result<LambdaTerm, ParseError> result = parser.parse();
         if (result.isError()) {
-            return new Result<>(null, result.unwrapError());
+            return result.castError();
         }
         //Parse Type Assumptions
         TypeAssumptionParser assumptionParser = new TypeAssumptionParser();
         Result<Map<VarTerm, TypeAbstraction>, ParseError> assumptionMap = assumptionParser.parse(typeAssumptions);
         if (assumptionMap.isError()) {
-            return new Result<>(null, assumptionMap.unwrapError());
+            return assumptionMap.castError();
         }
         // scope variables
         LambdaTerm term = result.unwrap();
         term.accept(new ScopingVisitor());
         TypeInferer typeInferer = new TypeInferer(term, assumptionMap.unwrap());
-        return new Result<>(typeInferer, null);
+        return new Result<>(typeInferer);
     }
 }

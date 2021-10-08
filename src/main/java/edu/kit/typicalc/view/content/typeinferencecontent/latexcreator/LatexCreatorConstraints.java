@@ -127,6 +127,14 @@ public class LatexCreatorConstraints implements StepVisitor {
         return numberGenerator.getNumbers();
     }
 
+    /**
+     * Returns the latex code to display a single constraint:
+     * type1 = type2
+     *
+     * @param constraint the constraint
+     * @param mode latex creator mode (if MathJax, adds the step index to the constraint)
+     * @return the latex code
+     */
     public static String createSingleConstraint(Constraint constraint, LatexCreatorMode mode) {
         String firstType = new LatexCreatorType(constraint.getFirstType(), mode).getLatex();
         String secondType = new LatexCreatorType(constraint.getSecondType(), mode).getLatex();
@@ -248,19 +256,28 @@ public class LatexCreatorConstraints implements StepVisitor {
         return latex;
     }
 
+    /**
+     * Main method of this class, creates the latex code for each step of the unification.
+     *
+     * @param constraintSets current constraint set (added to the latex)
+     * @return latex code for each step
+     */
     private List<String> generateUnification(String constraintSets) {
         List<String> steps = new ArrayList<>();
 
         List<UnificationStep> unificationSteps = typeInferer.getUnificationSteps()
                 .orElseThrow(IllegalStateException::new);
         // store constraints of previous step to highlight changes
-        String[] previousConstraints = new String[0];
+        List<String> previousConstraints = new ArrayList<>();
+
         for (int stepNum = 0; stepNum < unificationSteps.size(); stepNum++) {
             UnificationStep step = unificationSteps.get(stepNum);
             List<String> constraints2 = new ArrayList<>();
             Result<List<Substitution>, UnificationError> subs = step.getSubstitutions();
             Optional<UnificationError> error = Optional.empty();
             if (subs.isError()) {
+                // display previous step again
+                // and show the error message
                 error = Optional.of(subs.unwrapError());
                 step = unificationSteps.get(unificationSteps.size() - 2);
                 subs = step.getSubstitutions();
@@ -277,32 +294,37 @@ public class LatexCreatorConstraints implements StepVisitor {
             // if new constraints were created in this step, mark them
             boolean markLastTwoConstraints = (stepNum != 0)
                     && unificationSteps.get(stepNum - 1).getConstraints().size() < unificationConstraints.size();
+
+            // render each constraint present in this step
             if (!unificationConstraints.isEmpty()) {
                 latex.append(UNIFY + PAREN_LEFT + LATEX_CURLY_LEFT);
             }
             for (int i = unificationConstraints.size() - 1; i >= 0; i--) {
                 latex.append(AMPERSAND);
                 StringBuilder sb = new StringBuilder();
+                boolean highligthingConstraint = false;
                 if (markError && i == 0) {
                     sb.append(CURLY_LEFT);
                     sb.append(COLOR_RED);
+                    highligthingConstraint = true;
                 } else if (markLastTwoConstraints && (i < 2)) {
                     sb.append(CURLY_LEFT);
                     sb.append(COLOR_HIGHLIGHTED);
+                    highligthingConstraint = true;
                 }
                 sb.append(new LatexCreatorType(unificationConstraints.get(i).getFirstType(), mode).getLatex());
                 sb.append(EQUALS);
                 sb.append(new LatexCreatorType(unificationConstraints.get(i).getSecondType(), mode).getLatex());
-                if ((markError && i == 0) || markLastTwoConstraints && (i < 2)) {
+                if (highligthingConstraint) {
                     sb.append(CURLY_RIGHT);
                 }
                 constraints2.add(sb.toString());
                 int invIdx = unificationConstraints.size() - 1 - i;
                 // if this constraint was modified by the substitution
-                if (invIdx < previousConstraints.length) {
+                if (invIdx < previousConstraints.size()) {
                     // perform the substitution "manually" and color the new type
                     Substitution s = substitutions.get(substitutions.size() - 1);
-                    String original = previousConstraints[invIdx];
+                    String original = previousConstraints.get(invIdx);
                     String originalType = new LatexCreatorType(s.getVariable(), mode).getLatex();
                     if (original.contains(originalType)) {
                         StringBuilder highlightedChange2 = new StringBuilder();
@@ -326,8 +348,9 @@ public class LatexCreatorConstraints implements StepVisitor {
                 constraints2.remove(constraints2.size() - 1);
                 latex.append(LATEX_CURLY_RIGHT + PAREN_RIGHT + LATEX_NEW_LINE);
             }
-            previousConstraints = constraints2.toArray(new String[0]);
+            previousConstraints = constraints2;
 
+            // also render the substitutions
             for (int i = substitutions.size() - 1; i >= 0; i--) {
                 if (!unificationConstraints.isEmpty() || i != substitutions.size() - 1) {
                     latex.append(CIRC);
@@ -343,6 +366,7 @@ public class LatexCreatorConstraints implements StepVisitor {
             latex.delete(latex.length() - LATEX_NEW_LINE.length(), latex.length());
             latex.append(SPLIT_END);
             latex.append(ALIGN_END + MATH_END);
+            // finally, display the error if there is one
             error.ifPresent(unificationError -> latex.append(translationProvider.apply(unificationError)));
             steps.add(latex.toString());
         }

@@ -40,3 +40,13 @@ The last paragraph requires that some elements of the proof tree / unification s
 and CSS IDs. It would be useless to expose this implementation detail to end users (especially since the relevant
 LaTeX macros are unlikely to be defined in the user's environment).
 Note that the actual content is the same for both "modes".
+
+### Special character (∀, λ) input
+
+This is handled by a script (`input-bar-enhancements.ts`) in the user's browser, to reduce latency.
+The buttons next to the input fields are also handled the same way.
+
+### Browser history
+
+Each click on the 'type' button results in a new history entry. Care has been taken that using the back/next buttons
+in the browser actually works (see `UI.navigate` in `MainViewImpl.processInput`).

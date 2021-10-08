@@ -8,7 +8,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 /**
  * Contains all predefined examples as buttons.
- * Clicking on a button selects the example and allows the user to chose between various type assumptions.
+ * Clicking on a button selects the example and allows the user to choose between various type assumptions.
  */
 public class TermExampleContent extends VerticalLayout {
     private static final long serialVersionUID = 2882744650931562239L;

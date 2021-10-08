@@ -20,7 +20,7 @@ public class TreeNumberGenerator {
     }
 
     /**
-     * Push the current index. Translates into the tree not doing anything in this step.
+     * Push the current index. This means that the tree will not change in this step.
      */
     protected void push() {
         if (current < 0) {
@@ -30,7 +30,7 @@ public class TreeNumberGenerator {
     }
 
     /**
-     * Push an incremented index. Translates into the tree going to the next step.
+     * Push an incremented index. This advances the proof tree.
      */
     protected void incrementPush() {
         current++;

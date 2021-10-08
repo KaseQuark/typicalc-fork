@@ -18,7 +18,15 @@ public final class AssumptionGeneratorUtil {
     private AssumptionGeneratorUtil() {
     }
 
-    protected static String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions,
+    /**
+     * Converts some type assumptions into LaTeX code to display them.
+     * Basic structure: name: Type, otherName: OtherType
+     *
+     * @param typeAssumptions the type assumptions
+     * @param mode latex creator mode
+     * @return the latex code
+     */
+    static String typeAssumptionsToLatex(Map<VarTerm, TypeAbstraction> typeAssumptions,
                                                    LatexCreatorMode mode) {
         if (typeAssumptions.isEmpty()) {
             return "";
@@ -37,6 +45,14 @@ public final class AssumptionGeneratorUtil {
         }
     }
 
+    /**
+     * Return the latex code for a given type abstraction, e.g.:
+     * ∀t1. t1 -> t1
+     *
+     * @param abs the type abstraction
+     * @param mode latex creator mode
+     * @return the latex code
+     */
     public static String generateTypeAbstraction(TypeAbstraction abs, LatexCreatorMode mode) {
         StringBuilder abstraction = new StringBuilder();
         if (abs.hasQuantifiedVariables()) {

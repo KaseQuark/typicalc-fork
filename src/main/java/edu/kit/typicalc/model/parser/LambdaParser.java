@@ -158,7 +158,7 @@ public class LambdaParser {
         }
         Result<VarTerm, ParseError> varTerm = parseVar();
         if (varTerm.isError()) {
-            return new Result<>(varTerm);
+            return varTerm.castError();
         }
         error = expect(TokenType.EQUALS);
         if (error.isPresent()) {
@@ -166,7 +166,7 @@ public class LambdaParser {
         }
         Result<LambdaTerm, ParseError> def = parseTerm(false);
         if (def.isError()) {
-            return new Result<>(def);
+            return def.castError();
         }
         error = expect(TokenType.IN);
         if (error.isPresent()) {
@@ -174,7 +174,7 @@ public class LambdaParser {
         }
         Result<LambdaTerm, ParseError> body = parseTerm(false);
         if (body.isError()) {
-            return new Result<>(body);
+            return body.castError();
         }
         return new Result<>(new LetTerm(varTerm.unwrap(), def.unwrap(), body.unwrap()));
     }
@@ -190,9 +190,9 @@ public class LambdaParser {
                 Result<VarTerm, ParseError> varTerm = parseVar();
                 return new Result<>(varTerm.unwrap()); // variable token can always be parsed
             case LAMBDA:
-                return new Result<>(parseAbstraction());
+                return parseAbstraction().castError();
             case LET:
-                return new Result<>(parseLet());
+                return parseLet().castError();
             case TRUE:
             case FALSE:
                 String boolText = token.getText();

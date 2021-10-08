@@ -9,7 +9,7 @@
 	align-items: flex-start;
 }
 
-#input-syntax {
+.input-syntax {
 	font-family: "Courier";
 	margin-top: 1.5em;
 }

@@ -14,7 +14,7 @@ import edu.kit.typicalc.model.parser.AdditionalInformation;
 import edu.kit.typicalc.model.parser.ExpectedInput;
 import edu.kit.typicalc.model.parser.ParseError;
 import edu.kit.typicalc.model.parser.Token;
-import edu.kit.typicalc.view.main.InfoContent;
+import edu.kit.typicalc.view.main.SyntaxContent;
 
 import java.util.Collection;
 import java.util.Optional;
@@ -41,11 +41,11 @@ public class ErrorView extends VerticalLayout implements LocaleChangeObserver {
         errorMessage = new Div();
         container.add(heading, errorMessage);
 
-        InfoContent infoContent = new InfoContent();
+        SyntaxContent syntaxContent = new SyntaxContent();
         hint = new Paragraph();
-        infoContent.addComponentAsFirst(hint);
+        syntaxContent.addComponentAsFirst(hint);
 
-        add(container, infoContent);
+        add(container, syntaxContent);
     }
 
     private String errorMessageForToken(Token token) {

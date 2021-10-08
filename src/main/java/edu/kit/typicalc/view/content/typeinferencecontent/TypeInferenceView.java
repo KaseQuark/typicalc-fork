@@ -130,7 +130,8 @@ public class TypeInferenceView extends VerticalLayout
         container.setId(CONTENT_ID2);
         unification = new MathjaxUnification(lc.getUnification());
         var explainer = new ExplanationCreator(typeInferer, getLocale());
-        this.explanation = new MathjaxExplanation(this, explainer.getExplanationTexts(), this.currentStep);
+        this.explanation = new MathjaxExplanation(
+                this::setCurrentStep, explainer.getExplanationTexts(), this.currentStep);
 
         if (tree == null) {
             tree = new MathjaxProofTree(lc.getTree(), stepAnnotations);

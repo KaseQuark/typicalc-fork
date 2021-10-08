@@ -11,8 +11,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 /**
  * Dialog which contains information on the correct syntax for the users input.
  */
-@CssImport("./styles/view/main/info-dialog.css")
-public class InfoDialog extends Dialog {
+@CssImport("./styles/view/main/syntax-dialog.css")
+public class SyntaxDialog extends Dialog {
     private static final long serialVersionUID = 2914411566361539614L;
 
     /*
@@ -23,9 +23,9 @@ public class InfoDialog extends Dialog {
     private static final String CLOSE_ICON_CLASS = "close-icon";
 
     /**
-     * Creates new InfoDialog.
+     * Creates new SyntaxDialog.
      */
-    protected InfoDialog() {
+    protected SyntaxDialog() {
         H4 heading = new H4(getTranslation("root.inputSyntax"));
         HorizontalLayout infoHeader = new HorizontalLayout(heading);
         Icon closeIcon = new Icon(VaadinIcon.CLOSE_SMALL);
@@ -34,7 +34,7 @@ public class InfoDialog extends Dialog {
         infoHeader.setId(INFO_HEADER_ID);
         infoHeader.add(closeIcon);
 
-        VerticalLayout infoContent = new InfoContent();
+        VerticalLayout infoContent = new SyntaxContent();
         infoContent.setId(INFO_CONTENT_ID);
 
         add(infoHeader, infoContent);

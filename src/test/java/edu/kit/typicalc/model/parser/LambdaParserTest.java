@@ -65,10 +65,6 @@ class LambdaParserTest {
     void complicatedTerm() {
         LambdaParser parser = new LambdaParser("(λx.λy.x y 5)(λz.z)(true)");
         Result<LambdaTerm, ParseError> term = parser.parse();
-        if (term.isError()) {
-            System.err.println(term.unwrapError());
-            System.err.println(term.unwrapError().getCause());
-        }
         assertEquals(
                 new AppTerm(
                         new AppTerm(

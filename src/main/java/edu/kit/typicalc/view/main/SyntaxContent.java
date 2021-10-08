@@ -9,10 +9,10 @@ import com.vaadin.flow.i18n.LocaleChangeObserver;
 /**
  * Component which contains information on the correct syntax of the term as well as the type assumptions.
  */
-public class InfoContent extends VerticalLayout implements LocaleChangeObserver {
+public class SyntaxContent extends VerticalLayout implements LocaleChangeObserver {
     private static final long serialVersionUID = 7193916603756938225L;
 
-    private static final String GRAMMAR_ID = "input-syntax";
+    private static final String GRAMMAR_CLASS = "input-syntax";
 
     private final Span termExplanation;
     private final Paragraph termSyntax;
@@ -21,16 +21,16 @@ public class InfoContent extends VerticalLayout implements LocaleChangeObserver 
     private final Paragraph typeSyntax;
 
     /**
-     * Creates a new InfoContent.
+     * Creates a new SyntaxContent.
      */
-    public InfoContent() {
+    public SyntaxContent() {
         termExplanation = new Span();
         termSyntax = new Paragraph();
         assExplanation = new Span();
         typeExplanation = new Span();
         typeSyntax = new Paragraph();
-        termSyntax.setId(GRAMMAR_ID);
-        typeSyntax.setId(GRAMMAR_ID);
+        termSyntax.setClassName(GRAMMAR_CLASS);
+        typeSyntax.setClassName(GRAMMAR_CLASS);
         add(termExplanation, termSyntax, assExplanation, typeExplanation, typeSyntax);
     }
 

@@ -30,8 +30,7 @@ You can now also attach break points in code for debugging purposes, by clicking
 ### Running tests
 To run the unit tests and checkstyle: `mvn test`.
 
-To run the integration tests: `mvn integration-test` (note that due to OS platform differences, it is unlikely that
-you will get a 100% match on the first attempt.)
+To run the integration tests: `mvn integration-test` (note that the screenshots are outdated, so the tests will fail..).
 
 ## Technical documentation
 Documentation on the application is contained in this file and the Javadocs in each source file.

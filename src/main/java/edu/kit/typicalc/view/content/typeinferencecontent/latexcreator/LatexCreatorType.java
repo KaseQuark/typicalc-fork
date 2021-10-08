@@ -15,7 +15,6 @@ import static edu.kit.typicalc.view.content.typeinferencecontent.latexcreator.La
  * @see Type
  */
 public class LatexCreatorType implements TypeVisitor {
-    private final Type type;
     private static final int MAX_LENGTH = 100000; // 100 KB
     private final LatexCreatorMode mode;
 
@@ -28,7 +27,6 @@ public class LatexCreatorType implements TypeVisitor {
      * @param type the type
      */
     public LatexCreatorType(Type type, LatexCreatorMode mode) {
-        this.type = type;
         this.mode = mode;
         type.accept(this);
     }

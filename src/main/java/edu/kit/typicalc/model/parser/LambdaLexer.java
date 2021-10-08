@@ -35,7 +35,7 @@ public class LambdaLexer {
         while (true) {
             Result<Token, ParseError> token = parseNextToken();
             if (token.isError()) {
-                result = new Result<>(null, token.unwrapError());
+                result = token.castError();
                 return;
             }
             Token value = token.unwrap();
