@@ -100,7 +100,7 @@ public class Tree implements TermVisitorTree {
     }
 
     /**
-     * Indicates whether the tree contains a sub-inference of a let step that failed
+     * Indicates whether the tree contains a sub-inference of a let step that failed.
      *
      * @return true, if the tree contains a failed sub-inference, false otherwise
      */
@@ -165,7 +165,7 @@ public class Tree implements TermVisitorTree {
 
         Type premiseType = typeVarFactory.nextTypeVariable();
         Constraint newConstraint = new Constraint(conclusionType, premiseType);
-        newConstraint.setStepIndex(stepNr); // TODO: also set on other let constraints?
+        newConstraint.setStepIndex(stepNr);
         InferenceStep premise;
 
         if (typeInfererLet.getType().isPresent()) {

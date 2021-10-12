@@ -52,6 +52,11 @@ public class TypeAssumptionParser {
         }
     }
 
+    /**
+     * Starts the process of parsing the given type assumptions.
+     * @param assumptions type assumptions as a string
+     * @return if successful, a map of the type assumptions, otherwise an error
+     */
     public Result<Map<VarTerm, TypeAbstraction>, ParseError> parse(String assumptions) {
         lexer = new LambdaLexer(
                 cleanAssumptionText(assumptions), ParseError.ErrorSource.TYPE_ASSUMPTION_ERROR);
@@ -59,10 +64,10 @@ public class TypeAssumptionParser {
     }
 
     /**
-     * parses Type Environment
+     * Parses a TypeEnvironment.
      * @return if successful, a map of the type assumptions, otherwise an error
      */
-    public Result<Map<VarTerm, TypeAbstraction>, ParseError> parseTE() {
+    private Result<Map<VarTerm, TypeAbstraction>, ParseError> parseTE() {
         HashMap<VarTerm, TypeAbstraction> map = new HashMap<>();
         while (true) {
             Result<Token, ParseError> nextLexerToken = lexer.nextToken();
@@ -93,10 +98,11 @@ public class TypeAssumptionParser {
     }
 
     /**
-     * Parses single Type Assumption
-     * @return if successful, a type assumption, otherwise an error
+     * Parses a TypeAbstraction.
+     * @return if successful, a map entry consisting of a VarTerm and its corresponding TypeAbstraction,
+     * otherwise an error
      */
-    public Result<MapEntry<VarTerm, TypeAbstraction>, ParseError> parseTA() {
+    private Result<MapEntry<VarTerm, TypeAbstraction>, ParseError> parseTA() {
         VarTerm term;
         if (currentToken.getType() == Token.TokenType.VARIABLE) {
             term = new VarTerm(currentToken.getText());
@@ -125,10 +131,10 @@ public class TypeAssumptionParser {
 
 
     /**
-     * Parses a Type
-     * @return if successful a type abstraction, otherwise an error.
+     * Parses a Type.
+     * @return if successful a TypeAbstraction, otherwise an error
      */
-    public Result<TypeAbstraction, ParseError> parseType() {
+    private Result<TypeAbstraction, ParseError> parseType() {
         Result<Token, ParseError> nextLexerToken = lexer.nextToken();
         if (nextLexerToken.isError()) {
             return nextLexerToken.castError();
@@ -206,10 +212,10 @@ public class TypeAssumptionParser {
     }
 
     /**
-     * parses a single Type
-     * @return if successful a type, otherwise an error
+     * Parses a SingleType.
+     * @return if successful a Type, otherwise an error
      */
-    public Result<Type, ParseError> parseSingleType() {
+    private Result<Type, ParseError> parseSingleType() {
 
         Result<Type, ParseError> result = parseSimpleType();
         if (result.isError()) {
@@ -236,10 +242,10 @@ public class TypeAssumptionParser {
     }
 
     /**
-     * parses a simple type
-     * @return if successful a type, otherwise an error
+     * Parses a SimpleType.
+     * @return if successful a Type, otherwise an error
      */
-    public Result<Type, ParseError> parseSimpleType() {
+    private Result<Type, ParseError> parseSimpleType() {
         if (currentToken.getType() == Token.TokenType.VARIABLE) {
             Type type = parseLiteral(currentToken.getText());
             return new Result<>(type);
@@ -268,10 +274,10 @@ public class TypeAssumptionParser {
     }
 
     /**
-     * parses the rest of a single type
-     * @return if successful a type or an empty optional, otherwise an error
+     * Parses a Rest.
+     * @return if successful a Type or an empty Optional, otherwise an error
      */
-    public Result<Optional<Type>, ParseError> parseRest() {
+    private Result<Optional<Type>, ParseError> parseRest() {
         switch (currentToken.getType()) {
             case ARROW:
                 Result<Token, ParseError> nextLexerToken = lexer.nextToken();
