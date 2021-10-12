@@ -117,8 +117,6 @@ public class FunctionType extends Type {
     }
 
     /**
-     * Getter for output
-     *
      * @return output
      */
     public Type getOutput() {
@@ -126,8 +124,6 @@ public class FunctionType extends Type {
     }
 
     /**
-     * Getter for parameter
-     *
      * @return parameter
      */
     public Type getParameter() {

@@ -15,8 +15,6 @@ import java.util.Set;
 public abstract class ConstTerm extends LambdaTerm {
 
     /**
-     * Returns the named type of the constant
-     *
      * @return the named type of the constant
      */
     public abstract NamedType getType();

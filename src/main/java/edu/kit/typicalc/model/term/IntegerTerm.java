@@ -20,8 +20,6 @@ public class IntegerTerm extends ConstTerm {
     }
 
     /**
-     * Returns the value of the integer constant term.
-     *
      * @return the value of the term
      */
     public int getValue() {

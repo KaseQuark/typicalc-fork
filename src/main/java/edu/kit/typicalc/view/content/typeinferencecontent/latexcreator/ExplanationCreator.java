@@ -70,9 +70,7 @@ public class ExplanationCreator implements StepVisitor {
     }
 
     /**
-     * Returns a list of strings with an entry for every step of the algorithm.
-     *
-     * @return list of strings containing the explanatory texts
+     * @return list of strings with an entry for every step of the algorithm.
      */
     public List<String> getExplanationTexts() {
         return explanationTexts;

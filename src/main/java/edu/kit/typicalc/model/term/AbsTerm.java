@@ -29,8 +29,6 @@ public class AbsTerm extends LambdaTerm {
     }
 
     /**
-     * Returns the variable of this abstraction
-     *
      * @return the variable of this abstraction
      */
     public VarTerm getVariable() {
@@ -38,8 +36,6 @@ public class AbsTerm extends LambdaTerm {
     }
 
     /**
-     * Returns the function body of this abstraction
-     *
      * @return the function body of this abstraction
      */
     public LambdaTerm getInner() {

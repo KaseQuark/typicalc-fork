@@ -81,19 +81,15 @@ public class Tree implements TermVisitorTree {
     }
 
     /**
-     * Returns the first type variable the original lambda term was assigned in the first inference step.
-     *
-     * @return the first type variable
+     * @return the first type variable the original lambda term was assigned in the first inference step
      */
     protected TypeVariable getFirstTypeVariable() {
         return firstTypeVariable;
     }
 
     /**
-     * Returns the list of constraints that formed while generating the inference step tree
-     * structure, needed for the subsequent unification.
-     *
-     * @return the constraint list of the tree
+     * @return the list of constraints that formed while generating the inference step tree
+     *      * structure, needed for the subsequent unification
      */
     protected List<Constraint> getConstraints() {
         return constraints;

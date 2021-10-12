@@ -19,9 +19,7 @@ public abstract class Type {
     public abstract boolean contains(Type x);
 
     /**
-     * Returns a set of all free type variables occurring in the type.
-     *
-     * @return all free type variables
+     * @return a set of all free type variables occurring in the type
      */
     public abstract Set<TypeVariable> getFreeTypeVariables();
 

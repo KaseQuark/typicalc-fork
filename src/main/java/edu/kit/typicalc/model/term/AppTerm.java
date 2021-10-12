@@ -25,8 +25,6 @@ public class AppTerm extends LambdaTerm {
     }
 
     /**
-     * Returns the function used in this application
-     *
      * @return the function used in this application
      */
     public LambdaTerm getFunction() {
@@ -34,8 +32,6 @@ public class AppTerm extends LambdaTerm {
     }
 
     /**
-     * Returns the parameter used in this application
-     *
      * @return the parameter used in this application
      */
     public LambdaTerm getParameter() {

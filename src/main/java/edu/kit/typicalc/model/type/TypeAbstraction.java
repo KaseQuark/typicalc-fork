@@ -87,9 +87,7 @@ public class TypeAbstraction {
     }
 
     /**
-     * Returns a set of all free type variables occurring in the type abstraction.
-     *
-     * @return all free type variables
+     * @return a set of all free type variables occurring in the type abstraction
      */
     public Set<TypeVariable> getFreeTypeVariables() {
         Set<TypeVariable> set = new HashSet<>(this.type.getFreeTypeVariables());
@@ -98,8 +96,6 @@ public class TypeAbstraction {
     }
 
     /**
-     * Getter for the inner type of the type abstraction
-     *
      * @return the inner type of the type abstraction
      */
     public Type getInnerType() {

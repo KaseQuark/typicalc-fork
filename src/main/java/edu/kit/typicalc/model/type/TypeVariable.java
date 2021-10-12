@@ -30,8 +30,6 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     }
 
     /**
-     * Returns the kind of the type variable.
-     *
      * @return the variable's kind
      */
     public TypeVariableKind getKind() {
@@ -39,8 +37,6 @@ public class TypeVariable extends Type implements Comparable<TypeVariable> {
     }
 
     /**
-     * Returns the index of the type variable as an integer
-     *
      * @return the variable's index
      */
     public int getIndex() {

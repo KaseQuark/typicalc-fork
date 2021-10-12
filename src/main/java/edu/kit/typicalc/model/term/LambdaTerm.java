@@ -14,16 +14,12 @@ import java.util.Set;
  */
     public abstract class LambdaTerm {
     /**
-     * Returns whether the lambda term contains a let expression
-     *
      * @return whether the lambda term contains a let expression
      */
     public abstract boolean hasLet();
 
     /**
-     * Returns a set of all free variables occurring in the lambda term.
-     *
-     * @return all free variables
+     * @return a set of all free variables occurring in the lambda term
      */
     public abstract Set<VarTerm> getFreeVariables();
 

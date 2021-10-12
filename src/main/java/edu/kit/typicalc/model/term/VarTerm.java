@@ -24,8 +24,6 @@ public class VarTerm extends LambdaTerm {
     }
 
     /**
-     * Returns the name of this variable
-     *
      * @return the name of this variable
      */
     public String getName() {

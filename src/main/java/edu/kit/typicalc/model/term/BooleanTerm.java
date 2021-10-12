@@ -20,8 +20,6 @@ public class BooleanTerm extends ConstTerm {
     }
 
     /**
-     * Returns the value of the boolean constant term.
-     *
      * @return the value of the term
      */
     public boolean getValue() {

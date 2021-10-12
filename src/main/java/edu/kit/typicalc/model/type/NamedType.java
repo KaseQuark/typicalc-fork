@@ -32,8 +32,6 @@ public class NamedType extends Type {
     }
 
     /**
-     * Returns the name of the named type.
-     *
      * @return the name of this type
      */
     public String getName() {

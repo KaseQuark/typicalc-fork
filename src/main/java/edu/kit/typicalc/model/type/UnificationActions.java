@@ -34,8 +34,6 @@ public class UnificationActions {
     }
 
     /**
-     * Getter for constraints
-     *
      * @return the constraints stored in this object
      */
     public Collection<Constraint> getConstraints() {
@@ -43,8 +41,6 @@ public class UnificationActions {
     }
 
     /**
-     * Getter for substitution
-     *
      * @return the substitution stored in this object
      */
     public Optional<Substitution> getSubstitution() {
