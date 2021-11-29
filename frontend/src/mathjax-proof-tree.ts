@@ -79,10 +79,11 @@ class MathjaxProofTree extends MathjaxAdapter {
 
         console.time('stepCalculation');
         const svg = this.shadowRoot!.querySelector<SVGElement>("svg")!;
-        let root = this.shadowRoot!.querySelector("#typicalc-prooftree")! as SVGElement;
+        let root = this.shadowRoot!.querySelector("#typicalc-prooftree") as SVGElement || this.shadowRoot!.querySelector("semantics") as SVGElement;
         while (!root.getAttribute("semantics")) {
             root = root.parentNode! as SVGElement;
         }
+        root.id = "typicalc-prooftree";
         // first, enumerate all of the steps
         // and assign IDs
         let stepIdx = 0;
@@ -140,8 +141,8 @@ class MathjaxProofTree extends MathjaxAdapter {
         svg.viewBox.baseVal.width = Math.min(50000, svg.viewBox.baseVal.width);
         svg.viewBox.baseVal.width = Math.max(20000, svg.viewBox.baseVal.width);
         // center on first visible element
-        const finalConclusion = svg
-            .querySelector<SVGGraphicsElement>("#typicalc-prooftree > g[semantics='bspr_inferenceRule:down']")!
+        const finalConclusion = root
+            .querySelector<SVGGraphicsElement>("g[semantics='bspr_inferenceRule:down']")!
             .children[1]! as SVGGraphicsElement;
         const conclusionBBox = finalConclusion.getBBox();
         const mainGroupElement = svg.children[1]! as SVGGraphicsElement;

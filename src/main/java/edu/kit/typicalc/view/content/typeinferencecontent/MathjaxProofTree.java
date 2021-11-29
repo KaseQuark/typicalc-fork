@@ -36,7 +36,7 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
      */
     public MathjaxProofTree(String latex, List<String> extraData) {
         // step definitions used for tooltips
-        content.add("\\[\\cssId{typicalc-prooftree}{" + latex + "}"
+        String latexCode = "\\[\\cssId{typicalc-prooftree}{" + latex + "}"
                 + "\\class{typicalc-definition}{"
                 + "\\cssId{typicalc-definition-abs}{"
                 + getTranslation("root.absLatex")
@@ -72,7 +72,8 @@ public class MathjaxProofTree extends LitTemplate implements MathjaxAdapter {
                 + getTranslation("root.letLatex")
                 + "}"
                 + "}"
-                + "\\]");
+                + "\\]";
+        content.add(latexCode);
         getElement().callJsFunction("requestTypeset", new Gson().toJson(extraData));
     }
 
