@@ -128,6 +128,7 @@ public class InputBar extends HorizontalLayout implements LocaleChangeObserver {
     }
 
     private void onTypeInferButtonClick() {
+        assumptionInputField.blur();
         termInputField.blur();
         String assumptions = assumptionInputField.getValue();
         callback.accept(Pair.of(termInputField.getValue(), assumptions));
