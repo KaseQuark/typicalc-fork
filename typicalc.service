@@ -12,7 +12,7 @@ Group=typicalc
 Type=simple
 
 WorkingDirectory=/opt
-ExecStart=/usr/lib/jvm/java-11-openjdk-amd64/bin/java -jar /opt/typicalc-1.0-SNAPSHOT.jar
+ExecStart=/usr/bin/java -jar /opt/typicalc-1.0-SNAPSHOT.jar
 ExecStop=/bin/kill -15 $MAINPID
 
 ProtectSystem=strict
@@ -24,8 +24,6 @@ PrivateDevices=true
 PrivateTmp=true
 PrivateUsers=true
 NoNewPrivileges=true
-CapabilityBoundingSet=~CAP_SYS_ADMIN
-RestrictNamespaces=~user
 SystemCallArchitectures=native
 LockPersonality=true
 UMask=0177
