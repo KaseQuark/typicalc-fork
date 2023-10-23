@@ -7,7 +7,7 @@ window.addTypeInputListener = (className: string) => {
 	const el = document.getElementsByClassName(className);
 	if (el) {
 		const listener = (e: Event) => {
-			const area = (e.target! as HTMLElement).shadowRoot!.querySelector<HTMLInputElement>('input');
+			const area = e.target! as HTMLInputElement;
 			modifyValue(area!);
 		};
 		Array.from(el).forEach(function (element) {

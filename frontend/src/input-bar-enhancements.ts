@@ -14,7 +14,7 @@ window.buttonListener = (buttonID: string, inputID: string) => {
 	const button = document.getElementById(buttonID)!;
 	const input = document.getElementById(inputID)!;
 	button.addEventListener('click', () => {
-		const area = input.shadowRoot!.querySelector('input')!;
+		const area = input as HTMLInputElement;
 		let start = area.selectionStart!;
 		area.value = [area.value.slice(0, start), replacement, area.value.slice(start)].join('');
 		area.selectionStart = ++start;
@@ -30,7 +30,7 @@ window.characterListener = (inputID: string) => {
 	let toReplace = (inputID === "term-input-field") ? '\\' : '!';
 	let replacement = (inputID === "term-input-field") ? 'λ' : '∀';
 	document.getElementById(inputID)!.addEventListener('keyup', e => {
-		const area = (e.target as HTMLElement).shadowRoot!.querySelector('input')!;
+		const area = (e.target as HTMLInputElement)!;
 		if (area.value.indexOf(toReplace) >= 0) {
 			const start = area.selectionStart;
 			const end = area.selectionEnd;

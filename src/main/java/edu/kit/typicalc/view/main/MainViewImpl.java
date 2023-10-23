@@ -12,10 +12,10 @@ import edu.kit.typicalc.presenter.Presenter;
 import edu.kit.typicalc.view.content.errorcontent.ErrorView;
 import edu.kit.typicalc.view.content.infocontent.StartPageView;
 import edu.kit.typicalc.view.content.typeinferencecontent.TypeInferenceView;
+import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 
-import javax.servlet.http.HttpServletResponse;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;

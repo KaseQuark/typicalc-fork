@@ -69,10 +69,10 @@ public class UpperBar extends VerticalLayout implements LocaleChangeObserver {
         helpButton.setId(HELP_ICON_ID);
 
         renderer = item -> getTranslation("root." + item.getDisplayLanguage(Locale.ENGLISH).toLowerCase());
-        languageSelect = new Select<>(Locale.GERMAN, Locale.ENGLISH);
+        languageSelect = new Select<>("",
+                event -> UI.getCurrent().getSession().setLocale(event.getValue()), Locale.GERMAN, Locale.ENGLISH);
         languageSelect.setTextRenderer(renderer);
         languageSelect.setValue(UI.getCurrent().getLocale());
-        languageSelect.addValueChangeListener(event -> UI.getCurrent().getSession().setLocale(event.getValue()));
         languageSelect.setId(LANGUAGE_SELECT_ID);
         HorizontalLayout topLine = new HorizontalLayout(languageSelect, viewTitle, helpButton);
         topLine.setId(TOP_LINE_ID);
