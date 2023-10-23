@@ -10,6 +10,7 @@
 # The following files are generated/updated by vaadin-maven-plugin
 node_modules/
 frontend/generated/
+frontend/index.html
 pnpmfile.js
 pnpm-lock.yaml
 types.d.ts

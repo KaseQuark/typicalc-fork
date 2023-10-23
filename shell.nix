@@ -12,8 +12,8 @@ mkShell {
   nativeBuildInputs = [
     file
     ripgrep
-    mavenJdk11
-    nodejs-14_x
+    # mavenJdk11
+    nodejs-18_x
     which # required by Vaadin
     python3-with-my-packages
   ];
